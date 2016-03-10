@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Raising Zombies in Windows: Part 1 - Passwords</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&rsquo;t really appreciative of our (pentester/red teamer)&rsquo;s schedule.</p>
+
+<p>A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &lsquo;runas.exe&rsquo;:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-3120at204-04-4120pm.png.41%20PM.png" alt="Screen Shot 2012 07 31 at 4 04 41 PM" /></p>
+
+<p>w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&rsquo;re generally SOL.</p>
+
+<p>There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-3120at203-24-1120pm.png.11%20PM.png" alt="Screen Shot 2012 07 31 at 3 24 11 PM" /></p>
+
+<p>(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)</p>
+
+<p>Another way if you don&rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-3120at203-57-4220pm.png.42%20PM.png" alt="Screen Shot 2012 07 31 at 3 57 42 PM" /></p>
+
+<p>This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&rsquo;s execute command with the &ldquo;-m&rdquo; argument after you&rsquo;ve built the AutoIT script into a EXE.</p>
+
+<p>But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:</p>
+
+<p>a = client.railgun.kernel32.GetStartupInfoW(56)[&ldquo;lpStartupInfo&rdquo;]</p>
+
+<p>client.railgun.advapi32.CreateProcessWithLogonW(&ldquo;USER&rdquo;,&ldquo;DOMAIN&rdquo;,&ldquo;PASSWORD&rdquo;,&ldquo;LOGON_WITH_PROFILE&rdquo;,&ldquo;notepad.exe&rdquo;,nil,0,nil,nil,a,32)</p>
+
+<p>This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:</p>
+
+<p>client.railgun.advapi32.LogonUserA(&ldquo;USER&rdquo;,&ldquo;DOMAIN&rdquo;,&ldquo;PASSWORD&rdquo;,&ldquo;LOGON32_LOGON_INTERACTIVE&rdquo;,&ldquo;LOGON32_PROVIDER_DEFAULT&rdquo;,4)</p>
+
+<p> </p>
+
+<p>List the tokens available with Incognito, your new user will be there, steal it and you&rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)</p>
+
+<p> </p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

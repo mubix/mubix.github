@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>AV bypass made stupid</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p><strong><em>WARNING</em> if you use fgdump like I did, it extracts pwdump to %TEMP% at run time, which is detected by AV.</strong></p>
+
+<p>First of all, I was floored when this worked. Really AV? It&rsquo;s that easy? Really?</p>
+
+<p>So here is the break down, go get &ldquo;<a href="http://bit.ly/cVM4RE">Resource Hacker</a>&ldquo;… You&rsquo;re almost done. Only 3 steps left. (1 of which is optional)</p>
+
+<p>I started with fgdump, a well known hashdumping/pwdump tool. It&rsquo;s detected by 80% of all AVs and by all the top 10. You see this on your AV report for your domain controller, and you&rsquo;re having a bad day, probably week.</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5c/1275536467085/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5d/1275536468147/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5c/1275536467085/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5d/1275536468147/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p><em><strong>Watch this magic trick though:</strong></em></p>
+
+<p><strong>[*] Step 1:</strong></p>
+
+<p>Open Res Hacker and drag a &ldquo;normal&rdquo; executable on to the window or Open File.</p>
+
+<p>Click &ldquo;Save All Resources&rdquo;</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5e/1275536468433/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5f/1275536468078/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5e/1275536468433/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b5f/1275536468078/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p>Essentially what you are doing in this step is simply extracting the .ico file (Icon) from the executable. Now you can do this with other tools, but we&rsquo;ll be using resource hacker in a minute again, so it&rsquo;s just easy to do it all with one tool.</p>
+
+<p>We are done with this executable unless you are doing Step 2, in that case, leave it open, open another Res Hacker window and open your &lsquo;evil&rsquo;. (In our case, fgdump.exe)</p>
+
+<p><strong>[*] Step 2 (Optional):</strong></p>
+
+<p>If you destination executable has tell-tale signs of it&rsquo;s intent, much like fgdump as seen below:</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b60/1275536469002/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b61/1275536469973/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b60/1275536469002/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b61/1275536469973/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p>You can simply copy and paste the version info from your &lsquo;normal&rsquo; executable into your new one and hit &ldquo;Compile Script&rdquo;:</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b62/1275536470317/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b63/1275536470917/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b62/1275536470317/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b63/1275536470917/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p><strong>[*] Step 3:</strong></p>
+
+<p>Next we need to &ldquo;Add a new Resource&rdquo; (our icon) into our &ldquo;evil&rdquo; binary.</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b64/1275536471697/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b65/1275536471923/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b64/1275536471697/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b65/1275536471923/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p>Once this prompt comes up, select the ICO file that shows the icon you want it to have (some binaries have a ton, so make sure it&rsquo;s the right one). Put in &lsquo;1&rsquo; for resource name, and &lsquo;1033&rsquo; for your resource language. (You can play with these values, not sure what impact they have, but from the binaries I&rsquo;ve looked at those values are pretty standard for a windows executable).</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b66/1275536472213/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b67/1275536472387/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b66/1275536472213/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b67/1275536472387/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p>Save your new awesome binary as something else, I chose vlc2.exe</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b68/1275536472593/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b69/1275536472843/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b68/1275536472593/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b69/1275536472843/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p>And… (drum roll)</p>
+
+<p>[](<a href="http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b6a/1275536472957/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b6b/1275536473093/WindowsLiveWriter-AVbypassmadestupid_14CF9-">http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b6a/1275536472957/WindowsLiveWriter-AVbypassmadestupid_14CF9-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3b6b/1275536473093/WindowsLiveWriter-AVbypassmadestupid_14CF9-</a>)</p>
+
+<p>Tada! Sad isn&rsquo;t it? Only 1 of the top 10 AV now detect this binary. Good job AVG and Avast! You still picked it up, but Trend, Symantec, Microsoft, ClamAV, Kaspersky, Panda, Norman, NOD32, Sunbelt, F-Secure, Fortinet, BitDefender WTF guys!?</p>
+
+<p>Oh and Kaspersky now flags it as &ldquo;not-a-virus&rdquo; but still flags it.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>(UAC) User Assisted Compromise</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>A number of times during tests I&rsquo;ve actually run into those mythical creatures called &ldquo;patched windows machines&rdquo;. At <a href="http://www.derbycon.com">DerbyCon</a> <a href="http://twitter.com/carnal0wnage">Chris Gates</a> and I released the &ldquo;Ask&rdquo; post module (which I had failed to publish). This module very simply uses the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85">ShellExecute windows function</a>.aspx) via <a href="http://dev.metasploit.com/redmine/projects/framework/wiki/RailgunUsage">Railgun</a> with the undocumented (but very well known) operator of &lsquo;runas&rsquo;. These two lines accomplished that:</p>
+
+<pre><code>client.railgun.add_function( 'shell32', 'ShellExecuteA', 'DWORD',[[&quot;DWORD&quot;,&quot;hwnd&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpOperation&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpFile&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpParameters&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpDirectory&quot;,&quot;in&quot;],[&quot;DWORD&quot;,&quot;nShowCmd&quot;,&quot;in&quot;],])
+client.railgun.shell32.ShellExecuteA(nil,&quot;runas&quot;,&quot;evil.exe&quot;,nil,nil,5)
+</code></pre>
+
+<p>This would quite simply prompt the user with that annoying UAC prompt asking the user to run &lsquo;evil.exe&rsquo; with Administrative privs. If they are not &ldquo;Admins&rdquo; themselves then it would prompt them for the user name and password (normally the case in systems attached to domains). Something to be aware of: If your evil.exe is not code-signed the UAC box will be orange instead of blue. You can get around this a bit by using rundll32.exe (which is signed ;-) ) as is svchost.exe. (You may also want to not name it evil.exe)</p>
+
+<p>The downfall here is that 1. You have to drop a binary (boooo) 2. You are prompting the user for UAC control when they didn&rsquo;t do anything to cause it. Users are generally as smart as bait, but it&rsquo;s good practice to assume to the contrary. If for nothing else other than to challenge yourself to up your game.</p>
+
+<p>Number 1 I&rsquo;ll leave to another post, so lets solve #2.</p>
+
+<p>When a &ldquo;runas&rdquo; ShellExecute (which UAC runs natively #hint#hint) a few registry locations are checked. One I&rsquo;d like to point out is the HKLMSoftwareClassesexefile key. The &lsquo;exefile&rsquo; as should be obvious is the registry settings for executables, and as such tells Windows how to interact with them. In HKLM (which is only writable by Administrators) the &ldquo;shellopen&rdquo;, &ldquo;shellrunas&rdquo; and &ldquo;shellrunasuser&rdquo; subkeys exist (the structure looks oddly familiar to anyone who visited the ShellExecute page more than once). Inside &ldquo;shellopencommand&rdquo; the default string has &ldquo;%1&rdquo; %*  - this basically means execute the binary %1 and hand the arguments given directly to it %*. Awesome! From here you can alter how every EXE runs on the system (don&rsquo;t do it, Windows doesn&rsquo;t like you afterwards, trust me, and remember to snapshot if you don&rsquo;t).</p>
+
+<p>Great, but how does this help us, we aren&rsquo;t admins. HKCU is writable by the &lsquo;Current User&rsquo; hence the name, and it so happens to have a very similar registry path: HKCUSoftwareClasses. Depending on your system, it may or may not have a &ldquo;exefile&rdquo; subkey. If it doesn&rsquo;t it&rsquo;s pretty easy to create. Lets make it match the &ldquo;runas&rdquo; one in HKLM</p>
+
+<p>The tree should look something like this when you are done:</p>
+
+<ul>
+<li><p>HKLM</p>
+
+<ul>
+<li><p>Software</p>
+
+<ul>
+<li><p>Classes</p></li>
+
+<li><p>exefile</p>
+
+<ul>
+<li><p>shell</p></li>
+
+<li><p>runas</p>
+
+<ul>
+<li>command</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>Under command change the default value to &ldquo;%1&rdquo; %* just as it is in HKLM, and add a new String value called &lsquo;IsolatedCommand&rsquo; with the same value as default. With these settings, very little has changed on the system or its operation. However, if we change the &lsquo;IsolatedCommand&rsquo; String to &lsquo;notepad.exe&rsquo; and attempt to &lsquo;Run As Administrator&rsquo; on that system using any binary guess what happens? Notepad! (as Admin). w00t. Now we can swap in our evil.exe and bob wins right? Sorta. We still have that horrible problem of stealth. Whatever the user was trying to UAC up won&rsquo;t work, and they&rsquo;ll try it again, and start investigating the problem, which we don&rsquo;t want them to do.</p>
+
+<p>Enter &lsquo;runyou.exe&rsquo;, it&rsquo;s some very simple C++ that weighs in at a whopping 8k when compiled (probably could loose some weight by those who know better compiler options):</p>
+
+<pre><code>#include &quot;windows.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;tchar.h&quot;
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    if (argv[1])
+    {
+        ShellExecuteW(NULL,NULL,argv[1],NULL,NULL,SW_SHOW);
+        if (argv[2])
+        {
+            ShellExecuteW(NULL,NULL,argv[2],NULL,NULL,SW_HIDE);
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+<p>This code executes the first program visibly and then the second hidden. You probably see where this is going, but we change our IsolatedCommand String to runyou.exe %1 evil.exe and now we give them exactly what they want in an elevated state, but also get our evil binary there too ;-)</p>
+
+<p>The very real down side to this is you have to wait for the user to use UAC (this does not work if someone else does, it&rsquo;s only for the current user HKCU). But, as a side benefit, it&rsquo;s a very real form of sneaky persistence as well, as it will execute our evil binary every single time they use UAC.</p>
+
+<p>Game Over&hellip; ;-)</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

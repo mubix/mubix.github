@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>OzymanDNS - Tunneling SSH over DNS</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  
+
+<h3 id="hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504:00c71f585c0a5a8e6a10fd11b10f754f"><a href="http://www.hak5.org/episodes/episode-504">Hak5 Episode 504 Shownotes</a></h3>
+
+<p><em>(In the episode I say that it&rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)</em></p>
+
+<h3 id="disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk:00c71f585c0a5a8e6a10fd11b10f754f">DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.</h3>
+
+<h3 id="update-thanks-to-chris-gates-http-carnal0wnage-blogspot-com-and-robin-wood-http-www-digininja-org-index-php-for-pointing-me-towards-a-fixed-up-version-of-ozymandns-and-a-great-tutorial-here-http-www-splitbrain-org-blog-2008-11-02-dns-tunneling-made-simple:00c71f585c0a5a8e6a10fd11b10f754f">UPDATE:Thanks to <a href="http://carnal0wnage.blogspot.com/">Chris Gates</a> and <a href="http://www.digininja.org/index.php">Robin Wood</a> for pointing me towards a fixed up version of OzymanDNS and a great tutorial: <a href="http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple">HERE</a></h3>
+
+<h3 id="update2-since-ozyman-is-no-longer-hosted-on-dan-s-site-i-have-posted-it-here:00c71f585c0a5a8e6a10fd11b10f754f">UPDATE2: Since Ozyman is no longer hosted on Dan&rsquo;s site, I have posted it here:</h3>
+
+<p><a href="/scripts-and-programs/stolen/ozymandns_src_0.1.tgz"><strong>http://www.room362.com/scripts-and-programs/stolen/ozymandns_src_0.1.tgz</strong></a></p>
+
+<p><strong>(Until of course/if he asks me to take it down)</strong></p>
+
+<p>DNS Tunneling isn&rsquo;t new. <a href="http://www.doxpara.com/">Dan Kaminsky</a>&rsquo;s post for <a href="http://www.doxpara.com/?p=51">OzymanDNS&rsquo; release</a> was July 29th 2004 (There was DNS Tunneling linux packages dating back to the late 90s even). I will however comment that it&rsquo;s still in it&rsquo;s release version, but very functional. Also, DNS Tunnel isn&rsquo;t &ldquo;Big News&rdquo; so it really hasn&rsquo;t been &lsquo;mitigated&rsquo; anywhere yet. Everywhere I have tested it, it has worked, even behind a certain switch that rhymes with &lsquo;Panera&rsquo;</p>
+
+<p>What does OzymanDNS do? It has two parts, server, and client. The server is a set and forget. It sits there waiting for a connection (caveat: from anywhere) But we are getting ahead of ourselves, lets setup up DNS first.</p>
+
+<p>(I&rsquo;m going to assume that you have a SSH server somewhere that you have already setup)</p>
+
+<h3 id="step-1-dns-setup:00c71f585c0a5a8e6a10fd11b10f754f">Step 1 - DNS Setup:</h3>
+
+<p>Each &ldquo;Domain Manager&rdquo; or DNS Server has a different set up,  So I&rsquo;m not going to go into the details. The jist of the change you need to make is either make a domain or a subdomain that points it&rsquo;s nameserver records towards the host that you are running your server on.</p>
+
+<p>ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org</p>
+
+<p>In this example we have setup a subdomain called &ldquo;ihaztunnel&rdquo; and set it&rsquo;s Name Server Record pointing to a dynamic dns host that points at the location of my OzymanDNS server.</p>
+
+<h3 id="step-2-server-setup:00c71f585c0a5a8e6a10fd11b10f754f">Step 2 - Server Setup:</h3>
+
+<p>You need <a href="http://www.perl.org/">Perl</a>, the <a href="http://search.cpan.org/~danpeder/MIME-Base32-1.01/Base32.pm">MIME::Base32</a>, and <a href="http://search.cpan.org/~olaf/Net-DNS-0.65/lib/Net/DNS.pm">Net::DNS</a> modules. After that you just run nomde.pl from whatever directory that you extracted the OzymanDNS scripts with the following context:</p>
+
+<blockquote>
+<p>./nomed.pl -i 0.0.0.0 ihaztunnel.room362.com</p>
+</blockquote>
+
+<p>This tells it to listen on any IP the host has (you can specifiy one if you wish), and tells it the DNS name that it&rsquo;s supporting. Don&rsquo;t forget to do port forwarding on your router or whatever may be in the way of port 53 UDP and TCP coming inbound. Also keep in mind that your ISP may be blocking, so field test the connection before you try to use it in the wild.</p>
+
+<h3 id="step-3-client-connection:00c71f585c0a5a8e6a10fd11b10f754f">Step 3 - Client Connection:</h3>
+
+<p>For the client, the setup is the same, get perl, the modules and OzymanDNS. Then you run the following command:</p>
+
+<blockquote>
+<p>ssh -D 8080 -C -o ProxyCommand=&ldquo;/home/mubix/ozymandns/droute.pl whatever.ihaztunnel.room362.com&rdquo; room362.com</p>
+</blockquote>
+
+<p>Breaking this command down:</p>
+
+<ol>
+<li><p>&rdquo;-D 8080&rdquo; starts SSH tunneling (Socks Proxy) on port 8080 once a connection is made.</p></li>
+
+<li><p>&rdquo;-C&rdquo; requests compression so that we can get the best speeds possible.</p></li>
+
+<li><p>&rdquo;-o ProxyCommand&rdquo; sets the SSH option to the location of the droute.pl script and&hellip;</p></li>
+
+<li><p>&ldquo;whatever.ihaztunnel.room362.com&rdquo; the &lsquo;whatever&rsquo; portion of this is the important part. It can be whatever you want it to be but the &ldquo;magic&rdquo; happens by adding this subdomain of the one you already set up.</p></li>
+
+<li><p>&ldquo;room362.com&rdquo; the hostname or IP of the SSH server that you will be tunneling through.</p></li>
+</ol>
+
+<p>If all worked out, you will get prompted to enter your password. That&rsquo;s it folks. Now you can use FoxyProxy or just your standard proxy settings to use the tunnel. Or, you can use product that, IMHO, is well worth the 30 bucks for the PORTABLE EDITION: <a href="http://www.proxifier.com/">Proxifier</a>. It hooks the OS and makes every connection go through the proxy (games, IM, Java, Flash).</p>
+
+<p>Notes:</p>
+
+<p><strong>Before you go the DNS route</strong>, it might pay off to try the ?.jpg trick first. Check out the <a href="http://debuggable.com/posts/hacking-a-commercial-airport-wlan:480f4dd5-50a0-40c6-aa60-4afccbdd56cb">debuggable.com post</a> for more details. - Thanks Xanfantasy for the memory jog.</p>
+
+<p><a href="http://www.dnstunnel.de/">http://www.dnstunnel.de/</a> - A site that has an in-depth walk-through of setting up OzymanDNS if I didn&rsquo;t answer all of your questions. They even have a script that will make OzymanDNS a service on Linux boxes</p>
+
+<p><a href="http://thomer.com/howtos/nstx.html">http://thomer.com/howtos/nstx.html</a> - A write up on NSTX which doesn&rsquo;t require SSH but doesn&rsquo;t look like it&rsquo;s still  in production. It is however in the Ubuntu and Gentoo repositories so feel free to mess with it there, and since <a href="http://backtrack4.blogspot.com/">Back|Track 4</a> is now Ubuntu based you may be able to get it set up on BT4 as well.</p>
+
+<p>Iodine:<br />
+<a href="http://code.kryo.se/iodine/">http://code.kryo.se/iodine/</a> - Another DNS Tunneling project that looks to be the most up to date. I haven&rsquo;t tested it out to make sure it functions.</p>
+
+<p>Dns2tcp:<br />
+<a href="http://www.hsc.fr/ressources/outils/dns2tcp/index.html.en">http://www.hsc.fr/ressources/outils/dns2tcp/index.html.en</a> - Another DNS Tunneling Project</p>
+
+<p>And if DNS isn&rsquo;t your thing and you want to tunnel over HTTP, check out Corkscrew:  <a href="http://www.agroman.net/corkscrew/">http://www.agroman.net/corkscrew/</a></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

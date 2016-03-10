@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Revenge of the Bind Shell</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  
+
+<p>[vimeo <a href="http://www.vimeo.com/15243189">http://www.vimeo.com/15243189</a> w=400&h;=250]</p>
+
+<p><a href="http://vimeo.com/15243189">Revenge of the Bind Shell</a> from <a href="http://vimeo.com/user3245922">Practical Exploitation</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
+
+<h2 id="background:826ec4cbf0074e348d6e4166735f9b94">BACKGROUND</h2>
+
+<p>At the <a href="http://novahackers.blogspot.com/2010/04/meeting-20100415-0x0002.html">April 2010 NoVA Hackers meeting</a> I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&rsquo;t the only one doing this ;-)</p>
+
+<p>Before I get ahead of myself lets explain what Teredo is. Teredo is a tunneling service built in to Windows. It&rsquo;s intent, as far as I can tell, was to allow anyone to have access to the IPv6 enabled internet, free, and dead simple, no infrastructure changes needed. You can get into much more detail on the <a href="http://technet.microsoft.com/en-us/network/cc917486.aspx">Teredo TechNet article</a>, but essentially an internal host is asking a Teredo server/relay for an IPv6 IP address. It does this over UDP and which by default in Windows points to teredo.ipv6.microsoft.com over port 3544 (UDP).</p>
+
+<p>When the tunnel is established, the host is given a 2001::/32 address. This address is a public IP. Before April this essentially meant that your Windows shares and any other listening service was publically available, despite your NAT and Firewall. This isn&rsquo;t as much of a problem as you might think as it&rsquo;s virtually impossible to guess or scan for an IPv6 address. So, unless you displayed it publically by connecting to Freenode or posting it online somewhere (via a demonstration video). You&rsquo;re pretty safe.</p>
+
+<h2 id="the-patch:826ec4cbf0074e348d6e4166735f9b94">THE PATCH</h2>
+
+<p>Microsoft made this a certainty when they issued the patch. I was unable to locate the specific one, or even identify for certain that it was April 2010, but that&rsquo;s when the initial article for <a href="http://msdn.microsoft.com/en-us/library/aa832668(VS.85">IPV6_PROTECTION_LEVEL</a>.aspx) was published. This is a socket level option that says, unless this flag is set to &ldquo;PROTECTION_LEVEL_UNRESTRICTED&rdquo; on the binary that is doing the communication, deny all traffic from NAT Traversals (Teredo).  (Even Netcat6 doesn&rsquo;t have this flag set!)</p>
+
+<p>Essentially, unless someone rebuilt their binary with the explicit intention to allow people to connect to it over NAT Traversals, the traffic was denied. You were still allowed to connect out, keeping in tact the initial idea for Teredo, but it broke my methodology damn it!</p>
+
+<p>I used Teredo to connect to the SMB server so that I could psexec a shell back any time I wanted before (still possible on non-patched systems) but since Microsoft doesn&rsquo;t want to add the PROTECTION_LEVEL_UNRESTRICTED flag to SMB you have to just upload and use a binary that does. Luckily, with the help of <a href="http://twitter.com/stephenfewer">Stephen Fewer</a>, the bind_ipv6_tcp payload in Metasploit does.</p>
+
+<h2 id="commands:826ec4cbf0074e348d6e4166735f9b94">COMMANDS</h2>
+
+<p>The commands used in the video are below:</p>
+
+<p>netsh interface ipv6 install</p>
+
+<p>netsh interface ipv6 set teredo enterpriseclient</p>
+
+<p>./mspfayload windows/meterpreter/bind_ipv6_tcp LPORT=9001 X &gt; bind.exe</p>
+
+<p>The only thing that was behind the scenes was giving my Metasploit host an IPv6 address. I used Miredo (Teredo for *nix/OSX):</p>
+
+<p>#Install miredo<br />
+apt-get install miredo</p>
+
+<p>#Remove it from starting automatically<br />
+update-rc.d miredo -f remove</p>
+
+<h2 id="protection:826ec4cbf0074e348d6e4166735f9b94">PROTECTION</h2>
+
+<p>Yes, it&rsquo;s that easy. Now, some of the mitigating suggestions I&rsquo;ve seen on the net is to blackhole the Microsoft Teredo server, or block the UDP port 3544. However, Miredo can act as a Teredo server/relay just fine, and can listen on any port you wish (53?). So unless you block ALL UDP outbound traffic, you are not protecting against this threat.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

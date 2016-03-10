@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on Room362</title>
+    <link>http://localhost:1313/tags/java/</link>
+    <description>Recent content in Java on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 27 Feb 2013 15:42:54 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Blocking Java Exploits, Malicious Signed Applets, and 0days</title>
+      <link>http://localhost:1313/post/2013/2013227blocking-java-exploits-malicious-signed-applets-and-0days-html/</link>
+      <pubDate>Wed, 27 Feb 2013 15:42:54 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013227blocking-java-exploits-malicious-signed-applets-and-0days-html/</guid>
+      <description>&lt;p&gt;The following has been a concept for me for a long time and recently I tweeted the idea which really put me under the fire to prove it. (re: justanidea hashtag)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_110240.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And a few people came up with some very valid points:&lt;/p&gt;
+
+&lt;p&gt;1) Doesn&amp;rsquo;t work so well with HTTPS sites&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103904.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;He&amp;rsquo;s right, but that forces the attack to use SSL, and doing so can yield the defender more information about the attacker, and offer other avenues of defense.&lt;/p&gt;
+
+&lt;p&gt;2) Cant an attack just spoof the user-agent?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103822.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and a response:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105445.png&#34; alt=&#34;&#34; /&gt;But in actuality that setting is applied inside the Java code, which needs to be requested by Java first. Using it&amp;rsquo;s User-Agent string. There are probably ways to get this done with Java script or other methods of loading the Java classes/jars but I haven&amp;rsquo;t been able to find any.&lt;/p&gt;
+
+&lt;p&gt;and finally 3) Whitelisting is a myth!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103738.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Which goes along with phoobar&amp;rsquo;s responses as well:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105906.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yes, there will definitely be challenge when implementing blocking java user agents, and one of the biggest pit falls is that there is no clear indicators to a user that that&amp;rsquo;s the reason for the block. There are ways to make it more evident with custom proxy error pages, but it is a thorn in this solution.&lt;/p&gt;
+
+&lt;p&gt;On to the walking of the walk. Oddly enough there is little to no documentation on blocking or even detecting outbound user-agent strings. But I did happen across an excellent post about how to use Squid to block IE (which I&amp;rsquo;m all for! ;-):&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://gaugusch.at/squid.shtml&#34;&gt;http://gaugusch.at/squid.shtml&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The following is just my testing of his walk-through converted to be used to block java:&lt;/p&gt;
+
+&lt;p&gt;I used pfSense for my testing since it&amp;rsquo;s very easy to set up and already has Squid as a package:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_094251.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You get the point.&lt;/p&gt;
+
+&lt;p&gt;We set up the latest Java 0day in Metasploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103001.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Get the user to go to our malicious web site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103035.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the user doesn&amp;rsquo;t see anything. This can be modified in the module. You also see that I was using &amp;ldquo;Intranet&amp;rdquo; IP space so some IE settings were lower, but nothing that would effect this exploit.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103042.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And shell! I want to pull your attention to that YWpdDan.jar request though. That request actually is done by Java with the following user-agent:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Mozilla/4.0 (Windows XP 5.1) Java/1.7.0_09&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;Alright, so the exploit works, but how about the solution? In pfSense you have the ability to slam &amp;ldquo;Custom Options&amp;rdquo; into the bottom of pfSense&amp;rsquo;s Squid config page. Like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103321.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is probably a better regex for selecting only Java user-agents, but this worked for now, and I don&amp;rsquo;t think any browsers actually use &amp;ldquo;Java&amp;rdquo; in their user-agents. (UPDATE: Searching for &amp;ldquo;site:useragentstring.com java&amp;rdquo; on google only yielded Java, and YACYBOT, which is built on java as using the string &amp;ldquo;Java&amp;rdquo; in their agents)&lt;/p&gt;
+
+&lt;p&gt;You can also notice that I&amp;rsquo;ve whitelisted webex.com and java.com sites and subdomains so that my &amp;ldquo;users&amp;rdquo; won&amp;rsquo;t get blocked using the tools on those sites. This could be pretty hefty with (as phoobar said) a Java dev group. But after the initial push and getting a semi &amp;ldquo;required&amp;rdquo; list of external approved sites this list shouldn&amp;rsquo;t need much upgrading, even for large organizations.&lt;/p&gt;
+
+&lt;p&gt;Save the config and let&amp;rsquo;s see how this works out:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103413.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ok, but did the attacker still get a shell?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103419.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nope! Win!&lt;/p&gt;
+
+&lt;p&gt;Just to prove that HTTPS isn&amp;rsquo;t fixed here lets set those options up in Metasploit and kick the same exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105028.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And after an error about a self-signed cert (notice the SSLCert option in Metasploit that has the ability to solve that as well) we get the expected result:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105054.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And subsequent shell without any indication in Squid&amp;rsquo;s proxy logs of a Java user-agent:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105135.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, sort of a long post but hopefully something that people can use. Thanks!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt; I&amp;rsquo;m not exactly certain how this affects Java &amp;ldquo;Web Start&amp;rdquo; weblet exploits if at all.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>EXE::Custom in Metasploit&#39;s Java Exploits</title>
+      <link>http://localhost:1313/post/2012/20121119execustom-in-metasploits-java-exploits-html/</link>
+      <pubDate>Mon, 19 Nov 2012 05:59:10 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121119execustom-in-metasploits-java-exploits-html/</guid>
+      <description>&lt;p&gt;Let me say first off that this isn&amp;rsquo;t the most elegant of ways to accomplish it. It is in the &amp;ldquo;it works for me&amp;rdquo; stage.&lt;/p&gt;
+
+&lt;p&gt;A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit wherever an EXE is built for Windows payloads. Such as PSEXEC, BypassUAC, etc. It tells Metasploit to ignore all of your payload settings and just use the EXE you have specified. Now this does come at a bit of a cost. If you don&amp;rsquo;t have a handler set up to catch whatever is in your EXE and you have bogus information in your payload settings for your module, Metasploit won&amp;rsquo;t be able to magically determine what you want it to do. So make sure that you either have the payload settings correct (even though it won&amp;rsquo;t use them for the exploit) or set the option &amp;ldquo;DisablePayloadHandler&amp;rdquo; to true and start your own handler somewhere else.&lt;/p&gt;
+
+&lt;p&gt;With that said, the Java Signed Applet attack is one of the most widely used, one problem in the Metasploit module version is that you have no external control (such as EXE::Custom) for the binary that is dropped if you are using a Windows native payload. (I do highly recommend trying out Java Meterpreter, but that it for another post)&lt;/p&gt;
+
+&lt;p&gt;Here is the hack that gets me by until a more elegant solution is thought up by smarter people than I:&lt;/p&gt;
+
+&lt;p&gt;We are going to use the Java Rhino exploit, and this story starts with an undetectable.exe sitting in /tmp/ - How you bypass the AV you are up against is up to you. The first thing we need to do is make a core library change. Yes, this is as scary as it sounds and you should document any time you do so you can revert as needed.&lt;/p&gt;
+
+&lt;p&gt;In your MSF directory open up lib/msf/util/exe.rb - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_67.png&#34; alt=&#34;Capture 67&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Scroll down or search for &amp;ldquo;self.to_jar&amp;rdquo; - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_68.png&#34; alt=&#34;Capture 68&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now add &amp;ldquo;exe = File.read(&amp;lsquo;/path/to/your/evil.exe&amp;rsquo;) as demonstrated below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_69.png&#34; alt=&#34;Capture 69&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool. We&amp;rsquo;ve made our change, now we have to pull down a jar generated with our evil bin, and the Rhino exploit. We can do that by spinning up Metasploit with our newly editing core library. Load up the Rhino exploit via &amp;ldquo;use exploit/multi/browser/java_rhino&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_71.png&#34; alt=&#34;Capture 71&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One trip up that I messed up even just creating this blog post (and a constant headache in the #Metasploit channel on Freenode) is forgetting to set the TARGET variable in Java exploits. The default payload type being Java. Since we are using a native windows binary we need to specify Windows by setting TARGET 1.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_82.png&#34; alt=&#34;Capture 82&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the exploit with any settings, since we&amp;rsquo;ll be just pulling out what we need. Then pull down the exploit JAR file with wget:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_73.png&#34; alt=&#34;Capture 73&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Most java exploits are set to answer ANY .jar extension request with the payload.)&lt;/p&gt;
+
+&lt;p&gt;The HTML to load the JAR is pretty straight forward, but if you&amp;rsquo;ve never seen it before here it is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_74.png&#34; alt=&#34;Capture 74&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats it. A very blank page with an exploit in it. We can do better than that:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_75.png&#34; alt=&#34;Capture 75&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously you can do whatever you want with the HTML, mirror a site or what have you. Notice that I&amp;rsquo;ve also changed the name of the JAR. (You can&amp;rsquo;t change the class unless you start making changes to the exploit directly and I wanted to keep this as generically applicable as possible)&lt;/p&gt;
+
+&lt;p&gt;Move the Applet.jar to SuperMario.jar and start up a Web server (for demo using Python&amp;rsquo;s awesome SimpleHTTPServer, but apache will serve as well)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_79.png&#34; alt=&#34;Capture 79&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t forget to start up a handler for our now-external exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_80.png&#34; alt=&#34;Capture 80&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Victim views the site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_81.png&#34; alt=&#34;Capture 81&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And WA-LA! we haz shell:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_83.png&#34; alt=&#34;Capture 83&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yay… Game over..&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

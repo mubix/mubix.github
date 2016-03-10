@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Netstat Post Module for Meterpreter</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>{submitting it to MSF via pull request here: <a href="https://github.com/rapid7/metasploit-framework/pull/538">https://github.com/rapid7/metasploit-framework/pull/538</a> }</p>
+
+<p>Added to trunk: <a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb">https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb</a></p>
+
+<p>I promised this one a while ago, sorry for the delay. This only does TCP, it&rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&rsquo;s real simple, first we&rsquo;ve gotta add the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx">GetTcpTable</a> function to railgun:</p>
+
+<p>session.railgun.add_function(&lsquo;iphlpapi&rsquo;, &lsquo;GetTcpTable&rsquo;, &lsquo;DWORD&rsquo;, [</p>
+
+<p>[&lsquo;PBLOB&rsquo;, &lsquo;pTcpTable&rsquo;, &lsquo;out&rsquo;],</p>
+
+<p>[&lsquo;PDWORD&rsquo;, &lsquo;pdwSize&rsquo;, &lsquo;inout&rsquo;],</p>
+
+<p>[&lsquo;BOOL&rsquo;, &lsquo;bOrder&rsquo;, &lsquo;in&rsquo;]</p>
+
+<p>])</p>
+
+<p> </p>
+
+<p>Then gauge the size of the table:</p>
+
+<p>getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true)</p>
+
+<p>buffersize = getsize[&lsquo;pdwSize&rsquo;]</p>
+
+<p>Run the call again with the correct buffer size:</p>
+
+<p>tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true)</p>
+
+<p>Then it&rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx">MIB_TCPTABLE</a> one <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx">MIB_TCPROW</a> at a time (translating the state to something readable):</p>
+
+<p>def parse_tcptable(buffer)</p>
+
+<p> </p>
+
+<p>  entries = buffer[0,4].unpack(&ldquo;V*&ldquo;)[0]</p>
+
+<p>  print_status(&ldquo;Total TCP Entries: #{entries}&ldquo;)</p>
+
+<p> </p>
+
+<p>  rtable = Rex::Ui::Text::Table.new(</p>
+
+<p>    &lsquo;Header&rsquo; =&gt; &lsquo;Routing Table&rsquo;,</p>
+
+<p>    &lsquo;Indent&rsquo; =&gt; 2,</p>
+
+<p>    &lsquo;Columns&rsquo; =&gt; [&lsquo;STATE&rsquo;, &lsquo;LHOST&rsquo;, &lsquo;LPORT&rsquo;, &lsquo;RHOST&rsquo;, &lsquo;RPORT&rsquo;]</p>
+
+<p>  )</p>
+
+<p>  offset = 4</p>
+
+<p>  (1..entries).each do</p>
+
+<p>    x = {}</p>
+
+<p>    x[:state] = case buffer[(offset + 0), 4].unpack(&ldquo;V*&ldquo;)[0]</p>
+
+<p>      when 1</p>
+
+<p>        &lsquo;CLOSED&rsquo;</p>
+
+<p>      when 2</p>
+
+<p>        &lsquo;LISTEN&rsquo;</p>
+
+<p>      when 3</p>
+
+<p>        &lsquo;SYN_SENT&rsquo;</p>
+
+<p>      when 4</p>
+
+<p>        &lsquo;SYN_RCVD&rsquo;</p>
+
+<p>      when 5</p>
+
+<p>        &lsquo;ESTABLISHED&rsquo;</p>
+
+<p>      when 6</p>
+
+<p>        &lsquo;FIN_WAIT1&rsquo;</p>
+
+<p>      when 7</p>
+
+<p>        &lsquo;FIN_WAIT2&rsquo;</p>
+
+<p>      when 8</p>
+
+<p>        &lsquo;CLOSE_WAIT&rsquo;</p>
+
+<p>      when 9</p>
+
+<p>        &lsquo;CLOSING&rsquo;</p>
+
+<p>      when 10</p>
+
+<p>        &lsquo;LAST_ACK&rsquo;</p>
+
+<p>      when 11</p>
+
+<p>        &lsquo;TIME_WAIT&rsquo;</p>
+
+<p>      when 12</p>
+
+<p>        &lsquo;DELETE_TCB&rsquo;</p>
+
+<p>      else</p>
+
+<p>        &lsquo;UNDEFINED&rsquo;</p>
+
+<p>      end</p>
+
+<p>    x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&ldquo;N&rdquo;)[0])</p>
+
+<p>    x[:lport] = buffer[(offset + 8), 4].unpack(&ldquo;n&rdquo;)[0]</p>
+
+<p>    x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&ldquo;N&rdquo;)[0])</p>
+
+<p>    if x[:state] == &ldquo;LISTEN&rdquo;</p>
+
+<p>      x[:rport] = &ldquo;_&rdquo;</p>
+
+<p>    else</p>
+
+<p>    x[:rport] = buffer[(offset + 16), 4].unpack(&ldquo;n&rdquo;)[0]</p>
+
+<p>    end</p>
+
+<p>  offset = offset + 20</p>
+
+<p>  rtable &lt;&lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]</p>
+
+<p>  end</p>
+
+<p>  print_status(rtable.to_s)</p>
+
+<p>end</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

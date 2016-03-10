@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Maltego 2 and beyond - Part 3</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Table of Contents:</p>
+
+<ul>
+<li><p><a href="/archives/225-Maltego-2-and-beyond-Part-1.html">Part 1 - Introduction</a></p></li>
+
+<li><p><a href="/archives/229-Maltego-2-and-beyond-Part-2.html">Part 2 - Entities and Transforms</a></p></li>
+
+<li><p>Part 3 - The Human Factor</p></li>
+
+<li><p>Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)</p></li>
+
+<li><p>Part 5 - Hacks, Tips, and Tricks</p></li>
+</ul>
+
+<p> </p>
+
+<p>     Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:</p>
+
+<p> </p>
+
+<p> <img src="http://s3.media.squarespace.com/production/438411/4879756/uploads/Idiocy.jpg" alt="" /></p>
+
+<p> </p>
+
+<p>    The Human Factor is why we all still have jobs in the security world. It is impossible for machines at this day in age to make logical leaps of faith. Yes, there is fuzzy logic, but the human brain still trumps computers on being able to instinctively make those leaps. Instinct, that word describes the whole reason for this part in the series. Just as a PI uses he gut to lead him on the right trail, as an OSINT (Open Source Intelligence) Specialist you have to use your instincts to guide your investigation as well. The following paragraphs will describe my own method of making those leaps. If you disagree or have better methods, please comment below so that others can learn as well.</p>
+
+<p> </p>
+
+<p>    What is a logical leap of faith? Well, most pentesters do it daily if not hourly, when they assume a cracked password is going to work in other places. It’s all about betting on standards. Standards in this reference is anything that has become common place, not specifically a written rule, but those are good to. Dan Geer ‘left’ @Stake when he and other thought leaders in the security community published a paper back in 2003:</p>
+
+<p><strong>Cyber _In_Security: The Cost of Monopoly</strong> [<a href="http://www.ccianet.org/papers/cyberinsecurity.pdf">PDF</a>]</p>
+
+<p> </p>
+
+<p> <img src="http://s3.media.squarespace.com/production/438411/4879756/uploads/Dan_Geer.jpg" alt="Dan Geer" /></p>
+
+<p> </p>
+
+<p>    I was originally planning on making this article full of examples on how you can make these leaps, but I have had a lot of time to think these examples and have decided against it. To practice this method you must use your own experiences. Where do people do the same thing? Think about it. I’m sure you can come up this at least a dozen examples where even you do the same thing across the board&hellip; Ok, so I can’t resist. Using the same password, or username on different sites. Seeing a User Agent that is concatenated by a proxy. The router being .1 or .2. Using full class C networks. Always adding the same core friends or co-workers to every social networking site. What about referencing the same ‘ficticous’ bank when describing a problem with that bank. What examples have you come up with?</p>
+
+<p> </p>
+
+<p>    How do you pull this out-of-the-box thinking into Maltego? When entering an email for an entity, try putting it in under different domains (yahoo.com, aol.com, gmail.com, google.com, hotmail.com). When entering a domain, try putting it in under different TLDs (.net, .org, .tv). You might be surprised at the gems you find when you find those forgotten pieces of information. This all falls back on my mantra that you should put in ALL of the information you have (and estimated) before you even start running transforms.</p>
+
+<p> </p>
+
+<p>    Maltego is a tool that can only take you so far. Your creativity is what makes a tool like this powerful.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

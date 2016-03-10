@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cracking on Room362</title>
+    <link>http://localhost:1313/tags/cracking/</link>
+    <description>Recent content in Cracking on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sat, 19 Jan 2013 02:50:08 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/cracking/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Intro to White Chapel</title>
+      <link>http://localhost:1313/post/2013/2013/1/19/intro-to-white-chapel/</link>
+      <pubDate>Sat, 19 Jan 2013 02:50:08 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/1/19/intro-to-white-chapel/</guid>
+      <description>&lt;p&gt;I made a slide deck to kind of explain my latest project. Basically I got fed up with having dictionaries, passwords, and cracking tools but no way to really do better collaboration in a team format as well as just better management for myself. &lt;/p&gt;
+
+&lt;p&gt;Please feel free to submit pull requests, issues if you think something is broken or want features, or whatever on the Github repo here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/mubix/WhiteChapel/&#34;&gt;https://github.com/mubix/WhiteChapel/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the slide deck:&lt;/p&gt;
+
+&lt;p&gt;{% slideshare 16064224 %}&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>GPU Cracking Complaints</title>
+      <link>http://localhost:1313/post/2011/2011713gpu-cracking-complaints-html/</link>
+      <pubDate>Wed, 13 Jul 2011 14:02:13 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2011/2011713gpu-cracking-complaints-html/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&amp;rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;DISCLAIMER&lt;/strong&gt;: I have very little crypto knowledge and even less GPU programming knowledge so I only get to complain as a user and not as someone who can actually fix the things I complain about.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Lack of LM support. I get that this is a complicated hashing algorithm, but the fact that 90% of companies still have it turned on and cracking any more than a few with Rainbow Tables is impractical unless you have a SSD raid with a GPU based cracker ($$$$$).&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Lack of dictionary support. Right now the best way to crack passwords is with oclhashcat-plus since it is GPU based and supports rules, multiple hashes (hash files) and directories of hashes. However, it has a very limited list of hashes it supports (No LM, SHA1, etc..) and it doesn&amp;rsquo;t support dump formats, so you need to strip the file so it just has the hash (this is more of just a bother than a gripe).&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;(2a) I say &amp;lsquo;The best way&amp;rsquo; because anything that has a key space larger than upper-alpha-numeric-32symbol (LM) is just a bit nuts to try and brute force out of the gate unless your goal is to &amp;lsquo;crack them all&amp;rsquo;. Me as a pentester, I want to get as many as possible, as quick as possible, so this means dictionaries are the smarter option. (Maybe later I can do the straight brute if I really need / want to)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Lack of POT. For some reason every cracking app on the planet, save for JtR, thinks it&amp;rsquo;s a good idea to crack the same hash multiple times. I wish even Cain would keep a secret store of all the hashes it&amp;rsquo;s cracked stripped of anything unimportant (need the salt (username) sometimes) and store it in the background so that if it comes across the same hash it can say &amp;ldquo;oo oo I know this one&amp;rdquo; and auto populate it even before I start cracking. Why more cracking software writers don&amp;rsquo;t do this I&amp;rsquo;ll never know (would make their software seem a ton faster the more it is used)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Lack of formatting documentation (#ripshairout). Rare is the time I&amp;rsquo;ve found a cracking program that shows you how it wants to consume a hash. JtR is the most egregious offenders of this but they all do it. One would think people would try and make it easy for people to use their software (give examples of what shit is supposed to look like at least if you don&amp;rsquo;t support standard formats)&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Those are my biggest gripes that the moment. If I am wrong on any account, let me know, I would love to know of a better way to do things.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Password / Word lists</title>
+      <link>http://localhost:1313/post/2009/2009918password-word-lists-html/</link>
+      <pubDate>Fri, 18 Sep 2009 14:41:16 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009918password-word-lists-html/</guid>
+      <description>&lt;p&gt;Brute force, even though it&amp;rsquo;s gotten so fast, is still a long way away from cracking long complex passwords. That&amp;rsquo;s were word lists come in handy. It&amp;rsquo;s usually the crackers first go-to solution, slam a word list against the hash, if that doesn&amp;rsquo;t work, try rainbow tables (if they happen to have the tables for that specific hash type), and then the full on brute force. Some would say those first two steps are reversed, and it really is the choice of the the person doing it and the word lists they have to work with.&lt;/p&gt;
+
+&lt;p&gt;Matt Weir and company created a cool tool that has the best of both worlds, Dictionary based Rainbow Tables with Dr-Crack, which you can find here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://reusablesec.googlepages.com/drcrack&#34;&gt;http://reusablesec.googlepages.com/drcrack&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But, back to the reason of this post, word lists. Where do you get them? Here are a couple of my favorite places in no particular order:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.packetstormsecurity.org/Crackers/wordlists/&#34;&gt;http://www.packetstormsecurity.org/Crackers/wordlists/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://www.theargon.com/achilles/wordlists/&#34;&gt;http://www.theargon.com/achilles/wordlists/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://www.openwall.com/wordlists/&#34;&gt;http://www.openwall.com/wordlists/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I like to keep 3 size word lists:&lt;br /&gt;
+1. small and fast: usually based on the output of one of the tools i&amp;rsquo;m about to tell you about&lt;br /&gt;
+2. medium: this is my custom list that I add passwords I find / crack and generally think are good to add. I&amp;rsquo;m pretty picky about what goes into this list&lt;br /&gt;
+3. huge: any wordlist I come across gets added to this list, it gets sorted and uniqued and restored&lt;/p&gt;
+
+&lt;p&gt;Now the two tools that I like for the small list is are CeWL and wyd&lt;/p&gt;
+
+&lt;p&gt;CeWL - &lt;a href=&#34;http://www.digininja.org/projects/cewl.php&#34;&gt;http://www.digininja.org/projects/cewl.php&lt;/a&gt;&lt;br /&gt;
+Wyd - &lt;a href=&#34;http://www.remote-exploit.org/codes_wyd.html&#34;&gt;http://www.remote-exploit.org/codes_wyd.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;They have some very similar lists of features, your mileage may vary. But they basically parse files and web pages for words and generate password lists based on the words found.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-02-11 08:01 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;Korelogic&amp;rsquo;s password lists: &lt;a href=&#34;http://contest.korelogic.com/wordlists.html&#34;&gt;http://contest.korelogic.com/wordlists.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Korelogic&amp;rsquo;s John rule set: &lt;a href=&#34;http://contest.korelogic.com/rules.html&#34;&gt;http://contest.korelogic.com/rules.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 05:00 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;I missed one hell of a treasure trove of word lists:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://trac.kismac-ng.org/wiki/wordlists&#34;&gt;http://trac.kismac-ng.org/wiki/wordlists&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Right now, there list is this:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;OpenWall:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://ftp.sunet.se/pub/security/tools/net/Openwall/wordlists/&#34;&gt;http://ftp.sunet.se/pub/security/tools/net/Openwall/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;ftp://ftp.openwall.com/pub/wordlists/&#34;&gt;ftp://ftp.openwall.com/pub/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/mirrors/&#34;&gt;http://www.openwall.com/mirrors/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://passwordz.info/&#34;&gt;http://passwordz.info/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;ftp://ftp.ox.ac.uk/pub/wordlists/&#34;&gt;ftp://ftp.ox.ac.uk/pub/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://gdataonline.com/downloads/GDict/&#34;&gt;http://gdataonline.com/downloads/GDict/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://theargon.com/achilles/wordlists/&#34;&gt;http://theargon.com/achilles/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://theargon.com/achilles/wordlists/theargonlists/&#34;&gt;http://theargon.com/achilles/wordlists/theargonlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;ftp://ftp.cerias.purdue.edu/pub/dict/&#34;&gt;ftp://ftp.cerias.purdue.edu/pub/dict/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.securinfos.info/wordlists_dictionnaires.php&#34;&gt;http://www.securinfos.info/wordlists_dictionnaires.php&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.vulnerabilityassessment.co.uk/passwords.htm&#34;&gt;http://www.vulnerabilityassessment.co.uk/passwords.htm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://packetstormsecurity.org/Crackers/wordlists/&#34;&gt;http://packetstormsecurity.org/Crackers/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.ai.uga.edu/ftplib/natural-language/moby/&#34;&gt;http://www.ai.uga.edu/ftplib/natural-language/moby/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.insidepro.com/eng/download.shtml&#34;&gt;http://www.insidepro.com/eng/download.shtml&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.word-list.com/&#34;&gt;http://www.word-list.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cotse.com/tools/wordlists1.htm&#34;&gt;http://www.cotse.com/tools/wordlists1.htm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cotse.com/tools/wordlists2.htm&#34;&gt;http://www.cotse.com/tools/wordlists2.htm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.phreak.org/index/archive01/hacking/wordlsts/wordlsts.shtml&#34;&gt;http://www.phreak.org/index/archive01/hacking/wordlsts/wordlsts.shtml&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.indianz.ch/tools/doc/wordlists.zip&#34;&gt;http://www.indianz.ch/tools/doc/wordlists.zip&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://prdownloads.sourceforge.net/wepattack/wordlist.tar.gz?download&#34;&gt;http://prdownloads.sourceforge.net/wepattack/wordlist.tar.gz?download&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://hacor.org/docs/hugelist.txt&#34;&gt;http://hacor.org/docs/hugelist.txt&lt;/a&gt; (broken link. Does anyone have it hosted elsewhere?)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;shhh! - &lt;a href=&#34;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff729e4b0b79cd4cd3376/1269925152237/hugelist.txt&#34;&gt;http://www.room362.com/storage/saved/hugelist.txt&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;By operat0r&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://rapidshare.com/files/165513464/word.lst.s.u.john.s.u.200.part01.rar&#34;&gt;http://rapidshare.com/files/165513464/word.lst.s.u.john.s.u.200.part01.rar&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://rapidshare.com/files/165518143/word.lst.s.u.john.s.u.200.part02.rar&#34;&gt;http://rapidshare.com/files/165518143/word.lst.s.u.john.s.u.200.part02.rar&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://rapidshare.com/files/165498510/word.lst.s.u.john.s.u.200.part03.rar&#34;&gt;http://rapidshare.com/files/165498510/word.lst.s.u.john.s.u.200.part03.rar&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://wiki.services.openoffice.org/wiki/Dictionaries&#34;&gt;http://wiki.services.openoffice.org/wiki/Dictionaries&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://article7.org/wordlists/&#34;&gt;http://article7.org/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 04:22 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;Recent additions:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.skullsecurity.org/wiki/index.php/Passwords&#34;&gt;http://www.skullsecurity.org/wiki/index.php/Passwords&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;hotmail: &lt;a href=&#34;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&#34;&gt;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;rockyou: &lt;a href=&#34;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&#34;&gt;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt; (Kevin&amp;rsquo;s Word Lists)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.phenoelit-us.org/dpl/dpl.html&#34;&gt;http://www.phenoelit-us.org/dpl/dpl.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&#34;&gt;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.renderlab.net/projects/WPA-tables/&#34;&gt;http://www.renderlab.net/projects/WPA-tables/&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

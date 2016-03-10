@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Let Me Out Of Your .NET work–Intro</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Something that is often useful is a known-good. Something out of the control of your adversary or outside modifiers. But back to that in a sec, egress ‘busting’ or getting your payload/backdoor/trojan/c2 out of someone’s network once you’ve gotten that ever elusive “CODE EXECUTION HAPPY DANCE” going on isn’t always easy. There is even a Metasploit payload for it called ‘allports’:</p>
+
+<p><a href="https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls">https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls</a></p>
+
+<p>There is also ‘Egress Buster’ by the guys over at TrustedSec which can do 1000 ports in just a few seconds:</p>
+
+<p><a href="https://www.trustedsec.com/july-2012/egress-buster-reverse-bypassav/">https://www.trustedsec.com/july-2012/egress-buster-reverse-bypassav/</a></p>
+
+<p>The problem I find with these tools is that they are still straight TCP. *(Yes, yes I know most networks still allow some ports directly outbound) and these tools are still quite valid. During the span between these two tools being released, MrB released a site that listens on all 65k ports: <a href="http://open.zorinaq.com/about/">http://open.zorinaq.com/about/</a></p>
+
+<p>Figured I should merge these ideas and add a few more capabilities (and show you how I did it so you can do so yourself), and so LetMeOutOfYour.net was born.</p>
+
+<p>You can hit any subdomain or hostname of letmeoutofyour.net on any port with any HTTP Verb for any resource (web page or folder) and you will always receive a ‘w00tw00t’ back.</p>
+
+<p>For example this request (removed the unimportant headers on the request to save space):</p>
+
+<blockquote>
+<p>POST /admin/login.php HTTP/1.1<br />
+Host: development.letmeoutofyour.net:8081</p>
+
+<p>username=admin&amp;password=password</p>
+</blockquote>
+
+<p>Will result in this:</p>
+
+<blockquote>
+<p>HTTP/1.1 200 OK<br />
+Date: Sat, 11 Aug 2012 02:21:54 GMT<br />
+Server: Apache<br />
+Last-Modified: Sat, 11 Aug 2012 02:16:55 GMT<br />
+Accept-Ranges: bytes<br />
+Content-Length: 9<br />
+Vary: Accept-Encoding<br />
+Keep-Alive: timeout=15, max=100<br />
+Connection: Keep-Alive<br />
+Content-Type: text/html</p>
+</blockquote>
+
+<p>w00tw00t</p>
+
+<p>All of those headers are standard Apache headers with the content being just ‘w00tw00t’. Making the connection an HTTP one opens a few doors to things like proxies. It’s ok to cackle at this point.</p>
+
+<p>In the following parts I’ll show you how to build the server itself and a binary to find it’s way out of networks. Feel free to point your own domains at the IP it’s hosted on, it can handle it. Have a try, I know you want to:</p>
+
+<p><a href="http://youshouldreally.letmeoutofyour.net/before/i/get/angry/and/youwouldntlikemewhenimangry.asp">http://youshouldreally.letmeoutofyour.net/before/i/get/angry/and/youwouldntlikemewhenimangry.asp</a></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

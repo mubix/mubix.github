@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>BitLocker</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>I&rsquo;m going to start this whole security thing by taking a look at the new BitLocker technology built in to Vista. Before I begin, I want to specify that I am by no means an expert on BitLocker and all of my information comes from the <a href="http://technet2.microsoft.com/WindowsVista/en/library/c61f2a12-8ae6-4957-b031-97b4d762cf311033.mspx"  title="Microsoft.com Bitlocker">Microsoft site</a> and a face to face with the engineers at <a href="http://mubix.vox.com/library/post/microsoft-launch-tour-2007-highlights.html"  title="Launch Tour 2007">Launch Tour 2007</a>. So lets begin with requirements. You must have a modern motherboard which has a &ldquo;TPM&rdquo; or Trusted Platform Module. The reason I say must, is that there IS a third mode where you store your keys on a USB drive. However, if you do this, you are carrying around your keys in clear text on a USB drive. If that didn&rsquo;t scare you in the least bit, then you are either a rather large individual who scares people enough for them not to want to get near you, or you don&rsquo;t care about security, in which case you don&rsquo;t need BitLocker.</p>
+
+<p>So, now that we have the disclaimer out of the way, here is a thousand word on how Bitlocker works:</p>
+
+<p>&lt;!&ndash; s9ymdb:58 &ndash;&gt;<img width="377" height="229" style="border: 0px; padding-left: 5px; padding-right: 5px;" src="http://room362.com/uploads/BitLocker/bitlocker_how.jpg" alt=""  /></p>
+
+<p>Basically, your keys are stored on this TPM and are used to unlock the MFT, which has the full volume keys that unlocks the rest of the drive. Cool, we&rsquo;re in the clear, right?</p>
+
+<p><strong>Q1</strong>: What if I want to put the HD into another computer? The new computer&rsquo;s TPM will not have the correct keys. Well, if the computer was connected and a part of an AD domain err.. I mean &ldquo;tree&rdquo;, then you can supposedly find those keys and &ldquo;PUSH&rdquo; them to the new TPM. No, the engineer did not know how to &ldquo;PUSH&rdquo; said keys. However you could also unlock it using a 36 hex value key. That you can right down.. on a piece of paper&hellip; that you might keep near or with your laptop&hellip;</p>
+
+<p><strong>Q2</strong>: What are the other two modes, and which one do I want?</p>
+
+<p><strong>Transparent operation mode</strong>: In this mode, BitLocker is completely transparent to the user. You just boot and log in. Bitlocker still encrypts the whole drive as you see above. But the &ldquo;authentication&rdquo; step is where Bitlocker checks to see if &ldquo;boot files&rdquo; have remained unmodified. I would be interested in finding out exactly which files it checks and what it checks for.</p>
+
+<p><strong>User authentication mode</strong>: In this mode, during boot, before any HD files are accessed, the user is prompted for a PIN. In my opinion, if your boss is dead set on using Bitlocker on all of your drives, you should insist on this one. (But guess what, for all those roadies that keep your computers in &ldquo;Sleep&rdquo;, BitLocker doesn&rsquo;t mean anything. With a U3 device and a cool cygwin script, I can make a unencrypted copy of the system, even if it&rsquo;s locked out)</p>
+
+<p>So to break it down in conclusion: You have to have newer hardware, AD, roadies who don&rsquo;t rely on &ldquo;SLEEP&rdquo; and educated users. Something tells me the last part of that would be a bit hard to accomplish.</p>
+
+<p>But, that&rsquo;s just my take on things, I&rsquo;m just another security guy in a room with a small sign on the door that says &ldquo;IT Dept&rdquo;. What would I know?</p>
+
+<p>jd</p>
+
+<p>For more info, check out the wikipedia article: <a href="http://en.wikipedia.org/wiki/BitLocker_Drive_Encryption"  title="Wikipedia's Bitlocker Article">Wikipedia -&gt; Bitlocker</a></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

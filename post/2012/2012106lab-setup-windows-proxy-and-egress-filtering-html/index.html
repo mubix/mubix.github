@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Lab Setup - Windows Proxy and Egress Filtering</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p><a href="http://www.pfsense.org">pfSense</a> is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.</p>
+
+<p>Enter Peerblock and AnalogX&rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.</p>
+
+<p>First we&rsquo;ll talk about AnalogX&rsquo;s proxy, you can get it here: </p>
+
+<p><a href="http://www.analogx.com/contents/download/Network/proxy/Freeware.htm">http://www.analogx.com/contents/download/Network/proxy/Freeware.htm</a></p>
+
+<p><a href="http://www.analogx.com/contents/download/Network/proxy/Freeware.htm"><img src="http://mubix.files.wordpress.com/2012/10/capture_29.png" alt="Capture 29" /></a></p>
+
+<p>A simple next-&gt;next-&gt;finish install gets you this:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/10/capture_30.png" alt="Capture 30" /></p>
+
+<p>With the following ports listening:</p>
+
+<ul>
+<li><p>HTTP (web browsers) (port 6588)</p></li>
+
+<li><p>HTTPS (secure web browsers) (port 6588)</p></li>
+
+<li><p>SOCKS4 (TCP proxying) (port 1080)</p></li>
+
+<li><p>SOCKS4a (TCP proxying w/ DNS lookups) (port 1080)</p></li>
+
+<li><p>SOCKS5 (only partial support, no UDP) (port 1080)</p></li>
+
+<li><p>NNTP (usenet newsgroups) (port 119)</p></li>
+
+<li><p>POP3 (receiving email) (port 110)</p></li>
+
+<li><p>SMTP (sending email) (port 25)</p></li>
+
+<li><p>FTP (file transfers) (port 21)</p></li>
+</ul>
+
+<p>So you can test everything to your hearts content that it goes through a proxy, using any proxy type you want basically.</p>
+
+<p>(I will assume here that you know how to setup your own proxy settings for your OS)</p>
+
+<p>But the problem being that if your code / application misbehaves it will still get out. You could go to the trouble of fiddling with the Windows firewall if you are running Windows 7 (not sure if XP can box egress, probably can). But I like simple and straight forward solutions.</p>
+
+<p>PeerBlock can be found here:</p>
+
+<p><a href="http://www.peerblock.com/releases">http://www.peerblock.com</a></p>
+
+<p><a href="http://www.peerblock.com/releases"><img src="http://mubix.files.wordpress.com/2012/10/capture_31.png" alt="Capture 31" /></a></p>
+
+<p>And is simple to set up as well (next-&gt;next-&gt;finish applies).</p>
+
+<p>Go into List Manager once you have it installed and &ldquo;Create a List&rdquo;</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/10/capture_32.png" alt="Capture 32" /></p>
+
+<p>Give ti a description and a place to save the file:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/10/capture_33.png" alt="Capture 33" /></p>
+
+<p>You&rsquo;ll get this window automatically pop up, but if you don&rsquo;t you just click &lsquo;Add&rsquo; with your custom list selected in the List Manager:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/10/capture_34.png" alt="Capture 34" /></p>
+
+<p>Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed</p>
+
+<p>One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.</p>
+
+<p>Here is an example of my &ldquo;All the Internet&rdquo; block list:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/10/capture_35.png" alt="Capture 35" /></p>
+
+<p>Thats everything for now, hope some of it was useful in your setup and experiments ;-)</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

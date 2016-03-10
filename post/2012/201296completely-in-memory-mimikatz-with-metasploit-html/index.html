@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Completely In-memory Mimikatz with Metasploit</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Executing WCE.exe in memory as demoed by Egypt here: <a href="https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram">https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram</a> has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/09/screen20shot202012-09-0520at2010-48-5720pm.png.57%20PM.png" alt="Screen Shot 2012 09 05 at 10 48 57 PM" /></p>
+
+<p><em>(yes I realize I&rsquo;m running this on disk &lsquo;wce32.exe&rsquo;, but it exhibits the same DLL drop when doing in-memory)</em></p>
+
+<p>Now, don&rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&rsquo;s the best tool for the job. And today, that&rsquo;s now Mimikatz. </p>
+
+<p>Just like WCE to execute it in memory you use the -m flag for execute:</p>
+
+<p><strong>execute -H -i -c -m -d calc.exe -f mimikatz.exe -a &lsquo;&ldquo;sekurlsa::logonPasswords full&rdquo; exit&rsquo;</strong></p>
+
+<p>For mimikatz to automatically send commands require double quotes in the command line arguments, so we use single quotes in meterpreter to encircle the execute arguments (-a). Running first &ldquo;sekurlsa::logonPasswords full&rdquo; then &lsquo;exit&rsquo; to auto-exit mimikatz console. Like so:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/09/screen20shot202012-09-0520at2010-57-4520pm.png.45%20PM.png" alt="Screen Shot 2012 09 05 at 10 57 45 PM" /></p>
+
+<p>And all you get forensically is calc.exe loading a ton of DLLs it has no business loading but no new files touch disk ;-)</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/09/screen20shot202012-09-0520at2011-07-3520pm.png.35%20PM.png" alt="Screen Shot 2012 09 05 at 11 07 35 PM" /></p>
+
+<p>The downloads for Mimikatz are were they always are:</p>
+
+<p><a href="http://blog.gentilkiwi.com/mimikatz">http://blog.gentilkiwi.com/mimikatz</a></p>
+
+<p>Oh, did I mention that Mimikatz is open source and the in-memory goodness has been uploaded to svn:</p>
+
+<p><a href="https://code.google.com/p/mimikatz/">https://code.google.com/p/mimikatz/</a></p>
+
+<p>Awesome work @<a href="http://twitter.com/gentilkiwi">gentilkiwi</a></p>
+
+<p>If you want to check out the the fix that was implemented to work with Meterpreter&rsquo;s in-memory goodness check here:</p>
+
+<p><a href="https://code.google.com/p/mimikatz/source/detail?r=33">https://code.google.com/p/mimikatz/source/detail?r=33</a></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

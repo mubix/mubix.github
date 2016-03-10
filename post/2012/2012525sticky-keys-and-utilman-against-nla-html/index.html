@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Sticky Keys and Utilman against NLA</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>At CCDC, Sticky Keys via RDP was a very successful re-entry point for the Red Team. You can read more about how this works here:</p>
+
+<p><a href="http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html">http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html</a></p>
+
+<p>So if you can get physical access or SYSTEM/Admin access at some point and enable + reach RDP, you can very easily follow those instructions and gain a level of persistance without the need of a pesky password :-)</p>
+
+<p>However, this doesn&rsquo;t work so well with the advent of NLA or <a href="http://en.wikipedia.org/wiki/Network_Level_Authentication">Network-Level-Authentication</a>, which was enabled for Vista systems and beyond. In particular Win 2008 R2 uses it by default. StickyKeys don&rsquo;t work so well if you have to authenticate first. Boo!</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/05/2012-05-25_nla.png" alt="" /></p>
+
+<p>But, if you are already on a box with Admin access for a time, you can make one additional change so that you are back to Sticky Key and Utilman heaven.</p>
+
+<p>HKEY_LOCAL_MACHINESystemCurrentControlSetControlTerminal ServerWinStationsRDP-Tcp</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/05/2012-05-25_nla_regedit.png" alt="" /></p>
+
+<p>Change the value of <strong>UserAuthentication **value to **0</strong>, and instantly you are back to slamming the shift key and popping system shellz.</p>
+
+<p>&ndash; mubix</p>
+
+<p><strong>P.S.</strong> I ran into permissions errors when trying to copy cmd.exe over sethc.exe and utilman.exe:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/05/2012-05-25_sethc_denied.png" alt="" /></p>
+
+<p>But a brilliant fix to this annoying security control ;-) was provided here:</p>
+
+<p><a href="http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html?showComment=1335891005473#c7632690272609583721">http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html?showComment=1335891005473#c7632690272609583721</a></p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/05/2012-05-25_debugger.png" alt="" /></p>
+
+<p>By setting CMD as the debugger for sethc.exe or utilman.exe Windows executes the debugger first, so back shelling again.</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/05/2012-05-25_explorer.png" alt="" /></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

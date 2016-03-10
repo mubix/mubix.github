@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Let Me out Of Your .NET WORK–Server Build</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>In the previous post: <a href="/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html">http://www.room362.com/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html</a> I told you about letmeoutofyour.net, but how does it work?</p>
+
+<p>Things we need to accomplish on the server:</p>
+
+<ol>
+<li><p>Listen on all ports</p></li>
+
+<li><p>Answer for all hostnames and subdomains</p></li>
+
+<li><p>Answer for all HTTP verbs, file and folder requests</p></li>
+</ol>
+
+<p><strong>ONE: Listen on all ports</strong></p>
+
+<p>(I used Linux, so this guide is for such, modifications to other OSs is up to the reader)</p>
+
+<p>First you have to get rid of all other services. That’s harder than you would first assume, because you have to admin the box some how. You could toss SSH on a really high port, or have some kind of backend management, or just remove things from running on a multi-IP’d box. It would be impossible in this post to describe every way this is done so I’ll leave it to you to research.</p>
+
+<p>Once you have everything gone, install and start Apache or your favorite web server for Linux. Then run this very simple command that I stole from a commenter on the “<a href="https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls">Forcing Payloads Through Restrictive Firewalls</a>” post:</p>
+
+<p>iptables -t nat -I PREROUTING -p tcp -m state &ndash;state NEW -d 192.168.1.1 -j DNAT &ndash;to 192.168.1.1:80</p>
+
+<p>Where ‘192.168.1.1’ is the IP address of your box. IPv4 NATing just allowed you to listen on every single port by forwarding them all to port 80. That simple. Don’t make the mistake I did and forget to set up alternative management before you set that rule, because if you don’t you’ll be forced to find one.</p>
+
+<p><strong>TWO: Answer for all hostnames and subdomains</strong></p>
+
+<p>This is pretty easy, DNS has the concept of a wildcard hostname. You simply put an asterisk * in the place of where you would normally put a WWW however you manage your DNS and you’re good. You will also want to add a second record, an ‘@’ is used to reference the domain without a host or subdomain. So the first records makes it answer for things like <a href="http://blah.letmeoutofyour.net">http://blah.letmeoutofyour.net</a> and the second for <a href="http://letmeoutofyour.net/">http://letmeoutofyour.net/</a> – Pretty simple ya?</p>
+
+<p><strong>THREE: Answer for all HTTP verbs, file and folder requests</strong></p>
+
+<p>This is pretty simple as well. Apache’s mod_rewrite to the rescue. Here are the rules:</p>
+
+<blockquote>
+<p>RewriteEngine on<br />
+RewriteCond %{REQUEST_METHOD} ^(.<em>)<br />
+RewriteRule .</em> index.html [QSA,L]<br />
+RewriteCond %{DOCUMENT_ROOT} !-f<br />
+RewriteRule ^(.*)$ index.html [QSA,L]</p>
+</blockquote>
+
+<p>You can either apply this in an .htaccess file or directly in the site configs, up to you.</p>
+
+<p>And that’s it. It all seems really simple, but took me a good amount of time putting it all together. Next up, binaries and call backs that use this to wriggle their way out of networks.</p>
+
+<p>P.S.</p>
+
+<p>This setup throws web scanners through a loop, and if you wanted to be REALLY nasty you could have a bit of php make the index page be an endless 302 or have w00w00t linked to a random page / folder which is generated each time it’s requested.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

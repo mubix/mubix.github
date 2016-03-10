@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Flash on Room362</title>
+    <link>http://localhost:1313/tags/flash/</link>
+    <description>Recent content in Flash on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sat, 17 Oct 2009 15:36:52 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/flash/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Hacking Crazy Taxi</title>
+      <link>http://localhost:1313/post/2009/20091017hacking-crazy-taxi-html/</link>
+      <pubDate>Sat, 17 Oct 2009 15:36:52 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2009/20091017hacking-crazy-taxi-html/</guid>
+      <description>&lt;p&gt;I had a bet with my friend about getting #1 on the Crazy Taxi high score page (== motivation for this post).&lt;/p&gt;
+
+&lt;p&gt;For those who have not been introduced to it yet, it&amp;rsquo;s a Facebook/Flash/2.0 resurrection of a much older game.&lt;/p&gt;
+
+&lt;p&gt;Not having extreme timing skills, I quickly gave up on getting the 2,000,000 points required to make it the &amp;ldquo;normal&amp;rdquo; way: My first try was modifying the outgoing HTTP traffic using the Tamper Data plugin for Firefox (to catch the obvious ones). The Crazy Taxi Flash does actually submit your score using HTTP in clear text (IIRC they have a reflected XSS there as well), but the GET-param is only used for displaying a score - nothing is saved. By the looks of things, they seem to be RC4-encrypting the score as some sort of weak client-side anti-tamper protection, and even though singling out the request that submitted the score was no pain at a all - it actually said &amp;ldquo;submitScore&amp;rdquo; - decompiling the Flash, however, was.&lt;/p&gt;
+
+&lt;p&gt;At first I tried with flasm, but for some reason flasm went all bananas when confronted with the Crazy Taxi flash files, so I started sketching up a Flash / AS3 deobfuscator / decompiler with &lt;a href=&#34;http://frigolit.net&#34;&gt;Frigolit&lt;/a&gt; - and then I realized that simply debugging the host process would be far the fastest way to do it. I started out with setting my score to &amp;ldquo;6661337&amp;rdquo;, but someone had &amp;ldquo;beat&amp;rdquo; it the day after. I wanted to be on top, and I didn&amp;rsquo;t want to have to &amp;ldquo;maintain&amp;rdquo; my position. I wanted the maximum score, so that made me look into matters and discover that the score was stored in a signed double (I think they use PHP ;).&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s a video of me &amp;ldquo;achieving&amp;rdquo; 0x7fff ffff points. A nice little thing is that if you go above 0x7ffff ffff (&amp;gt;=0x8000 0000), the sign will flip and your numbers will &amp;ldquo;shrink&amp;rdquo; instead of growing. Damn I would like to see the frustrated faces of all them other script kiddies when they sit at home, trying to raise their scores and getting minus values instead :-)&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://vimeo.com/7105034&#34;&gt;Hacking Crazy Taxi&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/pragmatk&#34;&gt;Joe Pragmatk&lt;/a&gt; on &lt;a href=&#34;http://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Hash Types for John the Ripper</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Pentest Monkey is a great resource for a lot of things. One of which is this:</p>
+
+<p><a href="http://pentestmonkey.net/cheat-sheet/john-the-ripper-hash-formats">John The Ripper Hash Formats | pentestmonkey</a></p>
+
+<p>I used it, plus a bit of bash fu to try to figure out some hashes that I was trying to crack.</p>
+
+<p>Step 1: Create file of supported hash types. For me, that was simple I just threw the following in &lsquo;supported_types.txt&rsquo; in the same directory as john.</p>
+
+<blockquote>
+<p>DES<br />
+BSDI<br />
+MD5<br />
+BF<br />
+AFS<br />
+LM<br />
+NT<br />
+XSHA<br />
+PO<br />
+raw-MD5<br />
+MD5-gen<br />
+IPB2<br />
+raw-sha1<br />
+md5a<br />
+hmac-md5<br />
+phpass-md5<br />
+KRB5<br />
+bfegg<br />
+nsldap<br />
+ssha<br />
+openssha<br />
+oracle<br />
+oracle11<br />
+MYSQL<br />
+mysql-sha1<br />
+mscash<br />
+lotus5<br />
+DOMINOSEC<br />
+NETLM<br />
+NETNTLM<br />
+NETLMv2<br />
+NETNTLMv2<br />
+NETHALFLM<br />
+mssql<br />
+mssql05<br />
+epi<br />
+phps<br />
+mysql-fast<br />
+pix-md5<br />
+sapG<br />
+sapB<br />
+md5ns<br />
+HDAA</p>
+</blockquote>
+
+<p>Then it&rsquo;s as simple as issuing:</p>
+
+<p>cat supported_types.txt | xargs -t -I type ./john &ndash;pot=unknownhash.pot &ndash;wordlist=shortlist.txt &ndash;format=type hashfile.txt</p>
+
+<p>That will essentially try each of the types on the hash file. It&rsquo;s important to use a wordlist, and probably a small one initially because if you don&rsquo;t john will not finish once it gets to the first hash type that it accepts, which may not actually be correct.</p>
+
+<p>You can take this a step further and create a hash mangler script that takes a clean hash and adds the few prefixs and suffixs that are common on Pentest Monkey&rsquo;s list to get the most odds at John picking it up.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

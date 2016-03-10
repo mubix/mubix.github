@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Fonera Fun</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>I received a Fonera router from my friend <a href="http://www.boxgamex.net">boxgamex</a> and what was the first thing I thought of doing to it? Slaping OpenWRT on it and going to town. Well it took me 2 days of intense R&amp;D but here is what I can tell you to make your life a little easier than mine was:</p>
+
+<p>I am definitely not going to reinvent the wheel, there are some great tutorials out there and I am going to link to them through out this article.</p>
+
+<p>First of all you have to decide if you are going to do straight OpenWRT or DD-WRT. Both have pluses and minuses. You just have to decide for yourself which you want, and you can always change it out. Also, the best setup for this is having your computer directly connected to the Fonera Router. A few things you need to download before you start:<br />
+<a href="http://www.putty.nl/">Putty</a> (only for the SSH part, using Putty for Telnet makes it impossible to backspace errors)<br />
+<a href="http://www.rejetto.com/hfs/?f=dl">HTTP File Server</a> (for loading files)<br />
+<a href="http://tftpd32.jounin.net/">Tftpd32</a> (The easier way to load files)</p>
+
+<p><a href="http://uselesshacks.com/wp-content/uploads/2007/03/sshenable.htm">SSH Enabler</a> (just an html doc <em>right click and save it</em>)<br />
+<a href="http://fonera.info/camicia/openwrt-ar531x-2.4-vmlinux-CAMICIA.lzma">openwrt-ar531x-2.4-vmlinux-CAMICIA.lzma</a> (You’ll need it)<br />
+<a href="openwrt-ar531x-2.4-vmlinux-CAMICIA.lzma">out.hex</a> The is the super secret code that lets you break free from the oppressive FON empire.</p>
+
+<p>Now, you can either put DD-WRT or OpenWRT on the FON so here are the links for each:<br />
+<a href="http://www.dd-wrt.com/dd-wrtv2/down.php?path=downloads%2Fbeta%2FFONERA/">http://www.dd-wrt.com/dd-wrtv2/down.php?path=downloads%2Fbeta%2FFONERA/</a><br />
+<a href="http://downloads.openwrt.org/snapshots/atheros-2.6/">http://downloads.openwrt.org/snapshots/atheros-2.6/</a></p>
+
+<p>All you need from one of the above links is a root file system (rootfs or jffs) and a kernel (vmlinux). And you are done.</p>
+
+<p><strong>Step 1:</strong> Get SSH Access, block the FON updates, and enable SSH on Boot (No problems here, just follow the guide <a href="http://uselesshacks.com/?p=23">(GUIDE LINK)</a> and you are set.</p>
+
+<p><strong>Step 2:</strong> Enable “RedBoot” and boot into it. (Easy enough, using the guide above)</p>
+
+<p><strong>HINT</strong> I have found the best way to Telnet in before the router loads the kernel is to have a Ethereal capture or tcpdump running and wait/watch for traffic from 192.168.1.254. As soon as it shows up hit ENTER on your prepared command ( telnet 192.168.1.254 9000 ) oh and don’t use PuTTy for the telnet portion, unless you type perfectly.</p>
+
+<p><strong>Step 3:</strong> Load the new FS and Kernel. The biggest problems here is getting the memory positions (i.e. 0x80000000) correct. I will link to all of the tutorials that I have used. The memory positions that worked for me are the ones from the guide that I initially linked you to, at the bottom of this posting I will like you to a few others guides that have different memory positions to try out.</p>
+
+<p><strong><em>HINT</em> Now this is a big one. Unless you want to go completely bonkers leave the telnet session alone! Step away from the keyboard and don’t touch the computer. If you run into a command (the “fs create” ones) that seems like it is frozen. Step away. It will finish. If you hit enter or any other button, the telnet client will try and poll the telnet server (your FON router) to keep the connection alive, since your FON router at that moment would be reformatting itself your telnet session would close. And yes, it took me forever to figure that one out.</strong></p>
+
+<p><strong>Step 4:</strong> Reboot into your brand spanking new router. What you do from here with it, is on you.</p>
+
+<p>Oh, now that you have gone through the hard part, here is a link to a GUI that does it all for you: Flashing GUI:<a href="http://berlin.freifunk.net/sven-ola/fonera/"> http://berlin.freifunk.net/sven-ola/fonera/</a></p>
+
+<p>Links:<br />
+Kamikaze Options: <a href="http://wiki.openwrt.org/OpenWrtDocs/KamikazeConfiguration">http://wiki.openwrt.org/OpenWrtDocs/KamikazeConfiguration</a><br />
+OpenWRT Forum for Kamikaze: <a href="http://forum.openwrt.org/viewforum.php?id=10">http://forum.openwrt.org/viewforum.php?id=10</a><br />
+OpenWRT Fonera Info: <a href="http://wiki.openwrt.org/OpenWrtDocs/Hardware/Fon/Fonera">http://wiki.openwrt.org/OpenWrtDocs/Hardware/Fon/Fonera</a><br />
+Best Guide (DD-WRT): <a href="http://uselesshacks.com/?p=23">http://uselesshacks.com/?p=23</a><br />
+Another Guide: <a href="http://www.mcgrewsecurity.com/blog/?p=28">http://www.mcgrewsecurity.com/blog/?p=28</a></p>
+
+<p>Firmware Downloads:<br />
+<a href="http://downloads.openwrt.org/snapshots/atheros-2.6/">http://downloads.openwrt.org/snapshots/atheros-2.6/</a><br />
+<a href="http://www.dd-wrt.com/dd-wrtv2/down.php?path=downloads%2Fbeta%2FFONERA/">http://www.dd-wrt.com/dd-wrtv2/down.php?path=downloads%2Fbeta%2FFONERA/</a></p>
+
+<p>Flashing GUI: <a href="http://berlin.freifunk.net/sven-ola/fonera/">http://berlin.freifunk.net/sven-ola/fonera/</a></p>
+
+<p>mubix</p>
+
+<p><strong>P.S. My USB list/torrent is next on my TO-DO list, again, sorry for the wait.</strong></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

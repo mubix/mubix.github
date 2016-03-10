@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Smb on Room362</title>
+    <link>http://localhost:1313/tags/smb/</link>
+    <description>Recent content in Smb on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 17 Oct 2012 17:52:30 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/smb/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Mounting SMB shares over Meterpreter</title>
+      <link>http://localhost:1313/post/2012/20121017mounting-smb-shares-over-meterpreter-html/</link>
+      <pubDate>Wed, 17 Oct 2012 17:52:30 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121017mounting-smb-shares-over-meterpreter-html/</guid>
+      <description>&lt;p&gt;Ok, this is pretty straight forward no magic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-00-1620am.png.16%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 00 16 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Got a shell, doesn&amp;rsquo;t have to be SYSTEM&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-00-4420am.png.44%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 00 44 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a route to the internal range or directly to the host you want over the session you want&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-01-2320am.png.23%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 01 23 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Mosy on over  to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2010-52-2920am.png.29%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 10 52 29 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It defaults to 9050 on 127.0.01 for Tor, that&amp;rsquo;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-03-0020am.png.00%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 03 00 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the socks proxy with the Tor-like settings. (Remember to shutdown Tor first)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-04-3420am.png.34%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 04 34 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the rest is gravy. The % (percent sign if blog software mangles it) is a delimiter that smbclient and other samba tools recognize between user and password (so it doesn&amp;rsquo;t prompt you for it).&lt;/p&gt;
+
+&lt;p&gt;And just to love it working:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-04-5320am.png.53%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 04 53 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;yay files.. Yes I know I didn&amp;rsquo;t use smbmount but it works the same as well as rpcclient.&lt;/p&gt;
+
+&lt;p&gt;A side note here is if you are using the pth-tools from:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://code.google.com/p/passing-the-hash/&#34;&gt;https://code.google.com/p/passing-the-hash/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can use hashes instead of passwords for stuff like this. But who are we kidding? Who doesn&amp;rsquo;t get clear text passwords anymore ;-)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

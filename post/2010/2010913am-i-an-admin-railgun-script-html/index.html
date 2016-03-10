@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Am I an Admin? Railgun Script</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes.</p>
+
+<p>But, I wanted to make a way that check a bunch of sessions all at once. So I wrote &ldquo;AmIAdmin.rb&rdquo; which uses meterpreter&rsquo;s railgun extension to execute &ldquo;IsUserAdmin&rdquo;.</p>
+
+<p>Being that Shell32.dll isn&rsquo;t included in railgun by default we have to add it. After writing it I decided to add some checks. These checks make sure that each piece of the script isn&rsquo;t already loaded. It&rsquo;s a good reference for doing this in the future.</p>
+
+<p>(you can remove the print_status lines if you want the script to be quieter)</p>
+
+<p>Here is the script for your consumption:</p>
+
+<blockquote>
+<p>if client.platform == &ldquo;x64/win32&rdquo;<br />
+print_status &ldquo;Railgun is currently not supported for x64 bit systems&rdquo;<br />
+raise Rex::Script::Completed<br />
+end</p>
+
+<p>if client.railgun.present? == true<br />
+print_status &ldquo;Railgun already loaded.. skipping&rdquo;<br />
+else<br />
+print_status &ldquo;Loading Railgun&rdquo;<br />
+client.core.use(&ldquo;railgun&rdquo;)<br />
+end</p>
+
+<p>if client.railgun.dll[&lsquo;shell32&rsquo;] == nil<br />
+print_status &ldquo;Adding Shell32.dll&rdquo;<br />
+client.railgun.add_dll(&lsquo;shell32&rsquo;,&lsquo;shell32&rsquo;)<br />
+else<br />
+print_status &ldquo;Shell32 already loaded.. skipping&rdquo;<br />
+end</p>
+
+<p>if (client.railgun.shell32.functions[&lsquo;IsUserAnAdmin&rsquo;] == nil<br />
+print_status &ldquo;Adding the IsUserAnAdmin function&rdquo;<br />
+client.railgun.add_function(&lsquo;shell32&rsquo;, &lsquo;IsUserAnAdmin&rsquo;, &lsquo;BOOL&rsquo;, [])<br />
+else<br />
+print_status &ldquo;IsUserAnAdmin already loaded.. skipping&rdquo;<br />
+end</p>
+
+<p>print_status &ldquo;Running the IsUserAnAdmin function&rdquo;<br />
+status = client.railgun.shell32.IsUserAnAdmin()</p>
+
+<p>if status[&ldquo;return&rdquo;] == true then<br />
+print_status &ldquo;You are an administrator&rdquo;<br />
+else<br />
+print_error &ldquo;You are not an administrator&rdquo;<br />
+end</p>
+</blockquote>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

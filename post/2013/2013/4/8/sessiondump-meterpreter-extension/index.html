@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.14" />
+
+  <title>
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://localhost:1313/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Sessiondump Meterpreter Extension</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory <a href="/blog/2012/9/6/completely-in-memory-mimikatz-with-metasploit.html">{link}</a> - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.</p>
+
+<p>Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at205-55-4820am.png.48%20AM.png" alt="Screen Shot 2013 04 08 at 5 55 48 AM" /></p>
+
+<p>No blog post or huge Vegas lights talk on it at DefCon or Blackhat. Just posted online in a corner of the Internet:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at206-57-4020pm.png.40%20PM.png" alt="Screen Shot 2013 04 07 at 6 57 40 PM" /></p>
+
+<p><a href="http://www.hsc.fr/ressources/outils/sessiondump/">http://www.hsc.fr/ressources/outils/sessiondump/</a></p>
+
+<p>Before we get started lets be clear about one thing. Sessiondump while awesome doesn&rsquo;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.</p>
+
+<p>Without further ado lets go ahead and get the file and do a bunch of extracting. </p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at207-15-0220pm.png.02%20PM.png" alt="Screen Shot 2013 04 07 at 7 15 02 PM" /></p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at207-15-5420pm.png.54%20PM.png" alt="Screen Shot 2013 04 07 at 7 15 54 PM" /></p>
+
+<p>And finally placing everything in it&rsquo;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at202-33-3120am.png.31%20AM.png" alt="Screen Shot 2013 04 08 at 2 33 31 AM" /></p>
+
+<p>Cool, everything should be good to go. Lets use this thing. I&rsquo;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NTAUTHORITY SYSTEM.  After that it&rsquo;s cake, load the extension:</p>
+
+<p> <img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-42-0620pm.png.06%20PM.png" alt="Screen Shot 2013 04 07 at 10 42 06 PM" /></p>
+
+<p>Here is the available commands:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-42-2220pm.png.22%20PM.png" alt="Screen Shot 2013 04 07 at 10 42 22 PM" /></p>
+
+<p>And run getHashes:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-0420pm202.png.04%20PM%202.png" alt="Screen Shot 2013 04 07 at 10 43 04 PM 2" /></p>
+
+<p>or getwDigestPasswords:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-3920pm.png.39%20PM.png" alt="Screen Shot 2013 04 07 at 10 43 39 PM" /></p>
+
+<p>Thats is, you free passwords, YAY&hellip;</p>
+
+<p>Possible issues you may run into:</p>
+
+<p>1) If you are on a x64 box and meterpreter isn&rsquo;t running in a x64 process it will fail saying that it doesn&rsquo;t have the correct version offsets, here is how you can check:</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0820at202-40-2920am.png.29%20AM.png" alt="Screen Shot 2013 04 08 at 2 40 29 AM" /></p>
+
+<p>x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.</p>
+
+<p><img src="http://mubix.files.wordpress.com/2013/04/screen20shot202013-04-0720at2010-43-0420pm.png.04%20PM.png" alt="Screen Shot 2013 04 07 at 10 43 04 PM" /></p>
+
+<p>2) If by any chance you are running it against a system the author hasn&rsquo;t gotten the offsets for. I don&rsquo;t&rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.</p>
+
+<p>Thats all for now folks, may the shells be with you.</p>
+
+<p> </p>
+
+</div>
+
+</div>
+</div>
+<script src="http://localhost:1313/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

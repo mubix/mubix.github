@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Pass the Hash without Metasploit - Part 2 &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Pass the Hash without Metasploit - Part 2</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>I read this article a while back:</p>
+
+<p><a href="http://fuzzynop.blogspot.com/2012/09/pass-hash-without-metasploit.html">http://fuzzynop.blogspot.com/2012/09/pass-hash-without-metasploit.html</a></p>
+
+<p>by <a href="https://twitter.com/FuzzyNop">@FuzzyNop</a></p>
+
+<p>Great article showing the use of WCE&rsquo;s &ldquo;-s&rdquo; flag to Pass-The-Hash locally and I highly recommend checking it out. </p>
+
+<p>Anywho, I was once in a similar scenario, where I had no Metasploit to back me up, but the box I was on did have one interesting thing, ruby and an accessible target for relatively up-to-date ruby gems. Since Metasploit&rsquo;s powerhouse library &lsquo;rex&rsquo; installed just fine I was set.</p>
+
+<p><strong>Notice</strong>: This is now <code>gem install librex</code></p>
+
+<p><img src="/images/postimages/201210_pth_1.png" alt="" /></p>
+
+<p>Then copy the following to the machine:</p>
+
+<p><a href="https://github.com/rapid7/metasploit-framework/blob/master/tools/psexec.rb">https://github.com/rapid7/metasploit-framework/blob/master/tools/psexec.rb</a></p>
+
+<p>That&rsquo;s a standalone version of psexec module (minus any advanced options). Once you have it down, make two quick edits (removing the requires for fast lib and msfenv):</p>
+
+<p><img src="/images/postimages/201210_pth_2.png" alt="" /></p>
+
+<p>And then you should see this:</p>
+
+<p><img src="/images/postimages/201210_pth_3.png" alt="" /></p>
+
+<p>Now, I elected to use the windows/adduser Metasploit single for my purposes, you can just as well use any executable you want depending on what you are trying to accomplish. So this is the users list before hand:</p>
+
+<p><img src="/images/postimages/201210_pth_4.png" alt="" /></p>
+
+<p>And then I executed this:</p>
+
+<p><img src="/images/postimages/201210_pth_5.png" alt="" /></p>
+
+<p>Which resulted in:</p>
+
+<p><img src="/images/postimages/201210_pth_6.png" alt="" /></p>
+
+<p>w00t. Game over. But wait, there&rsquo;s more&hellip;</p>
+
+<p>There is another GEM that makes things even easier to continue if your next hop doesn&rsquo;t have Ruby:</p>
+
+<p><a href="http://ocra.rubyforge.org">http://ocra.rubyforge.org</a></p>
+
+<p>OCRA (One-Click-Ruby-Application), you just need to &lsquo;gem install ocra&rsquo; and you can then compile Ruby into Windows executables (it does this the same way as Py2Exe - packaging a interpreter in with the script). </p>
+
+<p>To build the executable (once our gem is installed) is pretty straight forward:</p>
+
+<p><img src="/images/postimages/201210_pth_7.png" alt="" /></p>
+
+<p>And as you can see, we have a ~5.5 meg file:</p>
+
+<p><img src="/images/postimages/201210_pth_8.png" alt="" /></p>
+
+<p>The output without options looks like this:</p>
+
+<p><img src="/images/postimages/201210_pth_9.png" alt="" /></p>
+
+<p>You can plainly see the Temp directory it&rsquo;s being extracted to. It does do a very good job at cleaning up the temp directory after it&rsquo;s run the Ruby script which is nice, but not forensically (obviously), just a heads up.</p>
+
+<p>But, the result is the same:</p>
+
+<p><img src="/images/postimages/201210_pth_10.png" alt="" /></p>
+
+<p>Now you can take your 5.5 meg bin anywhere you want and psexec with a hash to your heart&rsquo;s content.</p>
+
+<p>(As a side note, this works REALLY well to bypass UAC if you have a username and password/hash for a local admin. Just don&rsquo;t forget that it runs the EXE as SYSTEM, who normally doesn&rsquo;t have proxy settings)</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

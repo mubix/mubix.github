@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>lm2ntlm with John the Ripper &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>lm2ntlm with John the Ripper</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Since I didn&rsquo;t see any documentation bringing how to take an LM hash that you&rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.</p>
+
+<p>So there is this: <a href="https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp">https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp</a></p>
+
+<p>And this: <a href="https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb">https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb</a></p>
+
+<p>And this: <a href="http://www.securityfocus.com/tools/6696">http://www.securityfocus.com/tools/6696</a></p>
+
+<p>And the edited version of the above: <a href="http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/">http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/</a></p>
+
+<p>But Metasploit&rsquo;s is currently <a href="http://dev.metasploit.com/redmine/issues/7351">borked</a>,(<strong>Update: this is now fixed</strong>) I don&rsquo;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:</p>
+
+<p><a href="http://www.openwall.com/lists/john-dev/2011/03/29/7">http://www.openwall.com/lists/john-dev/2011/03/29/7</a></p>
+
+<p>And I asked on that same list what had become of it:</p>
+
+<p><a href="http://www.openwall.com/lists/john-dev/2012/10/24/2">http://www.openwall.com/lists/john-dev/2012/10/24/2</a></p>
+
+<p>The result is as follows:</p>
+
+<p>Given this hash:</p>
+
+<pre><code>Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
+</code></pre>
+
+<p>which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.</p>
+
+<p><img src="/images/postimages/201210_lm2ntlm_1.png" alt="" /></p>
+
+<p>cracked the LM side in 16 seconds. Now you don&rsquo;t need to use John to get the LM side (rainbow tables work better at times),</p>
+
+<p>Solar Designer (JtR&rsquo;s main dev) suggested the following path:</p>
+
+<p><img src="/images/postimages/201210_lm2ntlm_2.png" alt="" /></p>
+
+<p>A bit hard to read but here are the commands:</p>
+
+<pre><code>./john -show pwdump.txt | cut -d: -f2 &gt; cracked      
+./john -w=cracked -rules:nt -format=nt pwdump.txt
+</code></pre>
+
+<p>As you can see (if you squint) that works well. Rich Rumble suggested:</p>
+
+<p><a href="http://www.openwall.com/lists/john-dev/2012/10/24/3">http://www.openwall.com/lists/john-dev/2012/10/24/3</a></p>
+
+<p>using the loopback as so: <code>./john pwdump.txt -format=nt -loopback=john.pot -rules=nt</code></p>
+
+<p>The loopback been an amazing addition that is as Solar Designer put it &ldquo;not in core JtR, it is a fairly recent addition to jumbo&rdquo;. The loopback allows you to use previously cracked passwords as a dictionary without doing any cut/awk/sed voodoo. The problem with the suggested method for going from LM to NTLM and the loopback option is that it (rightly so) identifies LM hashes by their halves. When it tries to use those halves to crack the NTLM, every with the NT rule-set, it sees each half as separate passwords to try, so it fails.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

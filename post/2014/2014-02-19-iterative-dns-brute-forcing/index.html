@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Iterative DNS Brute Forcing &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Iterative DNS Brute Forcing</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Everyone has their list of hostnames they brute force domains with. In my last post I even mentioned a few ways to use one with XARGS or PARALLEL. But one fact about wordlist brute forcing is that there is no &ldquo;one list to rule them all&rdquo;.  But over the years of doing DNS record collection I have noticed one thing, most domains have a large number of short hostnames that are easy to remember, usually 4 characters or less.</p>
+
+<p>I&rsquo;m sure you already know where I&rsquo;m going with this, I wanted to brute force all possible hostnames up to 4 characters. For a long time I struggled with coding this, but couldn&rsquo;t wrap my head around it. I would come back to it every so often, finally a few days ago I happened upon a script on gist: <a href="https://gist.github.com/petehamilton/4755855">https://gist.github.com/petehamilton/4755855</a> that suited my needs perfectly.</p>
+
+<p>I modified it to suite my needs (just use the yield method) and here is what I ended up with (remember DNS is case insensitive):</p>
+
+<p><strong>Notice:</strong> This script doesn&rsquo;t end, it will keep doing lookups on longer and longer hostnames until you hit CTRL-C</p>
+
+<pre><code>#!/usr/bin/env ruby
+
+#
+## Brute code stolen form: https://gist.github.com/petehamilton/4755855
+#
+
+@domain = 'microsoft.com'
+
+def result?(sub)
+	results = %x(dig +noall #{sub}.#{@domain} +answer)
+	if results != &quot;&quot;
+		puts &quot;============================&quot;
+		puts &quot;FOUND: \t#{sub}&quot;
+		puts &quot;============================&quot;
+		puts &quot;#{results}&quot;
+		puts &quot;============================&quot;
+	end
+	1 == 2
+end
+
+def crack_yielding(chars)
+	crack_yield(chars){ |p|
+		return p if result?(p)
+	}
+end
+
+
+def crack_yield(chars)
+	chars.each { |c| yield c }
+
+	crack_yield(chars) { |c|
+		chars.each do |x|
+			yield c + x
+		end
+	}
+end
+
+chars = ('a'..'z').to_a
+(0..9).each {|x| chars &lt;&lt; x.to_s} 
+
+crack_yielding(chars)
+
+</code></pre>
+
+<p>This worked but it was slow, so I sped it up using methods that I talked about in my last post and a quick modification:</p>
+
+<p>I used this:</p>
+
+<pre><code>#!/usr/bin/env ruby
+
+#
+## Brute code stolen form: https://gist.github.com/petehamilton/4755855
+#
+
+def result?(sub)
+	puts sub	
+	1 == 2
+end
+
+def crack_yielding(chars)
+	crack_yield(chars){ |p|
+		return p if result?(p)
+	}
+end
+
+
+def crack_yield(chars)
+	chars.each { |c| yield c }
+
+	crack_yield(chars) { |c|
+		chars.each do |x|
+			yield c + x
+		end
+	}
+end
+
+chars = ('a'..'z').to_a
+(0..9).each {|x| chars &lt;&lt; x.to_s} 
+
+crack_yielding(chars)
+
+</code></pre>
+
+<p>which just prints all the possibilities:</p>
+
+<pre><code>a
+b
+c
+d
+e
+f
+...
+</code></pre>
+
+<p>and piped it into parallel + dig:</p>
+
+<pre><code>ruby brutelist.rb | parallel -j100 dig +noall {}.microsoft.com +answer
+</code></pre>
+
+<p>and got the following:</p>
+
+<pre><code>c.microsoft.com.	2	IN	CNAME	c.microsoft.akadns.net.
+c.microsoft.akadns.net.	499	IN	A	65.55.58.184
+e.microsoft.com.	3599	IN	A	191.234.1.50
+g.microsoft.com.	2798	IN	CNAME	g.msn.com.
+g.msn.com.		99	IN	CNAME	g.msn.com.nsatc.net.
+g.msn.com.nsatc.net.	148	IN	A	131.253.34.154
+i.microsoft.com.	779	IN	CNAME	i.toggle.www.ms.akadns.net.
+i.toggle.www.ms.akadns.net. 44	IN	CNAME	i.g.www.ms.akadns.net.
+i.g.www.ms.akadns.net.	225	IN	CNAME	i.microsoft.com.edgesuite.net.
+i.microsoft.com.edgesuite.net. 116 IN	CNAME	a1475.g.akamai.net.
+a1475.g.akamai.net.	16	IN	A	23.45.65.26
+a1475.g.akamai.net.	16	IN	A	23.45.65.33
+m.microsoft.com.	3599	IN	CNAME	origin.mobile.ms.akadns.net.
+origin.mobile.ms.akadns.net. 299 IN	A	65.55.186.235
+s.microsoft.com.	3599	IN	CNAME	reroute.microsoft.com.
+reroute.microsoft.com.	3599	IN	A	65.55.58.201
+reroute.microsoft.com.	3599	IN	A	64.4.11.37
+cs.microsoft.com.	81	IN	CNAME	wedcs.trafficmanager.net.
+wedcs.trafficmanager.net. 7	IN	CNAME	wedcseus.cloudapp.net.
+wedcseus.cloudapp.net.	8	IN	A	137.116.48.250
+...
+</code></pre>
+
+<p>Happy bruting. Both scripts can be found on my gists page:</p>
+
+<ul>
+<li>Domain version: <a href="https://gist.github.com/mubix/9107284">https://gist.github.com/mubix/9107284</a></li>
+<li>Parallel version: <a href="https://gist.github.com/mubix/9107276">https://gist.github.com/mubix/9107276</a></li>
+</ul>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

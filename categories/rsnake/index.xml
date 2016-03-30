@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rsnake on Room362</title>
+    <link>http://room362.com/categories/rsnake/</link>
+    <description>Recent content in Rsnake on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sat, 30 Jan 2010 17:00:13 +0000</lastBuildDate>
+    <atom:link href="http://room362.com/categories/rsnake/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>@RSnake ’s RFI List in Burp Suite</title>
+      <link>http://room362.com/post/2010/2010-01-30-rsnake-s-rfi-list-in-burp-suite/</link>
+      <pubDate>Sat, 30 Jan 2010 17:00:13 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2010/2010-01-30-rsnake-s-rfi-list-in-burp-suite/</guid>
+      <description>&lt;p&gt;First of all, get Robert @RSnake Hansen&amp;rsquo;s RFI list here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/&#34;&gt;http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;it&amp;rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cat rfi-locations.dat | grep -v &amp;quot;^#&amp;quot; | awk -F &#39;?&#39; &#39;{print $1}&#39; | sort -u &amp;gt; rsnake_list.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder. If it pops any of them, not only have you better identified what is running on the site, but you might have just found RFI.&lt;/p&gt;
+
+&lt;p&gt;But I wanted to take this a step further:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201001_rsnake_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The OSVDB archive allows you to download their entire database of vulnerabilities (after signing up for an account). I downloaded the CSV version so that I could parse it similar to how I did RSnakes. However, it definitely wasn&amp;rsquo;t that easy.&lt;/p&gt;
+
+&lt;p&gt;I downloaded osvd-csv.latest.tar.gz, extracted it and ran the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cat * | grep -i &amp;quot;remote file inclusion&amp;quot; | grep -v &amp;quot;,0$&amp;quot; | awk -F &amp;quot;,&amp;quot; &#39;{print $13}&#39; | sed &#39;s/^&amp;quot;//&#39; | set &#39;s/&amp;quot;$//&#39; | sort -u &amp;gt; osvdb_rfi.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which got me close. About 3 hours of manual editing after that and I had another list of ~1750 possible remote file inclusions. Is this a full proof way of getting every possibility from the database? Definitely not, but it&amp;rsquo;s close, and I&amp;rsquo;d love to see some one modify and tweak my bash line to get it even closer. (Or find a completely different way)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-02-01 14:17 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;RSnake has updated his list, same link, same file name with about 2300 RFIs now.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Maltego 2 and beyond - Part 1 &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Maltego 2 and beyond - Part 1</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  
+
+<p>First lets outline whats to come:</p>
+
+<h2 id="table-of-contents:a23e3e71c377f622e1f6101f7c0a70fd">Table of Contents:</h2>
+
+<ul>
+<li><p>Part 1 - Introduction</p></li>
+
+<li><p><a href="/blog/2008/09/26/maltego-2-and-beyond-part-2/">Part 2 - Entities and Transforms</a></p></li>
+
+<li><p><a href="/blog/2009/01/13/maltego-2-and-beyond-part-3/">Part 3 - The Human Factor</a></p></li>
+
+<li><p>Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)</p></li>
+
+<li><p>Part 5 - Hacks, Tips, and Tricks</p></li>
+</ul>
+
+<p><em>**EDIT: This and the following posts are also show notes for the **</em><a href="http://www.hak5.org/episodes/episode-401-wi-fi-pineapples"><em><strong>Season 4 premiere</strong></em></a><em>** of **</em><a href="http://www.hak5.org/"><em><strong>Hak5</strong></em></a></p>
+
+<p>So Maltego 2 has been released and all I have to show for it are these images stolen from <a href="http://www.paterva.com/maltego/screenshots/">paterva.com</a></p>
+
+<p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_ss1.serendipityThumb.png)</code> <img src="/images/postimages/404.gif" alt="" /></p>
+
+<p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_ss2.serendipityThumb.png)</code> <img src="/images/postimages/404.gif" alt="" /></p>
+
+<p>and a bit of an explination also stolen from their site:</p>
+
+<p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_whatis.serendipityThumb.png)</code> <img src="/images/postimages/404.gif" alt="" /></p>
+
+<p>But you aren’t here for what you can find on their site. You are here to find out why Maltego is fun, useful, and something you might want to recommend your boss/secretary/parents to buy.</p>
+
+<p>Maltego is hard define because of it’s open nature. It is designed to be whatever that information gatherer wants it to be. But before we go into Maltego’s super powers, lets define the differences between it’s two versions, Full and Community editions.</p>
+
+<p>Full is just as it implies. Unfettered. You can make it fly. But it’s 400 bucks a year per client. (Or your organization can talk straight to Paterva about their server/client platform)</p>
+
+<p>Community Edition is free, but you are locked down quite a bit. Community Edition is bundled with <a href="http://www.remote-exploit.org/backtrack.html">Back|Track 3</a> which is don’t by the awesome guys over at <a href="http://www.offensive-security.com/">Offensive Security</a>. Here are the nags:</p>
+
+<ul>
+<li><p> A 15 second nag screen</p></li>
+
+<li><p>Save and Export has been disabled</p></li>
+
+<li><p>Limited zoom levels</p></li>
+
+<li><p>Can only run transforms on a single entity at a time</p></li>
+
+<li><p>Cannot copy and paste text from detailed view</p></li>
+
+<li><p>Transforms limited to 75 per day</p></li>
+
+<li><p>Throttled client to TAS communication</p></li>
+</ul>
+
+<p>However, if you do have one full version client, you can open saved investigations (mtg files) with it and manipulate it all you want. </p>
+
+<p>So that is just one of my tricks and now that we have a baseline down (kinda like getting done with all of your base classes in college), in the following segments of this post I will be showing of some of the electrolyte driven goodness of Maltego and some of the hacks/tricks that will make you look wonder just what you can’t do with Maltego.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

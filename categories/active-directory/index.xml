@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Active Directory on Room362</title>
+    <link>http://room362.com/categories/active-directory/</link>
+    <description>Recent content in Active Directory on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Fri, 04 Oct 2013 23:47:28 -0500</lastBuildDate>
+    <atom:link href="http://room362.com/categories/active-directory/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>AD Zone Transfers as a user</title>
+      <link>http://room362.com/post/2013/2013-10-04-ad-zone-transfers-as-a-user/</link>
+      <pubDate>Fri, 04 Oct 2013 23:47:28 -0500</pubDate>
+      
+      <guid>http://room362.com/post/2013/2013-10-04-ad-zone-transfers-as-a-user/</guid>
+      <description>&lt;p&gt;&lt;em&gt;cross posted from: &lt;a href=&#34;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html&#34;&gt;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The tired and true method for Zone Transfers are using either nslookup:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;nslookup
+ls -d domain.com.local
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or dig:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dig -t AXFR domain.com.local @ns1.domain.com.local
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dnscmd /EnumZones
+dnscmd /ZonePrint domain.com.local
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).&lt;/p&gt;
+
+&lt;p&gt;You can also use PowerShell:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;PS C:\Users\jdoe&amp;gt; get-wmiobject -ComputerName dc1 -Namespace root\microsoftDNS -Class MicrosoftDNS_ResourceRecord -Filter &amp;quot;domainname=&#39;projectmentor.net&#39;&amp;quot; | select textrepresentation&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Again, this requires you to be a very high privileged account, which is no fun. I need these computer lists as part of my internal / post-exploitation recon, not an end step.&lt;/p&gt;
+
+&lt;p&gt;For the longest time I relied on a very awesome tool called &amp;ldquo;Adfind&amp;rdquo;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &amp;ldquo;this&amp;rdquo;and no &amp;ldquo;that&amp;rdquo; flags)&lt;/p&gt;
+
+&lt;p&gt;But that wasn&amp;rsquo;t good enough, this image kept haunting me:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201310_zonetransfer_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.&lt;/p&gt;
+
+&lt;p&gt;I spent 4 days attempting to write my own script, ldap query, prayer to  get all of the data out but was unsuccessful. On the 5th day I happened upon a very short post saying &amp;ldquo;I did it&amp;rdquo;, as I probably would have written the same. It comes in the form of a PowerShell script that you can find here:&lt;/p&gt;
+
+&lt;p&gt;Code: &lt;a href=&#34;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&#34;&gt;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And is very easy to run:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;PS C:\Users\jdoe&amp;gt; dns-dump.ps1 -zone projectmentor.net -dc dc1&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;C:\&amp;gt; powershell -ep bypass -f dnsdump.ps1 -zone projectmentor.net -dc dc1&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;If you put a -csv on the end of those the author has even given you the CSV format which makes the output extremely easy to parse. Now you can throw your list into your tool of choice instead of scanning random IP ranges on the targets network for important stuff you can scan directly against known good hosts.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash; mubix&lt;/p&gt;
+
+&lt;p&gt;P.S. Yes I realize this isn&amp;rsquo;t actually &amp;ldquo;Zone Transfer&amp;rdquo;s but its close enough&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

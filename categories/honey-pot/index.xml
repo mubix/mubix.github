@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Honey Pot on Room362</title>
+    <link>http://room362.com/categories/honey-pot/</link>
+    <description>Recent content in Honey Pot on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 23 Dec 2010 23:39:03 +0000</lastBuildDate>
+    <atom:link href="http://room362.com/categories/honey-pot/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Project Honeypot HTTP Blocklist module</title>
+      <link>http://room362.com/post/2010/2010-12-23-project-honeypot-http-blocklist-module/</link>
+      <pubDate>Thu, 23 Dec 2010 23:39:03 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2010/2010-12-23-project-honeypot-http-blocklist-module/</guid>
+      <description>&lt;p&gt;Most malicious IP lists focus on the client side threat, where servers (hosted or exploited) host client side exploits or evil scripting.&lt;/p&gt;
+
+&lt;p&gt;These don&amp;rsquo;t really help the server admins very much. Project Honeypot does an amazing job at keeping detailed information on scanners / harvesters and brute forcers, the likes of which are the daily enemy of said admins. They offer a service called HTTP Block List or &amp;lsquo;HTTP:BL&amp;rsquo;.&lt;/p&gt;
+
+&lt;p&gt;Another way this list differs from the rest is it isn&amp;rsquo;t a list you can download. Its a DNS service. Simply put, you submit a query, it gives an (A) record that looks something like &amp;lsquo;127.3.5.1&amp;rsquo;. Disregard the 127, but the rest of the details pertain to different details about the IP you requested. You can read the documentation here: &lt;a href=&#34;http://www.projecthoneypot.org/httpbl_api.php&#34;&gt;http://www.projecthoneypot.org/httpbl_api.php&lt;/a&gt; for an explanation on exactly how it works, or you can read the code of the Metasploit module I wrote for it.&lt;/p&gt;
+
+&lt;p&gt;I wrote it in Metasploit for 2 reasons. 1) RangeWalker is awesome code, and allows you to query a list of IPs, a range, or a single IP with ease. 2) All of the other implementations of the API that they have listed are for CMSs (to actively block IPs that come back &amp;lsquo;bad&amp;rsquo;).&lt;/p&gt;
+
+&lt;p&gt;This will mostly come in useful for incident responders who are trying to get a bead on a bunch of hosts, or for web admins who want to pull the code out for an active blocking system of their own.&lt;/p&gt;
+
+&lt;p&gt;Here it is in action:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf auxiliary(httpbl_lookup) &amp;gt; info
+
+       Name: Http:BL lookup
+    Version: xxxx
+    License: Metasploit Framework License (BSD)
+       Rank: Normal
+
+Provided by:
+  Rob Fuller 
+
+Basic options:
+  Name     Current Setting  Required  Description
+  ----     ---------------  --------  -----------
+  APIKEY   xxxxxxxxxxxx     yes       Your HTTP:BL api key
+  RHOSTS   88.229.108.0/24  yes       The target address range or CIDR identifier
+  THREADS  1                yes       The number of concurrent threads
+
+Description:
+  This module can be used to enumerate information about a IP 
+  addresses from Project HoneyPot&#39;s HTTP Block List.
+
+References:
+  link (&amp;lt;a href=&amp;quot;http://www.projecthoneypot.org/httpbl_api.php&amp;quot;&amp;gt;http://www.projecthoneypot.org/httpbl_api.php&amp;lt;/a&amp;gt;)
+
+msf auxiliary(httpbl_lookup) &amp;gt; run
+
+[*] 
+[*] 88.229.108.0 resloves to 127.51.8.1 which means: Suspicious
+[*] =&amp;gt; it was last seen 51 day ago and has a threat score of 8 or &#39;less than 100 spam messages&#39;
+[*] =&amp;gt; more info here: &amp;lt;a href=&amp;quot;http://www.projecthoneypot.org/ip_88.229.108.0&amp;quot;&amp;gt;http://www.projecthoneypot.org/ip_88.229.108.0&amp;lt;/a&amp;gt;
+
+[*] 
+[*] 88.229.108.1 resloves to 127.29.8.1 which means: Suspicious
+[*] =&amp;gt; it was last seen 29 day ago and has a threat score of 8 or &#39;less than 100 spam messages&#39;
+[*] =&amp;gt; more info here: &amp;lt;a href=&amp;quot;http://www.projecthoneypot.org/ip_88.229.108.1&amp;quot;&amp;gt;http://www.projecthoneypot.org/ip_88.229.108.1&amp;lt;/a&amp;gt;
+
+[*] 
+[*] 88.229.108.2 resloves to 127.29.8.1 which means: Suspicious
+[*] =&amp;gt; it was last seen 29 day ago and has a threat score of 8 or &#39;less than 100 spam messages&#39;
+[*] =&amp;gt; more info here: &amp;lt;a href=&amp;quot;http://www.projecthoneypot.org/ip_88.229.108.2&amp;quot;&amp;gt;http://www.projecthoneypot.org/ip_88.229.108.2&amp;lt;/a&amp;gt;
+
+[*] 
+[*] 88.229.108.254 resloves to 127.51.8.1 which means: Suspicious
+[*] =&amp;gt; it was last seen 51 day ago and has a threat score of 8 or &#39;less than 100 spam messages&#39;
+[*] =&amp;gt; more info here: &amp;lt;a href=&amp;quot;http://www.projecthoneypot.org/ip_88.229.108.254&amp;quot;&amp;gt;http://www.projecthoneypot.org/ip_88.229.108.254&amp;lt;/a&amp;gt;
+
+[*] 
+[*] 88.229.108.255 resloves to 127.29.8.1 which means: Suspicious
+[*] =&amp;gt; it was last seen 29 day ago and has a threat score of 8 or &#39;less than 100 spam messages&#39;
+[*] =&amp;gt; more info here: &amp;lt;a href=&amp;quot;http://www.projecthoneypot.org/ip_88.229.108.255&amp;quot;&amp;gt;http://www.projecthoneypot.org/ip_88.229.108.255&amp;lt;/a&amp;gt;
+
+[*] Scanned 256 of 256 hosts (100% complete)
+[*] Auxiliary module execution completed
+msf auxiliary(httpbl_lookup) &amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can obtain the module here: &lt;a href=&#34;https://github.com/mubix/stuff/blob/master/metasploit/httpbl_lookup.rb&#34;&gt;https://github.com/mubix/stuff/blob/master/metasploit/httpbl_lookup.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

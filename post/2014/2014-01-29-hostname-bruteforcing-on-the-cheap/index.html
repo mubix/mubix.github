@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Hostname bruteforcing on the cheap &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Hostname bruteforcing on the cheap</h1>
+  <h2></h2>
+</div>
+<div class="content">
+  <hr />
+
+<p><strong>Quick update</strong>: As <a href="http://twitter.com/mikedamm">@MikeDamm</a> <a href="http://twitter.com/mikedamm/status/428725199068864512">points out</a>, xargs has a <code>-P</code> option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use <code>-P 0</code> to do the same thing as <code>-j0</code> with parallel, but if your version doesn&rsquo;t support the <code>0</code> you can simply use the same number parallel uses ala:</p>
+
+<ul>
+<li><code>cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer</code></li>
+</ul>
+
+<p>This results in roughly the same completion time as it&rsquo;s parallel counterpart. Thanks @MikeDamm!</p>
+
+<hr />
+
+<p>There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)</p>
+
+<p>Here is what I do:</p>
+
+<p>First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at <a href="http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/">http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/</a> (with a few minor tweaks). If you haven&rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:</p>
+
+<ul>
+<li><code>cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer</code></li>
+</ul>
+
+<p>Now, xargs is great but does one thing at a time and can be quite slow if your subdomains list is large. With the use of the amazing tool GNU parallel you can get done in a matter of seconds, well, that or knock over your home router.</p>
+
+<ul>
+<li><code>cat subdomains.txt | parallel -k -j0 dig +noall {}.microsoft.com +answer</code></li>
+</ul>
+
+<p>Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)</p>
+
+<p>with an output something list this:</p>
+
+<pre><code>parallel: Warning: Only enough file handles to run 122 jobs in parallel.
+Raising ulimit -n or /etc/security/limits.conf may help.
+parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
+mail.microsoft.com.	2369	IN	A	131.107.125.5
+www.microsoft.com.	0	IN	CNAME	toggle.www.ms.akadns.net.
+toggle.www.ms.akadns.net. 0	IN	CNAME	g.www.ms.akadns.net.
+g.www.ms.akadns.net.	0	IN	CNAME	lb1.www.ms.akadns.net.
+lb1.www.ms.akadns.net.	263	IN	A	64.4.11.42
+m.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
+origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
+ftp.microsoft.com.	0	IN	CNAME	ftp.microsoft.akadns.net.
+ftp.microsoft.akadns.net. 259	IN	A	64.4.17.176
+mobile.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
+origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
+smtp.microsoft.com.	3600	IN	A	131.107.115.215
+smtp.microsoft.com.	3600	IN	A	131.107.115.214
+smtp.microsoft.com.	3600	IN	A	205.248.106.64
+smtp.microsoft.com.	3600	IN	A	205.248.106.30
+smtp.microsoft.com.	3600	IN	A	205.248.106.32
+smtp.microsoft.com.	3600	IN	A	131.107.115.212
+search.microsoft.com.	0	IN	CNAME	search.microsoft.akadns.net.
+search.microsoft.akadns.net. 0	IN	CNAME	search.msn.com.edgesuite.net.
+search.msn.com.edgesuite.net. 0	IN	CNAME	a134.g.akamai.net.
+a134.g.akamai.net.	19	IN	A	209.107.220.27
+a134.g.akamai.net.	19	IN	A	209.107.220.35
+dev.microsoft.com.	0	IN	CNAME	msdn.microsoft.com.
+msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
+msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
+img.microsoft.com.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
+i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
+a1475.g.akamai.net.	20	IN	A	165.254.158.48
+a1475.g.akamai.net.	20	IN	A	165.254.158.9
+news.microsoft.com.	0	IN	CNAME	msnews.microsoft.com.
+msnews.microsoft.com.	3600	IN	A	207.46.248.16
+mail2.microsoft.com.	3600	IN	A	131.107.115.215
+beta.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
+connect.microsoft.akadns.net. 300 IN	A	65.52.103.84
+support.microsoft.com.	0	IN	CNAME	mso-geo.microsoft.akadns.net.
+mso-geo.microsoft.akadns.net. 0	IN	CNAME	support.microsoft.akadns.net.
+support.microsoft.akadns.net. 175 IN	A	157.56.56.139
+my.microsoft.com.	3600	IN	A	134.170.255.29
+help.microsoft.com.	0	IN	CNAME	help.msn.com.
+mail3.microsoft.com.	3600	IN	A	131.107.115.214
+download.microsoft.com.	0	IN	CNAME	download.microsoft.com.nsatc.net.
+download.microsoft.com.nsatc.net. 0 IN	CNAME	main.dl.ms.akadns.net.
+main.dl.ms.akadns.net.	0	IN	CNAME	download.microsoft.com.edgesuite.net.
+download.microsoft.com.edgesuite.net. 0	IN CNAME a954.dscms.akamai.net.
+a954.dscms.akamai.net.	0	IN	CNAME	a954.dscms.akamai.net.0.1.cn.akamaitech.net.
+a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.184
+a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.168
+shop.microsoft.com.	3600	IN	A	64.4.11.37
+shop.microsoft.com.	3600	IN	A	65.55.58.201
+games.microsoft.com.	3600	IN	A	207.46.166.10
+business.microsoft.com.	3600	IN	A	65.55.57.98
+ws.microsoft.com.	0	IN	CNAME	ws.microsoft.com.nsatc.net.
+gateway.microsoft.com.	3600	IN	A	131.107.16.142
+gateway.microsoft.com.	3600	IN	A	131.107.16.143
+members.microsoft.com.	0	IN	CNAME	members.microsoft.akadns.net.
+members.microsoft.akadns.net. 219 IN	A	65.55.57.28
+c.microsoft.com.	0	IN	CNAME	c.microsoft.akadns.net.
+c.microsoft.akadns.net.	215	IN	A	65.55.58.199
+g.microsoft.com.	0	IN	CNAME	g.msn.com.
+g.msn.com.		0	IN	CNAME	g.msn.com.nsatc.net.
+g.msn.com.nsatc.net.	142	IN	A	131.253.34.154
+mail4.microsoft.com.	3600	IN	A	205.248.106.64
+mail1.microsoft.com.	3600	IN	A	131.107.115.212
+apps.microsoft.com.	0	IN	CNAME	apps.windows.akadns.net.
+apps.windows.akadns.net. 0	IN	CNAME	services.windows.akadns.net.
+services.windows.akadns.net. 0	IN	CNAME	services-perf.windows.akadns.net.
+services-perf.windows.akadns.net. 46 IN	A	134.170.30.204
+email.microsoft.com.	1989	IN	A	157.55.150.73
+i.microsoft.com.	0	IN	CNAME	i.toggle.www.ms.akadns.net.
+i.toggle.www.ms.akadns.net. 0	IN	CNAME	i.g.www.ms.akadns.net.
+i.g.www.ms.akadns.net.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
+i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
+a1475.g.akamai.net.	8	IN	A	23.62.111.114
+a1475.g.akamai.net.	8	IN	A	23.62.111.104
+s.microsoft.com.	0	IN	CNAME	reroute.microsoft.com.
+reroute.microsoft.com.	3600	IN	A	64.4.11.37
+reroute.microsoft.com.	3600	IN	A	65.55.58.201
+community.microsoft.com. 0	IN	CNAME	communities.microsoft.com.
+communities.microsoft.com. 3600	IN	A	64.4.11.37
+communities.microsoft.com. 3600	IN	A	65.55.58.201
+connect.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
+connect.microsoft.akadns.net. 152 IN	A	65.52.103.84
+rss.microsoft.com.	796	IN	A	65.55.58.201
+rss.microsoft.com.	796	IN	A	64.4.11.37
+home.microsoft.com.	0	IN	CNAME	redir.blu.cb3.glbdns.microsoft.com.
+redir.blu.cb3.glbdns.microsoft.com. 116	IN A	65.55.206.229
+jp.microsoft.com.	3600	IN	A	65.55.58.201
+jp.microsoft.com.	3600	IN	A	64.4.11.37
+labs.microsoft.com.	3600	IN	A	64.4.11.37
+labs.microsoft.com.	3600	IN	A	65.55.58.201
+exchange.microsoft.com.	2120	IN	A	65.55.31.35
+marketing.microsoft.com. 3600	IN	A	207.46.242.110
+mac.microsoft.com.	3600	IN	A	64.4.11.37
+mac.microsoft.com.	3600	IN	A	65.55.58.201
+feeds.microsoft.com.	3600	IN	A	65.55.57.98
+partners.microsoft.com.	0	IN	CNAME	pmc.partners.microsoft.akadns.net.
+pmc.partners.microsoft.akadns.net. 300 IN A	131.107.119.14
+feed.microsoft.com.	0	IN	CNAME	feed.trafficmanager.net.
+feed.trafficmanager.net. 0	IN	CNAME	feedna.cloudapp.net.
+feedna.cloudapp.net.	10	IN	A	65.52.9.172
+partner.microsoft.com.	0	IN	CNAME	portal.partners.microsoft.akadns.net.
+portal.partners.microsoft.akadns.net. 300 IN A	131.107.119.163
+cs.microsoft.com.	0	IN	CNAME	wedcs.trafficmanager.net.
+wedcs.trafficmanager.net. 0	IN	CNAME	wedcseus.cloudapp.net.
+wedcseus.cloudapp.net.	10	IN	A	137.116.48.250
+forums.microsoft.com.	0	IN	CNAME	forums.microsoft.akadns.net.
+forums.microsoft.akadns.net. 600 IN	A	65.52.103.99
+meet.microsoft.com.	3600	IN	A	131.107.1.71
+e.microsoft.com.	3600	IN	A	191.234.1.50
+autodiscover.microsoft.com. 2358 IN	A	131.107.125.5
+im.microsoft.com.	3600	IN	A	131.107.1.75
+sip.microsoft.com.	2228	IN	A	65.55.30.130
+me.microsoft.com.	0	IN	CNAME	edm.cloudapp.net.
+dig: 'm..microsoft.com' is not a legal name (empty label)
+billing.microsoft.com.	0	IN	CNAME	paymenthubprod.trafficmanager.net.
+paymenthubprod.trafficmanager.net. 0 IN	CNAME	paymenthubuxprod1.cloudapp.net.
+paymenthubuxprod1.cloudapp.net.	10 IN	A	168.62.198.20
+profile.microsoft.com.	0	IN	CNAME	profile.microsoft.akadns.net.
+profile.microsoft.akadns.net. 335 IN	A	64.4.11.47
+research.microsoft.com.	806	IN	A	131.107.65.14
+sharepoint.microsoft.com. 3463	IN	A	64.4.6.100
+sharepoint.microsoft.com. 3463	IN	A	65.55.39.10
+appdev.microsoft.com.	0	IN	CNAME	appdev.windows.akadns.net.
+appdev.windows.akadns.net. 131	IN	A	134.170.30.200
+newsletters.microsoft.com. 3150	IN	A	207.46.248.35
+advertising.microsoft.com. 0	IN	CNAME	advertising.microsoft.com.nsatc.net.
+advertising.microsoft.com.nsatc.net. 245 IN A	65.52.100.46
+catalog.microsoft.com.	0	IN	CNAME	genuine.microsoft.akadns.net.
+genuine.microsoft.akadns.net. 300 IN	A	65.55.58.177
+social.microsoft.com.	0	IN	CNAME	lb.social.ms.akadns.net.
+lb.social.ms.akadns.net. 54	IN	A	65.52.103.78
+events.microsoft.com.	1776	IN	A	64.4.11.31
+events.microsoft.com.	1776	IN	A	65.55.58.192
+ajax.microsoft.com.	0	IN	CNAME	mscomajax.vo.msecnd.net.
+mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.164
+mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.12
+developer.microsoft.com. 0	IN	CNAME	msdn.microsoft.com.
+msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
+msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
+bbs.microsoft.com.	0	IN	CNAME	transfer.microsoft.com.
+transfer.microsoft.com.	3600	IN	A	64.4.10.152
+backoffice.microsoft.com. 3600	IN	A	64.4.11.37
+backoffice.microsoft.com. 3600	IN	A	65.55.58.201
+</code></pre>
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+
+
+</body>
+</html>
+

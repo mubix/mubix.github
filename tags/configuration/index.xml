@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Configuration on Room362</title>
+    <link>http://room362.com/tags/configuration/</link>
+    <description>Recent content in Configuration on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 17 Feb 2015 12:11:28 -0500</lastBuildDate>
+    <atom:link href="http://room362.com/tags/configuration/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>pfSense without Internets</title>
+      <link>http://room362.com/post/2015/pfsense-without-internets/</link>
+      <pubDate>Tue, 17 Feb 2015 12:11:28 -0500</pubDate>
+      
+      <guid>http://room362.com/post/2015/pfsense-without-internets/</guid>
+      <description>&lt;p&gt;A while back I needed to set up a pfSense box for CTF/example stuff that didn&amp;rsquo;t and wouldn&amp;rsquo;t ever have Internet connectivity. Doesn&amp;rsquo;t seem like much of a task right? Just pop it in and go. Problem is that you loose the use of the packages that help make pfSense so awesome.&lt;/p&gt;
+
+&lt;p&gt;Once I figured it out at that time, I made a Forum post so that anyone running into the same issue wouldn&amp;rsquo;t have to struggle as much:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://forum.pfsense.org/index.php?topic=55504.0&#34;&gt;https://forum.pfsense.org/index.php?topic=55504.0&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Most things never disappear from the Internet but I was looking for an old forum post I had bookmarked regarding some persistence methods that I noticed was no longer there since the forum owner had gotten rid of the forum as too much hassle. I get it, but when I went to Archive.org to get saved they didn&amp;rsquo;t have a copy. So this is what this post is for, to save that content just in case it disappears.&lt;/p&gt;
+
+&lt;p&gt;Also, here is a bug report for the &amp;ldquo;issue&amp;rdquo; (been open since 2012):&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://redmine.pfsense.org/issues/2586&#34;&gt;http://redmine.pfsense.org/issues/2586&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you are following:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://doc.pfsense.org/index.php/Creating_Your_Own_Package_Repository&#34;&gt;http://doc.pfsense.org/index.php/Creating_Your_Own_Package_Repository&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;and you are getting:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Unable to communicate with 192.168.1.100 Please verify DNS and interface configuration, and that pfSense has functional Internet connectivity.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;because you are using the repo to enable a offline (non internet connected) host to be able to utilize packages all you have to do is:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Go into Services -&amp;gt; DNS Forwarder and add a Host Override&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Host: www
+Domain: pfsense.org
+IP Address: 127.0.0.1
+Description: null routed record to enable offline repo
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then make sure you have the IP or hostname of your package repository web server in the &lt;code&gt;/pkg_mgr_settings.php&lt;/code&gt; (on 2.0, follow the guidelines on the doc above for older versions). After that you should be good to go. Of course this is barring any Firewall blockages you might have in place so be sure to test connectivity from the pfSense box to the web server.&lt;/p&gt;
+
+&lt;p&gt;So, that was just the beginning, it&amp;rsquo;s actually better to not null-route it but make the following entries:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;files.pfsense.org - 192.168.1.100
+files.pfsense.com - 192.168.1.100
+www.pfsense.org - 192.168.1.100
+www.pfsense.com - 192.168.1.100
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If your package web server is 192.168.1.100.
+Next is the problem of not having the packages themselves. So &lt;code&gt;wget -mk -np http://files.pfsense.org/packages/&lt;/code&gt; gave me a directory that I plopped into my already existant packages directory (created from the git clone as described in the documentation) but the problem I ran into was the php files being rendered still (which made any packages that pulled php files get the rendered version instead of source).&lt;/p&gt;
+
+&lt;p&gt;So you need to add a &lt;code&gt;.htaccess&lt;/code&gt; file in the packages directory with the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;RemoveHandler .php .phtml .php3
+RemoveType .php .phtml .php3
+php_flag engine off
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Make sure that &lt;code&gt;AllowOverride all&lt;/code&gt; is enabled if you are running Apache to host the package site, if not, you&amp;rsquo;ll have to google how to allow &lt;code&gt;.htaccess&lt;/code&gt; files for your particular server. (or if you server doesn&amp;rsquo;t support htaccess files then how to enable source disclosure)&lt;/p&gt;
+
+&lt;p&gt;After those alterations I seem to be off to the races for the most part. Some packages pull from other websites, but altering the &lt;code&gt;package_8.xml&lt;/code&gt; or just rerouting the dns seems to solve most of those issues.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

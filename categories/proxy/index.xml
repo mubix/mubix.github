@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Proxy on Room362</title>
+    <link>http://room362.com/categories/proxy/</link>
+    <description>Recent content in Proxy on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 10 Sep 2013 13:16:39 -0500</lastBuildDate>
+    <atom:link href="http://room362.com/categories/proxy/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Changing proxychains hardcoded DNS server</title>
+      <link>http://room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</link>
+      <pubDate>Tue, 10 Sep 2013 13:16:39 -0500</pubDate>
+      
+      <guid>http://room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</guid>
+      <description>&lt;p&gt;If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it.&lt;/p&gt;
+
+&lt;p&gt;There isn&amp;rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
+(on Kali linux its found here: /usr/lib/proxychains3/proxyresolv)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/sh
+# This script is called by proxychains to resolve DNS names
+# DNS server used to resolve names
+DNS_SERVER=4.2.2.2
+
+if [ $# = 0 ] ; then
+echo &amp;quot; usage:&amp;quot;
+echo &amp;quot; proxyresolv &amp;lt;hostname&amp;gt; &amp;quot;
+exit
+fi
+
+export LD_PRELOAD=libproxychains.so.3
+dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&amp;rsquo;s internal IP, up to you, but now its documented and I&amp;rsquo;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&amp;rsquo;s blog.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Setting SYSTEM&#39;s proxy settings with Metasploit</title>
+      <link>http://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</link>
+      <pubDate>Sun, 21 Oct 2012 07:40:11 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
+      <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)&lt;/p&gt;
+
+&lt;p&gt;Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.&lt;/p&gt;
+
+&lt;p&gt;Its here if you want to take a whack at it: &lt;code&gt;external/source/shellcode/windows/x86/src/block/block_reverse_https_proxy.asm&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;One of the ways @&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;carnal0wnage&lt;/a&gt; and I demoed @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; was using the bitsadmin binary. Windows7/Vista/2008 come with version 2.0+ which has this great ability to run the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;bitsadmin /util /setieproxy localsystem MANUAL_PROXY 192.168.1.55:3128 &amp;quot;;&amp;quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;(2000,XP,2003 you could upload a copy of bitsadmin that was new enough and that would still work)&lt;/p&gt;
+
+&lt;p&gt;That command sets the proxy settings for the SYSTEM account. I was able to jump through hoops and do this remotely by using the windows/exec payload via psexec, then reverse_http(s) would work.&lt;/p&gt;
+
+&lt;p&gt;But I wanted a better way to do this. I watched the execution of bitsadmin to see what it was doing and all it was actually doing is setting a registry key. Awesome, I can do that.&lt;/p&gt;
+
+&lt;p&gt;Enter enum_proxy:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Output from it finding a disabled RemoteRegistry:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf post(enum_proxy) &amp;gt; run
+
+[-] Unable to contact remote registry service on 172.16.10.217
+[*] Attempting to start service remotely...
+[*] Proxy Counter = 9
+[*] Setting: WPAD and AutoConfigure script
+[*] AutoConfigURL: http://anotherproxyserver/pac.pac
+[*] Post module execution completed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&amp;ldquo;Awesome but you promised setting the proxy settings&amp;rdquo;, well right now all I can give you is a cloner ;-)&lt;/p&gt;
+
+&lt;p&gt;Enter clone_proxy_settings module:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_proxy_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And thats it. Still working on an actual &amp;ldquo;set_proxy&amp;rdquo; module, but this should do for now, and a lot less to type.&lt;/p&gt;
+
+&lt;p&gt;As of this post both are currently pull requests:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/942&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/942&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/943&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/943&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Lab Setup - Windows Proxy and Egress Filtering</title>
+      <link>http://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</link>
+      <pubDate>Sat, 06 Oct 2012 03:02:45 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
+
+&lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
+
+&lt;p&gt;First we&amp;rsquo;ll talk about AnalogX&amp;rsquo;s proxy, you can get it here: &lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With the following ports listening:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;HTTP (web browsers) (port 6588)&lt;/li&gt;
+&lt;li&gt;HTTPS (secure web browsers) (port 6588)&lt;/li&gt;
+&lt;li&gt;SOCKS4 (TCP proxying) (port 1080)&lt;/li&gt;
+&lt;li&gt;SOCKS4a (TCP proxying w/ DNS lookups) (port 1080)&lt;/li&gt;
+&lt;li&gt;SOCKS5 (only partial support, no UDP) (port 1080)&lt;/li&gt;
+&lt;li&gt;NNTP (usenet newsgroups) (port 119)&lt;/li&gt;
+&lt;li&gt;POP3 (receiving email) (port 110)&lt;/li&gt;
+&lt;li&gt;SMTP (sending email) (port 25)&lt;/li&gt;
+&lt;li&gt;FTP (file transfers) (port 21)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So you can test everything to your hearts content that it goes through a proxy, using any proxy type you want basically.&lt;/p&gt;
+
+&lt;p&gt;(I will assume here that you know how to setup your own proxy settings for your OS)&lt;/p&gt;
+
+&lt;p&gt;But the problem being that if your code / application misbehaves it will still get out. You could go to the trouble of fiddling with the Windows firewall if you are running Windows 7 (not sure if XP can box egress, probably can). But I like simple and straight forward solutions.&lt;/p&gt;
+
+&lt;p&gt;PeerBlock can be found here: &lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;http://www.peerblock.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_3.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And is simple to set up as well (next-&amp;gt;next-&amp;gt;finish applies).&lt;/p&gt;
+
+&lt;p&gt;Go into List Manager once you have it installed and &amp;ldquo;Create a List&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
+
+&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&amp;rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
+
+&lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

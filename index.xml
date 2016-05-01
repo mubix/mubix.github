@@ -7,8 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Mon, 04 Apr 2016 15:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Sun, 01 May 2016 07:35:28 -0500</lastBuildDate>
     <atom:link href="http://room362.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>BlackHat USA 2016</title>
+      <link>http://room362.com/post/2016/blackhat-usa-2016/</link>
+      <pubDate>Sun, 01 May 2016 07:35:28 -0500</pubDate>
+      
+      <guid>http://room362.com/post/2016/blackhat-usa-2016/</guid>
+      <description>&lt;p&gt;Once again, &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; and I will be teaching both our &lt;a href=&#34;https://www.blackhat.com/us-16/training/abilities-inc-metasploit-basics.html&#34;&gt;Metasploit Basics&lt;/a&gt; course as well as the &lt;a href=&#34;https://www.blackhat.com/us-16/training/abilities-inc-metasploit-mastery.html&#34;&gt;Mastery Course&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://www.blackhat.com/us-16/training/index.html&#34;&gt;&lt;img src=&#34;http://room362.com/images/2016/bh16usa.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Metasploit Minute</title>
@@ -587,86 +599,6 @@ a pretty high risk.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;ShmooCon runs an AA meeting at the con&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;Lets stop losing our friends and family because we are too weak to say &amp;lsquo;no thank you&amp;rsquo; when someone approaches the dais with a shot.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Effective NTLM / SMB Relaying</title>
-      <link>http://room362.com/post/2014/2014-05-21-effective-ntlm-slash-smb-relaying/</link>
-      <pubDate>Wed, 21 May 2014 17:16:37 -0400</pubDate>
-      
-      <guid>http://room362.com/post/2014/2014-05-21-effective-ntlm-slash-smb-relaying/</guid>
-      <description>
-
-&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/SMBRelay&#34;&gt;SMB Relay&lt;/a&gt; has been around for a long while. I even have a post about using it along with LNK files here: &lt;a href=&#34;http://room362.com/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018/&#34;&gt;MS08-068 + MS10-046 = Fun until 2018&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Here is the problem though. Most of the tools to exploit it either catch the authentication in NTLMv2/NTLMv1 (which is not always easy to crack) or assume administrative access (because they attempt to PSEXEC with the incoming session). Well, since MS08-068 thats much harder to pin down. You have to know who is going to hit your relay server and what other location they might be an admin on. You also have to a service you want to run on that target.&lt;/p&gt;
-
-&lt;h3 id=&#34;current-tools:101ca14799cbfb3dc70715a9b42525cd&#34;&gt;Current Tools:&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.xfocus.net/articles/200305/smbrelay.html&#34;&gt;SMBRelay&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.tarasco.org/security/smbrelay/&#34;&gt;SMBRelay3&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href=&#34;https://github.com/SpiderLabs/Responder&#34;&gt;SpiderLabs Responder&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://corelabs.coresecurity.com/index.php?module=Wiki&amp;amp;action=view&amp;amp;type=tool&amp;amp;name=Impacket&#34;&gt;SMBRelayX in Impacket&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/server/http_ntlmrelay.rb&#34;&gt;HTTP NTLM Relay Metasploit Module&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/smb/smb_relay.rb&#34;&gt;SMB Relay PSExec Metasploit Module&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/admin/oracle/ora_ntlm_stealer.rb&#34;&gt;Oracle SMB Relay Metasploit Module&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/auxiliary/scanner/sap/sap_smb_relay.rb&#34;&gt;SAP SMB Relay Metasploit Module&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;soft-relay-tools:101ca14799cbfb3dc70715a9b42525cd&#34;&gt;&amp;ldquo;Soft&amp;rdquo; relay tools:&lt;/h3&gt;
-
-&lt;p&gt;Now, some would argue that you just spin up the relay at a target then leave it until one pops. I&amp;rsquo;m not really a fan of that. You will not only be creating multiple access attempt log entries, but you are also just throwing away all of those user authentication attempts. There are 3 tools that agree with me.&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;https://code.google.com/p/squirtle/&#34;&gt;Squirtle&lt;/a&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Squirtle is awesome plus it&amp;rsquo;s written in a language I understand (ruby) but it has one serious downfall, many of the post-auth features are left up to the user to develop. It does have a great API but needs some coding to get to do certain things.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://intercepter.nerf.ru/&#34;&gt;Intercepter-NG&lt;/a&gt;
-
-&lt;ul&gt;
-&lt;li&gt;I have tested Interceptre-NG out a lot and it has some fantastic features, not to mention that it does relaying on a Windows host, which is impressive all by itself (due to 445 default bind). My only problem with it is that it&amp;rsquo;s closed source. But definitely recommended.&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;The 3rd is a tool called &amp;ldquo;ZackAttack&amp;rdquo; by &lt;a href=&#34;https://twitter.com/zfasel&#34;&gt;Zack Fasel&lt;/a&gt;, you can find it here on &lt;a href=&#34;https://github.com/urbanesec/ZackAttack&#34;&gt;Github:ZackAttack&lt;/a&gt;. You can find the video of the talk releasing this tool on &lt;a href=&#34;https://www.youtube.com/watch?v=nHU3ujyw_sQ&#34;&gt;Youtube&lt;/a&gt;. So what is so special about this tool? Other than the fact that most of the web interface is broken horribly it has this amazing bit of code that acts as a SOCKS proxy. This SOCKS proxy identifies SMB or HTTP traffic that has NTLM authentication going on and rewrites it based on captured sessions.&lt;/p&gt;
-
-&lt;p&gt;What does this mean? If I use SpiderLab&amp;rsquo;s Responder, for instance, to spoof/get/fake a bunch of users into connecting to my machine via automatic or forced methods to the capture/keep services that ZackAttack spins up, I can then run smbclient or Outlook or Web browser, push it through the ZackAttack SOCKS proxy, pick a username out of the captured names, and use any password I want when asked, and the SOCKS proxy will automatically replace it en route with the valid session information.&lt;/p&gt;
-
-&lt;p&gt;This way I can use every authentication that comes in to its highest potential for pwnage. The video below shows how this can be used to connect to a &amp;ldquo;Network share&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Update: One thing to mention that ZackAttack does that I haven&amp;rsquo;t seen other tools do, even Squirtle or Intercepter-NG is getting 3+ successful authentications out of a single relay from a user. ZackAttack does this with some clever HTTP Keep-Alive and SMB &amp;ldquo;reauth&amp;rdquo; kung fu.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;iframe width=&#34;420&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/05W5tUG7z2M&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
-
-&lt;h3 id=&#34;other-references:101ca14799cbfb3dc70715a9b42525cd&#34;&gt;Other References:&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://blog.spiderlabs.com/2014/02/responder-20-owning-windows-networks-part-3.html&#34;&gt;2014-02 &lt;strong&gt;SpiderLabs&lt;/strong&gt; - Responder 2.0 Owning Windows Networks Part 3&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.netspi.com/blog/entryid/213/smb-attacks-through-directory-traversal&#34;&gt;2014-01 &lt;strong&gt;NetSPI Blog&lt;/strong&gt; - SMB Attacks Through Directory Traversal&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://intercepter.nerf.ru/SMB_Hijacking.Kerberos_is_defeated.pdf&#34;&gt;2013-06 &lt;strong&gt;Ares&lt;/strong&gt; - SMB Hijacking Kerberos is defeated&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://pen-testing.sans.org/blog/pen-testing/2013/04/25/smb-relay-demystified-and-ntlmv2-pwnage-with-python&#34;&gt;2013-04 &lt;strong&gt;SANS Pentesting Blog&lt;/strong&gt; - SMB Relay Demystified and NTLMv2 Pwnage with Python&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.screencast.com/users/Core_Security/folders/Training%20Videos%20for%20CORE%20Impact%20Pro/media/c48247ab-1f0b-4e86-a78a-1d7e347c0989&#34;&gt;2013-01 &lt;strong&gt;Core Security Training Video&lt;/strong&gt; - How To Perform a SMB Relay Attack&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://markgamache.blogspot.com/2013/01/ntlm-challenge-response-is-100-broken.html&#34;&gt;2013-01 &lt;strong&gt;Mark Gamache&lt;/strong&gt; - NTLM Challenge Response is 100% Broken&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.netspi.com/blog/entryid/139/executing-smb-relay-attacks-via-sql-server-using-metasploit&#34;&gt;2012-12 &lt;strong&gt;NetSPI Blog&lt;/strong&gt; - Executing SMB Relay Attacks via SQL Server using Metasploit&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://webstersprodigy.net/2012/07/22/metasploit-generic-ntlm-relay-module/&#34;&gt;2012-07 &lt;strong&gt;WebstersProdigy&lt;/strong&gt; - Metasploit Generic NTLM Relay Module&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://intercepter.nerf.ru/Actuality_of_SMBRelay_in_Modern_Windows_Networks.pdf&#34;&gt;2012-04 &lt;strong&gt;Ares&lt;/strong&gt; - Actuality of SMBRelay in Modern Windows Networks&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://erpscan.com/?s=smbrelay+bible&amp;amp;x=0&amp;amp;y=0&#34;&gt;2011-01 &lt;strong&gt;Digital Security Research Group Blog&lt;/strong&gt; - SMBRelay Bible&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://vimeo.com/5500931&#34;&gt;2009-07 &lt;strong&gt;Carnal0wnage&lt;/strong&gt; - Metasploit Oracle TNSCMD SMBRelay Demo&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://blog.skullsecurity.org/2008/ms08-068-preventing-smbrelay-attacks&#34;&gt;2008-11 &lt;strong&gt;Ron Bowes&lt;/strong&gt; - Preventing SMB Relay Attacks&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://squirtle.googlecode.com/files/NTLM%20is%20Dead%20-%20DefCon%2016.pdf&#34;&gt;2008-08 &lt;strong&gt;Kurt Grutzmacher at DEF CON 16&lt;/strong&gt; - NTLM is Dead!&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://heasman.blogspot.com/2008/06/stealing-password-hashes-with-java-and.html&#34;&gt;2008-06 &lt;strong&gt;John Heasman&lt;/strong&gt; - Stealing Password Hashes with Java and IE&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.powershow.com/view/28526-OWZjN/NTLM_Relay_Attacks_powerpoint_ppt_presentation&#34;&gt;2008-04 &lt;strong&gt;Eric Rachner: NTLM Relay Attacks&lt;/strong&gt; - Released tool &amp;lsquo;scurvy&amp;rsquo;&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.blackhat.com/presentations/bh-usa-07/Moore_and_Valsmith/Presentation/bh-usa-07-moore_and_valsmith.pdf&#34;&gt;2007-08 &lt;strong&gt;HD Moore and Valsmith&lt;/strong&gt; - Tactical Exploitation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://web.archive.org/web/20060719183135/http://www.isecpartners.com/documents/NTLM_Unsafe.pdf&#34;&gt;2004-12 (ARCHIVE.ORG) &lt;strong&gt;Jesse Burns at SySCAN&lt;/strong&gt; - NTLM Authentication Unsafe&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.securityfriday.com/tools/ScoopLM.html&#34;&gt;2002-01 &lt;strong&gt;Azbil SecurityFriday Ltd&lt;/strong&gt; - ScoopLM&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.xfocus.net/articles/200305/smbrelay.html&#34;&gt;2001-03 &lt;strong&gt;@lantaCon&lt;/strong&gt; - Reference from &lt;strong&gt;March 31 2001 talk&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I tried finding all the original/semi original references about SMB (LM/NTLM) Relaying. If you have others please leave a comment below so I can add them to the list.&lt;/p&gt;
 </description>
     </item>
     

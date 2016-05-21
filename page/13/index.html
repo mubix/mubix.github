@@ -219,6 +219,76 @@
     
       <article>
   <header>
+    <h2><a href="http://room362.com/post/2011/2011-05-30-remotely-suspend-all-threads-with-meterpreter/">Remotely Suspend All Threads with Meterpreter</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>30 May 2011, 21:52</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Just a follow up to my previous post. One of the things that sets that method apart is the fact that the suspension (once the DLL injection occurs) comes from within the process, and it suspends all the child processes as well. Another way you can do this without the injection is just sending a suspend to all the threads in the process. pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targetprocess.thread.each_thread do |x| targetprocess.thread.open(x).suspend end We open the process just like we did before, and make a very simple &lsquo;each_thread&rsquo; loop.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-05-30-remotely-suspend-all-threads-with-meterpreter/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="http://room362.com/post/2011/2011-05-30-remote-dll-injection-with-meterpreter/">Remote DLL Injection with Meterpreter</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>30 May 2011, 16:35</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Recently Didier Stevens wrote &lsquo;Suspender.dll&rsquo; which is a DLL that will suspend a process and all of it&rsquo;s child processes after a delay. 60 seconds is it&rsquo;s default but you can rename the DLL to add a number (as such &lsquo;Suspender10.dll&rsquo; for 10 seconds) to make the delay whatever you wish. You can find the blog post and download here: http://blog.didierstevens.com/2011/04/27/suspender-dll/ Jonathan Cran and I had the same idea, as I&rsquo;m sure many others did as well.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-05-30-remote-dll-injection-with-meterpreter/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="http://room362.com/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/">Dumping Hashes on Win2k8 R2 x64 with Metasploit</a></h2>
 
     <div class="post-meta">
@@ -471,76 +541,6 @@
   CORRECTION: Thanks to jduck for pointing it out, but you need to actually make a change to get this to work, reference: http://www.catonmat.net/blog/the-definitive-guide-to-bash-command-line-history/ and search for: Modifying History Behavior You simply put a space before it mubix@localhost:/tmp/demo$ ls -alh total 8.0K drwxr-xr-x 2 mubix mubix 4.0K Mar 1 19:43 . drwxrwxrwt 3 root root 4.0K Mar 1 19:43 .. -rw-r--r-- 1 mubix mubix 0 Mar 1 19:43 bob mubix@localhost:/tmp/demo$ cat ~/.bash_history ls -alh mubix@localhost:/tmp/demo$ mysecretlogin -u bobsuruncle -p allacazaam mubix@localhost:/tmp/demo$ cat ~/.bash_history ls -alh mubix@localhost:/tmp/demo$ Works well for backdoors you don&rsquo;t want caught via the .bash_history as well ;-) More CCDC tricks as I think of them..
   </p>
 
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2011/2011-03-02-destructive-doskey-aliases/">Destructive DOSKEY aliases</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>02 Mar 2011, 20:05</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Not sure how far back it goes (Win95?) but 2000, XP and all the way up to Win 7 have a program called DOSKEY: C:\Users\vmadmin&gt;doskey /? Edits command lines, recalls Windows commands, and creates macros. DOSKEY [/REINSTALL] [/LISTSIZE=size] [/MACROS[:ALL | :exename]] [/HISTORY] [/INSERT | /OVERSTRIKE] [/EXENAME=exename] [/MACROFILE=filename] [macroname=[text]] /REINSTALL Installs a new copy of Doskey. /LISTSIZE=size Sets size of command history buffer. /MACROS Displays all Doskey macros. /MACROS:ALL Displays all Doskey macros for all executables which have Doskey macros.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-03-02-destructive-doskey-aliases/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2011/2011-03-01-creating-vulnerabilities-nfs-exports/">Creating Vulnerabilities: NFS Exports</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Mar 2011, 20:40</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Constant connections and odd binaries running on systems usually get caught pretty quickly in CCDC events. However, NFS exports are hardly ever noticed. Setting it up on an Ubuntu/Debian box is a snap and given the right directory and permissions can lead you right back to getting shell any time you want without a constant connection. Plus, NFS blends right in and can listen on TCP and/or UDP (2049) Here is a quick how-to on setting up NFS https://help.ubuntu.com/community/SettingUpNFSHowTo I&rsquo;m sure you can think of much more evil locations but /etc/, /var/www/, and /root/ are some of my favorite exports, but there is no reason why you couldn&rsquo;t just export &lsquo;/&rsquo; that I know of.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-03-01-creating-vulnerabilities-nfs-exports/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
   
 </article>
 

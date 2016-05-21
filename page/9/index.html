@@ -219,6 +219,41 @@
     
       <article>
   <header>
+    <h2><a href="http://room362.com/post/2012/2012-06-28-netstat-post-module-for-meterpreter/">Netstat Post Module for Meterpreter</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>28 Jun 2012, 13:18</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Submitted it to MSF via pull request here: https://github.com/rapid7/metasploit-framework/pull/538 Added to trunk: https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb I promised this one a while ago, sorry for the delay. This only does TCP, it&rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&rsquo;s real simple, first we&rsquo;ve gotta add the GetTcpTable function to railgun: session.railgun.add_function('iphlpapi', 'GetTcpTable', 'DWORD', [ ['PBLOB', 'pTcpTable', 'out'], ['PDWORD', 'pdwSize', 'inout'], ['BOOL', 'bOrder', 'in'] ]) Then gauge the size of the table: getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true) buffersize = getsize['pdwSize'] Run the call again with the correct buffer size: tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true) Then it&rsquo;s all just parsing the result.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-06-28-netstat-post-module-for-meterpreter/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="http://room362.com/post/2012/2012-06-25-evidence-of-compromise-metasploits-psexec/">Evidence of Compromise - Metasploit&#39;s PSEXEC</a></h2>
 
     <div class="post-meta">
@@ -512,37 +547,6 @@
 
   <p>
   Since this is a constantly updating slide deck I figured I&rsquo;d post it here so I didn&rsquo;t have to keep emailing it out. ;-) If you have comments or if something is wrong grammatically, technically or in any other way I&rsquo;d love input. Suggestions also welcome. Here is a link straight to the doc if you want to comment or add it to your google docs list: https://docs.google.com/presentation/d/1pPXLg3KqwSMLRCNRfows5QnVI2mLjSmll5vN2WHMFJg/edit
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2012/2012-03-04-who-is-on-your-dream-team-red-team/">Who is on your dream team red team?</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>04 Mar 2012, 10:21</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  This was an honest idea to help identify people that might not get the media attention of other &ldquo;Top X in Infosec&rdquo; lists. But I should have known better than to put a poll on the internet&hellip;
   </p>
 
   

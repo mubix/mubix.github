@@ -7,7 +7,7 @@
   <meta name="description" content="Home of mubix, the infosec treehugger">
   <meta name="generator" content="Hugo 0.15" />
 
-  <title>Room362</title>
+  <title>Persistence &middot; Room362</title>
 
   
   
@@ -210,22 +210,20 @@
 
 
 <div class="header">
-  <h1>Room362</h1>
-  <h2>Blatherings of a security addict</h2>
+  <h1>Persistence</h1>
 </div>
 
 <div class="content">
   
-    
-      <article>
+    <article>
   <header>
-    <h2><a href="http://room362.com/post/2005/2005-08-01-brute-force-spam/">Brute Force Spam</a></h2>
+    <h2><a href="http://room362.com/post/2016/wpad-persistence/">WPAD Persistence</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Aug 2005, 05:52</time>
+    <time>22 May 2016, 21:55</time>
   </div>
 
   
@@ -233,136 +231,37 @@
   
 
   
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/persistence">persistence</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/wpad">wpad</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="http://room362.com/tags/dns">dns</a>
+    
+  </div>
+  
+  
 
 </div>
 
   </header>
 
   <p>
-  Here is the source of the email I got (new hacking sytle, brute force spamming) : From - Mon Aug 01 00:51:54 2005 Received: from andylau.net (andylau-net.mr.outblaze.com [205.158.62.181]) by cpe-066-056-247-120.ec.res.rr.com (Postfix) with ESMTP id CACB489394 for &lt;sgrduklhaergt@room362.com&gt;; Sun, 31 Jul 2005 12:08:10 -0700 From: &quot;Pancakes O. Making&quot; &lt;riel@andylau.net&gt; To: Sgrduklhaergt &lt;sgrduklhaergt@room362.com&gt; Subject: hi Date: Sun, 31 Jul 2005 12:08:10 -0700 Message-ID: &lt;001101c59603$b5b7b45d$2c4260db@andylau.net&gt; MIME-Version: 1.0 Content-Type: text/plain Content-Transfer-Encoding: 7bit X-Priority: 3 (Normal) X-MSMail-Priority: Normal X-Mailer: Microsoft Outlook, Build 10.0.2616 Importance: Normal X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000 X-AntiVirus: OK!
+  Mostly just writing this so I can keep notes. Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol I did this via PowerShell pretty easily on one of the domain controllers like so: PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74 Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain.
   </p>
 
   
   <footer>
-    <a href="/post/2005/2005-08-01-brute-force-spam/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="/post/2016/wpad-persistence/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
 
-    
   
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2005/2005-08-01-defcon-resolutions/">Defcon Resolutions</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Aug 2005, 04:30</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  To celebrate the close of DefCon 13 here are my&hellip; New Defcon (14) Resolutions. Get l0gic a girl to take to DefCon Get duder out to the east coast Make and print Project Mentor T-Shirts to give away and wear to DefCon Creat a DCMar Group Watch Family Guy and Futurerama episodes as instructed by l0gic Get BFA w/ Card
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2005/2005-07-31-force-infantry-discovered/">Air Force Infantry Discovered</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>31 Jul 2005, 22:04</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  I have offically uncovered the US Air Force’s TOP SECRET plans at making a deadly infantry. The following image was stolen from a secret base in Roswell. I will stay with this story as long as it takes to unveil the truth.
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="http://room362.com/post/2005/2005-07-31-done/">Done</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>31 Jul 2005, 09:58</time>
-  </div>
-
-  
-
-  
-
-  
-  
-  
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Well, I finally got a working CMS type deal going on for a blog. I was going to write one but decided not to. Call it lazy or standing on the shoulders of programming gods, you choose.
-  </p>
-
-  
-</article>
-
-    
-  
-    
-  
-    
-  
-
-  
-<nav class="pagination" role="pagination">
-  
-  <a href="/page/44/"><i class="fa fa-angle-double-left"></i></a>
-  
-  <span>45 / 45</span>
-  
-</nav>
-
-
-
 </div>
 
 </div>
@@ -385,4 +284,3 @@
 
 </body>
 </html>
-

@@ -7,8 +7,55 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 22 May 2016 07:35:28 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 22 May 2016 21:55:12 -0400</lastBuildDate>
     <atom:link href="http://room362.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>WPAD Persistence</title>
+      <link>http://room362.com/post/2016/wpad-persistence/</link>
+      <pubDate>Sun, 22 May 2016 21:55:12 -0400</pubDate>
+      
+      <guid>http://room362.com/post/2016/wpad-persistence/</guid>
+      <description>
+
+&lt;p&gt;Mostly just writing this so I can keep notes.&lt;/p&gt;
+
+&lt;p&gt;Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: &lt;a href=&#34;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&#34;&gt;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I did this via PowerShell pretty easily on one of the domain controllers like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&amp;rsquo;t getting any requests for &lt;code&gt;wpad.dat&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;As they say &amp;ldquo;there are no more original ideas&amp;rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.&lt;/p&gt;
+
+&lt;p&gt;but.. they also made a way to disable it - &lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&amp;rsquo;s a required service in later Windows server versions).&lt;/p&gt;
+
+&lt;p&gt;I went in search of a registry key to make the modification because it&amp;rsquo;s much easier to hit the &lt;code&gt;RemoteRegistry&lt;/code&gt; service on all the DCs than it is to run that command. I quickly found this blog post - &lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[22/May/2016:21:56:28 EDT] &amp;quot;GET /wpad.dat HTTP/1.1&amp;quot; 200 58
+- -&amp;gt; /wpad.dat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&amp;rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&amp;rsquo;t disable it for the SYSTEM or other local accounts, so it&amp;rsquo;s harder than just &amp;ldquo;flip on this registry setting via GPO&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;Oh and I&amp;rsquo;ll just leave this here: &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;references:9cdf211306dd5b1440321e70a36d9037&#34;&gt;References&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>Kerberoasting - Part 3</title>
@@ -1293,49 +1340,6 @@ to the new point of contact at the new domain. No response.&lt;/li&gt;
 &lt;p&gt;Dell&amp;hellip; If your techs do actually use this software for support (I
 hope not) in any form or fashion, you are putting each one of them at
 a pretty high risk.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>OSX Persistence via PHP Webshell</title>
-      <link>http://room362.com/post/2014/2014-09-09-osx-persistence-via-php-webshell/</link>
-      <pubDate>Tue, 09 Sep 2014 15:25:27 -0400</pubDate>
-      
-      <guid>http://room362.com/post/2014/2014-09-09-osx-persistence-via-php-webshell/</guid>
-      <description>&lt;p&gt;As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, &lt;strong&gt;with root or sudo priviledge&lt;/strong&gt;, enable the &lt;strong&gt;built-in&lt;/strong&gt; apache server on OSX and it&amp;rsquo;s &lt;strong&gt;PHP&lt;/strong&gt; module&amp;hellip;.&lt;/p&gt;
-
-&lt;p&gt;I am working with OSX Mavericks so your locations may vary based on the version of OSX your target it.&lt;/p&gt;
-
-&lt;p&gt;First things first is to enable the PHP module for the Apache server.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;sudo nano -w /etc/apache2/httpd.conf
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;(vi or emacs to your heart&amp;rsquo;s content)&lt;/em&gt;. But what we are looking for is to uncomment the following line:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#LoadModule php5_module libexec/apache2/libphp5.so
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Once you do that, start up Apache. This can be done temporarily (won&amp;rsquo;t survive a reboot) with the &lt;code&gt;apachectl&lt;/code&gt; command:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;sudo apachectl start
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or you can make it more permanent with &lt;code&gt;launchctl&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;sudo launchctl load -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And undoing the damage with:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/osx_apache.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After that, just drop your favorite PHP shell into the &lt;code&gt;/Library/WebServer/Documents/&lt;/code&gt; directory and you&amp;rsquo;re done. (My favorites are &lt;a href=&#34;https://github.com/b374k/b374k&#34;&gt;b374k&lt;/a&gt; and PHP Meterpreter.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;http://room362.com/images/postimages/osx_php_shell.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>
     </item>
     

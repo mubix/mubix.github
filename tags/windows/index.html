@@ -4,10 +4,10 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
+  <meta name="description" content="Home of mubix, the infosec treehugger">
   <meta name="generator" content="Hugo 0.15" />
 
-  <title>WPAD Persistence &middot; Room362</title>
+  <title>Windows &middot; Room362</title>
 
   
   
@@ -210,16 +210,20 @@
 
 
 <div class="header">
-  <h1>WPAD Persistence</h1>
-  <h2></h2>
+  <h1>Windows</h1>
 </div>
-<div class="content">
 
-  <div class="post-meta">
+<div class="content">
+  
+    <article>
+  <header>
+    <h2><a href="//room362.com/post/2016/smb-http-auth-capture-via-scf/">SMB/HTTP Auth Capture via SCF File</a></h2>
+
+    <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>22 May 2016, 21:55</time>
+    <time>14 Jun 2016, 07:35</time>
   </div>
 
   
@@ -232,11 +236,11 @@
   <div>
     <i class="fa fa-tags fa-fw"></i>
     
-      <a class="post-taxonomy-tag" href="//room362.com/tags/persistence">persistence</a>&nbsp;&#47;
+      <a class="post-taxonomy-tag" href="//room362.com/tags/scf">scf</a>&nbsp;&#47;
     
-      <a class="post-taxonomy-tag" href="//room362.com/tags/wpad">wpad</a>&nbsp;&#47;
+      <a class="post-taxonomy-tag" href="//room362.com/tags/windows">windows</a>&nbsp;&#47;
     
-      <a class="post-taxonomy-tag" href="//room362.com/tags/dns">dns</a>
+      <a class="post-taxonomy-tag" href="//room362.com/tags/smb">smb</a>
     
   </div>
   
@@ -244,93 +248,20 @@
 
 </div>
 
-  
+  </header>
 
-<p>Mostly just writing this so I can keep notes.</p>
-
-<p>Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol</a></p>
-
-<p>I did this via PowerShell pretty easily on one of the domain controllers like so:</p>
-
-<pre><code>PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
-</code></pre>
-
-<p>Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&rsquo;t getting any requests for <code>wpad.dat</code></p>
-
-<p>As they say &ldquo;there are no more original ideas&rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.</p>
-
-<p>but.. they also made a way to disable it - <a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></p>
-
-<p>Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&rsquo;s a required service in later Windows server versions).</p>
-
-<p>I went in search of a registry key to make the modification because it&rsquo;s much easier to hit the <code>RemoteRegistry</code> service on all the DCs than it is to run that command. I quickly found this blog post - <a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a>.</p>
-
-<p>A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.</p>
-
-<pre><code>[22/May/2016:21:56:28 EDT] &quot;GET /wpad.dat HTTP/1.1&quot; 200 58
-- -&gt; /wpad.dat
-</code></pre>
-
-<p>Now, you may be asking, &ldquo;How is setting their proxy server any kind of real persistence?&rdquo;, I implore you to go check out projects like <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a> and <a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></p>
-
-<p>Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&rsquo;t disable it for the SYSTEM or other local accounts, so it&rsquo;s harder than just &ldquo;flip on this registry setting via GPO&rdquo;)</p>
-
-<p>Oh and I&rsquo;ll just leave this here: <a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></p>
-
-<h3 id="references:9cdf211306dd5b1440321e70a36d9037">References</h3>
-
-<ul>
-<li><a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></li>
-<li><a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a></li>
-<li><a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></li>
-<li><a href="https://mitmproxy.org/">mitmproxy</a></li>
-<li><a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a></li>
-<li><a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></li>
-</ul>
-
+  <p>
+  Recently saw a link to an SCF file. Didn&rsquo;t know what those were so I went digging. Turns out they are a simple text based file that controls Windows Explorer. ;-) Here are the examples I found via the references: Open Explorer [Shell] Command = 2 IconFile = explorer.exe, 1 [Taskbar] Command = Explorer Open &ldquo;Channels&rdquo; page in IE: [Shell] Command=3 IconFile=shdocvw.dll,-118 [IE] Command=Channels This didn&rsquo;t work for me at all, probably because Internet Explorer doesn&rsquo;t have &ldquo;Channels&rdquo; anymore.
+  </p>
 
   
-<div class="prev-next-post pure-g">
-  <div class="pure-u-1 pure-u-md-1-2">
-    
-    <nav class="prev">
-      <a href="//room362.com/post/2016/smb-http-auth-capture-via-scf/"><i class="fa fa-arrow-circle-left fa-fw fa-lg"></i>SMB/HTTP Auth Capture via SCF File</a>
-    </nav>
-    
-  </div>
-  <div class="pure-u-1 pure-u-md-1-2">
-    
-    <nav class="next">
-      <a href="//room362.com/post/2016/kerberoast-pt3/">Kerberoasting - Part 3<i class="fa fa-arrow-circle-right fa-fw fa-lg"></i></a>
-    </nav>
-    
-  </div>
-</div>
+  <footer>
+    <a href="/post/2016/smb-http-auth-capture-via-scf/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
 
-
-  <div id="disqus_thread"></div>
-<script type="text/javascript">
-
-(function() {
-    
-    
-    if (window.location.hostname == "localhost")
-        return;
-    var disqus_config = function () {
-        this.page.url = '\/\/room362.com\/';
-        this.page.identifier = '\/post\/2016\/wpad-persistence\/';
-    };
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    var disqus_shortname = 'room362com';
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-
-
-
+  
 </div>
 
 </div>
@@ -353,4 +284,3 @@
 
 </body>
 </html>
-

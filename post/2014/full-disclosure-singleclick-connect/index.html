@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Full Disclosure - SingleClick Connect &middot; Room362</title>
 
@@ -254,13 +254,13 @@
 
 <p>Apache (port 40080) listening 0.0.0.0, MySQL (port 17771) listening 127.0.0.1, PHP, and UltraVNC (5900) are installed as a part of the software package.</p>
 
-<h2 id="issue-1:f124dd1cc9d0578aa8e40fb5e3e0e659">ISSUE #1</h2>
+<h2 id="issue-1">ISSUE #1</h2>
 
 <p>Without decoding the ionCube &ldquo;copyright protecting&rdquo; software a large number of XSS, CSRF, and SQLi vulnerabilities were found, all unauthenticated to the web app that runs there.</p>
 
 <p>No specifics are being posted on these vulnerabilities as I assume the site on the net (company&rsquo;s site), where a registered user would log in are the same as the ones locally hosted (at least the app looks the same and has similar page structure)</p>
 
-<h2 id="issue-2:f124dd1cc9d0578aa8e40fb5e3e0e659">ISSUE #2</h2>
+<h2 id="issue-2">ISSUE #2</h2>
 
 <p>MySQL&rsquo;s root password is blank and there are two other default accounts as well allowing easy privilege escalation to SYSTEM (via the SCC local account - see ISSUE #5):</p>
 
@@ -270,7 +270,7 @@ tera *B2744A6BC5E8B1667BE5AED0111A2B941356E4A4
 
 <p>^ uncracked at this point. For all I know they could be randomized at install</p>
 
-<h2 id="issue-3:f124dd1cc9d0578aa8e40fb5e3e0e659">ISSUE #3</h2>
+<h2 id="issue-3">ISSUE #3</h2>
 
 <p>Another service listens on 0.0.0.0 via port 17667 that I haven&rsquo;t been able to identify, however when you connect to the socket, it starts listing users, services, printers and interfaces (and that is without sending any data to it).</p>
 
@@ -284,11 +284,11 @@ WriterXPSPortprinter#:2TPVM#:1TPVMACDWindows FirewallMicrosoftCreative
 Sound Blaster PCI
 </code></pre>
 
-<h2 id="issue-4:f124dd1cc9d0578aa8e40fb5e3e0e659">ISSUE #4</h2>
+<h2 id="issue-4">ISSUE #4</h2>
 
 <p>When UltraVNC is installed, it uses the same password as the one for your &lsquo;registered&rsquo; account (just password auth) and listens on 0.0.0.0. It is easily to decrypt from the UltraVNC.ini that is located in <code>%ApplicationData%</code> for the user</p>
 
-<h2 id="issue-5:f124dd1cc9d0578aa8e40fb5e3e0e659">ISSUE #5</h2>
+<h2 id="issue-5">ISSUE #5</h2>
 
 <p>A local account called &ldquo;SingleClick Admin&rdquo; is installed with a static
 password and added to the Administrators group. 3 services are also
@@ -317,11 +317,11 @@ Utilisateur principal       : SingleClick Admin
 10. Current      : ~!3no1972!~
 </code></pre>
 
-<h2 id="concern-1:f124dd1cc9d0578aa8e40fb5e3e0e659">CONCERN #1</h2>
+<h2 id="concern-1">CONCERN #1</h2>
 
 <p>As far as I can tell the software continuously scans you local network for other computers and file system for changes and reports these back to the central server so that when you login to their service you can see your files and connect to other systems in the LAN of the machine SingleClickConnect is installed on.</p>
 
-<h2 id="concern-2:f124dd1cc9d0578aa8e40fb5e3e0e659">CONCERN #2</h2>
+<h2 id="concern-2">CONCERN #2</h2>
 
 <p>The user account password that you use to register and connect remotely is stored in the database. This actually looks decently done, or I just haven&rsquo;t been able to identify the storage</p>
 
@@ -330,7 +330,7 @@ Table:    config_info
 Value:    “user_hash”
 </code></pre>
 
-<h2 id="concern-3:f124dd1cc9d0578aa8e40fb5e3e0e659">CONCERN #3</h2>
+<h2 id="concern-3">CONCERN #3</h2>
 
 <p>Not sure what this registry key contains other than being named Cred4RA and assuming it&rsquo;s credentials for the remote administration. Hopefully encrypted some how.</p>
 
@@ -340,7 +340,7 @@ Service\Settings\Remote Access]
 &quot;Cred4RA&quot;=hex:01,00,00 (snip snip)
 </code></pre>
 
-<h2 id="additional-information:f124dd1cc9d0578aa8e40fb5e3e0e659">Additional Information</h2>
+<h2 id="additional-information">Additional Information</h2>
 
 <ul>
 <li>Software original site: <a href="http://www.singleclickconnect.com/">http://www.singleclickconnect.com/</a></li>
@@ -348,7 +348,7 @@ Service\Settings\Remote Access]
 <li>Direct download of software (for home use): <a href="http://downloads.vivedriveconnect.com/scc_setup.exe">http://downloads.vivedriveconnect.com/scc_setup.exe</a></li>
 </ul>
 
-<h2 id="vendor-contact:f124dd1cc9d0578aa8e40fb5e3e0e659">Vendor Contact</h2>
+<h2 id="vendor-contact">Vendor Contact</h2>
 
 <ul>
 <li>Email sent in <strong>2010 July</strong> about issues 1 - 5

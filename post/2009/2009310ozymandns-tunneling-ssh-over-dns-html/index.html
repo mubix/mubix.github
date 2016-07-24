@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>OzymanDNS - Tunneling SSH over DNS &middot; Room362</title>
 
@@ -216,11 +216,11 @@
 <div class="content">
   
 
-<h3 id="hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504:ee73843486d6dbd09e47f205a8ef6bf2"><a href="http://www.hak5.org/episodes/episode-504">Hak5 Episode 504 Shownotes</a></h3>
+<h3 id="hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504"><a href="http://www.hak5.org/episodes/episode-504">Hak5 Episode 504 Shownotes</a></h3>
 
 <p><em>(In the episode I say that it&rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)</em></p>
 
-<h3 id="disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk:ee73843486d6dbd09e47f205a8ef6bf2">DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.</h3>
+<h3 id="disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk">DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.</h3>
 
 <p><strong>UPDATE</strong>:Thanks to <a href="http://carnal0wnage.blogspot.com/">Chris Gates</a> and <a href="http://www.digininja.org/index.php">Robin Wood</a> for pointing me towards a fixed up version of OzymanDNS and a great tutorial: <a href="http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple">HERE</a></p>
 
@@ -236,17 +236,18 @@
 
 <p>(I&rsquo;m going to assume that you have a SSH server somewhere that you have already setup)</p>
 
-<h3 id="step-1-dns-setup:ee73843486d6dbd09e47f205a8ef6bf2">Step 1 - DNS Setup:</h3>
+<h3 id="step-1-dns-setup">Step 1 - DNS Setup:</h3>
 
 <p>Each &ldquo;Domain Manager&rdquo; or DNS Server has a different set up,  So I&rsquo;m not going to go into the details. The jist of the change you need to make is either make a domain or a subdomain that points it&rsquo;s nameserver records towards the host that you are running your server on.</p>
 
 <ul>
-<li><code>ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org</code></li>
+<li><code>ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org</code>
+<br /></li>
 </ul>
 
 <p>In this example we have setup a subdomain called &ldquo;ihaztunnel&rdquo; and set it&rsquo;s Name Server Record pointing to a dynamic dns host that points at the location of my OzymanDNS server.</p>
 
-<h3 id="step-2-server-setup:ee73843486d6dbd09e47f205a8ef6bf2">Step 2 - Server Setup:</h3>
+<h3 id="step-2-server-setup">Step 2 - Server Setup:</h3>
 
 <p>You need <a href="http://www.perl.org/">Perl</a>, the <a href="http://search.cpan.org/~danpeder/MIME-Base32-1.01/Base32.pm">MIME::Base32</a>, and <a href="http://search.cpan.org/~olaf/Net-DNS-0.65/lib/Net/DNS.pm">Net::DNS</a> modules. After that you just run nomde.pl from whatever directory that you extracted the OzymanDNS scripts with the following context:</p>
 
@@ -256,7 +257,7 @@
 
 <p>This tells it to listen on any IP the host has (you can specifiy one if you wish), and tells it the DNS name that it&rsquo;s supporting. Don&rsquo;t forget to do port forwarding on your router or whatever may be in the way of port 53 UDP and TCP coming inbound. Also keep in mind that your ISP may be blocking, so field test the connection before you try to use it in the wild.</p>
 
-<h3 id="step-3-client-connection:ee73843486d6dbd09e47f205a8ef6bf2">Step 3 - Client Connection:</h3>
+<h3 id="step-3-client-connection">Step 3 - Client Connection:</h3>
 
 <p>For the client, the setup is the same, get perl, the modules and OzymanDNS. Then you run the following command:</p>
 

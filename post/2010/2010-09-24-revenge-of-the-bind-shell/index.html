@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Revenge of the Bind Shell &middot; Room362</title>
 
@@ -218,7 +218,7 @@
 
 <p><iframe src="//player.vimeo.com/video/15243189" width="500" height="313" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/15243189">Revenge of the Bind Shell</a> from <a href="http://vimeo.com/user3245922">Practical Exploitation</a> on <a href="https://vimeo.com">Vimeo</a>.</p></p>
 
-<h2 id="background:daf890f3b209643f56002b3f67a11849">BACKGROUND</h2>
+<h2 id="background">BACKGROUND</h2>
 
 <p>At the <a href="http://novahackers.blogspot.com/2010/04/meeting-20100415-0x0002.html">April 2010 NoVA Hackers meeting</a> I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&rsquo;t the only one doing this ;-)</p>
 
@@ -228,7 +228,7 @@
 
 <p>This isn&rsquo;t as much of a problem as you might think as it&rsquo;s virtually impossible to guess or scan for an IPv6 address. So, unless you displayed it publically by connecting to Freenode or posting it online somewhere (via a demonstration video). You&rsquo;re pretty safe.</p>
 
-<h2 id="the-patch:daf890f3b209643f56002b3f67a11849">THE PATCH</h2>
+<h2 id="the-patch">THE PATCH</h2>
 
 <p>Microsoft made this a certainty when they issued the patch. I was unable to locate the specific one, or even identify for certain that it was April 2010, but that&rsquo;s when the initial article for <a href="&quot;http://msdn.microsoft.com/en-us/library/aa832668(VS.85">IPV6_PROTECTION_LEVEL</a>.aspx&rdquo;) was published. This is a socket level option that says, unless this flag is set to &ldquo;PROTECTION_LEVEL_UNRESTRICTED&rdquo; on the binary that is doing the communication, deny all traffic from NAT Traversals (Teredo).  (Even Netcat6 doesn&rsquo;t have this flag set!)</p>
 
@@ -236,7 +236,7 @@
 
 <p>I used Teredo to connect to the SMB server so that I could psexec a shell back any time I wanted before (still possible on non-patched systems) but since Microsoft doesn&rsquo;t want to add the PROTECTION_LEVEL_UNRESTRICTED flag to SMB you have to just upload and use a binary that does. Luckily, with the help of <a href="http://twitter.com/stephenfewer">Stephen Fewer</a>, the bind_ipv6_tcp payload in Metasploit does.</p>
 
-<h2 id="commands:daf890f3b209643f56002b3f67a11849">COMMANDS</h2>
+<h2 id="commands">COMMANDS</h2>
 
 <p>The commands used in the video are below:</p>
 
@@ -255,7 +255,7 @@ apt-get install miredo
 update-rc.d miredo -f remove
 </code></pre>
 
-<h2 id="protection:daf890f3b209643f56002b3f67a11849">PROTECTION</h2>
+<h2 id="protection">PROTECTION</h2>
 
 <p>Yes, it&rsquo;s that easy. Now, some of the mitigating suggestions I&rsquo;ve seen on the net is to blackhole the Microsoft Teredo server, or block the UDP port 3544. However, Miredo can act as a Teredo server/relay just fine, and can listen on any port you wish (53?). So unless you block ALL UDP outbound traffic, you are not protecting against this threat.</p>
 

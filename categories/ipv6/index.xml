@@ -32,7 +32,7 @@
 
 &lt;p&gt;&lt;iframe src=&#34;//player.vimeo.com/video/15243189&#34; width=&#34;500&#34; height=&#34;313&#34; frameborder=&#34;0&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt; &lt;p&gt;&lt;a href=&#34;http://vimeo.com/15243189&#34;&gt;Revenge of the Bind Shell&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/user3245922&#34;&gt;Practical Exploitation&lt;/a&gt; on &lt;a href=&#34;https://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;background:daf890f3b209643f56002b3f67a11849&#34;&gt;BACKGROUND&lt;/h2&gt;
+&lt;h2 id=&#34;background&#34;&gt;BACKGROUND&lt;/h2&gt;
 
 &lt;p&gt;At the &lt;a href=&#34;http://novahackers.blogspot.com/2010/04/meeting-20100415-0x0002.html&#34;&gt;April 2010 NoVA Hackers meeting&lt;/a&gt; I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&amp;rsquo;t the only one doing this ;-)&lt;/p&gt;
 
@@ -42,7 +42,7 @@
 
 &lt;p&gt;This isn&amp;rsquo;t as much of a problem as you might think as it&amp;rsquo;s virtually impossible to guess or scan for an IPv6 address. So, unless you displayed it publically by connecting to Freenode or posting it online somewhere (via a demonstration video). You&amp;rsquo;re pretty safe.&lt;/p&gt;
 
-&lt;h2 id=&#34;the-patch:daf890f3b209643f56002b3f67a11849&#34;&gt;THE PATCH&lt;/h2&gt;
+&lt;h2 id=&#34;the-patch&#34;&gt;THE PATCH&lt;/h2&gt;
 
 &lt;p&gt;Microsoft made this a certainty when they issued the patch. I was unable to locate the specific one, or even identify for certain that it was April 2010, but that&amp;rsquo;s when the initial article for &lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/aa832668(VS.85&#34;&gt;IPV6_PROTECTION_LEVEL&lt;/a&gt;.aspx&amp;rdquo;) was published. This is a socket level option that says, unless this flag is set to &amp;ldquo;PROTECTION_LEVEL_UNRESTRICTED&amp;rdquo; on the binary that is doing the communication, deny all traffic from NAT Traversals (Teredo).  (Even Netcat6 doesn&amp;rsquo;t have this flag set!)&lt;/p&gt;
 
@@ -50,7 +50,7 @@
 
 &lt;p&gt;I used Teredo to connect to the SMB server so that I could psexec a shell back any time I wanted before (still possible on non-patched systems) but since Microsoft doesn&amp;rsquo;t want to add the PROTECTION_LEVEL_UNRESTRICTED flag to SMB you have to just upload and use a binary that does. Luckily, with the help of &lt;a href=&#34;http://twitter.com/stephenfewer&#34;&gt;Stephen Fewer&lt;/a&gt;, the bind_ipv6_tcp payload in Metasploit does.&lt;/p&gt;
 
-&lt;h2 id=&#34;commands:daf890f3b209643f56002b3f67a11849&#34;&gt;COMMANDS&lt;/h2&gt;
+&lt;h2 id=&#34;commands&#34;&gt;COMMANDS&lt;/h2&gt;
 
 &lt;p&gt;The commands used in the video are below:&lt;/p&gt;
 
@@ -69,7 +69,7 @@ apt-get install miredo
 update-rc.d miredo -f remove
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;protection:daf890f3b209643f56002b3f67a11849&#34;&gt;PROTECTION&lt;/h2&gt;
+&lt;h2 id=&#34;protection&#34;&gt;PROTECTION&lt;/h2&gt;
 
 &lt;p&gt;Yes, it&amp;rsquo;s that easy. Now, some of the mitigating suggestions I&amp;rsquo;ve seen on the net is to blackhole the Microsoft Teredo server, or block the UDP port 3544. However, Miredo can act as a Teredo server/relay just fine, and can listen on any port you wish (53?). So unless you block ALL UDP outbound traffic, you are not protecting against this threat.&lt;/p&gt;
 </description>

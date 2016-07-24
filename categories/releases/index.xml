@@ -16,13 +16,13 @@
       <pubDate>Wed, 11 Sep 2013 00:28:31 -0500</pubDate>
       
       <guid>//room362.com/post/2013/2013-09-11-stealing-passwords-every-time-they-change/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/windows/desktop/ms721882(v=vs.85&#34;&gt;Password Filters [0]&lt;/a&gt;.aspx&amp;rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy.  It is also fairly documented on how to Install and &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/ms721766(v=vs.85&#34;&gt;Register Password Filters [1]&lt;/a&gt;.aspx). Basically what it boils down to is updating a registry key here: &lt;code&gt;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages&lt;/code&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/windows/desktop/ms721882(v=vs.85&#34;&gt;Password Filters [0]&lt;/a&gt;.aspx&amp;rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy.  It is also fairly documented on how to Install and &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/ms721766(v=vs.85).aspx&#34;&gt;Register Password Filters [1]&lt;/a&gt;. Basically what it boils down to is updating a registry key here: &lt;code&gt;HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;with the name of a DLL (without the extension) that you place in Windows\System32&lt;/p&gt;
 
 &lt;p&gt;For &lt;a href=&#34;http://www.nationalccdc.org/&#34;&gt;National CCDC&lt;/a&gt; earlier this year (2013), I created an installer and &amp;ldquo;evil pass filter&amp;rdquo; that basically installed itself as a password filter and any time any passwords changed it would store the change to a log file locally to the victim (in clear text) as well as issue an HTTP basic auth POST to a server I own with the username and password.&lt;/p&gt;
 
-&lt;p&gt;The full code can be found below. I&amp;rsquo;ll leave the compiling up to you but basically its slamming the code in Visual Studio, telling it its a DLL, and clicking build for the architecture you are targeting (Make sure to use the Internet Open access settings that make the most sense for the environment you are using this in [&lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85&#34;&gt;2&lt;/a&gt;.aspx)].&lt;/p&gt;
+&lt;p&gt;The full code can be found below. I&amp;rsquo;ll leave the compiling up to you but basically its slamming the code in Visual Studio, telling it its a DLL, and clicking build for the architecture you are targeting (Make sure to use the Internet Open access settings that make the most sense for the environment you are using this in [&lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85).aspx&#34;&gt;2&lt;/a&gt;].&lt;/p&gt;
 
 &lt;p&gt;So lets walk the exploitation:&lt;/p&gt;
 

@@ -28,13 +28,13 @@
 
 &lt;p&gt;Apache (port 40080) listening 0.0.0.0, MySQL (port 17771) listening 127.0.0.1, PHP, and UltraVNC (5900) are installed as a part of the software package.&lt;/p&gt;
 
-&lt;h2 id=&#34;issue-1:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #1&lt;/h2&gt;
+&lt;h2 id=&#34;issue-1&#34;&gt;ISSUE #1&lt;/h2&gt;
 
 &lt;p&gt;Without decoding the ionCube &amp;ldquo;copyright protecting&amp;rdquo; software a large number of XSS, CSRF, and SQLi vulnerabilities were found, all unauthenticated to the web app that runs there.&lt;/p&gt;
 
 &lt;p&gt;No specifics are being posted on these vulnerabilities as I assume the site on the net (company&amp;rsquo;s site), where a registered user would log in are the same as the ones locally hosted (at least the app looks the same and has similar page structure)&lt;/p&gt;
 
-&lt;h2 id=&#34;issue-2:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #2&lt;/h2&gt;
+&lt;h2 id=&#34;issue-2&#34;&gt;ISSUE #2&lt;/h2&gt;
 
 &lt;p&gt;MySQL&amp;rsquo;s root password is blank and there are two other default accounts as well allowing easy privilege escalation to SYSTEM (via the SCC local account - see ISSUE #5):&lt;/p&gt;
 
@@ -44,7 +44,7 @@ tera *B2744A6BC5E8B1667BE5AED0111A2B941356E4A4
 
 &lt;p&gt;^ uncracked at this point. For all I know they could be randomized at install&lt;/p&gt;
 
-&lt;h2 id=&#34;issue-3:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #3&lt;/h2&gt;
+&lt;h2 id=&#34;issue-3&#34;&gt;ISSUE #3&lt;/h2&gt;
 
 &lt;p&gt;Another service listens on 0.0.0.0 via port 17667 that I haven&amp;rsquo;t been able to identify, however when you connect to the socket, it starts listing users, services, printers and interfaces (and that is without sending any data to it).&lt;/p&gt;
 
@@ -58,11 +58,11 @@ WriterXPSPortprinter#:2TPVM#:1TPVMACDWindows FirewallMicrosoftCreative
 Sound Blaster PCI
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;issue-4:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #4&lt;/h2&gt;
+&lt;h2 id=&#34;issue-4&#34;&gt;ISSUE #4&lt;/h2&gt;
 
 &lt;p&gt;When UltraVNC is installed, it uses the same password as the one for your &amp;lsquo;registered&amp;rsquo; account (just password auth) and listens on 0.0.0.0. It is easily to decrypt from the UltraVNC.ini that is located in &lt;code&gt;%ApplicationData%&lt;/code&gt; for the user&lt;/p&gt;
 
-&lt;h2 id=&#34;issue-5:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;ISSUE #5&lt;/h2&gt;
+&lt;h2 id=&#34;issue-5&#34;&gt;ISSUE #5&lt;/h2&gt;
 
 &lt;p&gt;A local account called &amp;ldquo;SingleClick Admin&amp;rdquo; is installed with a static
 password and added to the Administrators group. 3 services are also
@@ -91,11 +91,11 @@ Utilisateur principal       : SingleClick Admin
 10. Current      : ~!3no1972!~
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;concern-1:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;CONCERN #1&lt;/h2&gt;
+&lt;h2 id=&#34;concern-1&#34;&gt;CONCERN #1&lt;/h2&gt;
 
 &lt;p&gt;As far as I can tell the software continuously scans you local network for other computers and file system for changes and reports these back to the central server so that when you login to their service you can see your files and connect to other systems in the LAN of the machine SingleClickConnect is installed on.&lt;/p&gt;
 
-&lt;h2 id=&#34;concern-2:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;CONCERN #2&lt;/h2&gt;
+&lt;h2 id=&#34;concern-2&#34;&gt;CONCERN #2&lt;/h2&gt;
 
 &lt;p&gt;The user account password that you use to register and connect remotely is stored in the database. This actually looks decently done, or I just haven&amp;rsquo;t been able to identify the storage&lt;/p&gt;
 
@@ -104,7 +104,7 @@ Table:    config_info
 Value:    “user_hash”
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;concern-3:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;CONCERN #3&lt;/h2&gt;
+&lt;h2 id=&#34;concern-3&#34;&gt;CONCERN #3&lt;/h2&gt;
 
 &lt;p&gt;Not sure what this registry key contains other than being named Cred4RA and assuming it&amp;rsquo;s credentials for the remote administration. Hopefully encrypted some how.&lt;/p&gt;
 
@@ -114,7 +114,7 @@ Service\Settings\Remote Access]
 &amp;quot;Cred4RA&amp;quot;=hex:01,00,00 (snip snip)
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;additional-information:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;Additional Information&lt;/h2&gt;
+&lt;h2 id=&#34;additional-information&#34;&gt;Additional Information&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Software original site: &lt;a href=&#34;http://www.singleclickconnect.com/&#34;&gt;http://www.singleclickconnect.com/&lt;/a&gt;&lt;/li&gt;
@@ -122,7 +122,7 @@ Service\Settings\Remote Access]
 &lt;li&gt;Direct download of software (for home use): &lt;a href=&#34;http://downloads.vivedriveconnect.com/scc_setup.exe&#34;&gt;http://downloads.vivedriveconnect.com/scc_setup.exe&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;vendor-contact:f124dd1cc9d0578aa8e40fb5e3e0e659&#34;&gt;Vendor Contact&lt;/h2&gt;
+&lt;h2 id=&#34;vendor-contact&#34;&gt;Vendor Contact&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Email sent in &lt;strong&gt;2010 July&lt;/strong&gt; about issues 1 - 5

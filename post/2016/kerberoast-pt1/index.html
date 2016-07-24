@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Kerberoasting - Part 1 &middot; Room362</title>
 
@@ -256,9 +256,9 @@
 
 <p><strong>Common Findings DB Link:</strong> (to be updated later)</p>
 
-<h2 id="what-are-spns:f4dc971efa8af1de091fc86f78f81bff">What are SPNs</h2>
+<h2 id="what-are-spns">What are SPNs</h2>
 
-<p><a href="https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx">Service Principal Names</a> (SPNs) are:</p>
+<p>[Service Principal Names](<a href="https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx</a>) (SPNs) are:</p>
 
 <blockquote>
 <p>a unique identifier of a service instance. SPNs are used by Kerberos authentication to associate a service instance with a service logon account.&rdquo; - MSDN</p>
@@ -266,19 +266,19 @@
 
 <p>Basically mapping a service running on a server to an account it&rsquo;s running as so that it can do / accept kerberos authentication. Normally, these services, like &ldquo;CIFS&rdquo; (Windows Shares) run under the context of the computer account.</p>
 
-<h2 id="why-would-they-be-associated-with-users:f4dc971efa8af1de091fc86f78f81bff">Why would they be associated with users?</h2>
+<h2 id="why-would-they-be-associated-with-users">Why would they be associated with users?</h2>
 
 <p>I won&rsquo;t say that this is the reason for the change, but for a long time Information Security professionals (and bad guys) have exploited the idea that services run as the all powerful <strong>&ldquo;NT AUTHORITY\SYSTEM&rdquo;</strong> account. For those who don&rsquo;t know, this means that if someone exploits one of those services, they are basically ROOT on that machine in the Windows world.</p>
 
-<p>One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx">NT AUTHORITY\NETWORK SERVICE</a> and <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx">NT AUTHORITY\LOCAL SERVICE</a> accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.</p>
+<p>One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the [NT AUTHORITY\NETWORK SERVICE](<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx</a>) and [NT AUTHORITY\LOCAL SERVICE](<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx</a>) accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.</p>
 
-<p>Yes, I know there is such a thing as <a href="https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx">Managed Service Accounts</a> now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&rsquo;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&rsquo;ll discuss in the last section of this series.</p>
+<p>Yes, I know there is such a thing as [Managed Service Accounts](<a href="https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx">https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx</a>) now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&rsquo;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&rsquo;ll discuss in the last section of this series.</p>
 
-<h2 id="why-should-i-care:f4dc971efa8af1de091fc86f78f81bff">Why should I care?</h2>
+<h2 id="why-should-i-care">Why should I care?</h2>
 
 <p>Any valid domain user can request a kerberos ticket for any domain service (or even services outside the domain as long as there is a trust there). Once the ticket is received, password cracking can be done offline on the ticket to attempt to break the password for whatever user the service is running as. The users running these services usually are at the very least administrators on the computers for which they are a service on, but more commonly they are some sort of administrative account (Domain Admins).</p>
 
-<h2 id="listing-spns:f4dc971efa8af1de091fc86f78f81bff">Listing SPNs</h2>
+<h2 id="listing-spns">Listing SPNs</h2>
 
 <p>Ok, so, now you know the background and why you want to do this attack,  but how do we go about listing what SPNs are out there for the domain you are on. There are a ton of ways to do this:</p>
 
@@ -291,7 +291,7 @@
 <li>Use <a href="https://github.com/CoreSecurity/impacket">Impacket</a>&rsquo;s <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py">GetUserSPN.py</a> - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe</li>
 </ol>
 
-<h3 id="1-setspn:f4dc971efa8af1de091fc86f78f81bff">1. SetSPN</h3>
+<h3 id="1-setspn">1. SetSPN</h3>
 
 <p>SetSPN is a tool built into Windows and will do that job perfectly just as Tim Medin describes in his <a href="http://www.irongeek.com/i.php?page=videos/derbycon4/t120-attacking-microsoft-kerberos-kicking-the-guard-dog-of-hades-tim-medin">presentation</a> and <a href="https://github.com/nidem/kerberoast">Kerberoast Github repo</a>:</p>
 
@@ -373,7 +373,7 @@ Existing SPN found!
 
 <p>Each line that starts with &ldquo;CN&rdquo; is an account&rdquo; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.</p>
 
-<h3 id="get-spn:f4dc971efa8af1de091fc86f78f81bff">Get-SPN</h3>
+<h3 id="get-spn">Get-SPN</h3>
 
 <ul>
 <li>Link: <a href="https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN">nullbind&rsquo;s Get-SPN folder in the Powershellery repo</a></li>
@@ -406,7 +406,7 @@ MSSQLSvc/WIN2K8R2.sittingduck.info
 
 </code></pre>
 
-<h3 id="powershell-empire:f4dc971efa8af1de091fc86f78f81bff">PowerShell Empire</h3>
+<h3 id="powershell-empire">PowerShell Empire</h3>
 
 <ul>
 <li>Link: <a href="https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py">PowerShell Empire get_spn module</a></li>
@@ -447,9 +447,9 @@ Options:
 
 </code></pre>
 
-<h2 id="listing-user-spns:f4dc971efa8af1de091fc86f78f81bff">Listing User SPNs</h2>
+<h2 id="listing-user-spns">Listing User SPNs</h2>
 
-<h3 id="getuserspns-vbs:f4dc971efa8af1de091fc86f78f81bff">GetUserSPNs.vbs</h3>
+<h3 id="getuserspns-vbs">GetUserSPNs.vbs</h3>
 
 <ul>
 <li>Link: <a href="https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs">Kerberoast&rsquo;s GetUserSPNs.vbs</a></li>
@@ -474,7 +474,7 @@ User Logon: sqladmin01
 -- MSSQLSvc/WIN2K8R2.sittingduck.info
 </code></pre>
 
-<h3 id="getuserspns-ps1:f4dc971efa8af1de091fc86f78f81bff">GetUserSPNs.ps1</h3>
+<h3 id="getuserspns-ps1">GetUserSPNs.ps1</h3>
 
 <ul>
 <li>Link: <a href="https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1">Kerberoast&rsquo;s GetUserSPNs.ps1</a></li>
@@ -495,7 +495,7 @@ kadmin/changepw     krbtgt              CN=Denied RODC P... 11/10/2015 6:18:...
 MSSQLSvc/WIN2K8R... MSSQL Service Admin                     5/13/2016 7:13:2...
 </code></pre>
 
-<h3 id="impacket:f4dc971efa8af1de091fc86f78f81bff">Impacket</h3>
+<h3 id="impacket">Impacket</h3>
 
 <ul>
 <li>Link: <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py">Impacket&rsquo;s GetUserSPNs.py</a></li>
@@ -515,9 +515,9 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 
 <p>And that is it for now. We have listed all of the SPNs or just the ones we needed. In Part 2 we will make requests for the SPN tickets we want.</p>
 
-<h1 id="references:f4dc971efa8af1de091fc86f78f81bff">References:</h1>
+<h1 id="references">References:</h1>
 
-<h2 id="tools:f4dc971efa8af1de091fc86f78f81bff">Tools</h2>
+<h2 id="tools">Tools</h2>
 
 <ul>
 <li><a href="https://github.com/nidem/kerberoast">Kerberoast</a></li>
@@ -527,14 +527,14 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 <li><a href="https://github.com/hashcat/oclHashcat">Github - oclHashcat</a></li>
 </ul>
 
-<h2 id="presentations:f4dc971efa8af1de091fc86f78f81bff">Presentations</h2>
+<h2 id="presentations">Presentations</h2>
 
 <ul>
-<li>Tim Medin&rsquo;s Slides - <a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">Kicking the Guard Dog of Hades - slides</a></li>
+<li>Tim Medin&rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf</a>)</li>
 <li>Tim Medin&rsquo;s Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">Kicking the Guard Dog of Hades - video</a></li>
 </ul>
 
-<h2 id="other-write-ups:f4dc971efa8af1de091fc86f78f81bff">Other write ups</h2>
+<h2 id="other-write-ups">Other write ups</h2>
 
 <ul>
 <li><a href="http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html">Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild</a></li>

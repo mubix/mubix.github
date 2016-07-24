@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Developing the LNK Metasploit post module with Mona &middot; Room362</title>
 
@@ -216,7 +216,7 @@
 <div class="content">
   <p>I have been using the LNK trick I talked about in my <a href="/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018">last post</a> for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target.</p>
 
-<p>Of course the first place I looked was Meterpreter&rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to <a href="http://msdn.microsoft.com/en-us/library/aa969393.aspx">work with COM objects</a>. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch <a href="http://msdn.microsoft.com/en-us/library/dd871305(PROT.10">using the spec</a>.aspx).. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz</p>
+<p>Of course the first place I looked was Meterpreter&rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to <a href="http://msdn.microsoft.com/en-us/library/aa969393.aspx">work with COM objects</a>. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch <a href="http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx">using the spec</a>.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz</p>
 
 <p>Enter <a href="http://redmine.corelan.be/projects/mona">mona</a>, the <a href="http://www.corelan.be/">Corelan Team’s</a> exploit development plugin for <a href="http://immunityinc.com/products-immdbg.shtml">Immunity Debugger</a>. Now, usually it is used exactly as intended, as an exploit development tool, and I guess you could consider my use of it as an extension of that as well. But, anyways, one of Mona’s many and probably one of the least well known functions is ‘header’. What this function does is simply output a ruby version of the file broken into ASCII and binary parts. That’ll make much more sense in a sec, back to the problem. I need to recreate a file in a way I can manipulate it on the fly with enough agility to be useful to others in a post module without using the spec or Railgun to assist.</p>
 

@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Meterpreter tunneling and VNC revamped &middot; Room362</title>
 
@@ -228,7 +228,7 @@
 
 <p>By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.</p>
 
-<h2 id="options:219f4d40dc81e5a362b4bd4c55416513">Options:</h2>
+<h2 id="options">Options:</h2>
 
 <pre><code>meterpreter &gt; run vnc_oneport -h
 
@@ -241,7 +241,7 @@ OPTIONS:
 meterpreter &gt;
 </code></pre>
 
-<h2 id="example-run:219f4d40dc81e5a362b4bd4c55416513">Example Run:</h2>
+<h2 id="example-run">Example Run:</h2>
 
 <pre><code>[*] Meterpreter session 1 opened (192.168.92.103:4444 -&gt; 192.168.92.113:1038)
 
@@ -293,7 +293,7 @@ Using shared memory PutImageSame machine: preferring raw encodingShmCleanup call
 meterpreter &gt;
 </code></pre>
 
-<h2 id="note:219f4d40dc81e5a362b4bd4c55416513">Note:</h2>
+<h2 id="note">Note:</h2>
 
 <p>The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:</p>
 

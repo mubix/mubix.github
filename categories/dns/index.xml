@@ -551,11 +551,11 @@ _xmpp-server._tcp
       <guid>//room362.com/post/2009/2009310ozymandns-tunneling-ssh-over-dns-html/</guid>
       <description>
 
-&lt;h3 id=&#34;hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;&lt;a href=&#34;http://www.hak5.org/episodes/episode-504&#34;&gt;Hak5 Episode 504 Shownotes&lt;/a&gt;&lt;/h3&gt;
+&lt;h3 id=&#34;hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504&#34;&gt;&lt;a href=&#34;http://www.hak5.org/episodes/episode-504&#34;&gt;Hak5 Episode 504 Shownotes&lt;/a&gt;&lt;/h3&gt;
 
 &lt;p&gt;&lt;em&gt;(In the episode I say that it&amp;rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)&lt;/em&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.&lt;/h3&gt;
+&lt;h3 id=&#34;disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk&#34;&gt;DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.&lt;/h3&gt;
 
 &lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt;:Thanks to &lt;a href=&#34;http://carnal0wnage.blogspot.com/&#34;&gt;Chris Gates&lt;/a&gt; and &lt;a href=&#34;http://www.digininja.org/index.php&#34;&gt;Robin Wood&lt;/a&gt; for pointing me towards a fixed up version of OzymanDNS and a great tutorial: &lt;a href=&#34;http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple&#34;&gt;HERE&lt;/a&gt;&lt;/p&gt;
 
@@ -571,17 +571,18 @@ _xmpp-server._tcp
 
 &lt;p&gt;(I&amp;rsquo;m going to assume that you have a SSH server somewhere that you have already setup)&lt;/p&gt;
 
-&lt;h3 id=&#34;step-1-dns-setup:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;Step 1 - DNS Setup:&lt;/h3&gt;
+&lt;h3 id=&#34;step-1-dns-setup&#34;&gt;Step 1 - DNS Setup:&lt;/h3&gt;
 
 &lt;p&gt;Each &amp;ldquo;Domain Manager&amp;rdquo; or DNS Server has a different set up,  So I&amp;rsquo;m not going to go into the details. The jist of the change you need to make is either make a domain or a subdomain that points it&amp;rsquo;s nameserver records towards the host that you are running your server on.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org&lt;/code&gt;
+&lt;br /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;In this example we have setup a subdomain called &amp;ldquo;ihaztunnel&amp;rdquo; and set it&amp;rsquo;s Name Server Record pointing to a dynamic dns host that points at the location of my OzymanDNS server.&lt;/p&gt;
 
-&lt;h3 id=&#34;step-2-server-setup:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;Step 2 - Server Setup:&lt;/h3&gt;
+&lt;h3 id=&#34;step-2-server-setup&#34;&gt;Step 2 - Server Setup:&lt;/h3&gt;
 
 &lt;p&gt;You need &lt;a href=&#34;http://www.perl.org/&#34;&gt;Perl&lt;/a&gt;, the &lt;a href=&#34;http://search.cpan.org/~danpeder/MIME-Base32-1.01/Base32.pm&#34;&gt;MIME::Base32&lt;/a&gt;, and &lt;a href=&#34;http://search.cpan.org/~olaf/Net-DNS-0.65/lib/Net/DNS.pm&#34;&gt;Net::DNS&lt;/a&gt; modules. After that you just run nomde.pl from whatever directory that you extracted the OzymanDNS scripts with the following context:&lt;/p&gt;
 
@@ -591,7 +592,7 @@ _xmpp-server._tcp
 
 &lt;p&gt;This tells it to listen on any IP the host has (you can specifiy one if you wish), and tells it the DNS name that it&amp;rsquo;s supporting. Don&amp;rsquo;t forget to do port forwarding on your router or whatever may be in the way of port 53 UDP and TCP coming inbound. Also keep in mind that your ISP may be blocking, so field test the connection before you try to use it in the wild.&lt;/p&gt;
 
-&lt;h3 id=&#34;step-3-client-connection:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;Step 3 - Client Connection:&lt;/h3&gt;
+&lt;h3 id=&#34;step-3-client-connection&#34;&gt;Step 3 - Client Connection:&lt;/h3&gt;
 
 &lt;p&gt;For the client, the setup is the same, get perl, the modules and OzymanDNS. Then you run the following command:&lt;/p&gt;
 

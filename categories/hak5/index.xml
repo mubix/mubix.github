@@ -65,11 +65,11 @@ WEnd
       <guid>//room362.com/post/2009/2009310ozymandns-tunneling-ssh-over-dns-html/</guid>
       <description>
 
-&lt;h3 id=&#34;hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;&lt;a href=&#34;http://www.hak5.org/episodes/episode-504&#34;&gt;Hak5 Episode 504 Shownotes&lt;/a&gt;&lt;/h3&gt;
+&lt;h3 id=&#34;hak5-episode-504-shownotes-http-www-hak5-org-episodes-episode-504&#34;&gt;&lt;a href=&#34;http://www.hak5.org/episodes/episode-504&#34;&gt;Hak5 Episode 504 Shownotes&lt;/a&gt;&lt;/h3&gt;
 
 &lt;p&gt;&lt;em&gt;(In the episode I say that it&amp;rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)&lt;/em&gt;&lt;/p&gt;
 
-&lt;h3 id=&#34;disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.&lt;/h3&gt;
+&lt;h3 id=&#34;disclaimer-i-in-no-way-endorse-illegal-activities-use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk&#34;&gt;DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.&lt;/h3&gt;
 
 &lt;p&gt;&lt;strong&gt;UPDATE&lt;/strong&gt;:Thanks to &lt;a href=&#34;http://carnal0wnage.blogspot.com/&#34;&gt;Chris Gates&lt;/a&gt; and &lt;a href=&#34;http://www.digininja.org/index.php&#34;&gt;Robin Wood&lt;/a&gt; for pointing me towards a fixed up version of OzymanDNS and a great tutorial: &lt;a href=&#34;http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple&#34;&gt;HERE&lt;/a&gt;&lt;/p&gt;
 
@@ -85,17 +85,18 @@ WEnd
 
 &lt;p&gt;(I&amp;rsquo;m going to assume that you have a SSH server somewhere that you have already setup)&lt;/p&gt;
 
-&lt;h3 id=&#34;step-1-dns-setup:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;Step 1 - DNS Setup:&lt;/h3&gt;
+&lt;h3 id=&#34;step-1-dns-setup&#34;&gt;Step 1 - DNS Setup:&lt;/h3&gt;
 
 &lt;p&gt;Each &amp;ldquo;Domain Manager&amp;rdquo; or DNS Server has a different set up,  So I&amp;rsquo;m not going to go into the details. The jist of the change you need to make is either make a domain or a subdomain that points it&amp;rsquo;s nameserver records towards the host that you are running your server on.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org&lt;/code&gt;
+&lt;br /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;In this example we have setup a subdomain called &amp;ldquo;ihaztunnel&amp;rdquo; and set it&amp;rsquo;s Name Server Record pointing to a dynamic dns host that points at the location of my OzymanDNS server.&lt;/p&gt;
 
-&lt;h3 id=&#34;step-2-server-setup:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;Step 2 - Server Setup:&lt;/h3&gt;
+&lt;h3 id=&#34;step-2-server-setup&#34;&gt;Step 2 - Server Setup:&lt;/h3&gt;
 
 &lt;p&gt;You need &lt;a href=&#34;http://www.perl.org/&#34;&gt;Perl&lt;/a&gt;, the &lt;a href=&#34;http://search.cpan.org/~danpeder/MIME-Base32-1.01/Base32.pm&#34;&gt;MIME::Base32&lt;/a&gt;, and &lt;a href=&#34;http://search.cpan.org/~olaf/Net-DNS-0.65/lib/Net/DNS.pm&#34;&gt;Net::DNS&lt;/a&gt; modules. After that you just run nomde.pl from whatever directory that you extracted the OzymanDNS scripts with the following context:&lt;/p&gt;
 
@@ -105,7 +106,7 @@ WEnd
 
 &lt;p&gt;This tells it to listen on any IP the host has (you can specifiy one if you wish), and tells it the DNS name that it&amp;rsquo;s supporting. Don&amp;rsquo;t forget to do port forwarding on your router or whatever may be in the way of port 53 UDP and TCP coming inbound. Also keep in mind that your ISP may be blocking, so field test the connection before you try to use it in the wild.&lt;/p&gt;
 
-&lt;h3 id=&#34;step-3-client-connection:ee73843486d6dbd09e47f205a8ef6bf2&#34;&gt;Step 3 - Client Connection:&lt;/h3&gt;
+&lt;h3 id=&#34;step-3-client-connection&#34;&gt;Step 3 - Client Connection:&lt;/h3&gt;
 
 &lt;p&gt;For the client, the setup is the same, get perl, the modules and OzymanDNS. Then you run the following command:&lt;/p&gt;
 
@@ -157,7 +158,7 @@ WEnd
 
 &lt;p&gt;First lets outline whats to come:&lt;/p&gt;
 
-&lt;h2 id=&#34;table-of-contents:a23e3e71c377f622e1f6101f7c0a70fd&#34;&gt;Table of Contents:&lt;/h2&gt;
+&lt;h2 id=&#34;table-of-contents&#34;&gt;Table of Contents:&lt;/h2&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;Part 1 - Introduction&lt;/p&gt;&lt;/li&gt;
@@ -235,7 +236,7 @@ WEnd
       <guid>//room362.com/post/2005/2005-12-15-techtv-holiday-meetup/</guid>
       <description>
 
-&lt;h2 id=&#34;debating-security-with-steve-gibson-and-leo-laporte:6d83185140052fb8fd70c3ef9981c407&#34;&gt;Debating security with Steve Gibson and Leo Laporte&lt;/h2&gt;
+&lt;h2 id=&#34;debating-security-with-steve-gibson-and-leo-laporte&#34;&gt;Debating security with Steve Gibson and Leo Laporte&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&#34;//room362.com/images/postimages/200512_techtv_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
@@ -285,7 +286,8 @@ WEnd
 &lt;li&gt;&lt;strong&gt;Wess&lt;/strong&gt;: I love you man. We need to tell Alli about us before this gets ugly.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Harrison&lt;/strong&gt;: It was sweet meeting you man. We became fast friends; you and I think a lot alike. (&amp;lsquo;cept for cars: Ferrari Sucks) and I think &lt;a href=&#34;http://www.shmoocon.org&#34;&gt;ShmooCon 2006&lt;/a&gt; is gonna rock.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Jon&lt;/strong&gt;: Man, we will get Gentoo done. If you need any further help you guys got my number - Mubix – Tech Support &lt;sup&gt;24&lt;/sup&gt;&amp;frasl;&lt;sub&gt;7&lt;/sub&gt; 365. Keep it real man.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Alli, Paul, Harrison&amp;rsquo;s Mom, and Jui-Chia&lt;/strong&gt;: It was cool hanging out with you guys. I had a blast down there. 1 &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt; hour commute is worth it to hang out w/ you guys.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Alli, Paul, Harrison&amp;rsquo;s Mom, and Jui-Chia&lt;/strong&gt;: It was cool hanging out with you guys. I had a blast down there. 1 &lt;sup&gt;1&lt;/sup&gt;&amp;frasl;&lt;sub&gt;2&lt;/sub&gt; hour commute is worth it to hang out w/ you guys.
+&lt;br /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;One last thanks goes out to all the people in the IRC channel &lt;a href=&#34;irc://irc.techphile.ca&#34;&gt;techPhile IRC server&lt;/a&gt; #hak5 and #techphile for making my moderation a cake walk. Except for a certain individual, all the questions were perfect and I only had to fix/deny a few of them.&lt;/p&gt;

@@ -22,15 +22,15 @@
 
 &lt;p&gt;So we are taking a short break from my 4 part series on Maltego to bring you a guest post on runtime packers done by your friendly neighborhood &lt;a href=&#34;http://www.twitter.com/secshoggoth/&#34;&gt;Security Shoggoth&lt;/a&gt;. Packers are one of those mystical tech items out there that for most people sound too complicated to even look into. What SecShoggoth and I aimed for with this post is to have understandable yet technical and I think he did an awesome job:&lt;/p&gt;
 
-&lt;h2 id=&#34;what-is-a-packer:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;What is a packer?&lt;/h2&gt;
+&lt;h2 id=&#34;what-is-a-packer&#34;&gt;What is a packer?&lt;/h2&gt;
 
-&lt;h3 id=&#34;what-do-they-do:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;What do they do?&lt;/h3&gt;
+&lt;h3 id=&#34;what-do-they-do&#34;&gt;What do they do?&lt;/h3&gt;
 
 &lt;p&gt;A packer, also known as a run time packer, is a program which compresses another executable to a smaller size on disk.  When executed, the packed executable is uncompressed in memory and executes.  The time to uncompress the executable in memory is usually not noticeable, making it very advantageous to use one.&lt;/p&gt;
 
 &lt;p&gt;There are hundreds of packing programs available.  One of the most commonly used is UPX (&lt;a href=&#34;http://upx.sourceforge.net/&#34;&gt;http://upx.sourceforge.net&lt;/a&gt;) which will pack a number of executable formats.  Unlike most packers, UPX can unpack a program to its original, uncompressed state.  Many packers do not have this functionality and analysts who wish to unpack a program have to find a separate unpacker or manually unpack the program in a debugger.&lt;/p&gt;
 
-&lt;h3 id=&#34;why-do-virus-malware-developers-use-them:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;Why do virus/malware developers use them?&lt;/h3&gt;
+&lt;h3 id=&#34;why-do-virus-malware-developers-use-them&#34;&gt;Why do virus/malware developers use them?&lt;/h3&gt;
 
 &lt;p&gt;There is one side effect of packers that malware developers have found useful.  Not only does the packer make the malware smaller and easier to transfer, but they also obfuscate or encrypt the internal components of the malware making static analysis virtually impossible. &lt;/p&gt;
 
@@ -38,11 +38,11 @@
 
 &lt;p&gt;Some packers also contain anti-virtual machine, anti-sandboxing and anti-debugging “features” which prevent the packed executable from running if it detects any software analysts typically use to analyze malware.  This makes it much harder for the malware to be analyzed and will extend the amount of time before it can be reliably detected by AV software.&lt;/p&gt;
 
-&lt;h3 id=&#34;how-do-they-work:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;How do they work?&lt;/h3&gt;
+&lt;h3 id=&#34;how-do-they-work&#34;&gt;How do they work?&lt;/h3&gt;
 
 &lt;p&gt;When an executable is packed, the packer compresses the original program and places some wrapper code around it.  When the packed program is executed, this wrapper code runs and uncompresses the original program in memory, loads any dynamic libraries needed by the import table and jumps to the original entry point (OEP) of the now uncompressed program where it begins execution.&lt;/p&gt;
 
-&lt;h3 id=&#34;will-av-detect-packed-programs:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;Will AV detect packed programs?&lt;/h3&gt;
+&lt;h3 id=&#34;will-av-detect-packed-programs&#34;&gt;Will AV detect packed programs?&lt;/h3&gt;
 
 &lt;p&gt;It depends.  Not being in the AV industry I can’t comment on every anti-virus program but from my experience with anti-virus and bypassing them, I can make some educated guesses.&lt;/p&gt;
 
@@ -54,7 +54,7 @@
 
 &lt;p&gt;If the AV is able to detect the packer but does not have a routine to unpack it, the AV may still flag the executable as malicious based on the packer it detects.  As you blogged about a few days ago, Alex Eckelberry at SunBelt Software did an experiment by packing Windows notepad with various packers and submitting it to VirusTotal.  Based on his results, some AV programs are flagging programs as malicious based only on the packer that was used on it.  (&lt;a href=&#34;http://sunbeltblog.blogspot.com/2008/09/how-to-make-notepadexe-malicious-file.html&#34;&gt;http://sunbeltblog.blogspot.com/2008/09/how-to-make-notepadexe-malicious-file.html&lt;/a&gt;)&lt;/p&gt;
 
-&lt;h3 id=&#34;what-are-some-resources-that-i-can-learn-more-about-packing:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;What are some resources that I can learn more about packing?&lt;/h3&gt;
+&lt;h3 id=&#34;what-are-some-resources-that-i-can-learn-more-about-packing&#34;&gt;What are some resources that I can learn more about packing?&lt;/h3&gt;
 
 &lt;p&gt;If you want to learn the basics on packers, I would recommend Paul Craig’s 2006 Ruxcon presentation &amp;ldquo;Unpacking Malware, Trojans and Worms.  (&lt;a href=&#34;http://www.security-assessment.com/files/presentations/Ruxcon_2006_-&amp;lt;u&amp;gt;Unpacking_Virus,_Trojans_and_Worms.pdf&#34;&gt;http://www.security-assessment.com/files/presentations/Ruxcon_2006-_Unpacking_Virus,_Trojans_and_Worms.pdf&lt;/a&gt;)  Its contains alot of excellent information on packers, how they work and how to unpack them manually.&lt;/p&gt;
 
@@ -62,7 +62,7 @@
 
 &lt;p&gt;There really are way too many resources out there for me to list.  In the end, Google is your friend.&lt;/p&gt;
 
-&lt;h2 id=&#34;where-can-people-find-out-more-about-me:969904de94fb9fe77c6f9524c209cf7c&#34;&gt;Where can people find out more about me?&lt;/h2&gt;
+&lt;h2 id=&#34;where-can-people-find-out-more-about-me&#34;&gt;Where can people find out more about me?&lt;/h2&gt;
 
 &lt;p&gt;&lt;img src=&#34;//room362.com/images/postimages/200809_packers_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 

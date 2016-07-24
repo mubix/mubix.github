@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
-  <meta name="generator" content="Hugo 0.15" />
+  <meta name="generator" content="Hugo 0.16" />
 
   <title>Stealing passwords every time they change &middot; Room362</title>
 
@@ -214,13 +214,13 @@
   <h2></h2>
 </div>
 <div class="content">
-  <p><a href="&quot;http://msdn.microsoft.com/en-us/library/windows/desktop/ms721882(v=vs.85">Password Filters [0]</a>.aspx&rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy.  It is also fairly documented on how to Install and <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms721766(v=vs.85">Register Password Filters [1]</a>.aspx). Basically what it boils down to is updating a registry key here: <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages</code></p>
+  <p><a href="&quot;http://msdn.microsoft.com/en-us/library/windows/desktop/ms721882(v=vs.85">Password Filters [0]</a>.aspx&rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy.  It is also fairly documented on how to Install and <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms721766(v=vs.85).aspx">Register Password Filters [1]</a>. Basically what it boils down to is updating a registry key here: <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages</code></p>
 
 <p>with the name of a DLL (without the extension) that you place in Windows\System32</p>
 
 <p>For <a href="http://www.nationalccdc.org/">National CCDC</a> earlier this year (2013), I created an installer and &ldquo;evil pass filter&rdquo; that basically installed itself as a password filter and any time any passwords changed it would store the change to a log file locally to the victim (in clear text) as well as issue an HTTP basic auth POST to a server I own with the username and password.</p>
 
-<p>The full code can be found below. I&rsquo;ll leave the compiling up to you but basically its slamming the code in Visual Studio, telling it its a DLL, and clicking build for the architecture you are targeting (Make sure to use the Internet Open access settings that make the most sense for the environment you are using this in [<a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85">2</a>.aspx)].</p>
+<p>The full code can be found below. I&rsquo;ll leave the compiling up to you but basically its slamming the code in Visual Studio, telling it its a DLL, and clicking build for the architecture you are targeting (Make sure to use the Internet Open access settings that make the most sense for the environment you are using this in [<a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85).aspx">2</a>].</p>
 
 <p>So lets walk the exploitation:</p>
 

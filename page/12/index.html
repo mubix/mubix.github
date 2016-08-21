@@ -219,6 +219,173 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2011/2011-11-02-run-post-modules-on-all-sessions/">Run POST Modules On All Sessions</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>02 Nov 2011, 03:06</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Jcran recently blogged about an easy way to run a post module on all sessions: http://blog.pentestify.com/simple-framework-domain-token-scanner msf&gt; use post/windows/gather/enum_domain_tokens msf enum_domain_tokens&gt; irb framework.sessions.each do |session| run_single(&quot;set SESSION #{session.first}&quot;) run_single(&quot;run&quot;) sleep 1 end You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-11-02-run-post-modules-on-all-sessions/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-10-09-msfconsole-prompt-fiddling/">MSFConsole Prompt Fiddling</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>09 Oct 2011, 06:20</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs: cat ~/.msf4/logs/framework.log This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole msf&gt; spool ~/myclient.log The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-10-09-msfconsole-prompt-fiddling/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-10-06-the-dirty-little-secrets-they-didnt-teach-you-in-pentesting/">The Dirty Little Secrets They Didn&#39;t Teach You In Pentesting Class</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>06 Oct 2011, 15:53</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Video: Slides: The Dirty Little Secrets They Didn&rsquo;t Teach You In Pentesting Class [slideshare id=9530403] Code: https://github.com/mubix/Not-In-Pentesting-Class
+  </p>
+
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-09-28-create-a-64bit-process-from-a-x8632bit-one/">Create a 64bit Process From a x86/32bit One</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>28 Sep 2011, 05:45</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  On Vista and above there is a Windows &lsquo;Redirector&rsquo; (A redirector is basically a Symlink or fake directory that&rsquo;s there but not in Windows) (more info here.aspx&rdquo;)) that allows a 32bit process create a 64bit one. For anyone who has tried to run &lsquo;execute -H -c -f notepad.exe&rsquo;, they know that if they are in a 32bit process, they get a 32bit notepad even if they are on a 64bit system, which is annoying.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-09-28-create-a-64bit-process-from-a-x8632bit-one/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-09-17-derbycon-approaches/">#DerbyCon Approaches...</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>17 Sep 2011, 06:23</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Chris Gates (@carnal0wnage) and I will be speaking at DerbyCon next week: The Dirty Little Secrets They Didn&rsquo;t Teach You In Pentesting Class &ldquo;This talk is about methodologies and tools that we use or have coded that make our lives and pentest schedule a little easier, and why we do things the way we do. Of course, there will be a healthy dose of Metasploit in the mix. &ldquo;
+  </p>
+
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2011/2011-09-17-who-is-logged-in-a-quick-way-to-pick-your-targets/">Who Is Logged In? A Quick Way To Pick Your Targets</a></h2>
 
     <div class="post-meta">
@@ -391,184 +558,13 @@
 
     
   
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2011/2011-08-26-iis-search-verb-directory-listing/">IIS Search Verb Directory Listing</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Aug 2011, 18:56</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  This: http://www.securityfocus.com/bid/1756 still works (on vulnerable hosts, this is an old vuln) and is very useful: Send this: SEARCH / HTTP/1.1 Host: target Content-Type: text/xml Content-Length: 133 &lt;?xml version=&quot;1.0&quot;?&gt; &lt;g:searchrequest xmlns:g=&quot;DAV:&quot;&gt; &lt;g:sql&gt; Select &quot;DAV:displayname&quot; from scope() &lt;/g:sql&gt; &lt;/g:searchrequest&gt; And expect something like this back:
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2011/2011-08-20-populating-your-virtual-victim-domain/">Populating Your Virtual Victim Domain</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>20 Aug 2011, 19:14</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Update 1: No this doesn&rsquo;t need to be in memory since you control the system but it was a fun challenge Update 2: The info from the &lsquo;adduser&rsquo; payload says &lsquo;Create a new user and add them to local administration group&rsquo; - I&rsquo;m guessing since I ran this on a DC is why I didn&rsquo;t notice this but it is something to keep in mind when running this script. Update 3: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-08-20-populating-your-virtual-victim-domain/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/">IP Resolution Using Meterpreter’s Railgun</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>19 Aug 2011, 19:26</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  I saw a post back in June and it just recently came up again: http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/ It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun. TL:DR; You can download the post module here: ipresolver.rb The function &lsquo;gethostbyaddr&rsquo; (http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx.aspx)&ldquo;) is pretty simple at first glance: struct hostent* FAR gethostbyaddr( __in const char *addr, __in int len, __in int type ); Give it an address, length and type and it gives you a hostname back… easy right?
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2011/2011-08-19-railgun-error-checking/">Railgun Error Checking</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>19 Aug 2011, 02:13</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  One important thing to note about Railgun is that you are querying the API and just as if you were using C++ the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you: For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-08-19-railgun-error-checking/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2011/2011-07-26-minimum-password-length-of-15-or-more-via-gpo/">Minimum Password Length of 15 or more via GPO</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Jul 2011, 02:22</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Also known as &ldquo;How to practice what we preach&rdquo;. I don&rsquo;t know how long I&rsquo;ve been telling clients that they need to have a minimum password length of 15 characters to make it so there is no chance LM will be stored (and a cursory bonus that their password won&rsquo;t be close to their original). But I&rsquo;ve never tried setting it myself. Well, a client called me out. You can&rsquo;t! (well at least not through the UI ) TL;DR _You can edit the GptTmpl.inf file in \\$DOMAIN\SYSVOL\$DOMAIN\Policies$\PolicyGUID\Machine\Microsoft\Windows NT\SecEdit and set &ldquo;MinimumPasswordLength&rdquo; to whatever you want it to be.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-07-26-minimum-password-length-of-15-or-more-via-gpo/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
 
   
 <nav class="pagination" role="pagination">
   
   <a href="/page/11/"><i class="fa fa-angle-double-left"></i></a>
   
-  <span>12 / 45</span>
+  <span>12 / 46</span>
   
   <a href="/page/13/"><i class="fa fa-angle-double-right"></i></a>
   

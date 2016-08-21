@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.16" />
+
+  <title>DotNet&#39;s DNVM For Persistence On Developer Machines &middot; Room362</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <link rel="alternate" type="application/rss+xml" title="Room362" href="//room362.com/index.xml" />
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="//room362.com/img/favicon.ico" type="image/x-icon" />
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/brandon/"><i class='fa fa-users fa-fw'></i>Brandon</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="//room362.com/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/mubix" target="_blank"><i class="fa fa-twitter fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/mubix" target="_blank"><i class="fa fa-facebook fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://plus.google.com/+mubix" target="_blank"><i class="fa fa-google-plus-square fa-fw"></i>Google+</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/mubix" target="_blank"><i class="fa fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://flickr.com/photos/mubix" target="_blank"><i class="fa fa-flickr fa-fw"></i>Flickr</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://youtube.com/user/hak5" target="_blank"><i class="fa fa-youtube fa-fw"></i>YouTube</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://vimeo.com/mubix" target="_blank"><i class="fa fa-vimeo fa-fw"></i>Vimeo</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="http://slideshare.net/mubix" target="_blank"><i class="fa fa-slideshare fa-fw"></i>SlideShare</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/mubix" target="_blank"><i class="fa fa-linkedin fa-fw"></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://reddit.com/user/mubix" target="_blank"><i class="fa fa-reddit fa-fw"></i>Reddit</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/mubix" target="_blank"><i class="fa fa-github-alt fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https:////bitbucket.org/mubix" target="_blank"><i class="fa fa-bitbucket fa-fw"></i>Bitbucket</a>
+    </li>
+    
+
+    
+
+  </ul>
+</div>
+
+  <div class="pure-g">
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print pure-u-1 pure-u-md-1-1">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>DotNet&#39;s DNVM For Persistence On Developer Machines</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>05 Oct 2015, 07:35</time>
+  </div>
+
+  
+
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="//room362.com/tags/persistence">persistence</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="//room362.com/tags/windows">windows</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="//room362.com/tags/dotnet">dotnet</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="//room362.com/tags/dnvm">dnvm</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <p>One of the best resources for persistence mechanisms is <a href="https://twitter.com/Hexacorn">Hexacorn&rsquo;s</a> blog.
+<a href="http://www.hexacorn.com/blog/category/autostart-persistence/">http://www.hexacorn.com/blog/category/autostart-persistence/</a></p>
+
+<p>If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:</p>
+
+<p>DNVM (<a href="https://github.com/aspnet/dnvm">https://github.com/aspnet/dnvm</a>) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&rsquo;s there to help to specify which runtime to use for applications, much like <a href="https://rvm.io/">RVM (Ruby Version Manager)</a> is for Ruby. With their goal being that you can install .Net and <a href="http://docs.asp.net/en/latest/getting-started/index.html">run .Net applications on Linux and Mac</a> as well using DNVM.</p>
+
+<p>Once installed it adds a &ldquo;DNX_HOME&rdquo; environmental variable:</p>
+
+<p><img src="/images/2015/dnx_reg.png" alt="" /></p>
+
+<p>Inside the folder specified are 3 directories:</p>
+
+<p><img src="/images/2015/dnx_folder.png" alt="" /></p>
+
+<p>There are plenty of things to play with in here, but I wanted to specifically point out that the <strong>BIN</strong> directory is put into the $PATH variable (as well as two others)</p>
+
+<pre><code>C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
+C:\Program Files\Microsoft DNX\Dnvm\
+C:\Users\mubix\.dnx\bin
+</code></pre>
+
+<p>Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&rsquo;ll come back to that in another post)</p>
+
+<p>Lets take a look at what is in those folders:</p>
+
+<p><img src="/images/2015/dnvm_folders.png" alt="" /></p>
+
+<p>Interesting, why don&rsquo;t we see what the command dnvm does:</p>
+
+<p><img src="/images/2015/dnvm_cmd.png" alt="" /></p>
+
+<p>Seriously&hellip; I probably don&rsquo;t even have to continue at this point&hellip;</p>
+
+<p>But, if I run dnvm from the command prompt (as a developer would) it runs it from inside that protected directory in Program Files right?&hellip; RIGHT?! Nope..</p>
+
+<p>Edit the dnvm.cmd with a bit of <a href="http://www.powershellempire.com/">PowerShell Empire</a> stager (minus the <strong>-W Hidden</strong>, because we need the user to actually get the output of the dnvm command) and&hellip;.</p>
+
+<pre><code>[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
+</code></pre>
+
+<p>Boom!</p>
+
+<p>Lets look a bit into how DNVM works to see if there is something juicier there (way to much for a single blog post)</p>
+
+<p><img src="/images/2015/dnvm_list.png" alt="" /></p>
+
+<p>Awesome! So I can modify things in the runtime directory, lets look in there:</p>
+
+<p><img src="/images/2015/dnvm_runtime.png" alt="" /></p>
+
+<p>Lots, of fun, but we still have to wait until they run some C# code with that run time and guess which one they will use (or backdoor all of them). I would rather just make a modification to the dnvm.cmd and be done with it. Simple and clean.</p>
+
+<p>Oh did I mention that this is used to cross compile binaries? Ya, oh ok, so you can infect the built binaries, or web apps for Windows, Linux and OSX&hellip;</p>
+
+<p>Oh and one other thing caught my eye while I was looking into the DNVM.ps1 script:</p>
+
+<p><img src="/images/2015/dnvm_azure.png" alt="" /></p>
+
+<p>Have fun!</p>
+
+<p>P.S. Unquoted paths FTW: <a href="https://github.com/aspnet/dnvm/pull/357">https://github.com/aspnet/dnvm/pull/357</a></p>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="prev">
+      <a href="//room362.com/post/2015/r5-industries/"><i class="fa fa-arrow-circle-left fa-fw fa-lg"></i>R5 Industries</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1 pure-u-md-1-2">
+    
+    <nav class="next">
+      <a href="//room362.com/post/2015/back-to-blogger/">Back to Blogger<i class="fa fa-arrow-circle-right fa-fw fa-lg"></i></a>
+    </nav>
+    
+  </div>
+</div>
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = "https://room362.com" + "/post/2015/dotnet-dnvm-for-persistence-on-developer-machines/";
+        this.page.identifier = "/post/2015/dotnet-dnvm-for-persistence-on-developer-machines/";
+    };
+
+    (function() {  
+        if (window.location.hostname == "localhost")
+            return;
+        var d = document, s = d.createElement('script');
+        
+        s.src = '//room362.disqus.com/embed.js';
+        
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+</div>
+
+</div>
+</div>
+<script src="//room362.com/js/ui.js"></script>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-198967-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+</body>
+</html>
+

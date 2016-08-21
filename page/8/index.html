@@ -219,6 +219,181 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2012/2012-10-17-mounting-smb-shares-over-meterpreter/">Mounting SMB shares over Meterpreter</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>17 Oct 2012, 17:52</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Ok, this is pretty straight forward no magic: Got a shell, doesn&rsquo;t have to be SYSTEM Add a route to the internal range or directly to the host you want over the session you want Mosy on over to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. It defaults to 9050 on 127.0.01 for Tor, that&rsquo;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-10-17-mounting-smb-shares-over-meterpreter/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-10-16-uac-alwaysnotify-bypass-ish/">UAC AlwaysNotify Bypass-ish</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>16 Oct 2012, 03:15</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD (MY MISTAKE FOR NOT TESTING MORE) So the &ldquo;-ish&rdquo; is you need to have the username and pass of another account that has administrator rights the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions) I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&rsquo;s &lsquo;RunAs&rsquo; verb.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-10-16-uac-alwaysnotify-bypass-ish/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-10-15-pass-the-hash-without-metasploit-part-2/">Pass the Hash without Metasploit - Part 2</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>15 Oct 2012, 04:24</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  I read this article a while back: http://fuzzynop.blogspot.com/2012/09/pass-hash-without-metasploit.html by @FuzzyNop Great article showing the use of WCE&rsquo;s &ldquo;-s&rdquo; flag to Pass-The-Hash locally and I highly recommend checking it out. Anywho, I was once in a similar scenario, where I had no Metasploit to back me up, but the box I was on did have one interesting thing, ruby and an accessible target for relatively up-to-date ruby gems. Since Metasploit&rsquo;s powerhouse library &lsquo;rex&rsquo; installed just fine I was set.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-10-15-pass-the-hash-without-metasploit-part-2/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-10-08-compiling-and-release-of-ditto/">Compiling and Release of Ditto</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>08 Oct 2012, 04:36</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  If you follow the exact same steps you did for Netview: /blog/2012/10/07/compiling-and-release-of-netview/ then you already have the steps needed to create a compiled version of ditto from the repo here: https://github.com/mubix/ditto And while the sheep icon is cute, and a nod to what ditto does, it comes at a pretty hefty cost: Size. Now if you&rsquo;re scoffing at 408 KB then you don&rsquo;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-10-08-compiling-and-release-of-ditto/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-10-07-compiling-and-release-of-netview/">Compiling and Release of Netview</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>07 Oct 2012, 04:10</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  If you haven&rsquo;t caught Chris Gates (@carnal0wnage) and my talk at DerbyCon 2012 - we released 2 tools, Netview, and Ditto. Here I&rsquo;ll walk you through compiling Netview yourself, in the next blog post we&rsquo;ll go over compiling Ditto and how you can remove it&rsquo;s icon to reduce the size if you want. But for Netview it&rsquo;s pretty straight forward. First you pull a copy of the GIT repository: https://github.com/mubix/netview Once you&rsquo;ve done that, you&rsquo;ve got a directory looking like this: You will also need Visual Studio C++ (The Express version if free here: http://www.microsoft.com/visualstudio/eng/downloads#d-2010-express ) Once you have both you double click the .sln file (Solution File) And you get a ugly blue and purple box like this: Where you switch the compile option from &ldquo;Debug&rdquo; to &ldquo;Release&rdquo; and click to &ldquo;Build Solution&rdquo;: Sounds much more grandiose than it really is.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-10-07-compiling-and-release-of-netview/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/">Lab Setup - Windows Proxy and Egress Filtering</a></h2>
 
     <div class="post-meta">
@@ -383,188 +558,13 @@
 
     
   
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-09-01-old-school-on-target-nbns-spoofing/">Old School On-target NBNS Spoofing</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Sep 2012, 05:16</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/) . Wesley&rsquo;s stuff can be found here: http://www.mcgrewsecurity.com/tools/nbnspoof/ Wesley&rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &ldquo;on-site&rdquo; only attack.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-09-01-old-school-on-target-nbns-spoofing/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-08-28-free-shells-with-plink-and-pageant/">Free Shells with Plink and Pageant</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>28 Aug 2012, 15:42</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Watching Egypt’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with: meterpreter &gt; run enum_putty [*] Putty Installed for [[&quot;Administrator&quot;]] [*] Saved SSH Server Public Keys: [*] rsa2@22:172.16.10.150 [*] Session corp_webserver: [*] Protocol: SSH [*] Hostname: 172.16.10.150 [*] Username: root [*] Public Key: meterpreter &gt; Awesome, this guy runs as root and we have the IP address.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-08-28-free-shells-with-plink-and-pageant/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-08-25-post-exploitation-command-lists-request-to-edit/">Post Exploitation Command Lists - Request to Edit</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>25 Aug 2012, 01:56</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  The post exploitation command lists: Linux/Unix/BSD Post Exploitation: https://docs.google.com/document/d/1ObQB6hmVvRPCgPTRZM5NMH034VDM-1N-EWPRz2770K4/edit Windows Post Exploitation: https://docs.google.com/document/d/1U10isynOpQtrIK6ChuReu-K1WHTJm4fgG3joiuz43rw/edit OSX Post Exploitation: https://docs.google.com/document/d/10AUm_zUdAQGgoHNo_eS0SO1K-24VVYnulUD2x3rJD3k/edit and the newly added Obsucure Syststem&rsquo;s Post Exploitation: https://docs.google.com/document/d/1CIs6O1kMR-bXAT80U6Jficsqm0yR5dKUfUQgwiIKzgc/edit and Metasploit Post Exploitation: https://docs.google.com/document/d/1ZrDJMQkrp_YbU_9Ni9wMNF2m3nIPEA_kekqqqA2Ywto/edit Have been a weekly upkeep for me with so many… I don&rsquo;t know what to call it, &lsquo;undesirable edits&rsquo; to them. Bad copies, bad pastes, formatting issues and some times deletion or vandalism of the docs. Anyways, I have finally broken down and removed &lsquo;world&rsquo; editable permissions.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-08-25-post-exploitation-command-lists-request-to-edit/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-08-11-let-me-out-of-your-net-server-build/">LetMeOutOfYour.NET – Server Build</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>11 Aug 2012, 03:49</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  In the previous post: http://www.room362.com/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html I told you about letmeoutofyour.net, but how does it work? Things we need to accomplish on the server: Listen on all ports Answer for all hostnames and subdomains Answer for all HTTP verbs, file and folder requests ONE: Listen on all ports (I used Linux, so this guide is for such, modifications to other OSs is up to the reader) First you have to get rid of all other services.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-08-11-let-me-out-of-your-net-server-build/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-08-10-let-me-out-of-your-net-intro/">LetMeOutOfYour.NET – Intro</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>10 Aug 2012, 03:22</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Something that is often useful is a known-good. Something out of the control of your adversary or outside modifiers. But back to that in a sec, egress ‘busting’ or getting your payload/backdoor/trojan/c2 out of someone’s network once you’ve gotten that ever elusive “CODE EXECUTION HAPPY DANCE” going on isn’t always easy. There is even a Metasploit payload for it called ‘allports’: https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls There is also ‘Egress Buster’ by the guys over at TrustedSec which can do 1000 ports in just a few seconds: https://www.trustedsec.com/july-2012/egress-buster-reverse-bypassav/ The problem I find with these tools is that they are still straight TCP.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-08-10-let-me-out-of-your-net-intro/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
 
   
 <nav class="pagination" role="pagination">
   
   <a href="/page/7/"><i class="fa fa-angle-double-left"></i></a>
   
-  <span>8 / 45</span>
+  <span>8 / 46</span>
   
   <a href="/page/9/"><i class="fa fa-angle-double-right"></i></a>
   

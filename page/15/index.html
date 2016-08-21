@@ -219,6 +219,173 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2011/2011-03-03-issue-a-linux-command-without-it-going-into-history/">Issue a Linux command without it going into history</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>03 Mar 2011, 19:38</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  CORRECTION: Thanks to jduck for pointing it out, but you need to actually make a change to get this to work, reference: http://www.catonmat.net/blog/the-definitive-guide-to-bash-command-line-history/ and search for: Modifying History Behavior You simply put a space before it mubix@localhost:/tmp/demo$ ls -alh total 8.0K drwxr-xr-x 2 mubix mubix 4.0K Mar 1 19:43 . drwxrwxrwt 3 root root 4.0K Mar 1 19:43 .. -rw-r--r-- 1 mubix mubix 0 Mar 1 19:43 bob mubix@localhost:/tmp/demo$ cat ~/.bash_history ls -alh mubix@localhost:/tmp/demo$ mysecretlogin -u bobsuruncle -p allacazaam mubix@localhost:/tmp/demo$ cat ~/.bash_history ls -alh mubix@localhost:/tmp/demo$ Works well for backdoors you don&rsquo;t want caught via the .bash_history as well ;-) More CCDC tricks as I think of them..
+  </p>
+
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-03-02-destructive-doskey-aliases/">Destructive DOSKEY aliases</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>02 Mar 2011, 20:05</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Not sure how far back it goes (Win95?) but 2000, XP and all the way up to Win 7 have a program called DOSKEY: C:\Users\vmadmin&gt;doskey /? Edits command lines, recalls Windows commands, and creates macros. DOSKEY [/REINSTALL] [/LISTSIZE=size] [/MACROS[:ALL | :exename]] [/HISTORY] [/INSERT | /OVERSTRIKE] [/EXENAME=exename] [/MACROFILE=filename] [macroname=[text]] /REINSTALL Installs a new copy of Doskey. /LISTSIZE=size Sets size of command history buffer. /MACROS Displays all Doskey macros. /MACROS:ALL Displays all Doskey macros for all executables which have Doskey macros.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-03-02-destructive-doskey-aliases/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-03-01-creating-vulnerabilities-nfs-exports/">Creating Vulnerabilities: NFS Exports</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>01 Mar 2011, 20:40</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Constant connections and odd binaries running on systems usually get caught pretty quickly in CCDC events. However, NFS exports are hardly ever noticed. Setting it up on an Ubuntu/Debian box is a snap and given the right directory and permissions can lead you right back to getting shell any time you want without a constant connection. Plus, NFS blends right in and can listen on TCP and/or UDP (2049) Here is a quick how-to on setting up NFS https://help.ubuntu.com/community/SettingUpNFSHowTo I&rsquo;m sure you can think of much more evil locations but /etc/, /var/www/, and /root/ are some of my favorite exports, but there is no reason why you couldn&rsquo;t just export &lsquo;/&rsquo; that I know of.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-03-01-creating-vulnerabilities-nfs-exports/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-02-16-metasploit-on-wintel-systems/">Metasploit on Wintel Systems</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>16 Feb 2011, 19:23</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  (No I&rsquo;m not old enough to have used that term when it was the standard) I believe that this tweet should be archived for reference: http://twitter.com/#!/_ming_se/status/37688231185219584 And for those who don&rsquo;t get the reference, here is a Pontiac Fiero:
+  </p>
+
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2011/2011-02-16-interesting-dns-stuff-srv-records/">Interesting DNS Stuff - SRV Records</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>16 Feb 2011, 07:48</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  The following are good adds to your DNS brute force list: These are all SRV records so make sure your type is set correctly. The great thing about SRV records is that it tells you the port in the answer. Isn&rsquo;t that nice of them? I don&rsquo;t know of any DNS tools that utilize SRV as part of their process, but scripting dig to do so isn&rsquo;t tough. _autodiscover._tcp _caldav._tcp
+  </p>
+
+  
+  <footer>
+    <a href="/post/2011/2011-02-16-interesting-dns-stuff-srv-records/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2011/2011-02-14-cachedump-for-meterpreter-in-action/">Cachedump for Meterpreter in action</a></h2>
 
     <div class="post-meta">
@@ -383,176 +550,13 @@
 
     
   
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2010/2010-12-24-wayback-webapp-hacking/">Wayback Webapp Hacking</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>24 Dec 2010, 19:32</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable). This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2010/2010-12-24-wayback-webapp-hacking/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2010/2010-12-23-project-honeypot-http-blocklist-module/">Project Honeypot HTTP Blocklist module</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>23 Dec 2010, 23:39</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Most malicious IP lists focus on the client side threat, where servers (hosted or exploited) host client side exploits or evil scripting. These don&rsquo;t really help the server admins very much. Project Honeypot does an amazing job at keeping detailed information on scanners / harvesters and brute forcers, the likes of which are the daily enemy of said admins. They offer a service called HTTP Block List or &lsquo;HTTP:BL&rsquo;. Another way this list differs from the rest is it isn&rsquo;t a list you can download.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2010/2010-12-23-project-honeypot-http-blocklist-module/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2010/2010-12-05-offensive-and-defensive-ssh-patching-at-nova-hackers/">Offensive and Defensive SSH Patching at NoVA Hackers</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>05 Dec 2010, 06:58</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  This is definitely not my content, but I did want to highlight the talk Nicholas [1] gave at NoVA Hackers [2] this last November. Nicholas B. gives a talk about SSH Patching for Offensive and Defense at NoVa Hackers November 2010 [1] http://twitter.com/nberthaume [2] http://novahackers.blogspot.com/2010/10/november-meeting-monday-nov-15th-2010.html
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2010/2010-11-16-silently-uninstall-sep-html/">Silently uninstall SEP</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>16 Nov 2010, 05:00</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Uninstallation is not new Deleting and removing things on a box you own isn&rsquo;t new This method and how to do it remotely was posted in Feb 2007 But I didn&rsquo;t know how to do it, and I thought it was hilarious, so I made a video:
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2010/2010-10-01-acceptable-questions-checklist/">Acceptable Questions Checklist</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Oct 2010, 18:00</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  &ldquo;There is no stupid question&rdquo; but, if it doesn&rsquo;t meet this checklist, it&rsquo;s officially a time wasting one. Acceptable questions checklist: 1. Have I tried it 2. Have I checked the manual, wiki, or forum 3. Have I googled and searched for an answer All marks must be achieved before a question is asked unless the target of the question is getting paid to answer the source&rsquo;s inquires &ldquo;Have I tried it&rdquo; mark can only be skipped in the case of life threatening actions PDF version is available upon request.
-  </p>
-
-  
-</article>
-
-    
-  
 
   
 <nav class="pagination" role="pagination">
   
   <a href="/page/14/"><i class="fa fa-angle-double-left"></i></a>
   
-  <span>15 / 45</span>
+  <span>15 / 46</span>
   
   <a href="/page/16/"><i class="fa fa-angle-double-right"></i></a>
   

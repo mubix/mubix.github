@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Psexec on Room362</title>
+    <link>//room362.com/tags/psexec/</link>
+    <description>Recent content in Psexec on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 14 Aug 2014 11:26:38 -0500</lastBuildDate>
+    <atom:link href="//room362.com/tags/psexec/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Milkman: Creating processes as any currently logged in user</title>
+      <link>//room362.com/post/2014/milkman-creating-processes-as-any-currently-logged-in-user/</link>
+      <pubDate>Thu, 14 Aug 2014 11:26:38 -0500</pubDate>
+      
+      <guid>//room362.com/post/2014/milkman-creating-processes-as-any-currently-logged-in-user/</guid>
+      <description>&lt;p&gt;One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as &lt;strong&gt;SYSTEM&lt;/strong&gt;. What&amp;rsquo;s the problem with that? Isn&amp;rsquo;t &lt;strong&gt;SYSTEM&lt;/strong&gt; god mode? Ya, and normally I&amp;rsquo;d agree that it&amp;rsquo;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know &lt;strong&gt;SYSTEM&lt;/strong&gt; doesn&amp;rsquo;t get any proxy settings.&lt;/p&gt;
+
+&lt;p&gt;Here is a blog post that I made &lt;a href=&#34;//room362.com/blog/2012/10/21/setting-systems-proxy-settings-with-metasploit/&#34;&gt;about setting the proxies for SYSTEM&lt;/a&gt; but leaving settings like this set is not only sloppy but hard to clean up.&lt;/p&gt;
+
+&lt;p&gt;Along comes &lt;code&gt;RunAsCurrentUser-2.0.3.1.exe&lt;/code&gt; I found this gem by messing up a search on google for RunAsUser. Found it &lt;a href=&#34;https://www-304.ibm.com/support/docview.wss?uid=swg21506033&#34;&gt;on this IBM support post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2014/201408_ibm_runascurrentuser.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Link to direct download: &lt;a href=&#34;http://software.bigfix.com/download/bes/util/RunAsCurrentUser-2.0.3.1.exe&#34;&gt;http://software.bigfix.com/download/bes/util/RunAsCurrentUser-2.0.3.1.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is a mirror uploaded to my Post Exploitation repo: &lt;a href=&#34;https://github.com/mubix/post-exploitation/blob/master/win32bins/RunAsCurrentUser-2.0.3.1.exe&#34;&gt;https://github.com/mubix/post-exploitation/blob/master/win32bins/RunAsCurrentUser-2.0.3.1.exe&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This binary takes a path to another executable as an argument. It then finds the currently logged in user and starts the provided executable as that user. AWESOME! This basically solves the whole  PSEXEC-&amp;gt;SYSTEM no-proxy settings issue. And it&amp;rsquo;s created by a legitimate company for legitimate reasons? w00tw00t. Game on!&lt;/p&gt;
+
+&lt;p&gt;Only two problems:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;It is 335K, which doesn&amp;rsquo;t seem like much but over high latency lines that can take an eternity to transfer, especially over doubly encrypted channels like with a reverse_https meterpreter session.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;It takes an argument which normally isn&amp;rsquo;t a huge challenge, but in our specific use case, psexec modules in Metasploit, it isn&amp;rsquo;t something we can do easily. You would have to upload your C2 binary, as well as the 335K RunAsCurrentUser over to the target host, then run the psexec_command module to execute them both, one as the argument of the other. Kinda sloppy.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;So I set to try and figure out how this binary did it&amp;rsquo;s magic. As I&amp;rsquo;m not much of a reverse engineer I &lt;a href=&#34;https://www.virustotal.com/en/file/1a9b518c775e2a85a7c47801e9b8221df338a65ad8df326485e4cd2aea22fe52/analysis/&#34;&gt;uploaded it to VirusTotal&lt;/a&gt; so I could take a look at it&amp;rsquo;s insides (plus, double check to see if it was being detected as malicious at all).&lt;/p&gt;
+
+&lt;p&gt;As far as I can tell the important pieces are the Windows API calls &lt;strong&gt;ImpersonateLoggedOnUser&lt;/strong&gt;, and &lt;strong&gt;CreateProcessAsUserA&lt;/strong&gt;. I set to trying to reproduce what it did in &lt;a href=&#34;https://www.autoitscript.com/site/autoit/&#34;&gt;AutoIT (awesome stuff if you have never checked it out)&lt;/a&gt;. I couldn&amp;rsquo;t quite get the API calls right, so I decided to give C++ a shot. Turned out to be pretty simple. I present to you &amp;ldquo;Milkman&amp;rdquo;:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/5d0cacdabfe092922fa3&#34;&gt;https://gist.github.com/mubix/5d0cacdabfe092922fa3&lt;/a&gt;  &lt;strong&gt;(full source included below)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This program (once compiled) takes one argument (or none at all) and runs calc.exe for every instance of the process you tell it to. If you run it without arguments it auto selects explorer.exe. So if you create a service:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;C:\temp\&amp;gt;sc create SuperService binpath= C:\Temp\milkman.exe type= own start= auto
+[SC] CreateService SUCCESS
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It will start up every time the computer starts, which is completely useless, since there won&amp;rsquo;t be any users logged in at that point, but you get where this can go. Features to add to this at point are:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Create a service binary that responds to START/STOP/PAUSE commands and such so that running this as a persistence method would actually be useful.&lt;/li&gt;
+&lt;li&gt;Add a loop so that it continues to run checking for explorer.exe every so often so it can catch when someone is logged in.&lt;/li&gt;
+&lt;li&gt;Finally the obvious one is to change it from being calc.exe that it runs by accepting another argument or some other kind of config option.
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Thoughts? What would you like Milkman to do, or what use case do you think a tweak would make it work better for? Leave a comment below.&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/mubix/5d0cacdabfe092922fa3.js&#34;&gt;&lt;/script&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -219,6 +219,72 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/">Hostname bruteforcing on the cheap</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>29 Jan 2014, 18:07</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&rsquo;t support the 0 you can simply use the same number parallel uses ala: cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer This results in roughly the same completion time as it&rsquo;s parallel counterpart.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2014/2014-01-18-attacker-ghost-stories-shmoocon-2014/">Attacker Ghost Stories - ShmooCon 2014</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>18 Jan 2014, 02:33</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Attacker Ghost Stories - ShmooCon 2014 from Rob Fuller
+  </p>
+
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/">Application Whitelist Bypass using IEexec.exe</a></h2>
 
     <div class="post-meta">
@@ -482,92 +548,6 @@
   
   <footer>
     <a href="/post/2013/2013-09-11-stealing-passwords-every-time-they-change/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/">Changing proxychains hardcoded DNS server</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>10 Sep 2013, 13:16</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  If you&rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&rsquo;ve finally decided to make a note of it.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2013/2013-08-10-unkillable-processes/">Unkillable Processes</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>10 Aug 2013, 10:39</time>
-  </div>
-
-  
-
-  
-
-  
-  
-  
-  <div>
-    <i class="fa fa-tags fa-fw"></i>
-    
-      <a class="post-taxonomy-tag" href="//room362.com/tags/railgun">railgun</a>&nbsp;&#47;
-    
-      <a class="post-taxonomy-tag" href="//room362.com/tags/x64">x64</a>&nbsp;&#47;
-    
-      <a class="post-taxonomy-tag" href="//room362.com/tags/incomplete">incomplete</a>&nbsp;&#47;
-    
-      <a class="post-taxonomy-tag" href="//room362.com/tags/ccdc">ccdc</a>
-    
-  </div>
-  
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Saw this post about a kernel bug in 64 bit Windows that is a DoS, it can also create an unkillable process: Blog post: http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html Figured I&rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had. Started with the C code for the bug: http://pastebin.com/QejGQXib along with the only resource I could find about the actual function: http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a I came up with this: client.railgun.add_function('ntdll','ZwSetInformationProcess','DWORD',[ [&quot;DWORD&quot;,&quot;ProcessHandle&quot;,&quot;in&quot;], [&quot;DWORD&quot;,&quot;ProcessInformationClass&quot;,&quot;in&quot;], [&quot;DWORD&quot;,&quot;ProcessInformation&quot;,&quot;inout&quot;], [&quot;DWORD&quot;,&quot;ProcessInformationLength&quot;,&quot;in&quot;], ]) processinfo = 0x8000F129 tproc = client.sys.process.open tmem = tproc.memory.allocate(4) tproc.memory.write(tmem,processinfo) cpidhandle = client.railgun.kernel32.GetCurrentProcess()['return'] client.railgun.ntdll.ZwSetInformationProcess(cpidhandle,0x21,tmem,0x4) ScriptJunkie quickly identified that I was using a DWORD for a Handle and using 4 bits for a 64 bit process (should be 8) as well as the fact that I could use a PDWORD with the ProcessInformation inout parameter instead of writing it to memory myself.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2013/2013-08-10-unkillable-processes/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>

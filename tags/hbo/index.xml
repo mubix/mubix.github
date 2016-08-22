@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hbo on Room362</title>
+    <link>//room362.com/tags/hbo/</link>
+    <description>Recent content in Hbo on Room362</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Thu, 10 Sep 2015 10:55:08 -0500</lastBuildDate>
+    <atom:link href="//room362.com/tags/hbo/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Tres Lessons From Pied Piper Delete Key Hack</title>
+      <link>//room362.com/post/2015/tres-lessons-from-pied-piper-delete-key-hack/</link>
+      <pubDate>Thu, 10 Sep 2015 10:55:08 -0500</pubDate>
+      
+      <guid>//room362.com/post/2015/tres-lessons-from-pied-piper-delete-key-hack/</guid>
+      <description>
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comas.png&#34;&gt;
+The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle.&lt;/p&gt;
+
+&lt;p&gt;Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?&lt;/p&gt;
+
+&lt;p&gt;Could a mindless error of pressing a delete key really cause a venerable company like Intersite to lose over nine thousand hours of content (including an irreplaceable archive of &lt;a href=&#34;http://imgur.com/19qEpxh&#34;&gt;vintage yiffing videos&lt;/a&gt;)?&lt;/p&gt;
+
+&lt;p&gt;The short answer: &lt;strong&gt;yes&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;When the producers of SILICON VALLEY reached out to me during the writing of the episode to help design the sequence, I knew it would be tough to make the technical intricacies track for the joke. But if the team had figured out &lt;a href=&#34;http://www.scribd.com/doc/228831637/Optimal-Tip-to-Tip-Efficiency#scribd&#34;&gt;optimal tip-to-tip of efficiency&lt;/a&gt; with Stanford PhDs, I was up for the challenge.&lt;/p&gt;
+
+&lt;p&gt;The delete key hack is a perfect storm of bad system hygiene. The dozens of small errors that led to it are more common than most systems administrators care to admit.&lt;/p&gt;
+
+&lt;p&gt;There’s a lesson here. Away from the big headlines about hacks at Sony Pictures and Target, companies every day have their systems broken by stupid errors. Most as avoidable as not putting a tequila bottle on a laptop (or letting Russ Hanneman inside your home in the first place).&lt;/p&gt;
+
+&lt;p&gt;Below is the the post-mortem on how the hack went down and tres lessons we can learn from it.&lt;/p&gt;
+
+&lt;h1 id=&#34;the-bake-off&#34;&gt;The Bake-Off&lt;/h1&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2015/tres_bakeoff.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Intersite set up the bake-off between Endframe and Pied Piper by providing access to an FTP server with the target files. Each company then downloads the individual files, encodes, compresses and roundtrips the file back to the Intersite server.&lt;/p&gt;
+
+&lt;p&gt;To speed up the process of the compression, the companies sequentially encode each file to save hard drive space and time waiting for them all to copy down, then they perform the operation.&lt;/p&gt;
+
+&lt;p&gt;This is where all the problems originate: to deliver the compressed file, Pied Piper was given full permission to Intersite’s FTP server (because of course it’s easier to just give all permissions than manage every folder’s permissions).&lt;/p&gt;
+
+&lt;p&gt;For those interested, the final Pied Piper solution for Intersite would look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2015/tres_uploads.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;the-hack&#34;&gt;The Hack&lt;/h1&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2015/tres_del.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When Russ sets down the Tres Comas tequila bottle on Richard’s laptop he unwittingly initiates a massive delete sequence on Intersite’s server. Here are the steps:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Richard navigates to bake-off directory or with the extended permissions he got into a parent folder with original content.&lt;/li&gt;
+&lt;li&gt;Gilfoyle turns off the delete verification prompts in the custom software they used for the file transfer and conversion. Richard meanwhile has enabled CRC checking on the internet system, a protection measure for penetration into Pied Piper that backfires.&lt;/li&gt;
+&lt;li&gt;Russ Hanneman arrives with the Tres Comas Tequila and mistakenly sets the bottle down on the keyboard initiating a delete command. Chaos ensues.&lt;/li&gt;
+&lt;li&gt;As the delete sequence launches the large file size of video spins the disks at 100% and locks the system.&lt;/li&gt;
+&lt;li&gt;Hands-on access with the bottle with the persistent delete requests plus the CRC checking creates fork bomb-like effects where the Pied Piper team cannot get back into the system to stop the delete sequence. Intersite is compromised and thousands of hours of video are deleted.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h1 id=&#34;tres-issues&#34;&gt;Tres Issues&lt;/h1&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2015/tres_preso.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A myriad of problems contributed to the delete key hack. Using the OWASP framework here are the top tres issues:&lt;/p&gt;
+
+&lt;h2 id=&#34;a7-missing-function-level-access-control-pita-administration&#34;&gt;A7 - Missing Function Level Access Control “PITA Administration”&lt;/h2&gt;
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comma_small.png&#34;&gt;
+Intersite’s FTP server is set up to allow the bake-off users full permissions to the digital masters being used in the bake-off.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But why were they unable to kill the transfer?&lt;/strong&gt; There are a bunch of reasons this could happen &amp;ndash; the SAN of which they were FTP’ed into was doing massive amounts of data deletion which can be HDD intensive (try deleting over 9000 files and watch your computer crawl).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But they would still be able to kill it on the Pied Piper end?!&lt;/strong&gt; Not if the transfer agent was queuing up deletes as fast as it could, pegging out the server on the Pied Piper end as well. Remember, everything they had in their garage data center was going into making the conversions go as fast as possible, the transfer back was a lower priority.&lt;/p&gt;
+
+&lt;h2 id=&#34;a4-insecure-direct-object-reference-speed-is-everything&#34;&gt;A4 - Insecure Direct Object Reference “speed is everything”&lt;/h2&gt;
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comma_small.png&#34;&gt;
+By not locking out his screen and letting Russ Hanneman near his unsecured session where he was monitoring the transfer from, Richard allowed direct access to the “delete” key object.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;But why didn’t it prompt for approving the delete?&lt;/strong&gt; Basically when you’re in a bake-off like this, you do absolutely everything to remove any possible obstacles, like &lt;strong&gt;ANY&lt;/strong&gt; prompts or approvals that you might not be around to hit “OK” on.&lt;/p&gt;
+
+&lt;h2 id=&#34;a6-sensitive-data-exposure-we-must-run-forward-simply-to-stay-in-place&#34;&gt;A6 - Sensitive Data Exposure “We must run forward simply to stay in place”&lt;/h2&gt;
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comma_small.png&#34;&gt;
+Intersite did not do a proper backup of their files due to cost and size constraints on their current system. In Episode 7 “Adult Content,” Molly Kendall, Intersite’s CEO, talked about how the porn industry was barely making the bills due to “free” internet porn influx. Intersite was doing its best to stay afloat in its industry and, as such, cut corners not only in the lack of proper admin for their FTP server, but also in storage costs. A mistake they will probably not make again soon.&lt;/p&gt;
+
+&lt;h1 id=&#34;tres-lessons&#34;&gt;Tres Lessons&lt;/h1&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;&lt;img src=&#34;//room362.com/images/2015/tres_eyebrow.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;don-t-be-an-idiot-with-permissions&#34;&gt;Don’t be an idiot with permissions:&lt;/h2&gt;
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comma_small.png&#34;&gt;
+The easiest way in is through the front door. Ensure that everyone is on a need-to-know basis with data. Standard protections like 2-factor authentication and whitelisting IP addresses mean nothing if the wrong people access sensitive information.&lt;/p&gt;
+
+&lt;h2 id=&#34;back-up-your-data&#34;&gt;Back up your data:&lt;/h2&gt;
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comma_small.png&#34;&gt;
+It’s easy to take for granted but reliable storage is still expensive. Most small businesses don’t backup data on a daily basis. Even fewer do so with any form of redundancy or integrity checks.
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;don-t-work-with-assholes&#34;&gt;Don’t work with assholes:&lt;/h2&gt;
+
+&lt;p&gt;&lt;img align=&#34;left&#34; src=&#34;//room362.com/images/2015/tres_comma_small.png&#34;&gt;
+Insider attacks are the hardest to detect and protect against. &lt;a href=&#34;http://downloads.spectorsoft.com/resources/infographic/spectorsoft-2014-insider-threat-survey.pdf&#34;&gt;Surveys&lt;/a&gt; estimate 59% go unnoticed until it is too late. The first line of defense is common sense, only hire people you trust — and definitely not anyone who put radio on the Internet.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

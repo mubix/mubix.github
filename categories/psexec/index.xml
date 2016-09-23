@@ -2,35 +2,35 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Psexec on Room362</title>
-    <link>//room362.com/categories/psexec/</link>
+    <link>https://room362.com/categories/psexec/</link>
     <description>Recent content in Psexec on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
     <lastBuildDate>Mon, 25 Jun 2012 18:27:18 +0000</lastBuildDate>
-    <atom:link href="//room362.com/categories/psexec/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://room362.com/categories/psexec/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Evidence of Compromise - Metasploit&#39;s PSEXEC</title>
-      <link>//room362.com/post/2012/2012-06-25-evidence-of-compromise-metasploits-psexec/</link>
+      <link>https://room362.com/post/2012/2012-06-25-evidence-of-compromise-metasploits-psexec/</link>
       <pubDate>Mon, 25 Jun 2012 18:27:18 +0000</pubDate>
       
-      <guid>//room362.com/post/2012/2012-06-25-evidence-of-compromise-metasploits-psexec/</guid>
+      <guid>https://room362.com/post/2012/2012-06-25-evidence-of-compromise-metasploits-psexec/</guid>
       <description>&lt;p&gt;Was messing with the Windows service binaries in Metasploit today and I noticed something unique I hadn&amp;rsquo;t noticed before. For the PSEXEC module, the service name (actually just the display name, &amp;lsquo;service name&amp;rsquo; is random) always started with an uppercase &amp;rsquo;M&amp;rsquo;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;//room362.com/images/postimages/201206_psexec_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201206_psexec_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Curious to why that was I looked and found &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/smb/psexec.rb#L246&#34;&gt;Line 246 of the PSEXEC&lt;/a&gt; module to be the culprit:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;//room362.com/images/postimages/201206_psexec_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201206_psexec_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I can guess why the M is there. Might be just a quirk with old Windows versions that didn&amp;rsquo;t allow lowercase service names, not sure. Lets change it a bit. Looking around my XP VM I found the perfect one to emulate ;-)&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;//room362.com/images/postimages/201206_psexec_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201206_psexec_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;So, quick edit to make it say display name = &amp;lsquo;System Events Notification&amp;rsquo; (added the (s) because services can&amp;rsquo;t have the same display name) and WA LA!&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;//room362.com/images/postimages/201206_psexec_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201206_psexec_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A less visually detectable psexec run. However, how often do you look at your Event logs? ;-)&lt;/p&gt;
 </description>

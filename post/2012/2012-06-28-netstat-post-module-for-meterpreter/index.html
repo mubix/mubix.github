@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="mubix">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Netstat Post Module for Meterpreter" />
 <meta property="og:description" content="" />
@@ -184,59 +184,59 @@ buffersize = getsize['pdwSize']
 <p>Then it&rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx">MIB_TCPTABLE</a> one <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx">MIB_TCPROW</a> at a time (translating the state to something readable):</p>
 
 <pre><code class="language-ruby">def parse_tcptable(buffer)
-    entries = buffer[0,4].unpack(&quot;V*&quot;)[0]
-    print_status(&quot;Total TCP Entries: #{entries}&quot;)
-    rtable = Rex::Ui::Text::Table.new(
-        'Header' =&gt; 'Routing Table',
-        'Indent' =&gt; 2,
-        'Columns' =&gt; ['STATE', 'LHOST', 'LPORT', 'RHOST', 'RPORT']
-    )
-    offset = 4
-    (1..entries).each do
-        x = {}
-        x[:state] = case buffer[(offset + 0), 4].unpack(&quot;V*&quot;)[0]
-        when 1
-            'CLOSED'
-        when 2
-            'LISTEN'
-        when 3
-            'SYN_SENT'
-        when 4
-            'SYN_RCVD'
-        when 5
-            'ESTABLISHED'
-        when 6
-            'FIN_WAIT1'
-        when 7
-            'FIN_WAIT2'
-        when 8
-            'CLOSE_WAIT'
-        when 9
-            'CLOSING'
-        when 10
-            'LAST_ACK'
-        when 11
-            'TIME_WAIT'
-        when 12
-            'DELETE_TCB'
-        else
-            'UNDEFINED'
-        end
-        
-        x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&quot;N&quot;)[0])
-        x[:lport] = buffer[(offset + 8), 4].unpack(&quot;n&quot;)[0]
-        x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&quot;N&quot;)[0])
-        if x[:state] == &quot;LISTEN&quot;
-            x[:rport] = &quot;_&quot;
-        else
-            x[:rport] = buffer[(offset + 16), 4].unpack(&quot;n&quot;)[0]
-        end
+	entries = buffer[0,4].unpack(&quot;V*&quot;)[0]
+	print_status(&quot;Total TCP Entries: #{entries}&quot;)
+	rtable = Rex::Ui::Text::Table.new(
+		'Header' =&gt; 'Routing Table',
+		'Indent' =&gt; 2,
+		'Columns' =&gt; ['STATE', 'LHOST', 'LPORT', 'RHOST', 'RPORT']
+	)
+	offset = 4
+	(1..entries).each do
+		x = {}
+		x[:state] = case buffer[(offset + 0), 4].unpack(&quot;V*&quot;)[0]
+		when 1
+			'CLOSED'
+		when 2
+			'LISTEN'
+		when 3
+			'SYN_SENT'
+		when 4
+			'SYN_RCVD'
+		when 5
+			'ESTABLISHED'
+		when 6
+			'FIN_WAIT1'
+		when 7
+			'FIN_WAIT2'
+		when 8
+			'CLOSE_WAIT'
+		when 9
+			'CLOSING'
+		when 10
+			'LAST_ACK'
+		when 11
+			'TIME_WAIT'
+		when 12
+			'DELETE_TCB'
+		else
+			'UNDEFINED'
+		end
+		
+		x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&quot;N&quot;)[0])
+		x[:lport] = buffer[(offset + 8), 4].unpack(&quot;n&quot;)[0]
+		x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&quot;N&quot;)[0])
+		if x[:state] == &quot;LISTEN&quot;
+			x[:rport] = &quot;_&quot;
+		else
+			x[:rport] = buffer[(offset + 16), 4].unpack(&quot;n&quot;)[0]
+		end
 
-        offset = offset + 20
-        rtable &lt;&lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]
-    end
+		offset = offset + 20
+		rtable &lt;&lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]
+	end
 
-    print_status(rtable.to_s)
+	print_status(rtable.to_s)
 end
 </code></pre>
 

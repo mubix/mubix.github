@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Persistence" />
 <meta property="og:description" content="" />
@@ -143,7 +143,8 @@
       				
             </p>
             <article class="post-summary">
-            	Nick Harbour wrote a post on Mandiants blog about some Malware that was using a dll called &lsquo;fxsst.dll&rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points: The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there) I thought&hellip; no it couldn&rsquo;t be that simple&hellip; lets see: We have our victim in a session and are going to make a DLL that points back to our reverse_https multi handler over port 443 Ok, we&rsquo;ve got our super evil fxsst.dll now lets put it in place.
+            	Nick Harbour wrote a post on Mandiants blog about some Malware that was using a dll called &lsquo;fxsst.dll&rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:
+ The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&hellip; no it couldn&rsquo;t be that simple&hellip; lets see:
             </article>
 			<div class="read-more-link">
 				<a href="/post/2011/2011-06-27-fxsstdll-persistence-the-evil-fax-machine/"><span class="read-more-slashes">//</span>Read More...</a>

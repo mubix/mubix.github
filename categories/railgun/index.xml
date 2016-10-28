@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Railgun on Room362</title>
-    <link>https://room362.com/categories/railgun/</link>
-    <description>Recent content in Railgun on Room362</description>
+    <title>Room362</title>
+    <link>https://room362.com/categories/railgun/index.xml</link>
+    <description>Recent content on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Tue, 31 Jul 2012 20:20:15 +0000</lastBuildDate>
     <atom:link href="https://room362.com/categories/railgun/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
@@ -433,38 +432,38 @@ targetprocess.memory.write(mem, raw)
 &lt;p&gt;Here is the script for your consumption:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;if client.platform == &amp;quot;x64/win32&amp;quot;        
-    print_status &amp;quot;Railgun is currently not supported for x64 bit systems&amp;quot;         
+	print_status &amp;quot;Railgun is currently not supported for x64 bit systems&amp;quot;         
 raise Rex::Script::Completed        
 end
 
 if client.railgun.present? == true       
-    print_status &amp;quot;Railgun already loaded.. skipping&amp;quot;         
+	print_status &amp;quot;Railgun already loaded.. skipping&amp;quot;         
 else        
-    print_status &amp;quot;Loading Railgun&amp;quot;         
-    client.core.use(&amp;quot;railgun&amp;quot;)        
+	print_status &amp;quot;Loading Railgun&amp;quot;         
+	client.core.use(&amp;quot;railgun&amp;quot;)        
 end
 
 if client.railgun.dll[&#39;shell32&#39;] == nil       
-    print_status &amp;quot;Adding Shell32.dll&amp;quot;         
-    client.railgun.add_dll(&#39;shell32&#39;,&#39;shell32&#39;)        
+	print_status &amp;quot;Adding Shell32.dll&amp;quot;         
+	client.railgun.add_dll(&#39;shell32&#39;,&#39;shell32&#39;)        
 else        
-    print_status &amp;quot;Shell32 already loaded.. skipping&amp;quot;         
+	print_status &amp;quot;Shell32 already loaded.. skipping&amp;quot;         
 end
 
 if (client.railgun.shell32.functions[&#39;IsUserAnAdmin&#39;] == nil       
-    print_status &amp;quot;Adding the IsUserAnAdmin function&amp;quot;         
-    client.railgun.add_function(&#39;shell32&#39;, &#39;IsUserAnAdmin&#39;, &#39;BOOL&#39;, [])        
+	print_status &amp;quot;Adding the IsUserAnAdmin function&amp;quot;         
+	client.railgun.add_function(&#39;shell32&#39;, &#39;IsUserAnAdmin&#39;, &#39;BOOL&#39;, [])        
 else        
-    print_status &amp;quot;IsUserAnAdmin already loaded.. skipping&amp;quot;         
+	print_status &amp;quot;IsUserAnAdmin already loaded.. skipping&amp;quot;         
 end
 
 print_status &amp;quot;Running the IsUserAnAdmin function&amp;quot;        
 status = client.railgun.shell32.IsUserAnAdmin()
 
 if status[&amp;quot;return&amp;quot;] == true then       
-    print_status &amp;quot;You are an administrator&amp;quot;         
+	print_status &amp;quot;You are an administrator&amp;quot;         
 else        
-    print_error &amp;quot;You are not an administrator&amp;quot;         
+	print_error &amp;quot;You are not an administrator&amp;quot;         
 end
 &lt;/code&gt;&lt;/pre&gt;
 </description>

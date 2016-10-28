@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Uac" />
 <meta property="og:description" content="" />
@@ -147,7 +147,11 @@
       				
             </p>
             <article class="post-summary">
-            	Dave Kennedy and Kevin Mitnick submitted the &ldquo;bypassuac&rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network. &ldquo;Old&rdquo; module post/windows/escalate/bypassuac: I decided to give it a bit of a face lift: &ldquo;New&rdquo; local exploit module exploit/windows/local/bypassuac: All of the credit for the availability of this module goes to @egyp7 though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&rsquo;t be possible.
+            	Dave Kennedy and Kevin Mitnick submitted the &ldquo;bypassuac&rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.
+&ldquo;Old&rdquo; module post/windows/escalate/bypassuac:
+I decided to give it a bit of a face lift:
+&ldquo;New&rdquo; local exploit module exploit/windows/local/bypassuac:
+All of the credit for the availability of this module goes to @egyp7 though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&rsquo;t be possible.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-30-bypassuac-got-a-facelift/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -185,7 +189,10 @@
       				
             </p>
             <article class="post-summary">
-            	UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD (MY MISTAKE FOR NOT TESTING MORE) So the &ldquo;-ish&rdquo; is you need to have the username and pass of another account that has administrator rights the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions) I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&rsquo;s &lsquo;RunAs&rsquo; verb.
+            	UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD
+(MY MISTAKE FOR NOT TESTING MORE)
+So the &ldquo;-ish&rdquo; is you need to have the username and pass of another account that has administrator rights the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions)
+I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&rsquo;s &lsquo;RunAs&rsquo; verb.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-16-uac-alwaysnotify-bypass-ish/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -227,7 +234,8 @@
       				
             </p>
             <article class="post-summary">
-            	A number of times during tests I&rsquo;ve actually run into those mythical creatures called &ldquo;patched windows machines&rdquo;. At DerbyCon Chris Gates and I released the &ldquo;Ask&rdquo; post module (which I had failed to publish). This module very simply uses the ShellExecute windows function.aspx&rdquo;) via Railgun with the undocumented (but very well known) operator of &lsquo;runas&rsquo;. These two lines accomplished that: client.railgun.add_function( 'shell32', 'ShellExecuteA', 'DWORD',[[&quot;DWORD&quot;,&quot;hwnd&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpOperation&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpFile&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpParameters&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpDirectory&quot;,&quot;in&quot;],[&quot;DWORD&quot;,&quot;nShowCmd&quot;,&quot;in&quot;],]) client.railgun.shell32.ShellExecuteA(nil,&quot;runas&quot;,&quot;evil.exe&quot;,nil,nil,5) This would quite simply prompt the user with that annoying UAC prompt asking the user to run &lsquo;evil.exe&rsquo; with Administrative privs.
+            	A number of times during tests I&rsquo;ve actually run into those mythical creatures called &ldquo;patched windows machines&rdquo;. At DerbyCon Chris Gates and I released the &ldquo;Ask&rdquo; post module (which I had failed to publish). This module very simply uses the ShellExecute windows function.aspx&rdquo;) via Railgun with the undocumented (but very well known) operator of &lsquo;runas&rsquo;. These two lines accomplished that:
+client.railgun.add_function( 'shell32', 'ShellExecuteA', 'DWORD',[[&quot;DWORD&quot;,&quot;hwnd&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpOperation&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpFile&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpParameters&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpDirectory&quot;,&quot;in&quot;],[&quot;DWORD&quot;,&quot;nShowCmd&quot;,&quot;in&quot;],]) client.railgun.shell32.ShellExecuteA(nil,&quot;runas&quot;,&quot;evil.exe&quot;,nil,nil,5)  This would quite simply prompt the user with that annoying UAC prompt asking the user to run &lsquo;evil.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-01-03-uac-user-assisted-compromise/"><span class="read-more-slashes">//</span>Read More...</a>

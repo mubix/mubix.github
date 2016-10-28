@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Blocking countries via iptables // Room362
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.17" />
+
+  <meta property="og:title" content="Blocking countries via iptables" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://room362.com/post/2016/12-07-conference-bridges/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://room362.com//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Room362" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/images/headshot_small.png" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Room362</h1>
+    <h2 class="brand-tagline">Blatherings of a security addict</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://room362.com/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/brandon/">Brandon</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/about/">About</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="/index.xml" target="_blank"><i class='fa fa-rss'></i></a>
+        
+      
+        
+        <a href="https://linkedin.com/in/mubix" target="_blank"><i class='fa fa-linkedin'></i></a>
+        
+      
+        
+        <a href="https://twitter.com/mubix" target="_blank"><i class='fa fa-twitter'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/post/2016/12-07-conference-bridges/">Blocking countries via iptables</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>28</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>With all of the scanning / noise on the Internet, it&rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it&rsquo;s pretty easy to get going, just <code>apt-get</code> install the needed perl library and the addons themselves:</p>
+
+<pre><code>apt-get install libtext-csv-xs-perl xtables-addons-common
+</code></pre>
+
+<p>!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&rsquo;t availabe (like Linode&rsquo;s special kernel), you will need to find another way to get the correct headers installed.</p>
+
+<p>Then download the Maxmind geo database, the location of the <code>xt_geoip_dl</code> tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in <code>/usr/src/xtables-addons-2.6/geoip/</code> as well as <code>/usr/lib/xtables-addons/</code> YMMV.</p>
+
+<pre><code>cd /usr/src/xtables-addons-2.6/geoip/
+./xt_geoip_dl
+</code></pre>
+
+<p>You should see it downloading the IP databases:</p>
+
+<pre><code>--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz
+Length: 1303811 (1.2M) [application/octet-stream]
+Saving to: ‘GeoIPv6.csv.gz’
+
+GeoIPv6.csv.gz                                  100%[=========================================================================================================&gt;]   1.24M  --.-KB/s   in 0.004s
+
+2016-10-28 13:55:24 (321 MB/s) - ‘GeoIPv6.csv.gz’ saved [1303811/1303811]
+
+--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
+Saving to: ‘GeoIPCountryCSV.zip’
+
+GeoIPCountryCSV.zip                             100%[=========================================================================================================&gt;]   2.04M  --.-KB/s   in 0.006s
+
+2016-10-28 13:55:24 (326 MB/s) - ‘GeoIPCountryCSV.zip’ saved [2137625/2137625]
+
+FINISHED --2016-10-28 13:55:24--
+Total wall clock time: 0.1s
+Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
+Archive:  GeoIPCountryCSV.zip
+  inflating: GeoIPCountryWhois.csv
+
+</code></pre>
+
+<p>After that, you need to &ldquo;build&rdquo; the lists by performing the following command in that same directory (one install didn&rsquo;t automatically make the directory so ensure it&rsquo;s there with the mkdir command):</p>
+
+<pre><code>mkdir -p /usr/share/xt_geoip
+./xt_geoip_build -D /usr/share/xt_geoip *.csv
+</code></pre>
+
+<p>After that you are off the the races and you can simply use the geoip module as so now:</p>
+
+<pre><code>iptables -A INPUT -m geoip --src-cc CN -j DROP
+iptables -A INPUT -m geoip --src-cc HK -j DROP
+iptables -A INPUT -m geoip --src-cc RU -j DROP
+iptables -A INPUT -m geoip --src-cc KR -j DROP
+</code></pre>
+
+<p>Or you can go the other route and just allow from your country:</p>
+
+<pre><code>iptables -A INPUT -m geoip --src-cc PL -m tcp -p tcp --dport 22 -j ACCEPT
+</code></pre>
+
+<p>When looking up how to do this many people recommended updating the GeoIP database once a month. To do this I made a really simple bash script that just repeats all the things I did and added it to a monthly cron job:</p>
+
+<p>File: 0update_maxmind</p>
+
+<pre><code>#!/bin/bash
+
+rm -f /usr/src/xtables-addons-2.6/geoip/*.csv
+rm -rf /usr/share/xt_geoip/*
+cd /usr/src/xtables-addons-2.6/geoip/
+./xt_geoip_dl
+./xt_geoip_build -D /usr/share/xt_geoip *.csv
+</code></pre>
+
+<p>Setting the cronjob:</p>
+
+<pre><code>chmod +x 0update_maxmind
+mv 0update_maxmind /etc/cront.monthly/
+</code></pre>
+
+	
+			
+
+			
+				<div class="tags-list">
+					<span class="dark-red">Tags</span><span class="decorative-marker">//</span>
+					
+	                <a class="post-tag post-tag-iptables" href="https://room362.com//tags/iptables">iptables</a>,
+	                
+	                <a class="post-tag post-tag-xtables" href="https://room362.com//tags/xtables">xtables</a>,
+	                
+	                <a class="post-tag post-tag-firewall" href="https://room362.com//tags/firewall">firewall</a>,
+	                
+				</div>
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/post/2016/snagging-creds-from-locked-machines/">Snagging creds from locked machines</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+    if (window.location.hostname == "127.0.0.1")
+        return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'room362';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+			<li><a href="/about">About</a></li>
+		
+			<li><a href="/post">Blog</a></li>
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

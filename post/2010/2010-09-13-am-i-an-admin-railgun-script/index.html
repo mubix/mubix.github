@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="mubix">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Am I an Admin? Railgun Script" />
 <meta property="og:description" content="" />
@@ -170,38 +170,38 @@
 <p>Here is the script for your consumption:</p>
 
 <pre><code class="language-ruby">if client.platform == &quot;x64/win32&quot;        
-    print_status &quot;Railgun is currently not supported for x64 bit systems&quot;         
+	print_status &quot;Railgun is currently not supported for x64 bit systems&quot;         
 raise Rex::Script::Completed        
 end
 
 if client.railgun.present? == true       
-    print_status &quot;Railgun already loaded.. skipping&quot;         
+	print_status &quot;Railgun already loaded.. skipping&quot;         
 else        
-    print_status &quot;Loading Railgun&quot;         
-    client.core.use(&quot;railgun&quot;)        
+	print_status &quot;Loading Railgun&quot;         
+	client.core.use(&quot;railgun&quot;)        
 end
 
 if client.railgun.dll['shell32'] == nil       
-    print_status &quot;Adding Shell32.dll&quot;         
-    client.railgun.add_dll('shell32','shell32')        
+	print_status &quot;Adding Shell32.dll&quot;         
+	client.railgun.add_dll('shell32','shell32')        
 else        
-    print_status &quot;Shell32 already loaded.. skipping&quot;         
+	print_status &quot;Shell32 already loaded.. skipping&quot;         
 end
 
 if (client.railgun.shell32.functions['IsUserAnAdmin'] == nil       
-    print_status &quot;Adding the IsUserAnAdmin function&quot;         
-    client.railgun.add_function('shell32', 'IsUserAnAdmin', 'BOOL', [])        
+	print_status &quot;Adding the IsUserAnAdmin function&quot;         
+	client.railgun.add_function('shell32', 'IsUserAnAdmin', 'BOOL', [])        
 else        
-    print_status &quot;IsUserAnAdmin already loaded.. skipping&quot;         
+	print_status &quot;IsUserAnAdmin already loaded.. skipping&quot;         
 end
 
 print_status &quot;Running the IsUserAnAdmin function&quot;        
 status = client.railgun.shell32.IsUserAnAdmin()
 
 if status[&quot;return&quot;] == true then       
-    print_status &quot;You are an administrator&quot;         
+	print_status &quot;You are an administrator&quot;         
 else        
-    print_error &quot;You are not an administrator&quot;         
+	print_error &quot;You are not an administrator&quot;         
 end
 </code></pre>
 

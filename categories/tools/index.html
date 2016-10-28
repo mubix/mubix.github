@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Tools" />
 <meta property="og:description" content="" />
@@ -181,7 +181,8 @@
       				
             </p>
             <article class="post-summary">
-            	This is here because I always forget how to do it sudo apt-get install libtirpc-dev libncurses-dev wget http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz tar zxvf nfsshell.tar.gz cd nfs ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h perl -p -i.orig -e 's/getline/getline_nfs/' nfs.c Next part I don&rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &ldquo;uncomment the following 4 lines for Solaris 2.x&rdquo; and uncomment the 2 lines following &ldquo;For GNU readline support you need to add&rdquo; After that a simple &ldquo;make&rdquo; should get you ./nfs sitting there for your use.
+            	This is here because I always forget how to do it
+ sudo apt-get install libtirpc-dev libncurses-dev wget http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz tar zxvf nfsshell.tar.gz cd nfs ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h perl -p -i.orig -e 's/getline/getline_nfs/' nfs.c  Next part I don&rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &ldquo;uncomment the following 4 lines for Solaris 2.x&rdquo; and uncomment the 2 lines following &ldquo;For GNU readline support you need to add&rdquo;
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-02-22-compile-nfsshell-on-ubuntu/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -219,7 +220,10 @@
       				
             </p>
             <article class="post-summary">
-            	UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD (MY MISTAKE FOR NOT TESTING MORE) So the &ldquo;-ish&rdquo; is you need to have the username and pass of another account that has administrator rights the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions) I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&rsquo;s &lsquo;RunAs&rsquo; verb.
+            	UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD
+(MY MISTAKE FOR NOT TESTING MORE)
+So the &ldquo;-ish&rdquo; is you need to have the username and pass of another account that has administrator rights the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions)
+I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&rsquo;s &lsquo;RunAs&rsquo; verb.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-16-uac-alwaysnotify-bypass-ish/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -259,7 +263,11 @@
       				
             </p>
             <article class="post-summary">
-            	If you follow the exact same steps you did for Netview: /blog/2012/10/07/compiling-and-release-of-netview/ then you already have the steps needed to create a compiled version of ditto from the repo here: https://github.com/mubix/ditto And while the sheep icon is cute, and a nod to what ditto does, it comes at a pretty hefty cost: Size. Now if you&rsquo;re scoffing at 408 KB then you don&rsquo;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring.
+            	If you follow the exact same steps you did for Netview: /blog/2012/10/07/compiling-and-release-of-netview/
+then you already have the steps needed to create a compiled version of ditto from the repo here:
+https://github.com/mubix/ditto
+And while the sheep icon is cute, and a nod to what ditto does, it comes at a pretty hefty cost:
+Size. Now if you&rsquo;re scoffing at 408 KB then you don&rsquo;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-08-compiling-and-release-of-ditto/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -299,7 +307,8 @@
       				
             </p>
             <article class="post-summary">
-            	If you haven&rsquo;t caught Chris Gates (@carnal0wnage) and my talk at DerbyCon 2012 - we released 2 tools, Netview, and Ditto. Here I&rsquo;ll walk you through compiling Netview yourself, in the next blog post we&rsquo;ll go over compiling Ditto and how you can remove it&rsquo;s icon to reduce the size if you want. But for Netview it&rsquo;s pretty straight forward. First you pull a copy of the GIT repository: https://github.com/mubix/netview Once you&rsquo;ve done that, you&rsquo;ve got a directory looking like this: You will also need Visual Studio C++ (The Express version if free here: http://www.microsoft.com/visualstudio/eng/downloads#d-2010-express ) Once you have both you double click the .sln file (Solution File) And you get a ugly blue and purple box like this: Where you switch the compile option from &ldquo;Debug&rdquo; to &ldquo;Release&rdquo; and click to &ldquo;Build Solution&rdquo;: Sounds much more grandiose than it really is.
+            	If you haven&rsquo;t caught Chris Gates (@carnal0wnage) and my talk at DerbyCon 2012 - we released 2 tools, Netview, and Ditto. Here I&rsquo;ll walk you through compiling Netview yourself, in the next blog post we&rsquo;ll go over compiling Ditto and how you can remove it&rsquo;s icon to reduce the size if you want. But for Netview it&rsquo;s pretty straight forward. First you pull a copy of the GIT repository:
+https://github.com/mubix/netview
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-07-compiling-and-release-of-netview/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -343,7 +352,8 @@
       				
             </p>
             <article class="post-summary">
-            	pfSense is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration. Enter Peerblock and AnalogX&rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.
+            	pfSense is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.
+Enter Peerblock and AnalogX&rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -381,7 +391,9 @@
       				
             </p>
             <article class="post-summary">
-            	So it turns out that Windows Firewall talks IP addresses just like any other firewall, so if you configure FakeNetBIOSNS to tell everyone that the IP address for whatever they looked up is YOUR IP, guess what, no need to bypass the spoof filters ;-) Happy Rob! $ cat nbns.ini PROJECTMENTOR WPAD 172.16.10.207 PROJECTMENTOR FILESHARE 173.26.10.207 Results in: Game ON!
+            	So it turns out that Windows Firewall talks IP addresses just like any other firewall, so if you configure FakeNetBIOSNS to tell everyone that the IP address for whatever they looked up is YOUR IP, guess what, no need to bypass the spoof filters ;-) Happy Rob!
+$ cat nbns.ini PROJECTMENTOR WPAD 172.16.10.207 PROJECTMENTOR FILESHARE 173.26.10.207  Results in:
+Game ON!
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-09-02-old-school-on-target-nbns-spoofing-part-2/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -419,7 +431,9 @@
       				
             </p>
             <article class="post-summary">
-            	One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/) . Wesley&rsquo;s stuff can be found here: http://www.mcgrewsecurity.com/tools/nbnspoof/ Wesley&rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &ldquo;on-site&rdquo; only attack.
+            	One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/) . Wesley&rsquo;s stuff can be found here: http://www.mcgrewsecurity.com/tools/nbnspoof/
+Wesley&rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html
+and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &ldquo;on-site&rdquo; only attack.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-09-01-old-school-on-target-nbns-spoofing/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -457,7 +471,8 @@
       				
             </p>
             <article class="post-summary">
-            	Penetration Testing / Red Teaming requires the use of a lot of tools. I don&rsquo;t mind getting called a &ldquo;script kiddie&rdquo; because I can accomplish more and faster when I don&rsquo;t have to code every single task I need to do. This post is to point out companies that make this possible and give a small bit of thanks. (If you&rsquo;ve ever tried to convince a company to give something away for free, you can understand how big this really is) Some give a lot, some only one tool, but even one is more than some.
+            	Penetration Testing / Red Teaming requires the use of a lot of tools. I don&rsquo;t mind getting called a &ldquo;script kiddie&rdquo; because I can accomplish more and faster when I don&rsquo;t have to code every single task I need to do. This post is to point out companies that make this possible and give a small bit of thanks.
+(If you&rsquo;ve ever tried to convince a company to give something away for free, you can understand how big this really is) Some give a lot, some only one tool, but even one is more than some.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-06-20-companies-that-give-back-with-free-tools/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -495,7 +510,10 @@
       				
             </p>
             <article class="post-summary">
-            	It figures that someone who didn’t go actually made a list of tools. (Probably because they didn’t have to suffer the ShmooFlu) Check out: http://blog.security4all.be/2009/02/shmoocon-2009-overview-collection-of.html Thanks to Security4all for posting it up! If you see something that he doesn’t have, pictures, videos, links, or tools, please let him know. FireTalks / PodCasters Meetup audio can be found here soon: http://pcm.libsyn.com/
+            	It figures that someone who didn’t go actually made a list of tools. (Probably because they didn’t have to suffer the ShmooFlu)
+Check out: http://blog.security4all.be/2009/02/shmoocon-2009-overview-collection-of.html Thanks to Security4all for posting it up!
+If you see something that he doesn’t have, pictures, videos, links, or tools, please let him know.
+FireTalks / PodCasters Meetup audio can be found here soon: http://pcm.libsyn.com/
             </article>
 			<div class="read-more-link">
 				<a href="/post/2009/2009-02-12-shmoocon-tools/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -535,7 +553,9 @@
       				
             </p>
             <article class="post-summary">
-            	The official link is up and here it is.. well, until they release the beta: http://inguardians.com/tools/middler-alpha.tgz Keep up with http://www.inguardians.com/ for all of their great tools.
+            	The official link is up and here it is.. well, until they release the beta:
+http://inguardians.com/tools/middler-alpha.tgz
+ Keep up with http://www.inguardians.com/ for all of their great tools.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2009/2009-02-07-the-middler-gets-released-at-shmoocon/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -575,7 +595,7 @@
       				
             </p>
             <article class="post-summary">
-            	I have had the idea for this app for a long time, expressed it a few times, but never really pushed, and I sure that I am not the only one who has thought of or wanted an app like Ear Trumpet by Robin Wood. Well on Jan 21st Sam Buhlig posted to the PaulDotCom mailing list asking for an app to test a firewall that would answer on all ports.
+            	I have had the idea for this app for a long time, expressed it a few times, but never really pushed, and I sure that I am not the only one who has thought of or wanted an app like Ear Trumpet by Robin Wood. Well on Jan 21st Sam Buhlig posted to the PaulDotCom mailing list  asking for an app to test a firewall that would answer on all ports.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2009/2009-02-03-ear-trumpet/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -613,7 +633,7 @@
       				
             </p>
             <article class="post-summary">
-            	Table of Contents: Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado: The Human Factor is why we all still have jobs in the security world.
+            	Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks   Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:
             </article>
 			<div class="read-more-link">
 				<a href="/post/2009/2009-01-13-maltego-2-and-beyond-part-3/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -651,7 +671,9 @@
       				
             </p>
             <article class="post-summary">
-            	This is just a quick blurb because Tom from the Security Justice Podcast already has a great post about all the changes: Check out his post here: http://spylogic.net/item/382 New link: http://www.spylogic.net/2008/12/maltego-201-released/
+            	This is just a quick blurb because Tom from the Security Justice Podcast already has a great post about all the changes:
+Check out his post here: http://spylogic.net/item/382
+New link: http://www.spylogic.net/2008/12/maltego-201-released/
             </article>
 			<div class="read-more-link">
 				<a href="/post/2008/2008-12-06-maltego-201-released/"><span class="read-more-slashes">//</span>Read More...</a>

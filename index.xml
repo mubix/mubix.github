@@ -2,13 +2,97 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Room362</title>
-    <link>https://room362.com/</link>
+    <link>https://room362.com/index.xml</link>
     <description>Recent content on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Tue, 06 Sep 2016 07:35:28 -0500</lastBuildDate>
+    <lastBuildDate>Fri, 28 Oct 2016 15:00:00 -0400</lastBuildDate>
     <atom:link href="https://room362.com/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Blocking countries via iptables</title>
+      <link>https://room362.com/post/2016/12-07-conference-bridges/</link>
+      <pubDate>Fri, 28 Oct 2016 15:00:00 -0400</pubDate>
+      
+      <guid>https://room362.com/post/2016/12-07-conference-bridges/</guid>
+      <description>&lt;p&gt;With all of the scanning / noise on the Internet, it&amp;rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&amp;rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&amp;rsquo;s pretty easy to get going, just &lt;code&gt;apt-get&lt;/code&gt; install the needed perl library and the addons themselves:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;apt-get install libtext-csv-xs-perl xtables-addons-common
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&amp;rsquo;t availabe (like Linode&amp;rsquo;s special kernel), you will need to find another way to get the correct headers installed.&lt;/p&gt;
+
+&lt;p&gt;Then download the Maxmind geo database, the location of the &lt;code&gt;xt_geoip_dl&lt;/code&gt; tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in &lt;code&gt;/usr/src/xtables-addons-2.6/geoip/&lt;/code&gt; as well as &lt;code&gt;/usr/lib/xtables-addons/&lt;/code&gt; YMMV.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /usr/src/xtables-addons-2.6/geoip/
+./xt_geoip_dl
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You should see it downloading the IP databases:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz
+Length: 1303811 (1.2M) [application/octet-stream]
+Saving to: ‘GeoIPv6.csv.gz’
+
+GeoIPv6.csv.gz                                  100%[=========================================================================================================&amp;gt;]   1.24M  --.-KB/s   in 0.004s
+
+2016-10-28 13:55:24 (321 MB/s) - ‘GeoIPv6.csv.gz’ saved [1303811/1303811]
+
+--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
+Saving to: ‘GeoIPCountryCSV.zip’
+
+GeoIPCountryCSV.zip                             100%[=========================================================================================================&amp;gt;]   2.04M  --.-KB/s   in 0.006s
+
+2016-10-28 13:55:24 (326 MB/s) - ‘GeoIPCountryCSV.zip’ saved [2137625/2137625]
+
+FINISHED --2016-10-28 13:55:24--
+Total wall clock time: 0.1s
+Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
+Archive:  GeoIPCountryCSV.zip
+  inflating: GeoIPCountryWhois.csv
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After that, you need to &amp;ldquo;build&amp;rdquo; the lists by performing the following command in that same directory (one install didn&amp;rsquo;t automatically make the directory so ensure it&amp;rsquo;s there with the mkdir command):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mkdir -p /usr/share/xt_geoip
+./xt_geoip_build -D /usr/share/xt_geoip *.csv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After that you are off the the races and you can simply use the geoip module as so now:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc CN -j DROP
+iptables -A INPUT -m geoip --src-cc HK -j DROP
+iptables -A INPUT -m geoip --src-cc RU -j DROP
+iptables -A INPUT -m geoip --src-cc KR -j DROP
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or you can go the other route and just allow from your country:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc PL -m tcp -p tcp --dport 22 -j ACCEPT
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When looking up how to do this many people recommended updating the GeoIP database once a month. To do this I made a really simple bash script that just repeats all the things I did and added it to a monthly cron job:&lt;/p&gt;
+
+&lt;p&gt;File: 0update_maxmind&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+rm -f /usr/src/xtables-addons-2.6/geoip/*.csv
+rm -rf /usr/share/xt_geoip/*
+cd /usr/src/xtables-addons-2.6/geoip/
+./xt_geoip_dl
+./xt_geoip_build -D /usr/share/xt_geoip *.csv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Setting the cronjob:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;chmod +x 0update_maxmind
+mv 0update_maxmind /etc/cront.monthly/
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Snagging creds from locked machines</title>
@@ -1858,66 +1942,6 @@ while. The first episode is posted &lt;a href=&#34;https://www.patreon.com/posts
 &lt;h3 id=&#34;empire&#34;&gt;Empire:&lt;/h3&gt;
 
 &lt;p&gt;&lt;img src=&#34;https://room362.com/images/2016/reverse_proxy_empire.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Intel NUC Super Server</title>
-      <link>https://room362.com/post/2015/intel-nuc-super-server/</link>
-      <pubDate>Wed, 18 Nov 2015 08:52:10 -0500</pubDate>
-      
-      <guid>https://room362.com/post/2015/intel-nuc-super-server/</guid>
-      <description>
-
-&lt;p&gt;Hi. I&amp;rsquo;m Rob&amp;hellip; and I have a problem. Lets just say, when you find the limitations on Amazon&amp;rsquo;s wishlist features for single items, you know you have a problem. My problem? I&amp;rsquo;m kinda addicted to Intel NUCs. They are so versitle, low-ish power consumption, and incredibly powerful and TINY. I carry 3 of these (the older / cheaper ones) around to run my trainings / classes from.&lt;/p&gt;
-
-&lt;p&gt;The follow is my current wishlist. It is an i7 NUC w/ 500GB of high speed M2 SSD, plus a 1TB SATA SSD, and 32 GB of RAM&amp;hellip; ya, thats right 1.5 TB of SSD space, and 32 gigs of RAM!!&lt;/p&gt;
-
-&lt;h3 id=&#34;images-2015-intelnuc-jpg-intel-nuc-kit-nuc5i7ryh-barebone-system&#34;&gt;&lt;img src=&#34;https://room362.com/images/2015/intelnuc.jpg&#34; alt=&#34;&#34; /&gt; Intel NUC Kit NUC5i7RYH Barebone System&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;$459.99&lt;/li&gt;
-&lt;li&gt;by Intel&lt;/li&gt;
-&lt;li&gt;Link: &lt;a href=&#34;http://amzn.com/B00WAS1FX6&#34;&gt;http://amzn.com/B00WAS1FX6&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;images-2015-intelnuc-m2-jpg-samsung-850-evo-500-gb-m-2-3-5-inch-ssd-mz-n5e500bw&#34;&gt;&lt;img src=&#34;https://room362.com/images/2015/intelnuc_m2.jpg&#34; alt=&#34;&#34; /&gt; Samsung 850 EVO 500 GB M.2 3.5-Inch SSD (MZ-N5E500BW)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;$194.99&lt;/li&gt;
-&lt;li&gt;by Samsung&lt;/li&gt;
-&lt;li&gt;Link: &lt;a href=&#34;http://amzn.com/B00TGIW1XG&#34;&gt;http://amzn.com/B00TGIW1XG&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;images-2015-intelnuc-ssd-jpg-samsung-850-evo-1-tb-2-5-inch-sata-iii-internal-ssd-mz-75e1t0b-am&#34;&gt;&lt;img src=&#34;https://room362.com/images/2015/intelnuc_ssd.jpg&#34; alt=&#34;&#34; /&gt; Samsung 850 EVO 1 TB 2.5-Inch SATA III Internal SSD (MZ-75E1T0B/AM)&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;$346.99&lt;/li&gt;
-&lt;li&gt;by Samsung&lt;/li&gt;
-&lt;li&gt;Link: &lt;a href=&#34;http://amzn.com/B00OBRFFAS&#34;&gt;http://amzn.com/B00OBRFFAS&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;images-2015-intelnuc-memory-jpg-crucial-pc3l-12800-sodimm-204-pin-memory-ct204864bf160b&#34;&gt;&lt;img src=&#34;https://room362.com/images/2015/intelnuc_memory.jpg&#34; alt=&#34;&#34; /&gt; Crucial (PC3L-12800) SODIMM 204-Pin Memory CT204864BF160B&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;$326.31&lt;/li&gt;
-&lt;li&gt;by Crucial&lt;/li&gt;
-&lt;li&gt;Link: &lt;a href=&#34;http://amzn.com/B011ISG132&#34;&gt;http://amzn.com/B011ISG132&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;Total Cost: 1328.28&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;I have gone back and forth between virtualization software (ESXi and Xen mostly)&lt;/p&gt;
-
-&lt;p&gt;Xen works out of the box but only has a decent interface in it&amp;rsquo;s Windows GUI. OpenXenManager for Linux is ok. and Xen Orchestrator (Web UI) leaves a bit to be desired. If you&amp;rsquo;re ok with keeping a Windows box around, Xen is the superior choice when it comes to feature sets. (Mainly clone and templating out of the gate and free)&lt;/p&gt;
-
-&lt;p&gt;If you do go the ESXi route follow steps here: &lt;a href=&#34;https://www.virten.net/2015/03/esxi-6-0-image-for-intel-nuc/&#34;&gt;https://www.virten.net/2015/03/esxi-6-0-image-for-intel-nuc/&lt;/a&gt; because it doesn&amp;rsquo;t work out of the box. I did create the ISO already, so if you want to use the one I made you can find it here: &lt;a href=&#34;https://dl.dropboxusercontent.com/u/2627512/ESXi-6.0.0.update01-3073146-NUC.iso&#34;&gt;https://dl.dropboxusercontent.com/u/2627512/ESXi-6.0.0.update01-3073146-NUC.iso&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;You may run into the Manufacturer and Model being random strings (question marks in diamonds), but you can follow: &lt;a href=&#34;http://www.virten.net/2015/02/how-to-install-esxi-on-5th-gen-intel-nuc-nic-and-ahci-workaround/&#34;&gt;http://www.virten.net/2015/02/how-to-install-esxi-on-5th-gen-intel-nuc-nic-and-ahci-workaround/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Again, I&amp;rsquo;ve already done these steps so you can download the pre-built BIOS rom here: &lt;a href=&#34;https://dl.dropboxusercontent.com/u/2627512/RY0350-FIXED.bio&#34;&gt;https://dl.dropboxusercontent.com/u/2627512/RY0350-FIXED.bio&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;warning-i-doubt-the-bios-is-universal-so-if-you-don-t-buy-the-nuc-listed-above-you-probably-want-to-just-follow-the-steps-yourself-flashing-a-bios-with-the-wrong-rom-could-brick-the-device&#34;&gt;WARNING: I doubt the BIOS is universal so if you don&amp;rsquo;t buy the NUC listed above, you probably want to just follow the steps yourself. Flashing a BIOS with the wrong ROM could brick the device.&lt;/h3&gt;
 </description>
     </item>
     

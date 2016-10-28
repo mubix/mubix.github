@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="John The Ripper" />
 <meta property="og:description" content="" />
@@ -147,7 +147,9 @@
       				
             </p>
             <article class="post-summary">
-            	John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way: ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).
+            	John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way:
+ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt
+This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).
             </article>
 			<div class="read-more-link">
 				<a href="/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/"><span class="read-more-slashes">//</span>Read More...</a>

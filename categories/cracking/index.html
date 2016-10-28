@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Cracking" />
 <meta property="og:description" content="" />
@@ -145,7 +145,15 @@
       				
             </p>
             <article class="post-summary">
-            	Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools: From: http://www.ntdsxtract.com/ Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/ Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools: tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb: root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit: root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) 'all' exports all the tables or a single specified table with indexes, 'tables' exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix .export to the basename -T: exports only a specific table -v: verbose output to stderr -V: print version root@wpad:~/blog/libesedb-20120102/esedbtools# root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit esedbexport 20120102 Opening file.
+            	Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
+From: http://www.ntdsxtract.com/
+Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip  From: http://code.google.com/p/libesedb/
+Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz  Extract the tools:
+tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip  Compile/make libesedb:
+root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make  Export the tables from NTDS.dit:
+root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) 'all' exports all the tables or a single specified table with indexes, 'tables' exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix .
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -183,7 +191,8 @@
       				
             </p>
             <article class="post-summary">
-            	This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC. Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case.
+            	This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
+ Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -221,7 +230,8 @@
       				
             </p>
             <article class="post-summary">
-            	This is one of those stupid simple things that are easy to forget so I&rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&rsquo;t have to, but there is times where it&rsquo;s important. Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits.
+            	This is one of those stupid simple things that are easy to forget so I&rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&rsquo;t have to, but there is times where it&rsquo;s important.
+Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-03-18-length-sorting-wordlists/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -259,7 +269,9 @@
       				
             </p>
             <article class="post-summary">
-            	I made a slide deck to kind of explain my latest project. Basically I got fed up with having dictionaries, passwords, and cracking tools but no way to really do better collaboration in a team format as well as just better management for myself. Please feel free to submit pull requests, issues if you think something is broken or want features, or whatever on the Github repo here: https://github.com/mubix/WhiteChapel/ Here
+            	I made a slide deck to kind of explain my latest project. Basically I got fed up with having dictionaries, passwords, and cracking tools but no way to really do better collaboration in a team format as well as just better management for myself. Please feel free to submit pull requests, issues if you think something is broken or want features, or whatever on the Github repo here:
+https://github.com/mubix/WhiteChapel/
+Here is the slide deck:
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-01-19-intro-to-white-chapel/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -297,7 +309,11 @@
       				
             </p>
             <article class="post-summary">
-            	Since I didn&rsquo;t see any documentation bringing how to take an LM hash that you&rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes. So there is this: https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp And this: https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb And this: http://www.securityfocus.com/tools/6696 And the edited version of the above: http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/ But Metasploit&rsquo;s is currently borked,(Update: this is now fixed) I don&rsquo;t want to compile cpp, and perl sucks.
+            	Since I didn&rsquo;t see any documentation bringing how to take an LM hash that you&rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.
+So there is this: https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp
+And this: https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb
+And this: http://www.securityfocus.com/tools/6696
+And the edited version of the above: http://atenlabs.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-10-24-lm2ntlm-with-john-the-ripper/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -337,7 +353,9 @@
       				
             </p>
             <article class="post-summary">
-            	John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way: ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).
+            	John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way:
+ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt
+This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).
             </article>
 			<div class="read-more-link">
 				<a href="/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -377,7 +395,7 @@
       				
             </p>
             <article class="post-summary">
-            	I&rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails) DISCLAIMER: I have very little crypto knowledge and even less GPU programming knowledge so I only get to complain as a user and not as someone who can actually fix the things I complain about.
+            	I&rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)
             </article>
 			<div class="read-more-link">
 				<a href="/post/2011/2011-07-13-gpu-cracking-complaints/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -419,7 +437,7 @@
       				
             </p>
             <article class="post-summary">
-            	When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first: ## ### ## ## ## ## #### ###### #### ##### ##### ## #### ###### ####### ## ## ## ## ## ## ## ## ## ## ### ## ####### ###### ## ##### #### ## ## ## ## ## ## ## ## # ## ## ## ## ## ## ##### ## ## ## ## ## ## ## #### ### ##### ##### ## #### #### #### ### ## =[ metasploit v3.7.1-release [core:3.7 api:1.0] + -- --=[ 687 exploits - 364 auxiliary - 43 post + -- --=[ 217 payloads - 27 encoders - 8 nops =[ svn r12622 updated today (2011.05.15) msf &gt; [*] DC_IP:49220 Request received for /AYSBk...
+            	When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:
             </article>
 			<div class="read-more-link">
 				<a href="/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -495,7 +513,15 @@
       				
             </p>
             <article class="post-summary">
-            	I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&rsquo;t have as hard a time. Ivan Golubev&rsquo;s SHA1/MD5/MD4 cracker: http://www.golubev.com/hashgpu.htm Ivan Golubev&rsquo;s RAR pass cracker: http://www.golubev.com/rargpu.htm CUDA Multiforcer (down at the time of this posting) http://www.cryptohaze.com/bruteforcers.php BarsWF - MD5 Cracker: http://3.14.by/en/md5 GPU MD5 Crack: (Included in BackTrack 4 repos &ldquo;gpu-md5-crack&rdquo;) http://bvernoux.free.fr/md5/index.php Distributed Hash Cracker: http://rpisec.net/projects/show/hash-cracker &rdquo; This is an interesting one as it has a PHP front end and is agent based, so you can use one or a dozen computers, and it will use the CPUs and GPUs available&rdquo; Pentoo Live CD with a bunch of GPU cracking goodness built in: http://pentoo.blogspot.com/ Extreme GPU Bruteforcer (39.95 Euro) http://www.insidepro.com/eng/egb.shtml ElcomSoft Distributed Password Recovery ($599 for 1st lvl - 20 hosts) http://www.elcomsoft.com/edpr.html ax0n from http://www.h-i-r.net/ shot me an email stating that BT4 has some more GPU tools added to it: Just FYI, BT4 also added some CUDA GPU cracking functionality a while back ago.
+            	I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&rsquo;t have as hard a time.
+Ivan Golubev&rsquo;s SHA1/MD5/MD4 cracker: http://www.golubev.com/hashgpu.htm
+Ivan Golubev&rsquo;s RAR pass cracker:
+http://www.golubev.com/rargpu.htm
+CUDA Multiforcer (down at the time of this posting)
+http://www.cryptohaze.com/bruteforcers.php
+BarsWF - MD5 Cracker:
+http://3.14.by/en/md5
+GPU MD5 Crack: (Included in BackTrack 4 repos &ldquo;gpu-md5-crack&rdquo;)
             </article>
 			<div class="read-more-link">
 				<a href="/post/2009/2009-09-18-gpu-hash-password-cracking/"><span class="read-more-slashes">//</span>Read More...</a>

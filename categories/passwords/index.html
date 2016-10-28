@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Passwords" />
 <meta property="og:description" content="" />
@@ -147,7 +147,8 @@
       				
             </p>
             <article class="post-summary">
-            	So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &ldquo;AD Replication (EXPERIMENTAL)&ldquo; What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&rsquo;t require code execution in any way on the domain controller.
+            	So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &ldquo;AD Replication (EXPERIMENTAL)&ldquo;
+What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&rsquo;t require code execution in any way on the domain controller.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2014/2014-05-14-dumping-ntds-dot-dit-domain-hashes-using-samba/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -185,7 +186,8 @@
       				
             </p>
             <article class="post-summary">
-            	Password Filters [0].aspx&rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy. It is also fairly documented on how to Install and Register Password Filters [1]. Basically what it boils down to is updating a registry key here: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages with the name of a DLL (without the extension) that you place in Windows\System32 For National CCDC earlier this year (2013), I created an installer and &ldquo;evil pass filter&rdquo; that basically installed itself as a password filter and any time any passwords changed it would store the change to a log file locally to the victim (in clear text) as well as issue an HTTP basic auth POST to a server I own with the username and password.
+            	Password Filters [0].aspx&rdquo;) are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy. It is also fairly documented on how to Install and Register Password Filters [1]. Basically what it boils down to is updating a registry key here: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages
+with the name of a DLL (without the extension) that you place in Windows\System32
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-09-11-stealing-passwords-every-time-they-change/"><span class="read-more-slashes">//</span>Read More...</a>

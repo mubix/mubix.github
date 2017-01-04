@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>WPAD Persistence &middot; Rob &#39;mubix&#39; Fuller</title>
+        <meta name="description" content="Mostly just writing this so I can keep notes.
+Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
+I did this via PowerShell pretty easily on one of the domain controllers like so:
+PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="https://room362.com/css/normalize.css">
+        <link rel="stylesheet" href="https://room362.com/css/highlight.css">
+        <link rel="stylesheet" href="https://room362.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Room362" href="https://room362.com/">Room362</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://room362.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mubix">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/mubix">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/mubix">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;mubix">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Brandon" href="/brandon/">Brandon</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/about/">About</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Start in Infosec" href="/start/">Start in Infosec</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/projects/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="PwnWiki" href="http://pwnwiki.io">PwnWiki</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">WPAD Persistence</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2016-05-22" itemprop="datePublished">Sun, May 22, 2016</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="https://twitter.com/mubix" itemprop="url" rel="author">Rob &#39;mubix&#39; Fuller</a>
+            </span>
+        </span>
+    </p>
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    
+
+<p>Mostly just writing this so I can keep notes.</p>
+
+<p>Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol</a></p>
+
+<p>I did this via PowerShell pretty easily on one of the domain controllers like so:</p>
+
+<pre><code>PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
+</code></pre>
+
+<p>Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&rsquo;t getting any requests for <code>wpad.dat</code></p>
+
+<p>As they say &ldquo;there are no more original ideas&rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.</p>
+
+<p>but.. they also made a way to disable it - <a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></p>
+
+<p>Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&rsquo;s a required service in later Windows server versions).</p>
+
+<p>I went in search of a registry key to make the modification because it&rsquo;s much easier to hit the <code>RemoteRegistry</code> service on all the DCs than it is to run that command. I quickly found this blog post - <a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a>.</p>
+
+<p>A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.</p>
+
+<pre><code>[22/May/2016:21:56:28 EDT] &quot;GET /wpad.dat HTTP/1.1&quot; 200 58
+- -&gt; /wpad.dat
+</code></pre>
+
+<p>Now, you may be asking, &ldquo;How is setting their proxy server any kind of real persistence?&rdquo;, I implore you to go check out projects like <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a> and <a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></p>
+
+<p>Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&rsquo;t disable it for the SYSTEM or other local accounts, so it&rsquo;s harder than just &ldquo;flip on this registry setting via GPO&rdquo;)</p>
+
+<p>Oh and I&rsquo;ll just leave this here: <a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></p>
+
+<h3 id="references">References</h3>
+
+<ul>
+<li><a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></li>
+<li><a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></li>
+<li><a href="https://mitmproxy.org/">mitmproxy</a></li>
+<li><a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a></li>
+<li><a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></li>
+</ul>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/persistence/">persistence</a>
+            
+                 <a href="/tags/wpad/">wpad</a>
+            
+                 <a href="/tags/dns/">dns</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=WPAD%20Persistence&url=https%3a%2f%2froom362.com%2fpost%2f2016%2f05-22-wpad-persistence"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2froom362.com%2fpost%2f2016%2f05-22-wpad-persistence"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2froom362.com%2fpost%2f2016%2f05-22-wpad-persistence"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+
+        
+    <div class="comments">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'room362';
+    var disqus_identifier = 'https:\/\/room362.com\/post\/2016\/05-22-wpad-persistence';
+    var disqus_title = 'WPAD Persistence';
+    var disqus_url = 'https:\/\/room362.com\/post\/2016\/05-22-wpad-persistence';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Room362" href="https://room362.com/">Room362</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2016 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://room362.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://room362.com/js/jquery.fitvids.js"></script>
+        <script src="https://room362.com/js/scripts.js"></script>
+    </body>
+</html>
+

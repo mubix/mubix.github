@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>BitLocker &middot; Rob &#39;mubix&#39; Fuller</title>
+        <meta name="description" content="I&rsquo;m going to start this whole security thing by taking a look at the new BitLocker technology built in to Vista. Before I begin, I want to specify that I am by no means an expert on BitLocker and all of my information comes from the Microsoft site and a face to face with the engineers at Launch Tour 2007. So lets begin with requirements. You must have a modern motherboard which has a &ldquo;TPM&rdquo; or Trusted Platform Module.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.17" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="https://room362.com/css/normalize.css">
+        <link rel="stylesheet" href="https://room362.com/css/highlight.css">
+        <link rel="stylesheet" href="https://room362.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Room362" href="https://room362.com/">Room362</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://room362.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mubix">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/mubix">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/mubix">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;mubix">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Brandon" href="/brandon/">Brandon</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About" href="/about/">About</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Start in Infosec" href="/start/">Start in Infosec</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/projects/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="PwnWiki" href="http://pwnwiki.io">PwnWiki</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container">
+        <header class="post-header">
+    <h1 class="post-title">BitLocker</h1>
+    
+</header>
+
+        <div class="post-content clearfix">
+    
+
+    <p>I&rsquo;m going to start this whole security thing by taking a look at the new BitLocker technology built in to Vista. Before I begin, I want to specify that I am by no means an expert on BitLocker and all of my information comes from the <a href="http://technet2.microsoft.com/WindowsVista/en/library/c61f2a12-8ae6-4957-b031-97b4d762cf311033.mspx"  title="Microsoft.com Bitlocker">Microsoft site</a> and a face to face with the engineers at <a href="http://mubix.vox.com/library/post/microsoft-launch-tour-2007-highlights.html"  title="Launch Tour 2007">Launch Tour 2007</a>. So lets begin with requirements. You must have a modern motherboard which has a &ldquo;TPM&rdquo; or Trusted Platform Module. The reason I say must, is that there IS a third mode where you store your keys on a USB drive. However, if you do this, you are carrying around your keys in clear text on a USB drive. If that didn&rsquo;t scare you in the least bit, then you are either a rather large individual who scares people enough for them not to want to get near you, or you don&rsquo;t care about security, in which case you don&rsquo;t need BitLocker.</p>
+
+<p>So, now that we have the disclaimer out of the way, here is a thousand word on how Bitlocker works:</p>
+
+<p><!-- s9ymdb:58 --><img width="377" height="229" style="border: 0px; padding-left: 5px; padding-right: 5px;" src="http://room362.com/uploads/BitLocker/bitlocker_how.jpg" alt=""  /></p>
+
+<p>Basically, your keys are stored on this TPM and are used to unlock the MFT, which has the full volume keys that unlocks the rest of the drive. Cool, we&rsquo;re in the clear, right?</p>
+
+<p><strong>Q1</strong>: What if I want to put the HD into another computer? The new computer&rsquo;s TPM will not have the correct keys. Well, if the computer was connected and a part of an AD domain err.. I mean &ldquo;tree&rdquo;, then you can supposedly find those keys and &ldquo;PUSH&rdquo; them to the new TPM. No, the engineer did not know how to &ldquo;PUSH&rdquo; said keys. However you could also unlock it using a 36 hex value key. That you can right down.. on a piece of paper&hellip; that you might keep near or with your laptop&hellip;</p>
+
+<p><strong>Q2</strong>: What are the other two modes, and which one do I want?</p>
+
+<p><strong>Transparent operation mode</strong>: In this mode, BitLocker is completely transparent to the user. You just boot and log in. Bitlocker still encrypts the whole drive as you see above. But the &ldquo;authentication&rdquo; step is where Bitlocker checks to see if &ldquo;boot files&rdquo; have remained unmodified. I would be interested in finding out exactly which files it checks and what it checks for.</p>
+
+<p><strong>User authentication mode</strong>: In this mode, during boot, before any HD files are accessed, the user is prompted for a PIN. In my opinion, if your boss is dead set on using Bitlocker on all of your drives, you should insist on this one. (But guess what, for all those roadies that keep your computers in &ldquo;Sleep&rdquo;, BitLocker doesn&rsquo;t mean anything. With a U3 device and a cool cygwin script, I can make a unencrypted copy of the system, even if it&rsquo;s locked out)</p>
+
+<p>So to break it down in conclusion: You have to have newer hardware, AD, roadies who don&rsquo;t rely on &ldquo;SLEEP&rdquo; and educated users. Something tells me the last part of that would be a bit hard to accomplish.</p>
+
+<p>But, that&rsquo;s just my take on things, I&rsquo;m just another security guy in a room with a small sign on the door that says &ldquo;IT Dept&rdquo;. What would I know?</p>
+
+<p>jd</p>
+
+<p>For more info, check out the wikipedia article: <a href="http://en.wikipedia.org/wiki/BitLocker_Drive_Encryption"  title="Wikipedia's Bitlocker Article">Wikipedia -&gt; Bitlocker</a></p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/microsoft/">Microsoft</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=BitLocker&url=https%3a%2f%2froom362.com%2fpost%2f2007%2f2007-02-05-200725bitlocker-html"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2froom362.com%2fpost%2f2007%2f2007-02-05-200725bitlocker-html"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2froom362.com%2fpost%2f2007%2f2007-02-05-200725bitlocker-html"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Room362" href="https://room362.com/">Room362</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2016 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://room362.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://room362.com/js/jquery.fitvids.js"></script>
+        <script src="https://room362.com/js/scripts.js"></script>
+    </body>
+</html>
+

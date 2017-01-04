@@ -11,10 +11,10 @@
     
     <item>
       <title>Changing proxychains hardcoded DNS server</title>
-      <link>https://room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</link>
+      <link>https://room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server</link>
       <pubDate>Tue, 10 Sep 2013 13:16:39 -0500</pubDate>
       
-      <guid>https://room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</guid>
+      <guid>https://room362.com/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server</guid>
       <description>&lt;p&gt;If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it.&lt;/p&gt;
 
 &lt;p&gt;There isn&amp;rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
@@ -41,10 +41,10 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
     
     <item>
       <title>Setting SYSTEM&#39;s proxy settings with Metasploit</title>
-      <link>https://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</link>
+      <link>https://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit</link>
       <pubDate>Sun, 21 Oct 2012 07:40:11 +0000</pubDate>
       
-      <guid>https://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
+      <guid>https://room362.com/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit</guid>
       <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)&lt;/p&gt;
 
 &lt;p&gt;Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.&lt;/p&gt;
@@ -104,10 +104,10 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
     
     <item>
       <title>Lab Setup - Windows Proxy and Egress Filtering</title>
-      <link>https://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</link>
+      <link>https://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering</link>
       <pubDate>Sat, 06 Oct 2012 03:02:45 +0000</pubDate>
       
-      <guid>https://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
+      <guid>https://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
 
 &lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;

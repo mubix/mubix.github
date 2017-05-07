@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/uncategorized/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Uncategorized on Room362</title>
+    <link>https://room362.com/categories/uncategorized/</link>
+    <description>Recent content in Uncategorized on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/uncategorized/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Dec 2011 06:53:18 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/uncategorized/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Hash Types for John the Ripper</title>
@@ -15,68 +18,10 @@
       <pubDate>Mon, 12 Dec 2011 06:53:18 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-12-12-hash-types-for-john-the-ripper/</guid>
-      <description>&lt;p&gt;Pentest Monkey is a great resource for a lot of things. One of which is this:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://pentestmonkey.net/cheat-sheet/john-the-ripper-hash-formats&#34;&gt;John The Ripper Hash Formats | pentestmonkey&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I used it, plus a bit of bash fu to try to figure out some hashes that I was trying to crack.&lt;/p&gt;
-
-&lt;p&gt;Step 1: Create file of supported hash types. For me, that was simple I just threw the following in &amp;lsquo;supported_types.txt&amp;rsquo; in the same directory as john.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;DES&lt;br /&gt;
-BSDI&lt;br /&gt;
-MD5&lt;br /&gt;
-BF&lt;br /&gt;
-AFS&lt;br /&gt;
-LM&lt;br /&gt;
-NT&lt;br /&gt;
-XSHA&lt;br /&gt;
-PO&lt;br /&gt;
-raw-MD5&lt;br /&gt;
-MD5-gen&lt;br /&gt;
-IPB2&lt;br /&gt;
-raw-sha1&lt;br /&gt;
-md5a&lt;br /&gt;
-hmac-md5&lt;br /&gt;
-phpass-md5&lt;br /&gt;
-KRB5&lt;br /&gt;
-bfegg&lt;br /&gt;
-nsldap&lt;br /&gt;
-ssha&lt;br /&gt;
-openssha&lt;br /&gt;
-oracle&lt;br /&gt;
-oracle11&lt;br /&gt;
-MYSQL&lt;br /&gt;
-mysql-sha1&lt;br /&gt;
-mscash&lt;br /&gt;
-lotus5&lt;br /&gt;
-DOMINOSEC&lt;br /&gt;
-NETLM&lt;br /&gt;
-NETNTLM&lt;br /&gt;
-NETLMv2&lt;br /&gt;
-NETNTLMv2&lt;br /&gt;
-NETHALFLM&lt;br /&gt;
-mssql&lt;br /&gt;
-mssql05&lt;br /&gt;
-epi&lt;br /&gt;
-phps&lt;br /&gt;
-mysql-fast&lt;br /&gt;
-pix-md5&lt;br /&gt;
-sapG&lt;br /&gt;
-sapB&lt;br /&gt;
-md5ns&lt;br /&gt;
-HDAA&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Then it&amp;rsquo;s as simple as issuing:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;cat supported_types.txt | xargs -t -I type ./john --pot=unknownhash.pot --wordlist=shortlist.txt --format=type hashfile.txt&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;That will essentially try each of the types on the hash file. It&amp;rsquo;s important to use a wordlist, and probably a small one initially because if you don&amp;rsquo;t john will not finish once it gets to the first hash type that it accepts, which may not actually be correct.&lt;/p&gt;
-
-&lt;p&gt;You can take this a step further and create a hash mangler script that takes a clean hash and adds the few prefixs and suffixs that are common on Pentest Monkey&amp;rsquo;s list to get the most odds at John picking it up.&lt;/p&gt;
-</description>
+      <description>Pentest Monkey is a great resource for a lot of things. One of which is this:
+John The Ripper Hash Formats | pentestmonkey
+I used it, plus a bit of bash fu to try to figure out some hashes that I was trying to crack.
+Step 1: Create file of supported hash types. For me, that was simple I just threw the following in &amp;lsquo;supported_types.txt&amp;rsquo; in the same directory as john.</description>
     </item>
     
   </channel>

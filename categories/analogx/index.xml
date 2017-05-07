@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/analogx/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Analogx on Room362</title>
+    <link>https://room362.com/categories/analogx/</link>
+    <description>Recent content in Analogx on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/analogx/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 06 Oct 2012 03:02:45 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/analogx/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Lab Setup - Windows Proxy and Egress Filtering</title>
@@ -15,68 +18,8 @@
       <pubDate>Sat, 06 Oct 2012 03:02:45 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
-
-&lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
-
-&lt;p&gt;First we&amp;rsquo;ll talk about AnalogX&amp;rsquo;s proxy, you can get it here: &lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;With the following ports listening:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;HTTP (web browsers) (port 6588)&lt;/li&gt;
-&lt;li&gt;HTTPS (secure web browsers) (port 6588)&lt;/li&gt;
-&lt;li&gt;SOCKS4 (TCP proxying) (port 1080)&lt;/li&gt;
-&lt;li&gt;SOCKS4a (TCP proxying w/ DNS lookups) (port 1080)&lt;/li&gt;
-&lt;li&gt;SOCKS5 (only partial support, no UDP) (port 1080)&lt;/li&gt;
-&lt;li&gt;NNTP (usenet newsgroups) (port 119)&lt;/li&gt;
-&lt;li&gt;POP3 (receiving email) (port 110)&lt;/li&gt;
-&lt;li&gt;SMTP (sending email) (port 25)&lt;/li&gt;
-&lt;li&gt;FTP (file transfers) (port 21)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;So you can test everything to your hearts content that it goes through a proxy, using any proxy type you want basically.&lt;/p&gt;
-
-&lt;p&gt;(I will assume here that you know how to setup your own proxy settings for your OS)&lt;/p&gt;
-
-&lt;p&gt;But the problem being that if your code / application misbehaves it will still get out. You could go to the trouble of fiddling with the Windows firewall if you are running Windows 7 (not sure if XP can box egress, probably can). But I like simple and straight forward solutions.&lt;/p&gt;
-
-&lt;p&gt;PeerBlock can be found here: &lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;http://www.peerblock.com&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_3.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And is simple to set up as well (next-&amp;gt;next-&amp;gt;finish applies).&lt;/p&gt;
-
-&lt;p&gt;Go into List Manager once you have it installed and &amp;ldquo;Create a List&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
-
-&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&amp;rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
-
-&lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;
-</description>
+      <description>pfSense is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.
+Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.</description>
     </item>
     
   </channel>

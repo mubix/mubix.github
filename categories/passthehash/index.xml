@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/passthehash/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Passthehash on Room362</title>
+    <link>https://room362.com/categories/passthehash/</link>
+    <description>Recent content in Passthehash on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/passthehash/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 Oct 2012 04:24:21 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/passthehash/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Pass the Hash without Metasploit - Part 2</title>
@@ -15,74 +18,10 @@
       <pubDate>Mon, 15 Oct 2012 04:24:21 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-10-15-pass-the-hash-without-metasploit-part-2/</guid>
-      <description>&lt;p&gt;I read this article a while back:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://fuzzynop.blogspot.com/2012/09/pass-hash-without-metasploit.html&#34;&gt;http://fuzzynop.blogspot.com/2012/09/pass-hash-without-metasploit.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;by &lt;a href=&#34;https://twitter.com/FuzzyNop&#34;&gt;@FuzzyNop&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Great article showing the use of WCE&amp;rsquo;s &amp;ldquo;-s&amp;rdquo; flag to Pass-The-Hash locally and I highly recommend checking it out. &lt;/p&gt;
-
-&lt;p&gt;Anywho, I was once in a similar scenario, where I had no Metasploit to back me up, but the box I was on did have one interesting thing, ruby and an accessible target for relatively up-to-date ruby gems. Since Metasploit&amp;rsquo;s powerhouse library &amp;lsquo;rex&amp;rsquo; installed just fine I was set.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Notice&lt;/strong&gt;: This is now &lt;code&gt;gem install librex&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Then copy the following to the machine:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/tools/psexec.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/tools/psexec.rb&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;That&amp;rsquo;s a standalone version of psexec module (minus any advanced options). Once you have it down, make two quick edits (removing the requires for fast lib and msfenv):&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And then you should see this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, I elected to use the windows/adduser Metasploit single for my purposes, you can just as well use any executable you want depending on what you are trying to accomplish. So this is the users list before hand:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And then I executed this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Which resulted in:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;w00t. Game over. But wait, there&amp;rsquo;s more&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;There is another GEM that makes things even easier to continue if your next hop doesn&amp;rsquo;t have Ruby:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://ocra.rubyforge.org&#34;&gt;http://ocra.rubyforge.org&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;OCRA (One-Click-Ruby-Application), you just need to &amp;lsquo;gem install ocra&amp;rsquo; and you can then compile Ruby into Windows executables (it does this the same way as Py2Exe - packaging a interpreter in with the script). &lt;/p&gt;
-
-&lt;p&gt;To build the executable (once our gem is installed) is pretty straight forward:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And as you can see, we have a ~5.5 meg file:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The output without options looks like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can plainly see the Temp directory it&amp;rsquo;s being extracted to. It does do a very good job at cleaning up the temp directory after it&amp;rsquo;s run the Ruby script which is nice, but not forensically (obviously), just a heads up.&lt;/p&gt;
-
-&lt;p&gt;But, the result is the same:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_pth_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now you can take your 5.5 meg bin anywhere you want and psexec with a hash to your heart&amp;rsquo;s content.&lt;/p&gt;
-
-&lt;p&gt;(As a side note, this works REALLY well to bypass UAC if you have a username and password/hash for a local admin. Just don&amp;rsquo;t forget that it runs the EXE as SYSTEM, who normally doesn&amp;rsquo;t have proxy settings)&lt;/p&gt;
-</description>
+      <description>I read this article a while back:
+http://fuzzynop.blogspot.com/2012/09/pass-hash-without-metasploit.html
+by @FuzzyNop
+Great article showing the use of WCE&amp;rsquo;s &amp;ldquo;-s&amp;rdquo; flag to Pass-The-Hash locally and I highly recommend checking it out. Anywho, I was once in a similar scenario, where I had no Metasploit to back me up, but the box I was on did have one interesting thing, ruby and an accessible target for relatively up-to-date ruby gems. Since Metasploit&amp;rsquo;s powerhouse library &amp;lsquo;rex&amp;rsquo; installed just fine I was set.</description>
     </item>
     
   </channel>

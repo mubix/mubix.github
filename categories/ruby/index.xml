@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/ruby/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Ruby on Room362</title>
+    <link>https://room362.com/categories/ruby/</link>
+    <description>Recent content in Ruby on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/ruby/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 20 Aug 2011 19:14:53 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/ruby/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Populating Your Virtual Victim Domain</title>
@@ -15,114 +18,9 @@
       <pubDate>Sat, 20 Aug 2011 19:14:53 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-08-20-populating-your-virtual-victim-domain/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;Update 1&lt;/strong&gt;: No this doesn&amp;rsquo;t need to be in memory since you control the system but it was a fun challenge&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Update 2&lt;/strong&gt;: The info from the &amp;lsquo;adduser&amp;rsquo; payload says &amp;lsquo;&lt;em&gt;Create a new user and add them to local administration group&lt;/em&gt;&amp;rsquo; - I&amp;rsquo;m guessing since I ran this on a DC is why I didn&amp;rsquo;t notice this but it is something to keep in mind when running this script.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Update 3&lt;/strong&gt;: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too. I think this is the best solution I&amp;rsquo;ve found to inlude mine: &lt;a href=&#34;http://unlockpowershell.wordpress.com/2010/10/12/creating-random-users-for-a-domain/&#34;&gt;http://unlockpowershell.wordpress.com/2010/10/12/creating-random-users-for-a-domain/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Adding users to a domain that you create for learning, training, or just for testing things out on can be quite tedious. Most of the time I just put a few users to simulate the different &amp;lsquo;levels&amp;rsquo; I need for my testing. However that doesn&amp;rsquo;t really give someone you&amp;rsquo;re training much to think about, i.e. It&amp;rsquo;s really easy to identify the &amp;lsquo;interesting&amp;rsquo; users when there are only a couple to pick from.&lt;/p&gt;
-
-&lt;p&gt;I am certainly not the first one to solve this problem:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.petri.co.il/create_users_for_testing_purposes.htm&#34;&gt;http://www.petri.co.il/create_users_for_testing_purposes.htm&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://blog.commandlinekungfu.com/2010/07/episode-104-fricken-users.html&#34;&gt;http://blog.commandlinekungfu.com/2010/07/episode-104-fricken-users.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://twitter.com/#!/Carlos_Perez/status/71373112494661632&#34;&gt;https://twitter.com/#!/Carlos_Perez/status/71373112494661632&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;These work perfectly and are all really easy. The problem for me is that with some the username is too similar and/or the passwords are the same/similar.&lt;/p&gt;
-
-&lt;p&gt;Well, of course I had to do it in Metasploit. (No, not everything has to be in Metasploit, but in this instance it actually helps a lot and you&amp;rsquo;ll see why in a sec)&lt;/p&gt;
-
-&lt;p&gt;Easiest way to get a bunch of random users is to download a list of names, I used this one:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://packetstormsecurity.org/files/32083/other-names.gz.html&#34;&gt;http://packetstormsecurity.org/files/32083/other-names.gz.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And of course you need passwords too, and there isn&amp;rsquo;t a better list than the RockYou list. Skull Security has it over here:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.skullsecurity.org/wiki/index.php/Passwords&#34;&gt;http://www.skullsecurity.org/wiki/index.php/Passwords&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;TL:DR;&lt;/strong&gt; You can download the Meterpreter script here: &lt;a href=&#34;https://gist.github.com/mubix/8215113&#34;&gt;addusers.rb&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Start off by importing all the names and passwords into arrays we can manipulate easier:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;namefile = File.new(&#39;other-names.txt&#39;, &#39;r&#39;)
-passwordfile = File.new(&#39;rockyou.txt&#39;, &#39;r&#39;)
-usercount = 5000
-
-names = []
-namefile.each_line do |line|
-	names &amp;lt;&amp;lt; line.chomp
-end
-
-passwords = []
-passwordfile.each_line do |line|
-	passwords &amp;lt;&amp;lt; line.chomp
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &amp;lsquo;usercount&amp;rsquo; variable will be used for out loop on how many users to create. Next, just to shake things up we create another array of common suffixes:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;datesnum = []
-(0..9).each do |x|
-	datesnum &amp;lt;&amp;lt; x
-end
-
-(40..99).each do |x|
-	datesnum &amp;lt;&amp;lt; x
-end
-
-(2000..2013).each do |x|
-	datesnum &amp;lt;&amp;lt; x
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now to loop through the account creation, and since I&amp;rsquo;m not a big fan of running cmd.exe (staying in memory is one of the staples of Meterpreter) we&amp;rsquo;ll do it by injecting $usercount amount of the windows/adduser payload into our current process.&lt;/p&gt;
-
-&lt;p&gt;For usernames I take a random name and use it&amp;rsquo;s first letter, and then another random selection for the rest. This makes it look like a first initial + last name username scheme.&lt;/p&gt;
-
-&lt;p&gt;For passwords I throw a bit of twist in there I randomly select to have a &amp;lsquo;bad/ok/good&amp;rsquo; password and use just a random selection, random selection + a date or number we generated earlier, or a double random selection put together, respectively.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;(0..usercount).each do
-	fname = names[rand(names.size)]
-	lname = names[rand(names.size)]
-	goodpass = rand(3)
-	password = case goodpass
-	when 0
-		passwords[rand(passwords.size)]
-	when 1
-		&amp;quot;#{passwords[rand(passwords.size)]}#{datesnum[rand(datesnum.size)]}&amp;quot;
-	when 2
-		&amp;quot;#{passwords[rand(passwords.size)]}#{passwords[rand(passwords.size)]}&amp;quot;
-	end
-	username = &amp;quot;#{fname[0].chr}#{lname}&amp;quot;
-	case goodpass
-	when 0
-		puts &amp;quot;#{username} has a bad password of #{password}&amp;quot;
-	when 1
-		puts &amp;quot;#{username} has an ok password of #{password}&amp;quot;
-	when 2
-		puts &amp;quot;#{username} has a good password of #{password}&amp;quot;
-	end
-	
-	payload = &#39;windows/adduser&#39;
-	pay = client.framework.payloads.create(payload)
-
-	pay.datastore[&#39;USER&#39;] = username
-	pay.datastore[&#39;PASS&#39;] = password
-
-	raw = pay.generate
-	host_process = client.sys.process.open(client.sys.process.getpid, PROCESS_ALL_ACCESS)
-	mem = host_process.memory.allocate(raw.length + (raw.length % 1024))
-	host_process.memory.write(mem, raw)
-	host_process.thread.create(mem, 0)
-	print_status(&amp;quot;#{username} created with password: #{password}&amp;quot;)
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Know what&amp;rsquo;s great about this? With just a few changed lines you can slam all of the user creation payloads into one binary and have a binary you can run any time you want to gen a bunch of users quickly. (Good to mess with CCDC blue teams too!&lt;/p&gt;
-</description>
+      <description>Update 1: No this doesn&amp;rsquo;t need to be in memory since you control the system but it was a fun challenge
+Update 2: The info from the &amp;lsquo;adduser&amp;rsquo; payload says &amp;lsquo;Create a new user and add them to local administration group&amp;rsquo; - I&amp;rsquo;m guessing since I ran this on a DC is why I didn&amp;rsquo;t notice this but it is something to keep in mind when running this script.
+Update 3: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too.</description>
     </item>
     
     <item>
@@ -131,26 +29,9 @@ end
       <pubDate>Wed, 09 Dec 2009 13:09:00 +0000</pubDate>
       
       <guid>https://room362.com/post/2009/2009-12-09-metasploit-with-ruby-191/</guid>
-      <description>&lt;p&gt;UPDATE: if you don&amp;rsquo;t make some additional steps, the &amp;lsquo;rvm 1.9.1&amp;rsquo; command only is active for the current console session. See the site for details: &lt;a href=&#34;http://rvm.beginrescueend.com/&#34;&gt;http://rvm.beginrescueend.com/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;This short tutorial is how to get Ruby 1.9.1 on BT4 or any other Linux distro with the tool &amp;lsquo;rvm&amp;rsquo; (Ruby Version Manager).&lt;/p&gt;
-
-&lt;p&gt;The Metasploit team has put a lot of work into getting the framework to work well with 1.9.1 and still work with earlier versions. Here is a way that you can try out the new hotness, or just test to see if all of the tweaks and modules you run, work with the newer version of ruby.&lt;/p&gt;
-
-&lt;p&gt;&lt;iframe src=&#34;//player.vimeo.com/video/8069236&#34; width=&#34;500&#34; height=&#34;375&#34; frameborder=&#34;0&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt; &lt;p&gt;&lt;a href=&#34;http://vimeo.com/8069236&#34;&gt;Metasploit with Ruby 1.9.1&lt;/a&gt; from &lt;a href=&#34;http://vimeo.com/mubix&#34;&gt;mubix&lt;/a&gt; on &lt;a href=&#34;https://vimeo.com&#34;&gt;Vimeo&lt;/a&gt;.&lt;/p&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2009-12-10 14:19 by Rob Fuller&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;ve replaced my video with a short shell script:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/bash
-
-gem install rvm
-rvm-install
-rvm install 1.9.1
-rvm 1.9.1
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <description>UPDATE: if you don&amp;rsquo;t make some additional steps, the &amp;lsquo;rvm 1.9.1&amp;rsquo; command only is active for the current console session. See the site for details: http://rvm.beginrescueend.com/
+This short tutorial is how to get Ruby 1.9.1 on BT4 or any other Linux distro with the tool &amp;lsquo;rvm&amp;rsquo; (Ruby Version Manager).
+The Metasploit team has put a lot of work into getting the framework to work well with 1.9.1 and still work with earlier versions.</description>
     </item>
     
   </channel>

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/defense/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Defense on Room362</title>
+    <link>https://room362.com/categories/defense/</link>
+    <description>Recent content in Defense on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/defense/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 18 Jan 2014 02:33:22 -0500</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/defense/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Attacker Ghost Stories - ShmooCon 2014</title>
@@ -15,8 +18,7 @@
       <pubDate>Sat, 18 Jan 2014 02:33:22 -0500</pubDate>
       
       <guid>https://room362.com/post/2014/2014-01-18-attacker-ghost-stories-shmoocon-2014/</guid>
-      <description>&lt;p&gt;&lt;iframe src=&#34;http://www.slideshare.net/slideshow/embed_code/30153988&#34; width=&#34;425&#34; height=&#34;355&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34; style=&#34;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px&#34; allowfullscreen&gt; &lt;/iframe&gt; &lt;div style=&#34;margin-bottom:5px&#34;&gt; &lt;strong&gt; &lt;a href=&#34;https://www.slideshare.net/mubix/attacker-ghost-stories-shmoocon-2014-30153988&#34; title=&#34;Attacker Ghost Stories - ShmooCon 2014&#34; target=&#34;_blank&#34;&gt;Attacker Ghost Stories - ShmooCon 2014&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&#34;http://www.slideshare.net/mubix&#34; target=&#34;_blank&#34;&gt;Rob Fuller&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;&lt;/p&gt;
-</description>
+      <description>Attacker Ghost Stories - ShmooCon 2014  from Rob Fuller</description>
     </item>
     
     <item>
@@ -25,100 +27,10 @@
       <pubDate>Wed, 27 Feb 2013 15:42:54 +0000</pubDate>
       
       <guid>https://room362.com/post/2013/2013-02-27-blocking-java-exploits-malicious-signed-applets-and-0days/</guid>
-      <description>&lt;p&gt;The following has been a concept for me for a long time and recently I tweeted the idea which really put me under the fire to prove it. (re: justanidea hashtag)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And a few people came up with some very valid points:&lt;/p&gt;
-
-&lt;p&gt;1) Doesn&amp;rsquo;t work so well with HTTPS sites&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;He&amp;rsquo;s right, but that forces the attack to use SSL, and doing so can yield the defender more information about the attacker, and offer other avenues of defense.&lt;/p&gt;
-
-&lt;p&gt;2) Can&amp;rsquo;t an attack just spoof the user-agent?&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;and a response:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;But in actuality that setting is applied inside the Java code, which needs to be requested by Java first. Using it&amp;rsquo;s User-Agent string. There are probably ways to get this done with Java script or other methods of loading the Java classes/jars but I haven&amp;rsquo;t been able to find any.&lt;/p&gt;
-
-&lt;p&gt;and finally 3) Whitelisting is a myth!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Which goes along with phoobar&amp;rsquo;s responses as well:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Yes, there will definitely be challenge when implementing blocking java user agents, and one of the biggest pit falls is that there is no clear indicators to a user that that&amp;rsquo;s the reason for the block. There are ways to make it more evident with custom proxy error pages, but it is a thorn in this solution.&lt;/p&gt;
-
-&lt;p&gt;On to the walking of the walk. Oddly enough there is little to no documentation on blocking or even detecting outbound user-agent strings. But I did happen across an excellent post about how to use Squid to block IE (which I&amp;rsquo;m all for! ;-):&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://gaugusch.at/squid.shtml&#34;&gt;http://gaugusch.at/squid.shtml&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The following is just my testing of his walk-through converted to be used to block java:&lt;/p&gt;
-
-&lt;p&gt;I used pfSense for my testing since it&amp;rsquo;s very easy to set up and already has Squid as a package:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You get the point.&lt;/p&gt;
-
-&lt;p&gt;We set up the latest Java 0day in Metasploit:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Get the user to go to our malicious web site:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And the user doesn&amp;rsquo;t see anything. This can be modified in the module. You also see that I was using &amp;ldquo;Intranet&amp;rdquo; IP space so some IE settings were lower, but nothing that would effect this exploit.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And shell! I want to pull your attention to that YWpdDan.jar request though. That request actually is done by Java with the following user-agent:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;&amp;quot;Mozilla/4.0 (Windows XP 5.1) Java/1.7.0_09&amp;quot;&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Alright, so the exploit works, but how about the solution? In pfSense you have the ability to slam &amp;ldquo;Custom Options&amp;rdquo; into the bottom of pfSense&amp;rsquo;s Squid config page. Like so:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_11.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;There is probably a better regex for selecting only Java user-agents, but this worked for now, and I don&amp;rsquo;t think any browsers actually use &amp;ldquo;Java&amp;rdquo; in their user-agents. (UPDATE: Searching for &amp;ldquo;site:useragentstring.com java&amp;rdquo; on google only yielded Java, and YACYBOT, which is built on java as using the string &amp;ldquo;Java&amp;rdquo; in their agents)&lt;/p&gt;
-
-&lt;p&gt;You can also notice that I&amp;rsquo;ve whitelisted webex.com and java.com sites and subdomains so that my &amp;ldquo;users&amp;rdquo; won&amp;rsquo;t get blocked using the tools on those sites. This could be pretty hefty with (as phoobar said) a Java dev group. But after the initial push and getting a semi &amp;ldquo;required&amp;rdquo; list of external approved sites this list shouldn&amp;rsquo;t need much upgrading, even for large organizations.&lt;/p&gt;
-
-&lt;p&gt;Save the config and let&amp;rsquo;s see how this works out:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_12.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Ok, but did the attacker still get a shell?&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_13.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Nope! Win!&lt;/p&gt;
-
-&lt;p&gt;Just to prove that HTTPS isn&amp;rsquo;t fixed here lets set those options up in Metasploit and kick the same exploit:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_14.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And after an error about a self-signed cert (notice the SSLCert option in Metasploit that has the ability to solve that as well) we get the expected result:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_15.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And subsequent shell without any indication in Squid&amp;rsquo;s proxy logs of a Java user-agent:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201302_blockjava_16.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;That&amp;rsquo;s it, sort of a long post but hopefully something that people can use. Thanks!&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt; I&amp;rsquo;m not exactly certain how this affects Java &amp;ldquo;Web Start&amp;rdquo; weblet exploits if at all.&lt;/p&gt;
-</description>
+      <description>The following has been a concept for me for a long time and recently I tweeted the idea which really put me under the fire to prove it. (re: justanidea hashtag)
+And a few people came up with some very valid points:
+1) Doesn&amp;rsquo;t work so well with HTTPS sites
+He&amp;rsquo;s right, but that forces the attack to use SSL, and doing so can yield the defender more information about the attacker, and offer other avenues of defense.</description>
     </item>
     
   </channel>

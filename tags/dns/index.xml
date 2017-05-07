@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/tags/dns/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Dns on Room362</title>
+    <link>https://room362.com/tags/dns/</link>
+    <description>Recent content in Dns on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/tags/dns/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 29 Dec 2016 07:35:28 -0500</lastBuildDate>
+    
+	<atom:link href="https://room362.com/tags/dns/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Buying Internal Domain Access</title>
@@ -15,170 +18,9 @@
       <pubDate>Thu, 29 Dec 2016 07:35:28 -0500</pubDate>
       
       <guid>https://room362.com/post/2016/buying-internal-domain-access/</guid>
-      <description>
-
-&lt;p&gt;&lt;strong&gt;NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;For anyone who knows me, they know that I&amp;rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&amp;rsquo;t quite explain. It all started with the following hypothesis:&lt;/p&gt;
-
-&lt;p&gt;Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.&lt;/p&gt;
-
-&lt;p&gt;This has already been proven with attacks like &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt; and other attacks that aim to &lt;a href=&#34;https://blog.ahmednabeel.com/abusing-kerberos-to-ntlm-fallback-to-defeat-windows-authentication/&#34;&gt;bypass BitLocker Full-Disk Encryption&lt;/a&gt;. So I added a twist, I thought that maybe, just maybe, that Windows will automatically add a &lt;code&gt;.com&lt;/code&gt; on to the end of these requests when attempting to find them. If I buy these domains then there is a chance I can gain &lt;strong&gt;code execution&lt;/strong&gt; using Group Policy or supplying logon scripts (BAT files).&lt;/p&gt;
-
-&lt;p&gt;Why do I think this? Because of past Def Con talks like:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;DEFCON 19: Bit-squatting: DNS Hijacking Without Exploitation
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=aT7mnSstKGs&#34;&gt;https://www.youtube.com/watch?v=aT7mnSstKGs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;DEFCON 21 - DNS May Be Hazardous to Your Health - Robert Stucke
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=ZPbyDSvGasw&#34;&gt;https://www.youtube.com/watch?v=ZPbyDSvGasw&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;But&amp;hellip; how on earth would you ever know what a internal domain controller is called? I started by searching for pastebin posts with &lt;code&gt;%LOGONSERVER%&lt;/code&gt;. This netted a few results, but when I searched for the same thing on gist.github.com I found something pretty surprising:&lt;/p&gt;
-
-&lt;h3 id=&#34;microsoft&#34;&gt;Microsoft&lt;/h3&gt;
-
-&lt;p&gt;Yes, I found a gist by what seems to be a Microsoft employee:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Source:
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://gist.github.com/AArnott/8b39bd70630302f5c630&#34;&gt;https://gist.github.com/AArnott/8b39bd70630302f5c630&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;has been deleted  - w00tw00t!!&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;em&gt;(To Microsoft, I&amp;rsquo;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;WE INTERRUPT THIS BLOG POST TO TALK ABOUT THE SERIOUS OSINT TREASURE THESE TYPES FILES AND ENVIRONMENTAL VARIABLES ARE&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;We will break down a few of the pieces that provide OSINT value:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;COMPUTERNAME = ANDARNO-X1
-USERDNSDOMAIN = REDMOND.CORP.MICROSOFT.COM
-USERDOMAIN = REDMOND
-USERDOMAIN_ROAMINGPROFILE = REDMOND
-USERNAME = andarno
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Full domain name, user and computer name help to identify what the naming schemes are internally.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ChocolateyInstall = C:\ProgramData\chocolatey
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://chocolatey.org/&#34;&gt;Chocolatey&lt;/a&gt; is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SSH_AGENT_PID = 9316
-SSH_AUTH_SOCK = /tmp/ssh-rbPyaDrkXVLz/agent.10020
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Honestly I&amp;rsquo;ve never seen these options on a Windows box so I&amp;rsquo;m going to assume they are the result of &lt;a href=&#34;https://www.cygwin.com/&#34;&gt;Cygwin&lt;/a&gt; being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence &lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;beyond the standard Run keys&lt;/a&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Path =
-C:\Users\andarno\git\VSIXSuppression\packages\Nerdbank.GitVersioning.1.1.2-rc\build\NativeBinaries/amd64
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow
-C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.5
-C:\Program Files (x86)\MSBuild\14.0\bin
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\BIN
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\VCPackages
-C:\Program Files (x86)\HTML Help Workshop
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Performance Tools
-C:\Program Files (x86)\Windows Kits\10\bin\x86
-C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\
-C:\Users\andarno\tools\ConEmuPack
-C:\Users\andarno\tools\ConEmuPack\ConEmu
-C:\WINDOWS\system32
-C:\WINDOWS
-C:\WINDOWS\System32\Wbem
-C:\WINDOWS\System32\WindowsPowerShell\v1.0\
-C:\Program Files (x86)\Git\cmd
-C:\WINDOWS\system32\config\systemprofile\.dnx\bin
-C:\Program Files\Microsoft DNX\Dnvm\
-C:\Program Files\Microsoft SQL Server\120\Tools\Binn\
-C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\
-C:\Program Files (x86)\nodejs\
-C:\Users\andarno\.dnx\runtimes\dnx-clr-win-x86.1.0.0-beta7-12328\bin
-C:\Users\andarno\.dnx\bin
-c:\users\andarno\tools
-C:\Users\andarno\AppData\Local\Code\bin
-C:\ProgramData\chocolatey\bin
-C:\Users\andarno\AppData\Roaming\npm
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Anyone who has ever done &lt;a href=&#34;https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/&#34;&gt;DLL hijacking / preloading&lt;/a&gt; will see a lot of opportunities in a PATH variable this gigantic.&lt;/p&gt;
-
-&lt;p&gt;There is a lot more fun to be had in similar output pasted across the Internet but lets get back to our regularly scheduled blog post. Here is the juice:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;LOGONSERVER = \\CO1-RED-DC-11
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This probably means that 01, 02, and so on exist as well, but I decided just to go with a simple PoC and use the DC that I knew existed. After registering &lt;code&gt;c01-red-dc-11.com&lt;/code&gt;, almost immediately I started to get DNS requests:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ns1.co1-red-dc-11.com
-wap.co1-red-dc-11.com
-www.co1-red-dc-11.com
-mail.co1-red-dc-11.com
-m.co1-red-dc-11.com
-co1-red-dc-11.com
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;code&gt;ns1&lt;/code&gt; and &lt;code&gt;www&lt;/code&gt; were mostly just Internet scanners, but I did see a bunch of interesting requests&lt;/p&gt;
-
-&lt;h4 id=&#34;mail-co1-red-dc-11-com&#34;&gt;mail.co1-red-dc-11.com&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;101 total queries in the first 24 hours&lt;/li&gt;
-&lt;li&gt;27 unique servers querying&lt;/li&gt;
-&lt;li&gt;Query types: A/AAAA/ANY/CNAME/MX/NS/SOA/TXT&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;m-co1-red-dc-11-com&#34;&gt;m.co1-red-dc-11.com&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;1 total query in the first 24 hours&lt;/li&gt;
-&lt;li&gt;1 unique servers querying&lt;/li&gt;
-&lt;li&gt;Query types: A&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;co1-red-dc-11-com&#34;&gt;co1-red-dc-11.com&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;1841 total queries in the first 24 hours&lt;/li&gt;
-&lt;li&gt;777 unique servers querying&lt;/li&gt;
-&lt;li&gt;Query types: A/A6/AAAA/ANY/CNAME/DNSKEY/HINFO/MX/NAPTR/NS/PTR/SOA/SPF/SRV/TXT&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I have no idea if any of these DNS requests were by real Microsoft domain joined systems but looking at the contents of the requests I assume that a few were.&lt;/p&gt;
-
-&lt;h2 id=&#34;analysis&#34;&gt;Analysis&lt;/h2&gt;
-
-&lt;p&gt;I did this with a few other &lt;code&gt;%LOGONSERVER%&lt;/code&gt;s and had similar DNS requests. I didn&amp;rsquo;t see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain &lt;code&gt;SITTINGDUCK.INFO&lt;/code&gt; and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.&lt;/p&gt;
-
-&lt;p&gt;In my lab I was able to get authentication requests and code execution by using Impacket&amp;rsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py&#34;&gt;karmaSMB.py&lt;/a&gt; to send my victim a false &lt;code&gt;Logon.bat&lt;/code&gt; very similar to the setup for &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt;. Let me reiterate something:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Is this conclusive proof?&lt;/strong&gt; Certainly not, but it&amp;rsquo;s a start and I&amp;rsquo;m interested in what ya&amp;rsquo;ll find.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Why might this work more than it has in the past?&lt;/strong&gt; Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I&amp;rsquo;m bitter ;), it was actually my primary reason for buying a Mac).&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;How can you find the LOGONSERVER of your client?&lt;/strong&gt; Well, it&amp;rsquo;s pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.&lt;/p&gt;
-
-&lt;h2 id=&#34;one-more-thing&#34;&gt;One More Thing&amp;hellip;&lt;/h2&gt;
-
-&lt;p&gt;I also tried to think in generalities, and yes, I am the proud owner of &lt;code&gt;DC01.com&lt;/code&gt; which gets about 20 requests per second&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;::evil laugh::&lt;/strong&gt;&lt;/p&gt;
-</description>
+      <description>NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH
+For anyone who knows me, they know that I&amp;rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&amp;rsquo;t quite explain. It all started with the following hypothesis:
+Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.</description>
     </item>
     
     <item>
@@ -187,134 +29,7 @@ co1-red-dc-11.com
       <pubDate>Fri, 17 Jun 2016 07:35:28 -0500</pubDate>
       
       <guid>https://room362.com/post/2016/linkedin-nxdomains/</guid>
-      <description>&lt;p&gt;I recently asked a friend if I could have just a list of the domains in the LinkedIn dump, no passwords, not full emails, just domains. I run a program that I lovingly call &amp;ldquo;DeepMagic&amp;rdquo; and I feed it domains whenever I can. Well, this time when I tossed the list of domains into the engine it started spitting out tons of errors. There was a total of &lt;strong&gt;9,436,804&lt;/strong&gt; unique domains names in the list, and for anyone who works with DNS that isn&amp;rsquo;t a very big number, so I didn&amp;rsquo;t think very much of it and didn&amp;rsquo;t know why it would choke on a list that small.&lt;/p&gt;
-
-&lt;p&gt;When I looked at the logs I noticed that there was a very large percentage of the domains that were coming up with NXDOMAIN. Most of the time this means that the domain isn&amp;rsquo;t registered, but can also mean that no name servers are registered for the domain (this usually happens when a corporation doesn&amp;rsquo;t want to maintain the domain but still wants to hold onto it for brand management).&lt;/p&gt;
-
-&lt;p&gt;I let the resolution keep going and just parsed out all of the NXDOMAINs, but when I saw the list of NXDOMAINs go over 90,000 and I wasn&amp;rsquo;t even out of the &amp;lsquo;A&amp;rsquo;s yet, I took a different approach. I sorted the list by count to find the most used domains (using of course my favorite &lt;code&gt;sort | uniq -c | sort -n&lt;/code&gt; that I think everyone who&amp;rsquo;s ever done text parsing on Linux knows).&lt;/p&gt;
-
-&lt;p&gt;It lead to a few surprises, first, people still use AOL and earthlink?&lt;/p&gt;
-
-&lt;p&gt;Second&amp;hellip; well just look for yourself:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;32952409 gmail.com
-24071552 hotmail.com
-20421035 yahoo.com
-4283225 aol.com
-1983431 comcast.net
-1431727 yahoo.co.in
-1337019 msn.com
-1041953 sbcglobal.net
-1039635 rediffmail.com
-995709 yahoo.fr
-916458 yahoo.co.uk
-845570 live.com
-841415 yahoo.com.br
-750175 hotmail.co.uk
-742597 verizon.net
-575381 hotmail.fr
-530308 ymail.com
-529548 cox.net
-510463 bellsouth.net
-504339 libero.it
-480006 att.net
-429760 yahoo.es
-407687 btinternet.com
-396313 mail.ru
-376970 googlemail.com
-307292 earthlink.net
-304012 mac.com
-266076 yahoo.in
-262010 yahoo.ca
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I&amp;rsquo;ve never heard of rediffmail, you?&lt;/p&gt;
-
-&lt;p&gt;Anyways, I pushed the list in this order into a simple script:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cat domains_count.txt | xargs -P 100 -n 2 sh -c &#39;./findnx2.sh $1 $2&#39; argv0 | tee nxdomains.txt
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This is what is in &lt;code&gt;findnx2.sh&lt;/code&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/bash
-lines=$(nslookup ${2} | grep NXDOMAIN | wc -l)
-if [ $lines -eq &amp;quot;1&amp;quot; ]
-then
-	echo &amp;quot;$2 is open with count $1&amp;quot;
-fi
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And out popped a pretty interesting list (top 50):&lt;/p&gt;
-
-&lt;p&gt;domain -&amp;gt; number of email accounts registered under that domain (based on number of occurrences of the domain in the unfiltered list):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;XXXXXXXXXXX is open with count 7606
-hotmail.con is open with count 4367
-c2i.net is open with count 3966
-yahoo.con is open with count 3487
-gmail.con is open with count 3249
-90wewhelp.ru is open with count 3218
-csupomona.edu is open with count 2844
-us.ing.com is open with count 2622
-test.linkedin.com is open with count 2583
-wowhackgold.com is open with count 2515
-yahoo.om is open with count 2461
-alltel.net is open with count 6565
-w.cn is open with count 2451
-uolsinectis.com.ar is open with count 2315
-gmail.fr is open with count 2830
-gmail.om is open with count 2122
-hotmail.cm is open with count 2044
-alltel.com is open with count 2046
-hotmail.om is open with count 1901
-memo.ikea.com is open with count 1809
-chicagogsb.edu is open with count 1758
-gawab.com is open with count 2141
-mscd.edu is open with count 1740
-mayalasr.com is open with count 1626
-yavvaram.com is open with count 1424
-twtelecom.com is open with count 1448
-asbada5m.com is open with count 1371
-eunet.yu is open with count 1272
-camerabuy.info is open with count 1156
-mywdo.com is open with count 1275
-g.mail.com is open with count 1089
-nortelnetworks.com is open with count 1815
-infotechsw.com is open with count 1040
-saugov.sa.gov.au is open with count 1033
-hoyllmail.com is open with count 1028
-mn.rr.com is open with count 1029
-apollogrp.edu is open with count 980
-gemail.com is open with count 1086
-v4q.info is open with count 928
-hoylmail.com is open with count 915
-yahoo.coom is open with count 890
-ifrance.com is open with count 917
-justafou.com is open with count 886
-2008radiochat.info is open with count 879
-myclearwave.net is open with count 967
-tconl.com is open with count 939
-gmail.cim is open with count 849
-flykingfisher.com is open with count 866
-lycos.co.uk is open with count 1092
-pichosti.info is open with count 813
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Basic analysis of this list:&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;I thought that LinkedIn validated sign ups with an email, kinda hard to do with all these domains that are obviously mistyped, unless of course they just keep the database record around indefinitely&lt;/li&gt;
-&lt;li&gt;XXXXXXXXX is an ISP that went out of business in 2011, their domain is available for register and would probably mean 7606 accounts up for grabs, if not more that&amp;rsquo;s why I redacted it, but I wanted to mention it just to demonstrate how powerful this type of analysis of a hacked site&amp;rsquo;s dump can be. $10 to purchase a domain is much cheaper and more wide spread than cracking time passwords just for LinkedIn (well, one can dream that everyone uses unique passwords).&lt;/li&gt;
-&lt;li&gt;WoWHackGold was also up for grabs, I picked it up just to see what kind of traffic is still going to it, these guys sold hacked WoW accounts so I don&amp;rsquo;t particularly feel inclined protect their info.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;What can someone do with this knowledge? Well, all they have to do to reset any of the accounts registered with one of these domains is simply purchase it, set up a catch-all email address and watch the account information roll in. The &amp;ldquo;accounts&amp;rdquo; they would have access to isn&amp;rsquo;t limited to LinkedIn either, could be anything that people use email addresses to sign up for.&lt;/p&gt;
-
-&lt;p&gt;/mubix&lt;/p&gt;
-
-&lt;p&gt;P.S. I have seen account take-overs of GMail accounts using &amp;ldquo;backup&amp;rdquo; accounts in this way. I assume Google has too since they ask me every so often now to make sure my backup email is correct.&lt;/p&gt;
-</description>
+      <description>I recently asked a friend if I could have just a list of the domains in the LinkedIn dump, no passwords, not full emails, just domains. I run a program that I lovingly call &amp;ldquo;DeepMagic&amp;rdquo; and I feed it domains whenever I can. Well, this time when I tossed the list of domains into the engine it started spitting out tons of errors. There was a total of 9,436,804 unique domains names in the list, and for anyone who works with DNS that isn&amp;rsquo;t a very big number, so I didn&amp;rsquo;t think very much of it and didn&amp;rsquo;t know why it would choke on a list that small.</description>
     </item>
     
     <item>
@@ -323,50 +38,10 @@ pichosti.info is open with count 813
       <pubDate>Sun, 22 May 2016 21:55:12 -0400</pubDate>
       
       <guid>https://room362.com/post/2016/wpad-persistence/</guid>
-      <description>
-
-&lt;p&gt;Mostly just writing this so I can keep notes.&lt;/p&gt;
-
-&lt;p&gt;Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: &lt;a href=&#34;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&#34;&gt;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I did this via PowerShell pretty easily on one of the domain controllers like so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&amp;rsquo;t getting any requests for &lt;code&gt;wpad.dat&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;As they say &amp;ldquo;there are no more original ideas&amp;rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.&lt;/p&gt;
-
-&lt;p&gt;but.. they also made a way to disable it - &lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&amp;rsquo;s a required service in later Windows server versions).&lt;/p&gt;
-
-&lt;p&gt;I went in search of a registry key to make the modification because it&amp;rsquo;s much easier to hit the &lt;code&gt;RemoteRegistry&lt;/code&gt; service on all the DCs than it is to run that command. I quickly found this blog post - &lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[22/May/2016:21:56:28 EDT] &amp;quot;GET /wpad.dat HTTP/1.1&amp;quot; 200 58
-- -&amp;gt; /wpad.dat
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now, you may be asking, &amp;ldquo;How is setting their proxy server any kind of real persistence?&amp;rdquo;, I implore you to go check out projects like &lt;a href=&#34;https://mitmproxy.org/&#34;&gt;mitmproxy&lt;/a&gt;, &lt;a href=&#34;https://github.com/byt3bl33d3r/MITMf&#34;&gt;mitmf&lt;/a&gt; and &lt;a href=&#34;https://github.com/secretsquirrel/BDFProxy&#34;&gt;BDFProxy&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&amp;rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&amp;rsquo;t disable it for the SYSTEM or other local accounts, so it&amp;rsquo;s harder than just &amp;ldquo;flip on this registry setting via GPO&amp;rdquo;)&lt;/p&gt;
-
-&lt;p&gt;Oh and I&amp;rsquo;ll just leave this here: &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&#34;references&#34;&gt;References&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://mitmproxy.org/&#34;&gt;mitmproxy&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/byt3bl33d3r/MITMf&#34;&gt;mitmf&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/secretsquirrel/BDFProxy&#34;&gt;BDFProxy&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
+      <description>Mostly just writing this so I can keep notes.
+Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
+I did this via PowerShell pretty easily on one of the domain controllers like so:
+PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.</description>
     </item>
     
   </channel>

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/msfconsole/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Msfconsole on Room362</title>
+    <link>https://room362.com/categories/msfconsole/</link>
+    <description>Recent content in Msfconsole on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/msfconsole/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 09 Oct 2011 06:20:22 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/msfconsole/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>MSFConsole Prompt Fiddling</title>
@@ -15,83 +18,8 @@
       <pubDate>Sun, 09 Oct 2011 06:20:22 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-10-09-msfconsole-prompt-fiddling/</guid>
-      <description>&lt;p&gt;In @&lt;a href=&#34;http://twitter.com/carnal0wnage&#34;&gt;carnal0wnage&lt;/a&gt; and my presentation at &lt;a href=&#34;http://www.derbycon.com/&#34;&gt;DerbyCon&lt;/a&gt; 2011 we talked about using &lt;a href=&#34;http://linux.die.net/man/1/screen&#34;&gt;SCREEN&lt;/a&gt; and &lt;a href=&#34;http://linux.die.net/man/1/script&#34;&gt;SCRIPT&lt;/a&gt; to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&amp;rsquo;t cover is the fact that there isn&amp;rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat ~/.msf4/logs/framework.log&lt;/code&gt;
-
-&lt;ul&gt;
-&lt;li&gt;This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&amp;rsquo;t record what you are doing inside of msfconsole&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;msf&amp;gt; spool ~/myclient.log&lt;/code&gt;
-
-&lt;ul&gt;
-&lt;li&gt;The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell. My one gripe about this one is that it doesn&amp;rsquo;t log the actual command you issued.
-*
-&lt;code&gt;
-msf&amp;gt; set ConsoleLogging true  
-msf&amp;gt; set LogLevel 5  
-msf&amp;gt; set SessionLogging true  
-msf&amp;gt; set TimestampOutput true
-&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Plenty of logging right? But none of them really &amp;lsquo;log everything&amp;rsquo; and time stamps are not a regular occurrence in them. Cool, but we need both. We&amp;rsquo;ve got the &amp;lsquo;log everything&amp;rsquo; with the Linux &amp;lsquo;script&amp;rsquo; command, we just need a way to inject time stamps into our log.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;Enter the ever mutable &amp;lsquo;msf&amp;gt;&amp;rsquo; prompt:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;A lesser known variable in MSFConsole is &amp;lsquo;PROMPT&amp;rsquo;. You can set this pretty much like any other OS can, however there are some metasploit specific things you can add. Using a three letter abbreviation you can even add color to it.&lt;/p&gt;
-
-&lt;p&gt;For example lets add our hostname to our prompt:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;msf&amp;gt; set PROMPT %H&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;changes msf&amp;gt; to myhostname&amp;gt;&lt;/p&gt;
-
-&lt;p&gt;And you can combine and add things that you wish:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;set PROMPT %H Just more text %U&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;changes the prompt to:  myattackmachine Just more text mubix&amp;gt; (%U is username)&lt;/p&gt;
-
-&lt;p&gt;For reference here are the other working % variables that I know of:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;%D&lt;/strong&gt; = Current local directory (not sure if this changes when in meterpreter or not for the victims dir, that would be cool)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;%H&lt;/strong&gt; = Host name (again, would be cool if this changed when in meterpreter)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;%J&lt;/strong&gt; = Current number of jobs running&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;%L&lt;/strong&gt; = Local IP (makes it easy to remember what to put in LHOST)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;%S&lt;/strong&gt; = Currently number of sessions open&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;%T&lt;/strong&gt; = Time stamp&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;%U&lt;/strong&gt; = Username (yes, would be awesome if this changed in meterpreter too)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now if you wanted to add colors to that, all you would do is use something like %grn%T to make the time stamp green. You&amp;rsquo;ll have to play around with the color&amp;rsquo;s names as I don&amp;rsquo;t know them all. %red %blu %blk etc&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;Combine all of that with script and you&amp;rsquo;ve got something awesome. I set my PROMPT to:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;msf&amp;gt; set PROMPT %T S:%S J:%J
-1970-01-01 00:00:00 +0000 S:0 J:0&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This gives me the number of jobs and sessions and has the time stamp every time I throw a command, so in my logs I can very easily narrow down the exact time when I did or didnt&amp;rsquo; do something. The number of sessions and jobs are just good to know items.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;Throw in one more trick to make the whole thing a cake walk:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;In your ~/.msf4 directory, if you haven&amp;rsquo;t already, create a file called &amp;lsquo;msfconsole.rc&amp;rsquo;. This magical file will run every time you start msfconsole (&lt;em&gt;with the express exception of when you specify a resource file to run from the command line using the -r argument&lt;/em&gt;). Throw your &amp;lsquo;set PROMPT %blah %blah %blah&amp;rsquo; in there formatted however you like, and now whenever you start msfconsole you&amp;rsquo;ll have your handy dandy timestamp.&lt;/p&gt;
-
-&lt;p&gt;Shout out to @&lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;egyp7&lt;/a&gt; for showing me this.&lt;/p&gt;
-</description>
+      <description>In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&amp;rsquo;t cover is the fact that there isn&amp;rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
+ cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&amp;rsquo;t record what you are doing inside of msfconsole  msf&amp;gt; spool ~/myclient.</description>
     </item>
     
   </channel>

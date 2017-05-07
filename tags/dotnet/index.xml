@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/tags/dotnet/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Dotnet on Room362</title>
+    <link>https://room362.com/tags/dotnet/</link>
+    <description>Recent content in Dotnet on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 05 Oct 2015 07:35:28 -0500</lastBuildDate>
+    
+	<atom:link href="https://room362.com/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>DotNet&#39;s DNVM For Persistence On Developer Machines</title>
@@ -15,69 +18,9 @@
       <pubDate>Mon, 05 Oct 2015 07:35:28 -0500</pubDate>
       
       <guid>https://room362.com/post/2015/dotnet-dnvm-for-persistence-on-developer-machines/</guid>
-      <description>&lt;p&gt;One of the best resources for persistence mechanisms is &lt;a href=&#34;https://twitter.com/Hexacorn&#34;&gt;Hexacorn&amp;rsquo;s&lt;/a&gt; blog.
-&lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;http://www.hexacorn.com/blog/category/autostart-persistence/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&amp;rsquo; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:&lt;/p&gt;
-
-&lt;p&gt;DNVM (&lt;a href=&#34;https://github.com/aspnet/dnvm&#34;&gt;https://github.com/aspnet/dnvm&lt;/a&gt;) is the DotNet Version Manager and it&amp;rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&amp;rsquo;s there to help to specify which runtime to use for applications, much like &lt;a href=&#34;https://rvm.io/&#34;&gt;RVM (Ruby Version Manager)&lt;/a&gt; is for Ruby. With their goal being that you can install .Net and &lt;a href=&#34;http://docs.asp.net/en/latest/getting-started/index.html&#34;&gt;run .Net applications on Linux and Mac&lt;/a&gt; as well using DNVM.&lt;/p&gt;
-
-&lt;p&gt;Once installed it adds a &amp;ldquo;DNX_HOME&amp;rdquo; environmental variable:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnx_reg.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Inside the folder specified are 3 directories:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnx_folder.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;There are plenty of things to play with in here, but I wanted to specifically point out that the &lt;strong&gt;BIN&lt;/strong&gt; directory is put into the $PATH variable (as well as two others)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
-C:\Program Files\Microsoft DNX\Dnvm\
-C:\Users\mubix\.dnx\bin
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&amp;rsquo;ll come back to that in another post)&lt;/p&gt;
-
-&lt;p&gt;Lets take a look at what is in those folders:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnvm_folders.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Interesting, why don&amp;rsquo;t we see what the command dnvm does:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnvm_cmd.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Seriously&amp;hellip; I probably don&amp;rsquo;t even have to continue at this point&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;But, if I run dnvm from the command prompt (as a developer would) it runs it from inside that protected directory in Program Files right?&amp;hellip; RIGHT?! Nope..&lt;/p&gt;
-
-&lt;p&gt;Edit the dnvm.cmd with a bit of &lt;a href=&#34;http://www.powershellempire.com/&#34;&gt;PowerShell Empire&lt;/a&gt; stager (minus the &lt;strong&gt;-W Hidden&lt;/strong&gt;, because we need the user to actually get the output of the dnvm command) and&amp;hellip;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Boom!&lt;/p&gt;
-
-&lt;p&gt;Lets look a bit into how DNVM works to see if there is something juicier there (way to much for a single blog post)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnvm_list.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Awesome! So I can modify things in the runtime directory, lets look in there:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnvm_runtime.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Lots, of fun, but we still have to wait until they run some C# code with that run time and guess which one they will use (or backdoor all of them). I would rather just make a modification to the dnvm.cmd and be done with it. Simple and clean.&lt;/p&gt;
-
-&lt;p&gt;Oh did I mention that this is used to cross compile binaries? Ya, oh ok, so you can infect the built binaries, or web apps for Windows, Linux and OSX&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;Oh and one other thing caught my eye while I was looking into the DNVM.ps1 script:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/2015/dnvm_azure.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Have fun!&lt;/p&gt;
-
-&lt;p&gt;P.S. Unquoted paths FTW: &lt;a href=&#34;https://github.com/aspnet/dnvm/pull/357&#34;&gt;https://github.com/aspnet/dnvm/pull/357&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>One of the best resources for persistence mechanisms is Hexacorn&amp;rsquo;s blog. http://www.hexacorn.com/blog/category/autostart-persistence/
+If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&amp;rsquo; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:
+DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&amp;rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version.</description>
     </item>
     
   </channel>

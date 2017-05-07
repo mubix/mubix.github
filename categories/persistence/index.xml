@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/persistence/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Persistence on Room362</title>
+    <link>https://room362.com/categories/persistence/</link>
+    <description>Recent content in Persistence on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/persistence/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 27 Jun 2011 14:32:16 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/persistence/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>fxsst.dll persistence: the evil fax machine</title>
@@ -15,36 +18,8 @@
       <pubDate>Mon, 27 Jun 2011 14:32:16 +0000</pubDate>
       
       <guid>https://room362.com/post/2011/2011-06-27-fxsstdll-persistence-the-evil-fax-machine/</guid>
-      <description>&lt;p&gt;Nick Harbour wrote a &lt;a href=&#34;https://blog.mandiant.com/archives/1786&#34;&gt;post on Mandiants blog&lt;/a&gt; about some Malware that was using a dll called &amp;lsquo;fxsst.dll&amp;rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;The DLL gets loaded at login by Explorer&lt;/li&gt;
-&lt;li&gt;The DLL exists in System32 but is looked for in Windows first&lt;/li&gt;
-&lt;li&gt;Explorer doesn&amp;rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I thought&amp;hellip; no it couldn&amp;rsquo;t be that simple&amp;hellip; lets see:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201106_fxsst_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We have our victim in a session and are going to make a DLL that points back to our reverse_https multi handler over port 443&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201106_fxsst_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Ok, we&amp;rsquo;ve got our super evil fxsst.dll now lets put it in place.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201106_fxsst_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Lets test it out just to make sure it works. I will use the PID of explorer.exe (cause thats where it&amp;rsquo;s going to be normally) and I&amp;rsquo;m going to use the method I talked about in the &lt;a href=&#34;https://room362.com/blog/2011/5/30/remote-dll-injection-with-meterpreter&#34;&gt;Remote DLL Injection post&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201106_fxsst_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Woot! Ok, so the DLL works, but does it load when a user logs in&amp;hellip; (drop out of our 2 sessions first)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201106_fxsst_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Thats me logging in 2 times because I couldn&amp;rsquo;t believe that it worked. System was fine, and I had a shell. These tests were performed on XP. On Win7 x64 it make the systems freeze up. Right now the DLL payload generation in Metasploit for 64bit systems isn&amp;rsquo;t setup. So, stay away from doing this on x64 bit systems at least with the Metasploit DLL, since it&amp;rsquo;s run at login so you&amp;rsquo;ll have to use psexec or another session to actually remove the file while everyone is logged out. TEST PRIOR TO USE as always.&lt;/p&gt;
-</description>
+      <description>Nick Harbour wrote a post on Mandiants blog about some Malware that was using a dll called &amp;lsquo;fxsst.dll&amp;rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:
+ The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&amp;rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&amp;hellip; no it couldn&amp;rsquo;t be that simple&amp;hellip; lets see:</description>
     </item>
     
   </channel>

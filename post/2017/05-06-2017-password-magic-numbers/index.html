@@ -120,9 +120,19 @@ ga('send', 'pageview');
 
 <p>Recently I discovered a new &ldquo;magic number&rdquo; for passwords: <strong>27</strong>.</p>
 
-<p>Before I get into this, all of this information came from Atom (Hashcat primary developer) Solar Designer (John the Ripper) and Magnum (John the Ripper). I&rsquo;m just putting it together because I had no idea this existed and I&rsquo;ve been cracking passwords using both of these tools for ages. Huge thanks to them for all their help and patience.</p>
+<p>Before I get into this, all of this information came from <a href="https://twitter.com/hashcat">Atom</a> (Hashcat primary developer) <a href="https://twitter.com/SolarDiz">Solar Designer</a> (John the Ripper) and <a href="https://github.com/magnumripper">Magnum</a> (John the Ripper). I&rsquo;m just putting it together because I had no idea this existed and I&rsquo;ve been cracking passwords using both of these tools for ages. Huge thanks to them for all their help and patience.</p>
 
-<p>It turns out, that password cracking tools have maximum character lengths for passwords. This boggled my mind for a while but it makes total sense once Atom explained that it has to do with how the tools store the password candidates (dictionary words or generated clear texts to be used in the hash comparison attempt). They are stored in CPU registers, and unfortunately the speed of storing it there comes at a price. That price is that there isn&rsquo;t enough registers to store candidates over certain lengths. The maximum lengths are specific to how each hashing function works so some maximum lengths are longer than others. The general rule of thumb at least in the world of Hashcat is 55 characters.</p>
+<p>It turns out, that password cracking tools have maximum character lengths for passwords. This boggled my mind for a while but it makes total sense once Atom explained that it has to do with how the tools store the password candidates (dictionary words or generated clear texts to be used in the hash comparison attempt). They are stored in GPU registers, and unfortunately the speed of storing it there comes at a price. That price is that there isn&rsquo;t enough registers to store candidates over certain lengths. The maximum lengths are specific to how each hashing function works so some maximum lengths are longer than others. The general rule of thumb at least in the world of Hashcat is 55 characters.</p>
+
+<p><strong>UPDATE:</strong></p>
+
+<blockquote>
+<p>The primary reason behind these specific length limits is that exceeding them doubles the amount of processing. The register pressure is a secondary aspect, and mostly limited to GPUs. (On CPUs, the candidate passwords themselves are not in registers.)</p>
+
+<p>&ndash; Solar Designer</p>
+
+<p><a href="https://twitter.com/solardiz/status/861183622950334464">https://twitter.com/solardiz/status/861183622950334464</a></p>
+</blockquote>
 
 <p>In the world of Windows however, passwords are stored using UTF16-LE. This means that password candidates are automatically double the character length as most other hashing functions, halving the possible maximum down to 27 characters. This means that lets say your password is a very well known quote like:</p>
 
@@ -155,13 +165,15 @@ NT      81      24      24      0002000f        43      MD4 256/256 AVX2 8x3
 <pre><code>root@crackingbox:/opt/bigjohn/src/#./configure --disable-native-tests CFLAGS='-O2 -mno-sse2 -mno-mmx -U__SSE__'
 </code></pre>
 
+<p>This is a 51 character password once I have enough chars</p>
+
 <p>Lets see what this gets us:</p>
 
 <pre><code>root@crackingbox:/opt/bigjohn/run/# ./john --list=format-details --format=nt
 NT      125     1       1       0002000f        43      MD4 32/64
 </code></pre>
 
-<p>We now have 125 UTF8 characters so that allows for 41 UTF16-LE. And as you can probably guess, it cracks the password just find now:</p>
+<p>We now have 125 total characters total (not just 41 - <a href="https://twitter.com/solardiz/status/861182438818684929">thanks Solar Designer for the update</a>). And as you can probably guess, it cracks the password just fine now:</p>
 
 <pre><code>root@crackingbox:/opt/bigjohn/run/# ./john /tmp/hashtest.txt --format=nt --wordlist=/tmp/list.txt
 Using default input encoding: UTF-8
@@ -179,6 +191,10 @@ Session completed
 <p><a href="https://github.com/hashcat/hashcat/tree/longer_passwords">https://github.com/hashcat/hashcat/tree/longer_passwords</a></p>
 
 <p>So now my recommendations for passwords, at least in the Windows world is 28 characters or more makes it so that without tweaking, your 28 character Jack Nicholson quote based password is safer (I mean, Mimikatz still works, and keyloggers, and so on and so forth&hellip;)</p>
+
+<p>28 characters is a bit tough to force on standard users, but making sure that at least your service, admin and &ldquo;high risk&rdquo; accounts are &gt; 28 is a good step.</p>
+
+<p>Solar Designer also pointed me at the Open Wall product called <a href="http://www.openwall.com/passwdqc/">passwdqc</a> which is much more affordable than other password products I&rsquo;ve seen for enterprises. Here is a direct link to the Windows version that allows 30 day trial: <a href="http://www.openwall.com/passwdqc/windows/">http://www.openwall.com/passwdqc/windows/</a></p>
 
 <p><em>I definitely could get things wrong in this post, it&rsquo;s very new to me and I&rsquo;m still digging. My comment system sucks so please DM, IRC, or hit me up with any connections. Thanks!</em></p>
 
@@ -225,24 +241,6 @@ mubix</p>
 </footer>
 
         
-    <div class="comments">
-        <div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'room362';
-    var disqus_identifier = 'https:\/\/room362.com\/post\/2017\/05-06-2017-password-magic-numbers\/';
-    var disqus_title = 'Password Magic Numbers';
-    var disqus_url = 'https:\/\/room362.com\/post\/2017\/05-06-2017-password-magic-numbers\/';
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    </div>
-
     </article>
 </div>
 

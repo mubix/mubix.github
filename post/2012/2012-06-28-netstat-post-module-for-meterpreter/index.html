@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Netstat Post Module for Meterpreter &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-06-28-netstat-post-module-for-meterpreter/">Netstat Post Module for Meterpreter</a></h1>
+            <span class="post-date">Jun 28, 2012 </span>
+            <div class="post-content">
+                <p>Submitted it to MSF via pull request here: <a href="https://github.com/rapid7/metasploit-framework/pull/538">https://github.com/rapid7/metasploit-framework/pull/538</a></p>
+
+<p>Added to trunk: <a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb">https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb</a></p>
+
+<p>I promised this one a while ago, sorry for the delay. This only does TCP, it&rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&rsquo;s real simple, first we&rsquo;ve gotta add the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx">GetTcpTable</a> function to railgun:</p>
+
+<pre><code class="language-ruby">session.railgun.add_function('iphlpapi', 'GetTcpTable', 'DWORD', [
+	['PBLOB', 'pTcpTable', 'out'],
+	['PDWORD', 'pdwSize', 'inout'],
+	['BOOL', 'bOrder', 'in']
+])
+</code></pre>
+
+<p>Then gauge the size of the table:</p>
+
+<pre><code class="language-ruby">getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true)
+buffersize = getsize['pdwSize']
+</code></pre>
+
+<p>Run the call again with the correct buffer size:</p>
+
+<pre><code class="language-ruby">tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true)
+</code></pre>
+
+<p>Then it&rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx">MIB_TCPTABLE</a> one <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx">MIB_TCPROW</a> at a time (translating the state to something readable):</p>
+
+<pre><code class="language-ruby">def parse_tcptable(buffer)
+	entries = buffer[0,4].unpack(&quot;V*&quot;)[0]
+	print_status(&quot;Total TCP Entries: #{entries}&quot;)
+	rtable = Rex::Ui::Text::Table.new(
+		'Header' =&gt; 'Routing Table',
+		'Indent' =&gt; 2,
+		'Columns' =&gt; ['STATE', 'LHOST', 'LPORT', 'RHOST', 'RPORT']
+	)
+	offset = 4
+	(1..entries).each do
+		x = {}
+		x[:state] = case buffer[(offset + 0), 4].unpack(&quot;V*&quot;)[0]
+		when 1
+			'CLOSED'
+		when 2
+			'LISTEN'
+		when 3
+			'SYN_SENT'
+		when 4
+			'SYN_RCVD'
+		when 5
+			'ESTABLISHED'
+		when 6
+			'FIN_WAIT1'
+		when 7
+			'FIN_WAIT2'
+		when 8
+			'CLOSE_WAIT'
+		when 9
+			'CLOSING'
+		when 10
+			'LAST_ACK'
+		when 11
+			'TIME_WAIT'
+		when 12
+			'DELETE_TCB'
+		else
+			'UNDEFINED'
+		end
+		
+		x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&quot;N&quot;)[0])
+		x[:lport] = buffer[(offset + 8), 4].unpack(&quot;n&quot;)[0]
+		x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&quot;N&quot;)[0])
+		if x[:state] == &quot;LISTEN&quot;
+			x[:rport] = &quot;_&quot;
+		else
+			x[:rport] = buffer[(offset + 16), 4].unpack(&quot;n&quot;)[0]
+		end
+
+		offset = offset + 20
+		rtable &lt;&lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]
+	end
+
+	print_status(rtable.to_s)
+end
+</code></pre>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

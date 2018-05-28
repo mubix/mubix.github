@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Insider Threat Testing &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2011/2011-01-27-insider-threat-testing/">Insider Threat Testing</a></h1>
+            <span class="post-date">Jan 27, 2011 </span>
+            <div class="post-content">
+                <p><img src="/images/postimages/201101_insider_1.png" alt="" /></p>
+
+<p>This day and age everyone is worried about the insider threat. Internal Penetration Testing doesn&rsquo;t really test what would happen if your janitor got paid 50 bucks to put a USB stick in one of your servers. External Penetration Tests are never scoped for that sort of testing. So what is a company to do? How can they know what the risk is? The answer? Usually they guess or assume. Mostly because they are scared to find out, it&rsquo;s happened to them before, or one of a million different justifications. I&rsquo;ve got a webinar coming up to describe exactly this type of testing, but I thought I&rsquo;d go into it a bit here.</p>
+
+<p>The FBI has a files upon files and stories stacked miles high about spies and insiders taking everything from accounting information (I could have put LIVES for effect but that&rsquo;s more of a one-off) to staplers (no I don&rsquo;t think Milton has an FBI file). Insiders throughout time have been the biggest threat to organizations even before sabotage and espionage became words. Ok, so what&rsquo;s the big build up for? Simple. We need to build organizations up in the detection department from a pentesters point of view, not signature based. Our pentesters need to talk to our forensics guys, the incident responders need to talk to pentesters and every which way between. We are loosing this battle, and one of the reasons we are is we keep our bag of tricks to our selves, and that&rsquo;s what insider threat testing is all about, getting all the tricks tested in a more open fashion.</p>
+
+<p>Can your organization see a command and control session via IRC? What if it&rsquo;s pushed over port 80? What about a standard meterpreter reverse_tcp connection? There isn&rsquo;t a money based solution for this, just like there isn&rsquo;t for phishing. Added on to all of the other things your security team does, there needs to be an employee, or a consultant that it is on the phone with your team saying &ldquo;did you see this?&rdquo;. Sort of like the &lsquo;Can you hear me now?&rsquo; test. I mean, have you ever met an incident response team that took time out of their day to see if they could get poison ivy (one of the most well known RATS /remote access tools/) through the firewall undetected? Probably, but when they came and told you about it you chastised them for it.</p>
+
+<p><img src="/images/postimages/201101_insider_2.png" alt="" /></p>
+
+<p>In any case, I&rsquo;ve jumped around roles in this post a lot and I want to focus it back on getting true collaborative testing done, but there has to be a balance. If you&rsquo;re staring at a piece of earth, you&rsquo;ll see the ant walk on by, but you&rsquo;ll probably miss a half dozen of them on your way to check the mail. So how do you do this? Why not make it an educational process? Have the senior staff on the phone with the tester, and then tell the junior guys something like &ldquo;We just had a breach and it&rsquo;s starting exfil data to this IP: x.x.x.x&rdquo;. Give them a chance to find it then work through with them where / what happened, and why or why not any alerts or alarms went of and if they saw it in their normal flow. Ideally they spot it before the senior staff even mention it.</p>
+
+<p>No, this will not fit into the &lsquo;I give you report you give me money&rsquo; scenario. Companies should consider it a training exercise where they get instant and obvious benefit.</p>
+
+<p>There are many other arenas this helps in too. For example phishing, you know how much harder it will be for an attacker to get a payload to work if you&rsquo;ve already tested, detected and have traps (we&rsquo;ll go into setting traps another time) for all the public avenues of C&amp;C and exfiltration? They will get frustrated, and you&rsquo;ll know that you&rsquo;re being attacked. A proactive stance is what &lsquo;testing&rsquo; is all about, and this is a extremely neglected aspect of it.</p>
+
+<p>No one will solve &lsquo;security&rsquo;, all we are here to do is minimize the attack surface.</p>
+
+<p>Come to the webinar to heckle, learn, or just hear more, or don&rsquo;t. I just wanted to get this out there and ask the question: Can your most important data leave on a fake Lady Gaga CD without you knowing?</p>
+
+<p><strong>Update</strong>: Let me squash something real quick. No this is not a new idea. The prevention side is talked about ad nauseum, but hardly anyone talks about testing to see what could really happen.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

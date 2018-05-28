@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> (UAC) User Assisted Compromise &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-01-03-uac-user-assisted-compromise/">(UAC) User Assisted Compromise</a></h1>
+            <span class="post-date">Jan 3, 2012 </span>
+            <div class="post-content">
+                <p>A number of times during tests I&rsquo;ve actually run into those mythical creatures called &ldquo;patched windows machines&rdquo;. At <a href="http://www.derbycon.com">DerbyCon</a> <a href="http://twitter.com/carnal0wnage">Chris Gates</a> and I released the &ldquo;Ask&rdquo; post module (which I had failed to publish). This module very simply uses the <a href="&quot;http://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85">ShellExecute windows function</a>.aspx&rdquo;) via <a href="http://dev.metasploit.com/redmine/projects/framework/wiki/RailgunUsage">Railgun</a> with the undocumented (but very well known) operator of &lsquo;runas&rsquo;. These two lines accomplished that:</p>
+
+<pre><code>client.railgun.add_function( 'shell32', 'ShellExecuteA', 'DWORD',[[&quot;DWORD&quot;,&quot;hwnd&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpOperation&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpFile&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpParameters&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpDirectory&quot;,&quot;in&quot;],[&quot;DWORD&quot;,&quot;nShowCmd&quot;,&quot;in&quot;],])
+client.railgun.shell32.ShellExecuteA(nil,&quot;runas&quot;,&quot;evil.exe&quot;,nil,nil,5)
+</code></pre>
+
+<p>This would quite simply prompt the user with that annoying UAC prompt asking the user to run &lsquo;evil.exe&rsquo; with Administrative privs. If they are not &ldquo;Admins&rdquo; themselves then it would prompt them for the user name and password (normally the case in systems attached to domains). Something to be aware of: If your evil.exe is not code-signed the UAC box will be orange instead of blue. You can get around this a bit by using rundll32.exe (which is signed ;-) ) as is svchost.exe. (You may also want to not name it evil.exe)</p>
+
+<p>The downfall here is that 1. You have to drop a binary (boooo) 2. You are prompting the user for UAC control when they didn&rsquo;t do anything to cause it. Users are generally as smart as bait, but it&rsquo;s good practice to assume to the contrary. If for nothing else other than to challenge yourself to up your game.</p>
+
+<p>Number 1 I&rsquo;ll leave to another post, so lets solve #2.</p>
+
+<p>When a &ldquo;runas&rdquo; ShellExecute (which UAC runs natively #hint#hint) a few registry locations are checked. One I&rsquo;d like to point out is the HKLM\Software\Classes\exefile key. The &lsquo;exefile&rsquo; as should be obvious is the registry settings for executables, and as such tells Windows how to interact with them. In HKLM (which is only writable by Administrators) the &ldquo;shell\open&rdquo;, &ldquo;shell\runas&rdquo; and &ldquo;shell\runasuser&rdquo; subkeys exist (the structure looks oddly familiar to anyone who visited the ShellExecute page more than once). Inside &ldquo;shellopencommand&rdquo; the default string has &ldquo;%1&rdquo; %*  - this basically means execute the binary %1 and hand the arguments given directly to it %*. Awesome! From here you can alter how every EXE runs on the system (don&rsquo;t do it, Windows doesn&rsquo;t like you afterwards, trust me, and remember to snapshot if you don&rsquo;t).</p>
+
+<p>Great, but how does this help us, we aren&rsquo;t admins. HKCU is writable by the &lsquo;Current User&rsquo; hence the name, and it so happens to have a very similar registry path: HKCU\Software\Classes. Depending on your system, it may or may not have a &ldquo;exefile&rdquo; subkey. If it doesn&rsquo;t it&rsquo;s pretty easy to create. Lets make it match the &ldquo;runas&rdquo; one in HKLM</p>
+
+<p>The tree should look something like this when you are done:</p>
+
+<ul>
+<li>HKLM
+
+<ul>
+<li>Software
+
+<ul>
+<li>Classes
+
+<ul>
+<li>exefile
+
+<ul>
+<li>shell
+
+<ul>
+<li>runas
+
+<ul>
+<li>command</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p>Under command change the default value to &ldquo;%1&rdquo; %* just as it is in HKLM, and add a new String value called &lsquo;IsolatedCommand&rsquo; with the same value as default. With these settings, very little has changed on the system or its operation. However, if we change the &lsquo;IsolatedCommand&rsquo; String to &lsquo;notepad.exe&rsquo; and attempt to &lsquo;Run As Administrator&rsquo; on that system using any binary guess what happens? Notepad! (as Admin). w00t. Now we can swap in our evil.exe and bob wins right? Sorta. We still have that horrible problem of stealth. Whatever the user was trying to UAC up won&rsquo;t work, and they&rsquo;ll try it again, and start investigating the problem, which we don&rsquo;t want them to do.</p>
+
+<p>Enter &lsquo;runyou.exe&rsquo;, it&rsquo;s some very simple C++ that weighs in at a whopping 8k when compiled (probably could loose some weight by those who know better compiler options):</p>
+
+<pre><code class="language-cpp">#include &quot;windows.h&quot;
+#include &quot;stdio.h&quot;
+#include &quot;tchar.h&quot;
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    if (argv[1])
+    {
+        ShellExecuteW(NULL,NULL,argv[1],NULL,NULL,SW_SHOW);
+        if (argv[2])
+        {
+            ShellExecuteW(NULL,NULL,argv[2],NULL,NULL,SW_HIDE);
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+<p>This code executes the first program visibly and then the second hidden. You probably see where this is going, but we change our IsolatedCommand String to runyou.exe %1 evil.exe and now we give them exactly what they want in an elevated state, but also get our evil binary there too ;-)</p>
+
+<p>The very real down side to this is you have to wait for the user to use UAC (this does not work if someone else does, it&rsquo;s only for the current user HKCU). But, as a side benefit, it&rsquo;s a very real form of sneaky persistence as well, as it will execute our evil binary every single time they use UAC.</p>
+
+<p>Game Over&hellip; ;-)</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

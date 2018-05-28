@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> LetMeOutOfYour.NET – Server Build &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-08-11-let-me-out-of-your-net-server-build/">LetMeOutOfYour.NET – Server Build</a></h1>
+            <span class="post-date">Aug 11, 2012 </span>
+            <div class="post-content">
+                <p>In the previous post: <a href="/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html">http://www.room362.com/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html</a> I told you about letmeoutofyour.net, but how does it work?</p>
+
+<p>Things we need to accomplish on the server:</p>
+
+<ol>
+<li>Listen on all ports</li>
+<li>Answer for all hostnames and subdomains</li>
+<li>Answer for all HTTP verbs, file and folder requests</li>
+</ol>
+
+<p><strong>ONE: Listen on all ports</strong></p>
+
+<p>(I used Linux, so this guide is for such, modifications to other OSs is up to the reader)</p>
+
+<p>First you have to get rid of all other services. That’s harder than you would first assume, because you have to admin the box some how. You could toss SSH on a really high port, or have some kind of backend management, or just remove things from running on a multi-IP’d box. It would be impossible in this post to describe every way this is done so I’ll leave it to you to research.</p>
+
+<p>Once you have everything gone, install and start Apache or your favorite web server for Linux. Then run this very simple command that I stole from a commenter on the “<a href="https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls">Forcing Payloads Through Restrictive Firewalls</a>” post:</p>
+
+<p><code>iptables -t nat -I PREROUTING -p tcp -m state --state NEW -d 192.168.1.1 -j DNAT --to 192.168.1.1:80</code></p>
+
+<p>Where ‘192.168.1.1’ is the IP address of your box. IPv4 NATing just allowed you to listen on every single port by forwarding them all to port 80. That simple. Don’t make the mistake I did and forget to set up alternative management before you set that rule, because if you don’t you’ll be forced to find one.</p>
+
+<p><strong>TWO: Answer for all hostnames and subdomains</strong></p>
+
+<p>This is pretty easy, DNS has the concept of a wildcard hostname. You simply put an asterisk * in the place of where you would normally put a WWW however you manage your DNS and you’re good. You will also want to add a second record, an ‘@’ is used to reference the domain without a host or subdomain. So the first records makes it answer for things like <a href="http://blah.letmeoutofyour.net">http://blah.letmeoutofyour.net</a> and the second for <a href="http://letmeoutofyour.net/">http://letmeoutofyour.net/</a> – Pretty simple ya?</p>
+
+<p><strong>THREE: Answer for all HTTP verbs, file and folder requests</strong></p>
+
+<p>This is pretty simple as well. Apache’s mod_rewrite to the rescue. Here are the rules:</p>
+
+<pre><code>RewriteEngine on       
+RewriteCond %{REQUEST_METHOD} ^(.*)        
+RewriteRule .* index.html [QSA,L]        
+RewriteCond %{DOCUMENT_ROOT} !-f        
+RewriteRule ^(.*)$ index.html [QSA,L]
+</code></pre>
+
+<p>You can either apply this in an .htaccess file or directly in the site configs, up to you.</p>
+
+<p>And that’s it. It all seems really simple, but took me a good amount of time putting it all together. Next up, binaries and call backs that use this to wriggle their way out of networks.</p>
+
+<p>P.S.</p>
+
+<p>This setup throws web scanners through a loop, and if you wanted to be REALLY nasty you could have a bit of php make the index page be an endless 302 or have w00w00t linked to a random page / folder which is generated each time it’s requested.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

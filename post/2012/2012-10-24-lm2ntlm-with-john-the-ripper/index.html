@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> lm2ntlm with John the Ripper &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-10-24-lm2ntlm-with-john-the-ripper/">lm2ntlm with John the Ripper</a></h1>
+            <span class="post-date">Oct 24, 2012 </span>
+            <div class="post-content">
+                <p>Since I didn&rsquo;t see any documentation bringing how to take an LM hash that you&rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.</p>
+
+<p>So there is this: <a href="https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp">https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp</a></p>
+
+<p>And this: <a href="https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb">https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb</a></p>
+
+<p>And this: <a href="http://www.securityfocus.com/tools/6696">http://www.securityfocus.com/tools/6696</a></p>
+
+<p>And the edited version of the above: <a href="http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/">http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/</a></p>
+
+<p>But Metasploit&rsquo;s is currently <a href="http://dev.metasploit.com/redmine/issues/7351">borked</a>,(<strong>Update: this is now fixed</strong>) I don&rsquo;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:</p>
+
+<p><a href="http://www.openwall.com/lists/john-dev/2011/03/29/7">http://www.openwall.com/lists/john-dev/2011/03/29/7</a></p>
+
+<p>And I asked on that same list what had become of it:</p>
+
+<p><a href="http://www.openwall.com/lists/john-dev/2012/10/24/2">http://www.openwall.com/lists/john-dev/2012/10/24/2</a></p>
+
+<p>The result is as follows:</p>
+
+<p>Given this hash:</p>
+
+<pre><code>Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
+</code></pre>
+
+<p>which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.</p>
+
+<p><img src="/images/postimages/201210_lm2ntlm_1.png" alt="" /></p>
+
+<p>cracked the LM side in 16 seconds. Now you don&rsquo;t need to use John to get the LM side (rainbow tables work better at times),</p>
+
+<p>Solar Designer (JtR&rsquo;s main dev) suggested the following path:</p>
+
+<p><img src="/images/postimages/201210_lm2ntlm_2.png" alt="" /></p>
+
+<p>A bit hard to read but here are the commands:</p>
+
+<pre><code>./john -show pwdump.txt | cut -d: -f2 &gt; cracked      
+./john -w=cracked -rules:nt -format=nt pwdump.txt
+</code></pre>
+
+<p>As you can see (if you squint) that works well. Rich Rumble suggested:</p>
+
+<p><a href="http://www.openwall.com/lists/john-dev/2012/10/24/3">http://www.openwall.com/lists/john-dev/2012/10/24/3</a></p>
+
+<p>using the loopback as so: <code>./john pwdump.txt -format=nt -loopback=john.pot -rules=nt</code></p>
+
+<p>The loopback been an amazing addition that is as Solar Designer put it &ldquo;not in core JtR, it is a fairly recent addition to jumbo&rdquo;. The loopback allows you to use previously cracked passwords as a dictionary without doing any cut/awk/sed voodoo. The problem with the suggested method for going from LM to NTLM and the loopback option is that it (rightly so) identifies LM hashes by their halves. When it tries to use those halves to crack the NTLM, every with the NT rule-set, it sees each half as separate passwords to try, so it fails.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Jasager: On the Defensive &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2008/2008-12-07-jasager-on-the-defensive/">Jasager: On the Defensive</a></h1>
+            <span class="post-date">Dec 7, 2008 </span>
+            <div class="post-content">
+                <p>Guest Article By: Ryan Pfleghaar (<a href="http://twitter.com/post_break">post_break</a>) of <a href="http://iamthekiller.net/">iamthekiller.net</a></p>
+
+<p><strong>DEFENDING AGAINST JASAGER</strong></p>
+
+<p>Jasager has been making people question wireless security since episode one of season four on Hak5. The number one question besides “How do I get this to work” is &rdquo;How do I protect myself?”. This exploit in wireless security has been somewhat of a challenge to protect against and with this article I am going to detail how Mubix and I came up with a quick and easy fix.</p>
+
+<p>A few recommendations to safe guard yourself were using a VPN or turning off wireless and using a 3G card while in the public. These two options do work however they can be expensive and not user friendly. After brainstorming a bit I came up with the idea of an application you could run while out in public airspace to check for multiple access points originating from a single point. This could be done by querying the access points and checking the signal strength against the BSSID. By knowing that a single MAC address is broadcasting multiple access points you can consider it a Jasager like device.</p>
+
+<p>My theory is broken when you factor in a device such as a FON that legitimately broadcasts multiple access points during normal operation. My university does this with Cisco access points broadcasting a PEAP encrypted connection and an unencrypted network to which you must accept a TOS in order to connect from a single device.</p>
+
+<p>Taking a step back we looked at how this exploit actually operates. When you turn on your laptop it will send out probes to see which networks are available and connect to the access point highest on the priority list. This default action is the key to the puzzle. By creating an access point in your preferred networks list titled “Jasager Detected” and pushing it to the highest priority you will now know when a Jasager device is being used. If you ever scan to see what networks are available and see the access point “Jasager Detected” then itʼs a good idea to check your email at home instead of the coffee shop or airport.</p>
+
+<p>There are a few pitfalls to this method however. If you scan the area with anything other than what you use to connect your laptop to the network “Jasager Detected” will not show up in the access point list. Chances are you will see a hidden network with no security, that being the airbase-ng or jasager access point. You need to scan the area using either windowʼs built in wireless connection utility or that provided for your wireless card. This same theory goes for Macs as well. </p>
+
+<p>Another pitfall to this quick fix is that you could in theory join the “Jasager Detected” access point without realizing it and quickly become a victim. You need to be alert when you go to public places with your laptop and make sure your dummy access point is not within range.</p>
+
+<p>What I like about this fix is how theoretically low tech it is. This is not a software or hardware specific guide and you can tell just about anyone how to do it regardless of skill level. I was even able to reproduce the fix on an iPhone so you should be able to protect yourself on mobile devices.</p>
+
+<p>Now Iʼd like to say something about this fix. This is not a complete patch in wireless security. I could modify my airbase script to not publish the access point “Jasager Detected” and if you were following this guide then you could easily become a victim [Thanks to Robin Wood who develops Jasager for out this caveat]. </p>
+
+<p>Another thing is that some operating systems have trouble with these preferred networks. If you really want to make sure you are in somewhat safe airwaves make up a completely random name for an access point and try to join it. If you connect then you know for a fact a Jasager device is in range.</p>
+
+<p>I would like to reiterate Ryan’s last point. Think up so random name that you think you would never see, and put it in your prefered list at the top. If it pops up, you know that their is something fishy going on.</p>
+
+<p>Another mesaure you can take, and thanks goes rAWjAW of <a href="http://rawjaw-security.blogspot.com/">rawjaw-security.blogspot.com</a> for this idea. You can edit the preferences of each of your prefered networks and tell them not to connect automatically. This way, you will simply be alerted to their presence and have that half second of judgement kick in, instead of automatically connecting. Again, none of these are 100% solutions, but get close, and are all something you could help your grandmother implement. </p>
+
+<p>Merry Surfing.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

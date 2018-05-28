@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Setting SYSTEM&#39;s proxy settings with Metasploit &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/">Setting SYSTEM&#39;s proxy settings with Metasploit</a></h1>
+            <span class="post-date">Oct 21, 2012 </span>
+            <div class="post-content">
+                <p>One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&rsquo;re done for right out of the door)</p>
+
+<p>Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.</p>
+
+<p>Its here if you want to take a whack at it: <code>external/source/shellcode/windows/x86/src/block/block_reverse_https_proxy.asm</code></p>
+
+<p>One of the ways @<a href="https://twitter.com/carnal0wnage">carnal0wnage</a> and I demoed @<a href="https://twitter.com/derbycon">DerbyCon</a> was using the bitsadmin binary. Windows7/Vista/2008 come with version 2.0+ which has this great ability to run the following:</p>
+
+<p><code>bitsadmin /util /setieproxy localsystem MANUAL_PROXY 192.168.1.55:3128 &quot;;&quot;</code></p>
+
+<p>(2000,XP,2003 you could upload a copy of bitsadmin that was new enough and that would still work)</p>
+
+<p>That command sets the proxy settings for the SYSTEM account. I was able to jump through hoops and do this remotely by using the windows/exec payload via psexec, then reverse_http(s) would work.</p>
+
+<p>But I wanted a better way to do this. I watched the execution of bitsadmin to see what it was doing and all it was actually doing is setting a registry key. Awesome, I can do that.</p>
+
+<p>Enter enum_proxy:</p>
+
+<p><img src="/images/postimages/201210_proxy_1.png" alt="" /></p>
+
+<p>And&hellip;</p>
+
+<p><img src="/images/postimages/201210_proxy_2.png" alt="" /></p>
+
+<p>If you&rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):</p>
+
+<p><img src="/images/postimages/201210_proxy_3.png" alt="" /></p>
+
+<p>Output from it finding a disabled RemoteRegistry:</p>
+
+<pre><code>msf post(enum_proxy) &gt; run
+
+[-] Unable to contact remote registry service on 172.16.10.217
+[*] Attempting to start service remotely...
+[*] Proxy Counter = 9
+[*] Setting: WPAD and AutoConfigure script
+[*] AutoConfigURL: http://anotherproxyserver/pac.pac
+[*] Post module execution completed
+</code></pre>
+
+<p>&ldquo;Awesome but you promised setting the proxy settings&rdquo;, well right now all I can give you is a cloner ;-)</p>
+
+<p>Enter clone_proxy_settings module:</p>
+
+<p><img src="/images/postimages/201210_proxy_4.png" alt="" /></p>
+
+<p>And thats it. Still working on an actual &ldquo;set_proxy&rdquo; module, but this should do for now, and a lot less to type.</p>
+
+<p>As of this post both are currently pull requests:</p>
+
+<ul>
+<li><a href="https://github.com/rapid7/metasploit-framework/pull/942">https://github.com/rapid7/metasploit-framework/pull/942</a></li>
+<li><a href="https://github.com/rapid7/metasploit-framework/pull/943">https://github.com/rapid7/metasploit-framework/pull/943</a></li>
+</ul>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

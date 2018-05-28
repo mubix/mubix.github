@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Minimum Password Length of 15 or more via GPO &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2011/2011-07-26-minimum-password-length-of-15-or-more-via-gpo/">Minimum Password Length of 15 or more via GPO</a></h1>
+            <span class="post-date">Jul 26, 2011 </span>
+            <div class="post-content">
+                <p>Also known as &ldquo;How to practice what we preach&rdquo;. I don&rsquo;t know how long I&rsquo;ve been telling clients that they need to have a minimum password length of 15 characters to make it so there is no chance LM will be stored (and a cursory bonus that their password won&rsquo;t be close to their original). But I&rsquo;ve never tried setting it myself. Well, a client called me out. You can&rsquo;t! (well at least not through the UI )</p>
+
+<p><strong>TL;DR</strong> _You can edit the GptTmpl.inf file in</p>
+
+<pre><code>\\$DOMAIN\SYSVOL\$DOMAIN\Policies$\PolicyGUID\Machine\Microsoft\Windows NT\SecEdit
+</code></pre>
+
+<p>and set &ldquo;MinimumPasswordLength&rdquo; to whatever you want it to be. (You need to replace any part of the path starting with a $ with the value applicable to your domain and group policy object_)</p>
+
+<p>I tested this out myself, and sure enough, once you get up to 14 on the iterator, it jumps back down to 0:</p>
+
+<p><img src="/images/postimages/201107_gpo_1.png" alt="" /></p>
+
+<p>After some googling I came up pretty empty handed (hence the highly SEO&rsquo;d title of this post). I asked the question on Twitter and got a bunch of different answers, but <a href="http://twitter.com/RizzyRong">@RizzyRong</a>&rsquo;s was the first one in that I could try out: (THANK YOU to everyone who shot me answers, I really appreciate it, and to those who shared my curiosity I hope this helps you out)</p>
+
+<p><img src="/images/postimages/201107_gpo_2.png" alt="" /></p>
+
+<p>ADMod is a <a href="http://www.joeware.net/freetools/">Joeware</a> tool. Any windows Sys Admin should at the very least know of these tools as Penetration Testers use them to great effect:</p>
+
+<p><img src="/images/postimages/201107_gpo_3.png" alt="" /></p>
+
+<p>RizzyRong&rsquo;s instructions are straight forward and so was the tool:</p>
+
+<p><img src="/images/postimages/201107_gpo_4.png" alt="" /></p>
+
+<p>For copy paste purposes thats: admod -default minpwdlength::15</p>
+
+<p>w00t, done right? Lets check:</p>
+
+<p><img src="/images/postimages/201107_gpo_5.png" alt="" /></p>
+
+<p>We have a winner! Testing out a user:</p>
+
+<p><img src="/images/postimages/201107_gpo_6.png" alt="" /></p>
+
+<p>14 characters…</p>
+
+<p><img src="/images/postimages/201107_gpo_7.png" alt="" /></p>
+
+<p>Cool. This applied to the Default Domain Policy. That&rsquo;s a problem if I want to move this setting around or I don&rsquo;t actually apply the default policy to any objects. I also ran into some file permission errors when trying to set other GPO settings after I ran ADMod: (If anyone knows a better way to operate ADMod to this end please leave a comment below)</p>
+
+<p><img src="/images/postimages/201107_gpo_8.png" alt="" /></p>
+
+<p>Alright, well need definitely need a cleaner and more repeatable / flexible solution. After fixing the file permission issues I noticed that in that file was my setting. I wonder if I can set this manually and have it actually stick. Lets try, we need the GUID, so lets make a policy that we can apply anywhere we want and as many times we want with JUST that minimum password length setting.</p>
+
+<p><img src="/images/postimages/201107_gpo_9.png" alt="" /></p>
+
+<p>GUID acquired. To make Microsoft do most of the work we need to set the minimum password length setting in that policy to 14 or whatever, just so that we don&rsquo;t have to remember file and folder structure for the GPO. Next we go to the location where the policy setting is stored:</p>
+
+<pre><code>\\$DOMAIN\SYSVOL\$DOMAIN\Policies\$PolicyGUID\Machine\Microsoft\Windows NT\SecEdit
+</code></pre>
+
+<p>(replacing the 2 $DOMAIN instances with our domain name and $PolicyGUID with the GUID we copied from the policy page. If we set the policy to 14 there should be a line in the GptTmpl.inf file (you can open it with Notepad) that says &lsquo;MinimumPasswordLength = 14&rsquo;, change that to 15 or whatever you wish as so:</p>
+
+<p><img src="/images/postimages/201107_gpo_10.png" alt="" /></p>
+
+<p>We check back or simply refresh our GPO settings:</p>
+
+<p><img src="/images/postimages/201107_gpo_11.png" alt="" /></p>
+
+<p>Sweet, it&rsquo;s there, again, just to be thorough we test and sure enough it works.</p>
+
+<p>A few quick notes: Your users might complain about a few popups:</p>
+
+<p><img src="/images/postimages/201107_gpo_12.png" alt="" /></p>
+
+<p>Not much you can do about this one, and I doubt your users will care, but this next one might get you a few support calls:</p>
+
+<p><img src="/images/postimages/201107_gpo_13.png" alt="" /></p>
+
+<p>I haven&rsquo;t found a way to make that say anything other than 14 characters (for that matter the 24 previous passwords number is incorrect as well)</p>
+
+<p>If anyone knows how to fix this dialog or disable the previous one I am all ears. Please leave a comment so others can know how as well.</p>
+
+<p><strong>Update</strong> on 2011-07-26 17:10 by Rob Fuller</p>
+
+<p>Jason mentioned that if you don&rsquo;t increment the policy version in</p>
+
+<pre><code>%SystemRoot\SYSVOL\domain\Policies\{PolicyGuid}\GPT.ini
+</code></pre>
+
+<p>then it won&rsquo;t get pushed to the domain.</p>
+
+<p>Thanks Jason!</p>
+
+<p><strong>Update</strong> on 2011-07-26 18:25 by Rob Fuller</p>
+
+<p>&lsquo;cc&rsquo; commented below, but I thought this should be hilighted&hellip;</p>
+
+<p>&ldquo;In a 2K3 domain, the password policy can only be specified in the &ldquo;default domain policy&rdquo; object. Policies defined elsewhere are ignored&rdquo;</p>
+
+<p>Are you F@#$!!@#! serious? Microsoft you suck&hellip;</p>
+
+<p><strong>Update</strong> on 2011-07-26 18:30 by Rob Fuller</p>
+
+<p>after a bit some complaining on twitter, ArchangelAmael came back with: <a href="https://twitter.com/#!/ArchangelAmael/status/95921096762728448">https://twitter.com/#!/ArchangelAmael/status/95921096762728448</a></p>
+
+<p>And points at: <a href="&quot;http://technet.microsoft.com/en-us/library/cc738216(WS.10">http://technet.microsoft.com/en-us/library/cc738216(WS.10).aspx</a>.aspx&rdquo;)</p>
+
+<p>which basically says that you can have it in a separate policy but it needs to supercede the default group policy at the domain level (making it essentially pointless to do so for anything other than ease of administration and beautification of the GPO list) (which is a valid reason for doing so)</p>
+
+<p>if you need to apply policy at the OU level it needs to be in a Windows 2008 functional level domain.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

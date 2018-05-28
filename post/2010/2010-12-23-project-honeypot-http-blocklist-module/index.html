@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Project Honeypot HTTP Blocklist module &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2010/2010-12-23-project-honeypot-http-blocklist-module/">Project Honeypot HTTP Blocklist module</a></h1>
+            <span class="post-date">Dec 23, 2010 </span>
+            <div class="post-content">
+                <p>Most malicious IP lists focus on the client side threat, where servers (hosted or exploited) host client side exploits or evil scripting.</p>
+
+<p>These don&rsquo;t really help the server admins very much. Project Honeypot does an amazing job at keeping detailed information on scanners / harvesters and brute forcers, the likes of which are the daily enemy of said admins. They offer a service called HTTP Block List or &lsquo;HTTP:BL&rsquo;.</p>
+
+<p>Another way this list differs from the rest is it isn&rsquo;t a list you can download. Its a DNS service. Simply put, you submit a query, it gives an (A) record that looks something like &lsquo;127.3.5.1&rsquo;. Disregard the 127, but the rest of the details pertain to different details about the IP you requested. You can read the documentation here: <a href="http://www.projecthoneypot.org/httpbl_api.php">http://www.projecthoneypot.org/httpbl_api.php</a> for an explanation on exactly how it works, or you can read the code of the Metasploit module I wrote for it.</p>
+
+<p>I wrote it in Metasploit for 2 reasons. 1) RangeWalker is awesome code, and allows you to query a list of IPs, a range, or a single IP with ease. 2) All of the other implementations of the API that they have listed are for CMSs (to actively block IPs that come back &lsquo;bad&rsquo;).</p>
+
+<p>This will mostly come in useful for incident responders who are trying to get a bead on a bunch of hosts, or for web admins who want to pull the code out for an active blocking system of their own.</p>
+
+<p>Here it is in action:</p>
+
+<pre><code>msf auxiliary(httpbl_lookup) &gt; info
+
+       Name: Http:BL lookup
+    Version: xxxx
+    License: Metasploit Framework License (BSD)
+       Rank: Normal
+
+Provided by:
+  Rob Fuller 
+
+Basic options:
+  Name     Current Setting  Required  Description
+  ----     ---------------  --------  -----------
+  APIKEY   xxxxxxxxxxxx     yes       Your HTTP:BL api key
+  RHOSTS   88.229.108.0/24  yes       The target address range or CIDR identifier
+  THREADS  1                yes       The number of concurrent threads
+
+Description:
+  This module can be used to enumerate information about a IP 
+  addresses from Project HoneyPot's HTTP Block List.
+
+References:
+  link (&lt;a href=&quot;http://www.projecthoneypot.org/httpbl_api.php&quot;&gt;http://www.projecthoneypot.org/httpbl_api.php&lt;/a&gt;)
+
+msf auxiliary(httpbl_lookup) &gt; run
+
+[*] 
+[*] 88.229.108.0 resloves to 127.51.8.1 which means: Suspicious
+[*] =&gt; it was last seen 51 day ago and has a threat score of 8 or 'less than 100 spam messages'
+[*] =&gt; more info here: &lt;a href=&quot;http://www.projecthoneypot.org/ip_88.229.108.0&quot;&gt;http://www.projecthoneypot.org/ip_88.229.108.0&lt;/a&gt;
+
+[*] 
+[*] 88.229.108.1 resloves to 127.29.8.1 which means: Suspicious
+[*] =&gt; it was last seen 29 day ago and has a threat score of 8 or 'less than 100 spam messages'
+[*] =&gt; more info here: &lt;a href=&quot;http://www.projecthoneypot.org/ip_88.229.108.1&quot;&gt;http://www.projecthoneypot.org/ip_88.229.108.1&lt;/a&gt;
+
+[*] 
+[*] 88.229.108.2 resloves to 127.29.8.1 which means: Suspicious
+[*] =&gt; it was last seen 29 day ago and has a threat score of 8 or 'less than 100 spam messages'
+[*] =&gt; more info here: &lt;a href=&quot;http://www.projecthoneypot.org/ip_88.229.108.2&quot;&gt;http://www.projecthoneypot.org/ip_88.229.108.2&lt;/a&gt;
+
+[*] 
+[*] 88.229.108.254 resloves to 127.51.8.1 which means: Suspicious
+[*] =&gt; it was last seen 51 day ago and has a threat score of 8 or 'less than 100 spam messages'
+[*] =&gt; more info here: &lt;a href=&quot;http://www.projecthoneypot.org/ip_88.229.108.254&quot;&gt;http://www.projecthoneypot.org/ip_88.229.108.254&lt;/a&gt;
+
+[*] 
+[*] 88.229.108.255 resloves to 127.29.8.1 which means: Suspicious
+[*] =&gt; it was last seen 29 day ago and has a threat score of 8 or 'less than 100 spam messages'
+[*] =&gt; more info here: &lt;a href=&quot;http://www.projecthoneypot.org/ip_88.229.108.255&quot;&gt;http://www.projecthoneypot.org/ip_88.229.108.255&lt;/a&gt;
+
+[*] Scanned 256 of 256 hosts (100% complete)
+[*] Auxiliary module execution completed
+msf auxiliary(httpbl_lookup) &gt; 
+</code></pre>
+
+<p>You can obtain the module here: <a href="https://github.com/mubix/stuff/blob/master/metasploit/httpbl_lookup.rb">https://github.com/mubix/stuff/blob/master/metasploit/httpbl_lookup.rb</a></p>
+
+<p>Enjoy!</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

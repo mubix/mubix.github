@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> GPU Cracking Complaints &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2011/2011-07-13-gpu-cracking-complaints/">GPU Cracking Complaints</a></h1>
+            <span class="post-date">Jul 13, 2011 </span>
+            <div class="post-content">
+                <p>I&rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)</p>
+
+<p><strong>DISCLAIMER</strong>: I have very little crypto knowledge and even less GPU programming knowledge so I only get to complain as a user and not as someone who can actually fix the things I complain about.</p>
+
+<ol>
+<li>Lack of LM support. I get that this is a complicated hashing algorithm, but the fact that 90% of companies still have it turned on and cracking any more than a few with Rainbow Tables is impractical unless you have a SSD raid with a GPU based cracker ($$$$$).</li>
+<li>Lack of dictionary support. Right now the best way to crack passwords is with oclhashcat-plus since it is GPU based and supports rules, multiple hashes (hash files) and directories of hashes. However, it has a very limited list of hashes it supports (No LM, SHA1, etc..) and it doesn&rsquo;t support dump formats, so you need to strip the file so it just has the hash (this is more of just a bother than a gripe).
+
+<ul>
+<li>I say &lsquo;The best way&rsquo; because anything that has a key space larger than upper-alpha-numeric-32symbol (LM) is just a bit nuts to try and brute force out of the gate unless your goal is to &lsquo;crack them all&rsquo;. Me as a pentester, I want to get as many as possible, as quick as possible, so this means dictionaries are the smarter option. (Maybe later I can do the straight brute if I really need / want to)</li>
+</ul></li>
+<li>Lack of POT. For some reason every cracking app on the planet, save for JtR, thinks it&rsquo;s a good idea to crack the same hash multiple times. I wish even Cain would keep a secret store of all the hashes it&rsquo;s cracked stripped of anything unimportant (need the salt (username) sometimes) and store it in the background so that if it comes across the same hash it can say &ldquo;oo oo I know this one&rdquo; and auto populate it even before I start cracking. Why more cracking software writers don&rsquo;t do this I&rsquo;ll never know (would make their software seem a ton faster the more it is used)</li>
+<li>Lack of formatting documentation (#ripshairout). Rare is the time I&rsquo;ve found a cracking program that shows you how it wants to consume a hash. JtR is the most egregious offenders of this but they all do it. One would think people would try and make it easy for people to use their software (give examples of what shit is supposed to look like at least if you don&rsquo;t support standard formats)</li>
+</ol>
+
+<p>Those are my biggest gripes that the moment. If I am wrong on any account, let me know, I would love to know of a better way to do things.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

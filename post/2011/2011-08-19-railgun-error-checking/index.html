@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Railgun Error Checking &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2011/2011-08-19-railgun-error-checking/">Railgun Error Checking</a></h1>
+            <span class="post-date">Aug 19, 2011 </span>
+            <div class="post-content">
+                <p>One important thing to note about Railgun is that you are querying the API and just as if you were using C++ the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:</p>
+
+<p>For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd. If a user has installed Windows 2000&rsquo;s IPv6 package it&rsquo;s there, if not, it&rsquo;s not. So if you run up on a WinNT box or a Win2k box that doesn&rsquo;t have an updater stack this function isn&rsquo;t going to work for you.</p>
+
+<p>(Just as a side note, this is not dependant on the fuction being defined in Railgun already)</p>
+
+<p>getaddrinfo is in ws2_32.dll (WinSock), so we get a handle from that DLL first:</p>
+
+<pre><code class="language-ruby">modhandle = client.railgun.kernel32.GetModuleHandleA('ws2_32.dll')
+</code></pre>
+
+<p>If that returns a error in the form of a Ruby hash with &ldquo;GetLastError&rdquo; being &lsquo;127&rsquo; that means that ws2_32.dll is either not there in the process. You will need to get it loaded into the process by calling client.railgun.ws2_32 or whatever DLL you are going for. (If it is not definied in Railgun this will fail and you&rsquo;ll have to add the dll like I&rsquo;ve talked about in previous posts)</p>
+
+<p>So it&rsquo;s pretty eash to handle that. If modhandle[&ldquo;return&rdquo;] == 0 something went wrong and we need to handle it, else we got a handle address and we can continue.</p>
+
+<p>Next up is GetProcAddress:</p>
+
+<pre><code class="language-ruby">procaddr = client.railgun.kernel32.GetProcAddress(modhandle['return'], 'getaddrinfo')
+</code></pre>
+
+<p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt&rsquo; exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
+
+<p>Easy stuff, doing this on any of the Railgun scripts/post modules you have will greatly increase both the reliability and the user&rsquo;s ability to know why it didn&rsquo;t work.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

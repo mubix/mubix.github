@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> fxsst.dll persistence: the evil fax machine &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2011/2011-06-27-fxsstdll-persistence-the-evil-fax-machine/">fxsst.dll persistence: the evil fax machine</a></h1>
+            <span class="post-date">Jun 27, 2011 </span>
+            <div class="post-content">
+                <p>Nick Harbour wrote a <a href="https://blog.mandiant.com/archives/1786">post on Mandiants blog</a> about some Malware that was using a dll called &lsquo;fxsst.dll&rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:</p>
+
+<ul>
+<li>The DLL gets loaded at login by Explorer</li>
+<li>The DLL exists in System32 but is looked for in Windows first</li>
+<li>Explorer doesn&rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)</li>
+</ul>
+
+<p>I thought&hellip; no it couldn&rsquo;t be that simple&hellip; lets see:</p>
+
+<p><img src="/images/postimages/201106_fxsst_1.png" alt="" /></p>
+
+<p>We have our victim in a session and are going to make a DLL that points back to our reverse_https multi handler over port 443</p>
+
+<p><img src="/images/postimages/201106_fxsst_2.png" alt="" /></p>
+
+<p>Ok, we&rsquo;ve got our super evil fxsst.dll now lets put it in place.</p>
+
+<p><img src="/images/postimages/201106_fxsst_3.png" alt="" /></p>
+
+<p>Lets test it out just to make sure it works. I will use the PID of explorer.exe (cause thats where it&rsquo;s going to be normally) and I&rsquo;m going to use the method I talked about in the <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter">Remote DLL Injection post</a>.</p>
+
+<p><img src="/images/postimages/201106_fxsst_4.png" alt="" /></p>
+
+<p>Woot! Ok, so the DLL works, but does it load when a user logs in&hellip; (drop out of our 2 sessions first)</p>
+
+<p><img src="/images/postimages/201106_fxsst_5.png" alt="" /></p>
+
+<p>Thats me logging in 2 times because I couldn&rsquo;t believe that it worked. System was fine, and I had a shell. These tests were performed on XP. On Win7 x64 it make the systems freeze up. Right now the DLL payload generation in Metasploit for 64bit systems isn&rsquo;t setup. So, stay away from doing this on x64 bit systems at least with the Metasploit DLL, since it&rsquo;s run at login so you&rsquo;ll have to use psexec or another session to actually remove the file while everyone is logged out. TEST PRIOR TO USE as always.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

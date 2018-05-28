@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Maltego 2 and beyond - Part 1 &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2008/2008-09-08-maltego-2-and-beyond-part-1/">Maltego 2 and beyond - Part 1</a></h1>
+            <span class="post-date">Sep 8, 2008 </span>
+            <div class="post-content">
+                
+
+<p>First lets outline whats to come:</p>
+
+<h2 id="table-of-contents">Table of Contents:</h2>
+
+<ul>
+<li><p>Part 1 - Introduction</p></li>
+
+<li><p><a href="/blog/2008/09/26/maltego-2-and-beyond-part-2/">Part 2 - Entities and Transforms</a></p></li>
+
+<li><p><a href="/blog/2009/01/13/maltego-2-and-beyond-part-3/">Part 3 - The Human Factor</a></p></li>
+
+<li><p>Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)</p></li>
+
+<li><p>Part 5 - Hacks, Tips, and Tricks</p></li>
+</ul>
+
+<p><em>**EDIT: This and the following posts are also show notes for the **</em><a href="http://www.hak5.org/episodes/episode-401-wi-fi-pineapples"><em><strong>Season 4 premiere</strong></em></a><em>** of **</em><a href="http://www.hak5.org/"><em><strong>Hak5</strong></em></a></p>
+
+<p>So Maltego 2 has been released and all I have to show for it are these images stolen from <a href="http://www.paterva.com/maltego/screenshots/">paterva.com</a></p>
+
+<p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_ss1.serendipityThumb.png)</code> <img src="/images/postimages/404.gif" alt="" /></p>
+
+<p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_ss2.serendipityThumb.png)</code> <img src="/images/postimages/404.gif" alt="" /></p>
+
+<p>and a bit of an explination also stolen from their site:</p>
+
+<p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_whatis.serendipityThumb.png)</code> <img src="/images/postimages/404.gif" alt="" /></p>
+
+<p>But you aren’t here for what you can find on their site. You are here to find out why Maltego is fun, useful, and something you might want to recommend your boss/secretary/parents to buy.</p>
+
+<p>Maltego is hard define because of it’s open nature. It is designed to be whatever that information gatherer wants it to be. But before we go into Maltego’s super powers, lets define the differences between it’s two versions, Full and Community editions.</p>
+
+<p>Full is just as it implies. Unfettered. You can make it fly. But it’s 400 bucks a year per client. (Or your organization can talk straight to Paterva about their server/client platform)</p>
+
+<p>Community Edition is free, but you are locked down quite a bit. Community Edition is bundled with <a href="http://www.remote-exploit.org/backtrack.html">Back|Track 3</a> which is don’t by the awesome guys over at <a href="http://www.offensive-security.com/">Offensive Security</a>. Here are the nags:</p>
+
+<ul>
+<li><p> A 15 second nag screen</p></li>
+
+<li><p>Save and Export has been disabled</p></li>
+
+<li><p>Limited zoom levels</p></li>
+
+<li><p>Can only run transforms on a single entity at a time</p></li>
+
+<li><p>Cannot copy and paste text from detailed view</p></li>
+
+<li><p>Transforms limited to 75 per day</p></li>
+
+<li><p>Throttled client to TAS communication</p></li>
+</ul>
+
+<p>However, if you do have one full version client, you can open saved investigations (mtg files) with it and manipulate it all you want. </p>
+
+<p>So that is just one of my tricks and now that we have a baseline down (kinda like getting done with all of your base classes in college), in the following segments of this post I will be showing of some of the electrolyte driven goodness of Maltego and some of the hacks/tricks that will make you look wonder just what you can’t do with Maltego.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

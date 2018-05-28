@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Presence, Persistence, and Pivoting &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2012/2012-06-29-presence-persistence-and-pivoting/">Presence, Persistence, and Pivoting</a></h1>
+            <span class="post-date">Jun 29, 2012 </span>
+            <div class="post-content">
+                <p>Everyone does things differently, and explaining what goes through an attackers head when they get a shell is virtually impossible and even more so to generalize into a methodology, but I’ve tried to do that with the “3 ‘P’s of Post Exploitation” and they are in a certain order for a reason but certainly up to circumstance to what order is best.</p>
+
+<p>The first P is <strong>Presence</strong>. It is first because the attacker needs to get a sense of what he/she has got before they move on. It plays a crucial part in the other two ‘P’s, making them much stealthier or easier. Many times I’ve seen people jump from box to box and totally miss that what they were looking for was on the first one. So “Presence” is all about discovering what you (the attacker) has already. This has many levels and the order of which the attacker checks them and how is arbitrary as well, but they should have at the very least a check list of categories to check on. Here are some to think about:</p>
+
+<p><strong>File System:</strong><br />
+Knowing “where” to look is tough but in each section below we’ll go into known good places to check and ways to search for files and folders with interesting names and extensions</p>
+
+<p><strong>OS:</strong><br />
+Proxy settings, Group Policy settings, login scripts, MOTD, User lists (net user and /etc/passwd). Knowing how the system and attacker has compromised is a crucial piece to understanding how it communicates and works as a piece to the network.</p>
+
+<p><strong>RAM:</strong><br />
+Mostly known for pulling hashes and credentials out of it, there are a lot of other interesting things that reside solely in memory</p>
+
+<p><strong>Media:</strong><br />
+CDs, DVDs, NFS mounts, SMB mounts, USB sticks. These are often bypassed and forgotten during an attack but can hold the keys to the kingdom</p>
+
+<p><strong>Network:</strong><br />
+Routes, ARP entries, netstat are pretty common to check, but broadcast messages, listeners, and IPv6 are less so.</p>
+
+<p><strong>Permissions and Credentials:</strong><br />
+This is the obvious one but there is usually a mountain of data as even TinyCore linux has hundreds of files, each with their own permissions. This category extends past the borders of the others but important to single out as a separate step.<br />
+Persistence is achieved at varying levels depending on what the attacker is trying to survive and what the attacker is willing to give up on the stealth side. Staying in memory pretty much kills the attackers chance of surviving a reboot for instance. Tactics to survive a rebuild or revert are also very different. Persistence can also come in the form of simple authentication, if the attacker has a password and it nets him/her code execution or access to the data they are after then that’s all they need. Special focus should be applied to the information gathering section of penetration tests or red team engagements in regards to places that require authentication.</p>
+
+<p><strong>Pivoting</strong> simple means extending the attackers current access, and can mean anything from connecting to a remote NFS mount to the attacker PSEXEC-ing their Meterpreter payload onto another box that they have administrative access to. This is the last stage because concentration on the previous two is hard to do in the adrenaline high of initial access.</p>
+
+<p>Honorable Mention (the mysterious 4th “P”) <strong>Privilege Escalation</strong> is not part of the Trio because ( then there would be 4 and I wouldn’t know what to call it) while it’s a regular step performed by attackers, it’s something that usually gets too much emphasis. <em>You do not always need Domain Admin access to access the “crown jewels”</em> .These highly privileged accounts should be assumed to be extremely monitored and coveted. (a.k.a. adding a new user to the Domain Admins group is like lighting your hair on fire and running in the front door of the targets office building screeming “h4x!!”)</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

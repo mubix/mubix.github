@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 29 Jan 2014 18:07:08 -0500</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/dig/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/dig/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,186 @@
       <pubDate>Wed, 29 Jan 2014 18:07:08 -0500</pubDate>
       
       <guid>https://malicious.link/post/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/</guid>
-      <description>Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&amp;rsquo;t support the 0 you can simply use the same number parallel uses ala:
- cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.</description>
+      <description>&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;Quick update&lt;/strong&gt;: As &lt;a href=&#34;http://twitter.com/mikedamm&#34;&gt;@MikeDamm&lt;/a&gt; &lt;a href=&#34;http://twitter.com/mikedamm/status/428725199068864512&#34;&gt;points out&lt;/a&gt;, xargs has a &lt;code&gt;-P&lt;/code&gt; option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use &lt;code&gt;-P 0&lt;/code&gt; to do the same thing as &lt;code&gt;-j0&lt;/code&gt; with parallel, but if your version doesn&amp;rsquo;t support the &lt;code&gt;0&lt;/code&gt; you can simply use the same number parallel uses ala:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This results in roughly the same completion time as it&amp;rsquo;s parallel counterpart. Thanks @MikeDamm!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)&lt;/p&gt;
+
+&lt;p&gt;Here is what I do:&lt;/p&gt;
+
+&lt;p&gt;First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at &lt;a href=&#34;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&#34;&gt;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&lt;/a&gt; (with a few minor tweaks). If you haven&amp;rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, xargs is great but does one thing at a time and can be quite slow if your subdomains list is large. With the use of the amazing tool GNU parallel you can get done in a matter of seconds, well, that or knock over your home router.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cat subdomains.txt | parallel -k -j0 dig +noall {}.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)&lt;/p&gt;
+
+&lt;p&gt;with an output something list this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
+Raising ulimit -n or /etc/security/limits.conf may help.
+parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
+mail.microsoft.com.	2369	IN	A	131.107.125.5
+www.microsoft.com.	0	IN	CNAME	toggle.www.ms.akadns.net.
+toggle.www.ms.akadns.net. 0	IN	CNAME	g.www.ms.akadns.net.
+g.www.ms.akadns.net.	0	IN	CNAME	lb1.www.ms.akadns.net.
+lb1.www.ms.akadns.net.	263	IN	A	64.4.11.42
+m.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
+origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
+ftp.microsoft.com.	0	IN	CNAME	ftp.microsoft.akadns.net.
+ftp.microsoft.akadns.net. 259	IN	A	64.4.17.176
+mobile.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
+origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
+smtp.microsoft.com.	3600	IN	A	131.107.115.215
+smtp.microsoft.com.	3600	IN	A	131.107.115.214
+smtp.microsoft.com.	3600	IN	A	205.248.106.64
+smtp.microsoft.com.	3600	IN	A	205.248.106.30
+smtp.microsoft.com.	3600	IN	A	205.248.106.32
+smtp.microsoft.com.	3600	IN	A	131.107.115.212
+search.microsoft.com.	0	IN	CNAME	search.microsoft.akadns.net.
+search.microsoft.akadns.net. 0	IN	CNAME	search.msn.com.edgesuite.net.
+search.msn.com.edgesuite.net. 0	IN	CNAME	a134.g.akamai.net.
+a134.g.akamai.net.	19	IN	A	209.107.220.27
+a134.g.akamai.net.	19	IN	A	209.107.220.35
+dev.microsoft.com.	0	IN	CNAME	msdn.microsoft.com.
+msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
+msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
+img.microsoft.com.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
+i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
+a1475.g.akamai.net.	20	IN	A	165.254.158.48
+a1475.g.akamai.net.	20	IN	A	165.254.158.9
+news.microsoft.com.	0	IN	CNAME	msnews.microsoft.com.
+msnews.microsoft.com.	3600	IN	A	207.46.248.16
+mail2.microsoft.com.	3600	IN	A	131.107.115.215
+beta.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
+connect.microsoft.akadns.net. 300 IN	A	65.52.103.84
+support.microsoft.com.	0	IN	CNAME	mso-geo.microsoft.akadns.net.
+mso-geo.microsoft.akadns.net. 0	IN	CNAME	support.microsoft.akadns.net.
+support.microsoft.akadns.net. 175 IN	A	157.56.56.139
+my.microsoft.com.	3600	IN	A	134.170.255.29
+help.microsoft.com.	0	IN	CNAME	help.msn.com.
+mail3.microsoft.com.	3600	IN	A	131.107.115.214
+download.microsoft.com.	0	IN	CNAME	download.microsoft.com.nsatc.net.
+download.microsoft.com.nsatc.net. 0 IN	CNAME	main.dl.ms.akadns.net.
+main.dl.ms.akadns.net.	0	IN	CNAME	download.microsoft.com.edgesuite.net.
+download.microsoft.com.edgesuite.net. 0	IN CNAME a954.dscms.akamai.net.
+a954.dscms.akamai.net.	0	IN	CNAME	a954.dscms.akamai.net.0.1.cn.akamaitech.net.
+a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.184
+a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.168
+shop.microsoft.com.	3600	IN	A	64.4.11.37
+shop.microsoft.com.	3600	IN	A	65.55.58.201
+games.microsoft.com.	3600	IN	A	207.46.166.10
+business.microsoft.com.	3600	IN	A	65.55.57.98
+ws.microsoft.com.	0	IN	CNAME	ws.microsoft.com.nsatc.net.
+gateway.microsoft.com.	3600	IN	A	131.107.16.142
+gateway.microsoft.com.	3600	IN	A	131.107.16.143
+members.microsoft.com.	0	IN	CNAME	members.microsoft.akadns.net.
+members.microsoft.akadns.net. 219 IN	A	65.55.57.28
+c.microsoft.com.	0	IN	CNAME	c.microsoft.akadns.net.
+c.microsoft.akadns.net.	215	IN	A	65.55.58.199
+g.microsoft.com.	0	IN	CNAME	g.msn.com.
+g.msn.com.		0	IN	CNAME	g.msn.com.nsatc.net.
+g.msn.com.nsatc.net.	142	IN	A	131.253.34.154
+mail4.microsoft.com.	3600	IN	A	205.248.106.64
+mail1.microsoft.com.	3600	IN	A	131.107.115.212
+apps.microsoft.com.	0	IN	CNAME	apps.windows.akadns.net.
+apps.windows.akadns.net. 0	IN	CNAME	services.windows.akadns.net.
+services.windows.akadns.net. 0	IN	CNAME	services-perf.windows.akadns.net.
+services-perf.windows.akadns.net. 46 IN	A	134.170.30.204
+email.microsoft.com.	1989	IN	A	157.55.150.73
+i.microsoft.com.	0	IN	CNAME	i.toggle.www.ms.akadns.net.
+i.toggle.www.ms.akadns.net. 0	IN	CNAME	i.g.www.ms.akadns.net.
+i.g.www.ms.akadns.net.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
+i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
+a1475.g.akamai.net.	8	IN	A	23.62.111.114
+a1475.g.akamai.net.	8	IN	A	23.62.111.104
+s.microsoft.com.	0	IN	CNAME	reroute.microsoft.com.
+reroute.microsoft.com.	3600	IN	A	64.4.11.37
+reroute.microsoft.com.	3600	IN	A	65.55.58.201
+community.microsoft.com. 0	IN	CNAME	communities.microsoft.com.
+communities.microsoft.com. 3600	IN	A	64.4.11.37
+communities.microsoft.com. 3600	IN	A	65.55.58.201
+connect.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
+connect.microsoft.akadns.net. 152 IN	A	65.52.103.84
+rss.microsoft.com.	796	IN	A	65.55.58.201
+rss.microsoft.com.	796	IN	A	64.4.11.37
+home.microsoft.com.	0	IN	CNAME	redir.blu.cb3.glbdns.microsoft.com.
+redir.blu.cb3.glbdns.microsoft.com. 116	IN A	65.55.206.229
+jp.microsoft.com.	3600	IN	A	65.55.58.201
+jp.microsoft.com.	3600	IN	A	64.4.11.37
+labs.microsoft.com.	3600	IN	A	64.4.11.37
+labs.microsoft.com.	3600	IN	A	65.55.58.201
+exchange.microsoft.com.	2120	IN	A	65.55.31.35
+marketing.microsoft.com. 3600	IN	A	207.46.242.110
+mac.microsoft.com.	3600	IN	A	64.4.11.37
+mac.microsoft.com.	3600	IN	A	65.55.58.201
+feeds.microsoft.com.	3600	IN	A	65.55.57.98
+partners.microsoft.com.	0	IN	CNAME	pmc.partners.microsoft.akadns.net.
+pmc.partners.microsoft.akadns.net. 300 IN A	131.107.119.14
+feed.microsoft.com.	0	IN	CNAME	feed.trafficmanager.net.
+feed.trafficmanager.net. 0	IN	CNAME	feedna.cloudapp.net.
+feedna.cloudapp.net.	10	IN	A	65.52.9.172
+partner.microsoft.com.	0	IN	CNAME	portal.partners.microsoft.akadns.net.
+portal.partners.microsoft.akadns.net. 300 IN A	131.107.119.163
+cs.microsoft.com.	0	IN	CNAME	wedcs.trafficmanager.net.
+wedcs.trafficmanager.net. 0	IN	CNAME	wedcseus.cloudapp.net.
+wedcseus.cloudapp.net.	10	IN	A	137.116.48.250
+forums.microsoft.com.	0	IN	CNAME	forums.microsoft.akadns.net.
+forums.microsoft.akadns.net. 600 IN	A	65.52.103.99
+meet.microsoft.com.	3600	IN	A	131.107.1.71
+e.microsoft.com.	3600	IN	A	191.234.1.50
+autodiscover.microsoft.com. 2358 IN	A	131.107.125.5
+im.microsoft.com.	3600	IN	A	131.107.1.75
+sip.microsoft.com.	2228	IN	A	65.55.30.130
+me.microsoft.com.	0	IN	CNAME	edm.cloudapp.net.
+dig: &#39;m..microsoft.com&#39; is not a legal name (empty label)
+billing.microsoft.com.	0	IN	CNAME	paymenthubprod.trafficmanager.net.
+paymenthubprod.trafficmanager.net. 0 IN	CNAME	paymenthubuxprod1.cloudapp.net.
+paymenthubuxprod1.cloudapp.net.	10 IN	A	168.62.198.20
+profile.microsoft.com.	0	IN	CNAME	profile.microsoft.akadns.net.
+profile.microsoft.akadns.net. 335 IN	A	64.4.11.47
+research.microsoft.com.	806	IN	A	131.107.65.14
+sharepoint.microsoft.com. 3463	IN	A	64.4.6.100
+sharepoint.microsoft.com. 3463	IN	A	65.55.39.10
+appdev.microsoft.com.	0	IN	CNAME	appdev.windows.akadns.net.
+appdev.windows.akadns.net. 131	IN	A	134.170.30.200
+newsletters.microsoft.com. 3150	IN	A	207.46.248.35
+advertising.microsoft.com. 0	IN	CNAME	advertising.microsoft.com.nsatc.net.
+advertising.microsoft.com.nsatc.net. 245 IN A	65.52.100.46
+catalog.microsoft.com.	0	IN	CNAME	genuine.microsoft.akadns.net.
+genuine.microsoft.akadns.net. 300 IN	A	65.55.58.177
+social.microsoft.com.	0	IN	CNAME	lb.social.ms.akadns.net.
+lb.social.ms.akadns.net. 54	IN	A	65.52.103.78
+events.microsoft.com.	1776	IN	A	64.4.11.31
+events.microsoft.com.	1776	IN	A	65.55.58.192
+ajax.microsoft.com.	0	IN	CNAME	mscomajax.vo.msecnd.net.
+mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.164
+mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.12
+developer.microsoft.com. 0	IN	CNAME	msdn.microsoft.com.
+msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
+msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
+bbs.microsoft.com.	0	IN	CNAME	transfer.microsoft.com.
+transfer.microsoft.com.	3600	IN	A	64.4.10.152
+backoffice.microsoft.com. 3600	IN	A	64.4.11.37
+backoffice.microsoft.com. 3600	IN	A	65.55.58.201
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
   </channel>

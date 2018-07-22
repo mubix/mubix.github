@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 24 Oct 2012 15:03:58 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/jtr/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/jtr/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,11 +17,55 @@
       <pubDate>Wed, 24 Oct 2012 15:03:58 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-24-lm2ntlm-with-john-the-ripper/</guid>
-      <description>Since I didn&amp;rsquo;t see any documentation bringing how to take an LM hash that you&amp;rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.
-So there is this: https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp
-And this: https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb
-And this: http://www.securityfocus.com/tools/6696
-And the edited version of the above: http://atenlabs.</description>
+      <description>&lt;p&gt;Since I didn&amp;rsquo;t see any documentation bringing how to take an LM hash that you&amp;rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.&lt;/p&gt;
+
+&lt;p&gt;So there is this: &lt;a href=&#34;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&#34;&gt;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And this: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And this: &lt;a href=&#34;http://www.securityfocus.com/tools/6696&#34;&gt;http://www.securityfocus.com/tools/6696&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And the edited version of the above: &lt;a href=&#34;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&#34;&gt;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But Metasploit&amp;rsquo;s is currently &lt;a href=&#34;http://dev.metasploit.com/redmine/issues/7351&#34;&gt;borked&lt;/a&gt;,(&lt;strong&gt;Update: this is now fixed&lt;/strong&gt;) I don&amp;rsquo;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2011/03/29/7&#34;&gt;http://www.openwall.com/lists/john-dev/2011/03/29/7&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And I asked on that same list what had become of it:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/2&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/2&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The result is as follows:&lt;/p&gt;
+
+&lt;p&gt;Given this hash:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&amp;rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;cracked the LM side in 16 seconds. Now you don&amp;rsquo;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
+
+&lt;p&gt;Solar Designer (JtR&amp;rsquo;s main dev) suggested the following path:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A bit hard to read but here are the commands:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
+./john -w=cracked -rules:nt -format=nt pwdump.txt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see (if you squint) that works well. Rich Rumble suggested:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/3&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/3&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;using the loopback as so: &lt;code&gt;./john pwdump.txt -format=nt -loopback=john.pot -rules=nt&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;The loopback been an amazing addition that is as Solar Designer put it &amp;ldquo;not in core JtR, it is a fairly recent addition to jumbo&amp;rdquo;. The loopback allows you to use previously cracked passwords as a dictionary without doing any cut/awk/sed voodoo. The problem with the suggested method for going from LM to NTLM and the loopback option is that it (rightly so) identifies LM hashes by their halves. When it tries to use those halves to crack the NTLM, every with the NT rule-set, it sees each half as separate passwords to try, so it fails.&lt;/p&gt;
+</description>
     </item>
     
   </channel>

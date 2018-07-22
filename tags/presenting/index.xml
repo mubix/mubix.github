@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 02 Oct 2015 07:35:28 -0500</lastBuildDate>
     
-	<atom:link href="https://malicious.link/tags/presenting/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/tags/presenting/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,56 @@
       <pubDate>Fri, 02 Oct 2015 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2015/hiding-desktop-icons-for-presentations-on-osx/</guid>
-      <description>If you found this post via a search, you are probably like me, &amp;ldquo;not great&amp;rdquo; at keeping your desktop clear &amp;ldquo;stuff&amp;rdquo; (you probably have a &amp;lsquo;stuff&amp;rsquo; folder you once put stuff in and forgot about).
-If you are, and you go into a presentation, you probably don&amp;rsquo;t want to have all of your icons visible (and possibly recorded). Hiding your desktop icons on Windows (since 7 I believe) is pretty simple.</description>
+      <description>&lt;p&gt;If you found this post via a search, you are probably like me, &amp;ldquo;not great&amp;rdquo; at keeping your desktop clear &amp;ldquo;stuff&amp;rdquo; (you probably have a &amp;lsquo;stuff&amp;rsquo; folder you once put stuff in and forgot about).&lt;/p&gt;
+
+&lt;p&gt;If you are, and you go into a presentation, you probably don&amp;rsquo;t want to have all of your icons visible (and possibly recorded).  Hiding your desktop icons on Windows (since 7 I believe) is pretty simple.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;src: &lt;a href=&#34;http://www.thewindowsclub.com/desktop-icons-not-showing-windows-7&#34;&gt;http://www.thewindowsclub.com/desktop-icons-not-showing-windows-7&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;On OSX, its not as straight forward. Following a tip I found here: &lt;a href=&#34;http://hints.macworld.com/article.php?story=20100804092806364&#34;&gt;http://hints.macworld.com/article.php?story=20100804092806364&lt;/a&gt; I was able to create a keyboard shortcut to hide, or unshide everything.&lt;/p&gt;
+
+&lt;p&gt;First, open up &amp;ldquo;Automator&amp;rdquo; and create a new document / &amp;ldquo;Service&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then drag and drop &amp;ldquo;Run AppleScript&amp;rdquo; from the Utilities section:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, make sure it says that the service doesn&amp;rsquo;t accept input from any application:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Paste in the following script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;on run {input, parameters}
+ set myAnswer to (do shell script &amp;quot;defaults read com.apple.finder CreateDesktop&amp;quot;) as boolean
+ do shell script &amp;quot;defaults write com.apple.finder CreateDesktop &amp;quot; &amp;amp; ((not myAnswer) as string)
+ do shell script &amp;quot;killall Finder&amp;quot;
+end run
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On the first run, you may get an error stating that the variable doesn&amp;rsquo;t exist or that it couldn&amp;rsquo;t convert it into a boolen. This is because by default this variable doesn&amp;rsquo;t exist for new users. All you have to do to correct this is open a terminal and type:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;defaults write com.apple.finder CreateDesktop true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To set it for the first time:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Back in Automator, re-do the test run of the script:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Save the file and then you can setup up a keyboard shortcut in System Preferences:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hit &lt;strong&gt;Control+Cmd+H&lt;/strong&gt; to your hearts content.&lt;/p&gt;
+</description>
     </item>
     
   </channel>

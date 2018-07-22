@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Sun, 22 May 2016 21:55:12 -0400</lastBuildDate>
     
-	<atom:link href="https://malicious.link/tags/wpad/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/tags/wpad/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,10 +17,50 @@
       <pubDate>Sun, 22 May 2016 21:55:12 -0400</pubDate>
       
       <guid>https://malicious.link/post/2016/wpad-persistence/</guid>
-      <description>Mostly just writing this so I can keep notes.
-Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
-I did this via PowerShell pretty easily on one of the domain controllers like so:
-PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.</description>
+      <description>
+
+&lt;p&gt;Mostly just writing this so I can keep notes.&lt;/p&gt;
+
+&lt;p&gt;Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: &lt;a href=&#34;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&#34;&gt;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I did this via PowerShell pretty easily on one of the domain controllers like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&amp;rsquo;t getting any requests for &lt;code&gt;wpad.dat&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;As they say &amp;ldquo;there are no more original ideas&amp;rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.&lt;/p&gt;
+
+&lt;p&gt;but.. they also made a way to disable it - &lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&amp;rsquo;s a required service in later Windows server versions).&lt;/p&gt;
+
+&lt;p&gt;I went in search of a registry key to make the modification because it&amp;rsquo;s much easier to hit the &lt;code&gt;RemoteRegistry&lt;/code&gt; service on all the DCs than it is to run that command. I quickly found this blog post - &lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[22/May/2016:21:56:28 EDT] &amp;quot;GET /wpad.dat HTTP/1.1&amp;quot; 200 58
+- -&amp;gt; /wpad.dat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, you may be asking, &amp;ldquo;How is setting their proxy server any kind of real persistence?&amp;rdquo;, I implore you to go check out projects like &lt;a href=&#34;https://mitmproxy.org/&#34;&gt;mitmproxy&lt;/a&gt;, &lt;a href=&#34;https://github.com/byt3bl33d3r/MITMf&#34;&gt;mitmf&lt;/a&gt; and &lt;a href=&#34;https://github.com/secretsquirrel/BDFProxy&#34;&gt;BDFProxy&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&amp;rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&amp;rsquo;t disable it for the SYSTEM or other local accounts, so it&amp;rsquo;s harder than just &amp;ldquo;flip on this registry setting via GPO&amp;rdquo;)&lt;/p&gt;
+
+&lt;p&gt;Oh and I&amp;rsquo;ll just leave this here: &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;references&#34;&gt;References&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mitmproxy.org/&#34;&gt;mitmproxy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/byt3bl33d3r/MITMf&#34;&gt;mitmf&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/secretsquirrel/BDFProxy&#34;&gt;BDFProxy&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
     </item>
     
   </channel>

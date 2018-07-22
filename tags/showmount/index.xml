@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Mon, 02 Nov 2015 06:33:10 -0500</lastBuildDate>
     
-	<atom:link href="https://malicious.link/tags/showmount/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/tags/showmount/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,9 +17,25 @@
       <pubDate>Mon, 02 Nov 2015 06:33:10 -0500</pubDate>
       
       <guid>https://malicious.link/post/2015/meterpreter-show-mount/</guid>
-      <description>Meterpreter’s STDAPI extension (the one that always gets loaded) has a new command. This doesn’t happen very often so it’s worth noting.
-The new command prints out the currently attached “mounts”. In windows world, that means the normal CD ROM, C drive, etc, but it also means all of the mounted network drives as well.
-This gets very interesting when you happen to find yourself in a VM environment where you can start writing files to the host:</description>
+      <description>&lt;p&gt;Meterpreter’s STDAPI extension (the one that always gets loaded) has a new command. This doesn’t happen very often so it’s worth noting.&lt;/p&gt;
+
+&lt;p&gt;The new command prints out the currently attached “mounts”. In windows world, that means the normal CD ROM, C drive, etc, but it also means all of the mounted network drives as well.&lt;/p&gt;
+
+&lt;p&gt;This gets very interesting when you happen to find yourself in a VM environment where you can start writing files to the host:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; show_mount
+Mounts / Drives
+===============
+Name Type       Size (Total) Size (Free) Mapped to
+---- ----       ------------ ----------- ---------
+A:\ removable      0.00 B      0.00 B
+C:\ fixed         59.90 GiB   28.15 GiB
+D:\ cdrom          0.00 B      0.00 B
+Z:\ remote        64.78 GiB   18.09 GiB  \\vmware-host\Shared Folders\
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I’ll leave the rest up to your imagination for now. But we will come back to this very soon. Huge thanks to &lt;a href=&#34;https://twitter.com/TheColonial&#34;&gt;@TheColonial&lt;/a&gt; - OJ for implementing this much needed option. Merged pull request is here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/6146&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/6146&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

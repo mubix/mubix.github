@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 06 Oct 2012 03:02:45 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/lab/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/lab/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,68 @@
       <pubDate>Sat, 06 Oct 2012 03:02:45 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
-      <description>pfSense is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.
-Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
+
+&lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
+
+&lt;p&gt;First we&amp;rsquo;ll talk about AnalogX&amp;rsquo;s proxy, you can get it here: &lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With the following ports listening:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;HTTP (web browsers) (port 6588)&lt;/li&gt;
+&lt;li&gt;HTTPS (secure web browsers) (port 6588)&lt;/li&gt;
+&lt;li&gt;SOCKS4 (TCP proxying) (port 1080)&lt;/li&gt;
+&lt;li&gt;SOCKS4a (TCP proxying w/ DNS lookups) (port 1080)&lt;/li&gt;
+&lt;li&gt;SOCKS5 (only partial support, no UDP) (port 1080)&lt;/li&gt;
+&lt;li&gt;NNTP (usenet newsgroups) (port 119)&lt;/li&gt;
+&lt;li&gt;POP3 (receiving email) (port 110)&lt;/li&gt;
+&lt;li&gt;SMTP (sending email) (port 25)&lt;/li&gt;
+&lt;li&gt;FTP (file transfers) (port 21)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;So you can test everything to your hearts content that it goes through a proxy, using any proxy type you want basically.&lt;/p&gt;
+
+&lt;p&gt;(I will assume here that you know how to setup your own proxy settings for your OS)&lt;/p&gt;
+
+&lt;p&gt;But the problem being that if your code / application misbehaves it will still get out. You could go to the trouble of fiddling with the Windows firewall if you are running Windows 7 (not sure if XP can box egress, probably can). But I like simple and straight forward solutions.&lt;/p&gt;
+
+&lt;p&gt;PeerBlock can be found here: &lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;http://www.peerblock.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_3.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And is simple to set up as well (next-&amp;gt;next-&amp;gt;finish applies).&lt;/p&gt;
+
+&lt;p&gt;Go into List Manager once you have it installed and &amp;ldquo;Create a List&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
+
+&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&amp;rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
+
+&lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -27,9 +87,114 @@ Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used 
       <pubDate>Sat, 20 Aug 2011 19:14:53 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-08-20-populating-your-virtual-victim-domain/</guid>
-      <description>Update 1: No this doesn&amp;rsquo;t need to be in memory since you control the system but it was a fun challenge
-Update 2: The info from the &amp;lsquo;adduser&amp;rsquo; payload says &amp;lsquo;Create a new user and add them to local administration group&amp;rsquo; - I&amp;rsquo;m guessing since I ran this on a DC is why I didn&amp;rsquo;t notice this but it is something to keep in mind when running this script.
-Update 3: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too.</description>
+      <description>&lt;p&gt;&lt;strong&gt;Update 1&lt;/strong&gt;: No this doesn&amp;rsquo;t need to be in memory since you control the system but it was a fun challenge&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update 2&lt;/strong&gt;: The info from the &amp;lsquo;adduser&amp;rsquo; payload says &amp;lsquo;&lt;em&gt;Create a new user and add them to local administration group&lt;/em&gt;&amp;rsquo; - I&amp;rsquo;m guessing since I ran this on a DC is why I didn&amp;rsquo;t notice this but it is something to keep in mind when running this script.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Update 3&lt;/strong&gt;: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too. I think this is the best solution I&amp;rsquo;ve found to inlude mine: &lt;a href=&#34;http://unlockpowershell.wordpress.com/2010/10/12/creating-random-users-for-a-domain/&#34;&gt;http://unlockpowershell.wordpress.com/2010/10/12/creating-random-users-for-a-domain/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Adding users to a domain that you create for learning, training, or just for testing things out on can be quite tedious. Most of the time I just put a few users to simulate the different &amp;lsquo;levels&amp;rsquo; I need for my testing. However that doesn&amp;rsquo;t really give someone you&amp;rsquo;re training much to think about, i.e. It&amp;rsquo;s really easy to identify the &amp;lsquo;interesting&amp;rsquo; users when there are only a couple to pick from.&lt;/p&gt;
+
+&lt;p&gt;I am certainly not the first one to solve this problem:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.petri.co.il/create_users_for_testing_purposes.htm&#34;&gt;http://www.petri.co.il/create_users_for_testing_purposes.htm&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://blog.commandlinekungfu.com/2010/07/episode-104-fricken-users.html&#34;&gt;http://blog.commandlinekungfu.com/2010/07/episode-104-fricken-users.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/#!/Carlos_Perez/status/71373112494661632&#34;&gt;https://twitter.com/#!/Carlos_Perez/status/71373112494661632&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These work perfectly and are all really easy. The problem for me is that with some the username is too similar and/or the passwords are the same/similar.&lt;/p&gt;
+
+&lt;p&gt;Well, of course I had to do it in Metasploit. (No, not everything has to be in Metasploit, but in this instance it actually helps a lot and you&amp;rsquo;ll see why in a sec)&lt;/p&gt;
+
+&lt;p&gt;Easiest way to get a bunch of random users is to download a list of names, I used this one:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://packetstormsecurity.org/files/32083/other-names.gz.html&#34;&gt;http://packetstormsecurity.org/files/32083/other-names.gz.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And of course you need passwords too, and there isn&amp;rsquo;t a better list than the RockYou list. Skull Security has it over here:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.skullsecurity.org/wiki/index.php/Passwords&#34;&gt;http://www.skullsecurity.org/wiki/index.php/Passwords&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL:DR;&lt;/strong&gt; You can download the Meterpreter script here: &lt;a href=&#34;https://gist.github.com/mubix/8215113&#34;&gt;addusers.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Start off by importing all the names and passwords into arrays we can manipulate easier:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;namefile = File.new(&#39;other-names.txt&#39;, &#39;r&#39;)
+passwordfile = File.new(&#39;rockyou.txt&#39;, &#39;r&#39;)
+usercount = 5000
+
+names = []
+namefile.each_line do |line|
+	names &amp;lt;&amp;lt; line.chomp
+end
+
+passwords = []
+passwordfile.each_line do |line|
+	passwords &amp;lt;&amp;lt; line.chomp
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &amp;lsquo;usercount&amp;rsquo; variable will be used for out loop on how many users to create. Next, just to shake things up we create another array of common suffixes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;datesnum = []
+(0..9).each do |x|
+	datesnum &amp;lt;&amp;lt; x
+end
+
+(40..99).each do |x|
+	datesnum &amp;lt;&amp;lt; x
+end
+
+(2000..2013).each do |x|
+	datesnum &amp;lt;&amp;lt; x
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now to loop through the account creation, and since I&amp;rsquo;m not a big fan of running cmd.exe (staying in memory is one of the staples of Meterpreter) we&amp;rsquo;ll do it by injecting $usercount amount of the windows/adduser payload into our current process.&lt;/p&gt;
+
+&lt;p&gt;For usernames I take a random name and use it&amp;rsquo;s first letter, and then another random selection for the rest. This makes it look like a first initial + last name username scheme.&lt;/p&gt;
+
+&lt;p&gt;For passwords I throw a bit of twist in there I randomly select to have a &amp;lsquo;bad/ok/good&amp;rsquo; password and use just a random selection, random selection + a date or number we generated earlier, or a double random selection put together, respectively.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;(0..usercount).each do
+	fname = names[rand(names.size)]
+	lname = names[rand(names.size)]
+	goodpass = rand(3)
+	password = case goodpass
+	when 0
+		passwords[rand(passwords.size)]
+	when 1
+		&amp;quot;#{passwords[rand(passwords.size)]}#{datesnum[rand(datesnum.size)]}&amp;quot;
+	when 2
+		&amp;quot;#{passwords[rand(passwords.size)]}#{passwords[rand(passwords.size)]}&amp;quot;
+	end
+	username = &amp;quot;#{fname[0].chr}#{lname}&amp;quot;
+	case goodpass
+	when 0
+		puts &amp;quot;#{username} has a bad password of #{password}&amp;quot;
+	when 1
+		puts &amp;quot;#{username} has an ok password of #{password}&amp;quot;
+	when 2
+		puts &amp;quot;#{username} has a good password of #{password}&amp;quot;
+	end
+	
+	payload = &#39;windows/adduser&#39;
+	pay = client.framework.payloads.create(payload)
+
+	pay.datastore[&#39;USER&#39;] = username
+	pay.datastore[&#39;PASS&#39;] = password
+
+	raw = pay.generate
+	host_process = client.sys.process.open(client.sys.process.getpid, PROCESS_ALL_ACCESS)
+	mem = host_process.memory.allocate(raw.length + (raw.length % 1024))
+	host_process.memory.write(mem, raw)
+	host_process.thread.create(mem, 0)
+	print_status(&amp;quot;#{username} created with password: #{password}&amp;quot;)
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Know what&amp;rsquo;s great about this? With just a few changed lines you can slam all of the user creation payloads into one binary and have a binary you can run any time you want to gen a bunch of users quickly. (Good to mess with CCDC blue teams too!&lt;/p&gt;
+</description>
     </item>
     
   </channel>

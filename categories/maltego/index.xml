@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 13 Jan 2009 18:23:08 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/maltego/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/maltego/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,7 +17,39 @@
       <pubDate>Tue, 13 Jan 2009 18:23:08 +0000</pubDate>
       
       <guid>https://malicious.link/post/2009/2009-01-13-maltego-2-and-beyond-part-3/</guid>
-      <description>Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks   Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:</description>
+      <description>
+
+&lt;h2 id=&#34;table-of-contents&#34;&gt;Table of Contents:&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://malicious.link/blog/2009/09/08/maltego-2-and-beyond-part-1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://malicious.link/blog/2008/09/26/maltego-2-and-beyond-part-2/&#34;&gt;Part 2 - Entities and Transforms&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 3 - The Human Factor&lt;/li&gt;
+&lt;li&gt;Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)&lt;/li&gt;
+&lt;li&gt;Part 5 - Hacks, Tips, and Tricks
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200901_maltego_1.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The Human Factor is why we all still have jobs in the security world. It is impossible for machines at this day in age to make logical leaps of faith. Yes, there is fuzzy logic, but the human brain still trumps computers on being able to instinctively make those leaps. Instinct, that word describes the whole reason for this part in the series. Just as a PI uses he gut to lead him on the right trail, as an OSINT (Open Source Intelligence) Specialist you have to use your instincts to guide your investigation as well. The following paragraphs will describe my own method of making those leaps. If you disagree or have better methods, please comment below so that others can learn as well.&lt;/p&gt;
+
+&lt;p&gt;What is a logical leap of faith? Well, most pentesters do it daily if not hourly, when they assume a cracked password is going to work in other places. It’s all about betting on standards. Standards in this reference is anything that has become common place, not specifically a written rule, but those are good to. Dan Geer ‘left’ @Stake when he and other thought leaders in the security community published a paper back in 2003:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Cyber _In_Security: The Cost of Monopoly&lt;/strong&gt; [&lt;a href=&#34;http://www.ccianet.org/papers/cyberinsecurity.pdf&#34;&gt;PDF&lt;/a&gt;]&lt;/p&gt;
+
+&lt;p&gt;Archived Link: &lt;a href=&#34;http://pdf.textfiles.com/academics/cyberinsecurity.pdf&#34;&gt;http://pdf.textfiles.com/academics/cyberinsecurity.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200901_maltego_2.png&#34; alt=&#34;Dan Geer&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I was originally planning on making this article full of examples on how you can make these leaps, but I have had a lot of time to think these examples and have decided against it. To practice this method you must use your own experiences. Where do people do the same thing? Think about it. I’m sure you can come up this at least a dozen examples where even you do the same thing across the board&amp;hellip; Ok, so I can’t resist. Using the same password, or username on different sites. Seeing a User Agent that is concatenated by a proxy. The router being .1 or .2. Using full class C networks. Always adding the same core friends or co-workers to every social networking site. What about referencing the same ‘ficticous’ bank when describing a problem with that bank. What examples have you come up with?&lt;/p&gt;
+
+&lt;p&gt;How do you pull this out-of-the-box thinking into Maltego? When entering an email for an entity, try putting it in under different domains (yahoo.com, aol.com, gmail.com, google.com, hotmail.com). When entering a domain, try putting it in under different TLDs (.net, .org, .tv). You might be surprised at the gems you find when you find those forgotten pieces of information. This all falls back on my mantra that you should put in ALL of the information you have (and estimated) before you even start running transforms.&lt;/p&gt;
+
+&lt;p&gt;Maltego is a tool that can only take you so far. Your creativity is what makes a tool like this powerful.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -26,7 +58,86 @@
       <pubDate>Fri, 26 Sep 2008 14:10:32 +0000</pubDate>
       
       <guid>https://malicious.link/post/2008/2008-09-26-maltego-2-and-beyond-part-2/</guid>
-      <description>Now that you have had some time to play around with Community Edition or if you were lucky (or rich) enough, the Full version. We are going to start delving into the the pieces of Maltego and then in Part 5 we rip it apart and put it back together for PT-TAS (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article.</description>
+      <description>
+
+&lt;p&gt;Now that you have had some time to play around with &lt;a href=&#34;http://www.paterva.com/maltego/community-edition/&#34;&gt;Community Edition&lt;/a&gt; or if you were lucky (or rich) enough, the &lt;a href=&#34;http://www.paterva.com/maltego/download/&#34;&gt;Full version&lt;/a&gt;. We are going to start delving into the the pieces of &lt;a href=&#34;http://www.paterva.com/maltego/&#34;&gt;Maltego&lt;/a&gt; and then in Part 5 we rip it apart and put it back together for &lt;a href=&#34;http://www.paterva.com/maltego/pt-tas/&#34;&gt;PT-TAS&lt;/a&gt; (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article. what I mean when I use this word is everything from ego and tin-hat searches to the military grade or counterintelligence level searches. As stated before, &lt;a href=&#34;http://www.paterva.com/maltego/&#34;&gt;Maltego&lt;/a&gt; &lt;a href=&#34;http://www.paterva.com/maltego/community-edition/&#34;&gt;Community Edition&lt;/a&gt; is free. Use it however and for whatever you want. If you think of a new and interesting way of using Maltego please send me an email and I will make it part of this series, or post it in the &lt;a href=&#34;http://www.paterva.com/forum/&#34;&gt;Maltego Forums&lt;/a&gt;. &lt;a href=&#34;http://www.paterva.com/&#34;&gt;Paterva&lt;/a&gt; is always interested in hearing from the community, especially feature requests.&lt;/p&gt;
+
+&lt;p&gt;First lets outline whats to come:&lt;/p&gt;
+
+&lt;h2 id=&#34;table-of-contents&#34;&gt;Table of Contents:&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://malicious.link/blog/2009/09/08/maltego-2-and-beyond-part-1&#34;&gt;Part 1 - Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 2 - Entities and Transforms&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://malicious.link/blog/2009/01/13/maltego-2-and-beyond-part-3/&#34;&gt;Part 3 - The Human Factor&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)&lt;/li&gt;
+&lt;li&gt;Part 5 - Hacks, Tips, and Tricks&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The reason I am not going into the installation or registration of Maltego is because 1. It’s already installed on &lt;a href=&#34;http://www.remote-exploit.org/backtrack.html&#34;&gt;Back|Track&lt;/a&gt; and 2. Because Paterva already has a &lt;a href=&#34;http://ctas.paterva.com/view/Userguide&#34;&gt;great wiki article&lt;/a&gt; on the topic. So lets begin:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;![](http://s3.media.squarespace.com/production/438411/4879756/uploads/entity.jpg)&lt;/code&gt;
+&lt;img src=&#34;https://malicious.link/images/postimages/404.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;entities&#34;&gt;Entities&lt;/h2&gt;
+
+&lt;p&gt; (&lt;a href=&#34;http://ctas.paterva.com/view/Category:Entities&#34;&gt;wiki article on Entities&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;Entities are the basic nuts and bolts of your investigation. Entities spawn other entities through the use of transforms. But, what is an entity? Well at the time of this publishing it can be one of the following&lt;/p&gt;
+
+&lt;h3 id=&#34;infrastructure-palette&#34;&gt;Infrastructure Palette:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;AS (Autonomous System Number&lt;/strong&gt;): This is a number assigned to a network that allows BGP (Border Gateway Protocol) to know where it’s neighbors are. (&lt;a href=&#34;http://blog.wired.com/27bstroke6/2008/08/revealed-the-in.html&#34;&gt;And there aren’t any exploits for BGP right?&lt;/a&gt;)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;DNS Name&lt;/strong&gt;: This is a human readable form of an IP. And, unlike my mother believes, a DNS name does NOT mean it’s a web site. For example hr2xp00209.contoso.com does not serve up a web site, well at least it shouldn’t. (&lt;a href=&#34;http://www.doxpara.com/DMK_BO2K8.ppt&#34;&gt;And there are no exploits for DNS right? -PPT LINK-&lt;/a&gt;)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Domain&lt;/strong&gt;: In the sense of a DNS domain. This can be localdomain.local contoso.com, or microshaft.com&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;IP Address&lt;/strong&gt;:  The 4 byte (or 16 byte with IPv6) set of numbers that computers understand better than DNS names&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Netblock: A block of contiguous IP addresses that are “owned”&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Website: (Myspace.com, DUH!)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;personal-palette&#34;&gt;Personal Palette:&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Email Address:YourSuperCoolHackerHandle@h4x0rbl0gthatyouneverupdate.com (And then you sign that email address with your super secret family-only email address that you never use, with your PGP key)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Location:Area 51, Washington DC, The Moon&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Person: A first and and last name (we will get into handles with “Phrase”, also, remember that PGP key you used, oh it has your full name on there)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Phone Number: This is a 7 digit or 10 digit number, returns a lot of false positives in my experiance, but has also pulled some great contact info for companies that weren’t available from their site. (i.e. someone posted their details in a group or forum asking for help)&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The last entity is “Phrase”. I specifically isolated it because of its untapped power in Maltego. This is a Google hacker’s dream. This entity will send any Google hack (or regular search term/phrase) you have to a search engine (Out of the box it’s Yahoo) and then extracts as many of the above entities as it can. To couple the power of Google hacking with all of the information you have gathered, and if the old adage, “Knowledge is Power” is right. You now have at your disposal a nuclear arsenal worth of “power”. Add &lt;a href=&#34;http://www.paterva.com/maltego/pt-tas/&#34;&gt;PT-TAS&lt;/a&gt; (which we will talk about later) and you might as well have an Ion Cannon for your investigation.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;http://s3.media.squarespace.com/production/438411/4879756/uploads/ion_cannon.serendipityThumb.jpg&lt;/code&gt;
+&lt;img src=&#34;https://malicious.link/images/postimages/404.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;transforms&#34;&gt;Transforms&lt;/h2&gt;
+
+&lt;p&gt; (&lt;a href=&#34;http://ctas.paterva.com/view/Category:Transforms&#34;&gt;wiki article on Transforms&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;There are more transforms than I have space for and you really don’t need me to insult your intelligence any more than I already have with my list of entities. So, I am picking out a few of my favorites that might get you a tad bit worried enough to go out and download Maltego, just to see if they pop on you.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Email to PG&lt;/strong&gt;&lt;strong&gt;P&lt;/strong&gt;: It takes an email address and then checks to see what other email addresses you have signed with your key and what the name associated with those email addresses are, along with the email address you searched for. Makes you kind of think of what other security tools can be turned back on themselves.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;IP or Netblock to Wiki Edits&lt;/strong&gt;: With this tool you can get a sense of what changes a company/person/organization makes to Wikipedia. I have had mixed results with how much information return this gets but, as you can see by this interesting graph. Three letter agencies like to make edits ;-)&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Metadata Extration from Documents&lt;/strong&gt;: The transform is an information gold mine. It could give you insight into the names of users, the domain’s naming convention, possibly even the internal domain name and version of software made that document.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Rapleaf and Spock Search (Social Networking search)&lt;/strong&gt;: If you don’t get anything right of the bat, try again later. These services index items on request so if you are the first one to query and email address or phrase, it might take 20 minutes to index and be ready with results. Also, have you ever added your friends to a social networking site via your address book or contacts list (IM/Webmail/Outlook)? Well what if your address book that you uploaded as a search included every email address or phrase that you have found in Maltego? &lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;We have now gotten the basics and the building blocks, next we go into the Human Factor. Sort of like a OCD instructor I will be helping you to make leaps of faith based on logic that Maltego, or any automated system for that matter, just can’t do.&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
     </item>
     
   </channel>

@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Sat, 25 Dec 2010 17:00:36 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/delicious/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/delicious/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,129 @@
       <pubDate>Sat, 25 Dec 2010 17:00:36 +0000</pubDate>
       
       <guid>https://malicious.link/post/2010/2010-12-25-delicious-webapp-hacking/</guid>
-      <description>[UPDATE] This module (enum_delicious) has been pulled from Metasploit since Delicious no longer allows searching by site.
-In the last post I showed off how Archive.org&amp;rsquo;s Wayback machine can be used to pull urls for a domain, another place where URLs are stored and can be searched by domain is Delicious.com (a bookmarking service). I&amp;rsquo;ve seen people bookmark everything from internal web portals to urls with special no-auth passwords in them.</description>
+      <description>&lt;p&gt;&lt;strong&gt;[UPDATE]&lt;/strong&gt; This module (enum_delicious) has been pulled from Metasploit since Delicious no longer allows searching by site.&lt;/p&gt;
+
+&lt;p&gt;In the last post I showed off how Archive.org&amp;rsquo;s Wayback machine can be used to pull urls for a domain, another place where URLs are stored and can be searched by domain is Delicious.com (a bookmarking service). I&amp;rsquo;ve seen people bookmark everything from internal web portals to urls with special no-auth passwords in them. It may even reveal subdomains and hosts you didn&amp;rsquo;t know about. This can be a very handy set of data.&lt;/p&gt;
+
+&lt;p&gt;Be forewarned though, Delicious has been putting ads in the results and I haven&amp;rsquo;t gotten a solid regex to work on picking them out yet. So comb your results before slamming them in the requestor script from the last post. The module works basically the same way, but here it is in action:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf auxiliary(enum_delicious) &amp;gt; info
+       Name: Pull Del.icio.us Links (URLs) for a domain
+    Version: 11107
+    License: Metasploit Framework License (BSD)
+       Rank: Normal
+
+Provided by:
+  Rob Fuller
+
+Basic options:
+  Name     Current Setting  Required  Description
+  ----     ---------------  --------  -----------
+  DOMAIN                    yes       Domain to request URLS for
+  OUTFILE                   no        Where to output the list for use
+
+Description:
+  This module pulls and parses the URLs stored by Del.icio.us users 
+  for the purpose of replaying during a web assessment. Finding 
+  unlinked and old pages.
+
+msf auxiliary(enum_delicious) &amp;gt; set DOMAIN portswigger.net
+DOMAIN =&amp;gt; portswigger.net
+msf auxiliary(enum_delicious) &amp;gt; run
+
+[*] Pulling urls from Delicious.com
+[*] Page number: 1
+[*] Page number: 2
+[*] Page number: 3
+[*] Page number: 4
+[*] Located 81 addresses for portswigger.net
+http://blog.portswigger.net/
+http://blog.portswigger.net/2007/04/preventing-username-enumeration.html
+http://blog.portswigger.net/2007/04/using-recursive-grep-for-harvesting.html
+http://blog.portswigger.net/2007/05/on-site-request-forgery.html
+http://blog.portswigger.net/2007/06/viewstate-snooping.html
+http://blog.portswigger.net/2007/07/dns-pinning-and-web-proxies.html
+http://blog.portswigger.net/2007/07/hacking-without-credentials.html
+http://blog.portswigger.net/2007/07/lame-bugs-for-rainy-day.html
+http://blog.portswigger.net/2007/10/introducing-burp-sequencer.html
+http://blog.portswigger.net/2007/11/new-burp-beta.html
+http://blog.portswigger.net/2007/12/burp-suite-v11-released.html
+http://blog.portswigger.net/2008/03/book-review-ajax-security.html
+http://blog.portswigger.net/2008/03/xsrf-and-threat-ratings.html
+http://blog.portswigger.net/2008/04/can-you-hit-moving-target.html
+http://blog.portswigger.net/2008/05/burp-sequencer-101.html
+http://blog.portswigger.net/2008/05/null-byte-attacks-are-alive-and-well.html
+http://blog.portswigger.net/2008/08/attacking-parameter-names.html
+http://blog.portswigger.net/2008/08/problem-accepting-self-signed-ssl.html
+http://blog.portswigger.net/2008/11/mobp-burp-extender-extended.html
+http://blog.portswigger.net/2008/11/mobp-filtering-and-deleting-content.html
+http://blog.portswigger.net/2008/11/mobp-new-target-site-map.html
+http://blog.portswigger.net/2008/11/month-of-burp-pr0n.html
+http://blog.portswigger.net/2008/12/burp-suite-v12-released.html
+http://blog.portswigger.net/2008/12/when-good-xsrf-defence-turns-bad.html
+http://blog.portswigger.net/2009/04/intercepting-thick-client.html
+http://blog.portswigger.net/2009/04/using-burp-extender.html
+http://blog.portswigger.net/2009/11/if-politicians-were-http-status-codes.html
+http://blog.portswigger.net/2009/11/v13p-ssl-pain-relief.html
+http://blog.portswigger.net/2010/01/burp-suite-v13-released.html
+http://blog.portswigger.net/2010/06/comparing-web-application-scanners-part.html
+http://blog.portswigger.net/2010/06/comparing-web-application-scanners.html
+http://blog.portswigger.net/search/label/MoBP
+http://portswigger.net/
+http://portswigger.net/books/
+http://portswigger.net/burp/
+http://portswigger.net/burp/downloadfree.html
+http://portswigger.net/burp/help/intruder.html
+http://portswigger.net/burp/help/proxy.html
+http://portswigger.net/burp/proxy.html
+http://portswigger.net/burp/scanner.html
+http://portswigger.net/intruder/
+http://portswigger.net/misc/
+http://portswigger.net/misc/wahh-toc.pdf
+http://portswigger.net/proxy/
+http://portswigger.net/proxy/help.html
+http://portswigger.net/proxy/help.html#matchreplace
+http://portswigger.net/proxy/screenshots.html
+http://portswigger.net/proxy/servercerts.html
+http://portswigger.net/scanner/screenshots.html
+http://portswigger.net/sequencer/
+http://portswigger.net/spider/
+http://portswigger.net/spider/help.html#using
+http://portswigger.net/suite/
+http://portswigger.net/suite/comparerhelp.html
+http://portswigger.net/suite/download.html
+http://portswigger.net/suite/download2.html
+http://portswigger.net/suite/help.html#using
+http://portswigger.net/suite/help.html#what
+http://portswigger.net/suite/pro.html
+http://portswigger.net/suite/screenshots.html
+http://portswigger.net/suite/spider.html
+http://portswigger.net/training/
+http://portswigger.net/wahh/
+http://portswigger.net/wahh/answers.html
+http://portswigger.net/wahh/jattack-fuzz.java
+http://portswigger.net/wahh/tasks.html
+http://portswigger.net/wahh/toc.html
+http://portswigger.net/wahh/tools.html
+http://releases.portswigger.net/2009/08/v1214.html
+http://releases.portswigger.net/2010/03/v1301.html
+http://releases.portswigger.net/2010/05/v1305.html
+http://releases.portswigger.net/2010/07/v1307.html
+http://releases.portswigger.net/2010/08/v1308.html
+http://www.portswigger.net/intruder/screenshots.html
+http://www.portswigger.net/proxy/download.html
+http://www.portswigger.net/scanner/
+http://www.portswigger.net/sequencer/help.html
+http://www.portswigger.net/spider/help.html
+http://www.portswigger.net/spider/screenshots.html
+http://www.portswigger.net/suite/help.html
+http://www.portswigger.net/suite/successstories.html
+[*] Auxiliary module execution completed
+msf auxiliary(enum_delicious) &amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Both this and the Wayback module can be found in the Metasploit trunk&lt;/p&gt;
+</description>
     </item>
     
   </channel>

@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 02 Nov 2011 03:06:18 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/post-modules/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/post-modules/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,9 +17,52 @@
       <pubDate>Wed, 02 Nov 2011 03:06:18 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-11-02-run-post-modules-on-all-sessions/</guid>
-      <description>Jcran recently blogged about an easy way to run a post module on all sessions:
-http://blog.pentestify.com/simple-framework-domain-token-scanner
-msf&amp;gt; use post/windows/gather/enum_domain_tokens msf enum_domain_tokens&amp;gt; irb framework.sessions.each do |session| run_single(&amp;quot;set SESSION #{session.first}&amp;quot;) run_single(&amp;quot;run&amp;quot;) sleep 1 end  You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;http://twitter.com/jcran&#34;&gt;Jcran&lt;/a&gt; recently blogged about an easy way to run a post module on all sessions:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://blog.pentestify.com/simple-framework-domain-token-scanner&#34;&gt;http://blog.pentestify.com/simple-framework-domain-token-scanner&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
+msf enum_domain_tokens&amp;gt; irb
+framework.sessions.each do |session|
+  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
+  run_single(&amp;quot;run&amp;quot;)
+  sleep 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.&lt;/p&gt;
+
+&lt;p&gt;Thinking back to &lt;a href=&#34;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&#34;&gt;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&lt;/a&gt; and my rapid file PSEXEC resource file, we know we can run ruby inside of resource files with the &lt;ruby&gt; tag.&lt;/p&gt;
+
+&lt;p&gt;Save the following as runall.rc somewhere where you&amp;rsquo;ll remember:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;framework.sessions.each do |session|
+  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
+  print_status(&amp;quot;Running #{active_module.fullname} against session #{session.first}&amp;quot;)
+  run_single(&amp;quot;run&amp;quot;)
+  sleep 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then when you want to run a POST module against every session you have you simply do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
+msf enum_domain_tokens&amp;gt; resource runall.rc
+[*] Running post/windows/gather/enum_domain_tokens on session 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-11-06 20:05 by Rob Fuller&lt;/p&gt;
+
+&lt;p&gt;A commenter noticed an error in the coding for cross compatibility. The following should work better across versions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;framework.sessions.each_key do |session|
+  run_single(&amp;quot;set SESSION #{session}&amp;quot;)
+  print_status(&amp;quot;Running #{active_module.fullname} against session #{session}&amp;quot;)
+  run_single(&amp;quot;run&amp;quot;)
+  sleep 1
+end
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
   </channel>

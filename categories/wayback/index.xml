@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Fri, 24 Dec 2010 19:32:56 +0000</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/wayback/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/wayback/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,8 +17,69 @@
       <pubDate>Fri, 24 Dec 2010 19:32:56 +0000</pubDate>
       
       <guid>https://malicious.link/post/2010/2010-12-24-wayback-webapp-hacking/</guid>
-      <description>Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&amp;rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&amp;rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.</description>
+      <description>&lt;p&gt;Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&amp;rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).&lt;/p&gt;
+
+&lt;p&gt;This module doesn&amp;rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf auxiliary(enum_wayback) &amp;gt; info
+       Name: Pull Archive.org stored URLs for a domain
+    Version: 10394
+    License: Metasploit Framework License (BSD)
+       Rank: Normal
+
+Provided by:
+  Rob Fuller 
+
+Basic options:
+  Name     Current Setting  Required  Description
+  ----     ---------------  --------  -----------
+  DOMAIN   portswigger.net  yes       Domain to request URLS for
+  OUTFILE                   no        Where to output the list for use
+
+Description:
+  This module pulls and parses the URLs stored by Archive.org for the 
+  purpose of replaying during a web assessment. Finding unlinked and 
+  old pages.
+
+msf auxiliary(enum_wayback) &amp;gt; run
+
+[*] Pulling urls from Archive.org
+[*] Located 289 addresses for portswigger.net
+http://portswigger.net/
+http://portswigger.net/books/
+http://portswigger.net/burp/
+http://portswigger.net/burp/bullet.gif
+http://portswigger.net/burp/buy.html
+http://portswigger.net/burp/help.html
+http://portswigger.net/burp/ps.css
+http://portswigger.net/burp/screenshots.html
+http://portswigger.net/burp/tc.html
+http://portswigger.net/corner.gif
+
+**SNIPPED**
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can set the OUTFILE so that you can parse it a bit and import it into Burp, or use a quick script to make the queries yourself. Here is one I wrote in python:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;# cat requestor.py&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;#!/usr/bin/env python
+import urllib
+proxies = {&#39;http&#39;: &#39;http://127.0.0.1:8080&#39;}
+filename = &amp;quot;/tmp/waybacklist.txt&amp;quot;
+
+fl = open(filename, &#39;r&#39;)
+for lines in fl:
+	url = str(lines)
+	if len(url) &amp;lt; 4:
+		print &amp;quot;Skipping blank line&amp;quot;
+	else:
+	    print &amp;quot;Requesting &amp;quot; + url
+	    temp = urllib.urlopen(url, proxies=proxies).read()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
     </item>
     
   </channel>

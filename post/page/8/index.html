@@ -6,7 +6,7 @@
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.43" />
+<meta name="generator" content="Hugo 0.42.2" />
 
 
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
@@ -93,6 +93,27 @@ ga('create', 'UA-198967-1', 'auto');
 			</div>
 			<ul id="post-list">
                 	
+				<li>
+					<div class="post-list-item">
+						<div class="post-header">
+							<h4 class="post-link"><a href="https://malicious.link/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/">Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2</a></h4>
+							<h4 class="post-date">Jun 11, 2013</h4>
+						</div>
+						<div class="post-summary"><p>Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
+From: http://www.ntdsxtract.com/
+Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip  From: http://code.google.com/p/libesedb/
+Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz  Extract the tools:
+tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip  Compile/make libesedb:
+root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make  Export the tables from NTDS.dit:
+root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) 'all' exports all the tables or a single specified table with indexes, 'tables' exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix .</p></div>
+						<div class="post-list-footer text-center">
+							<a href="https://malicious.link/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/">Read More</a>
+						</div>
+					</div>
+				</li>
+			
 				<li>
 					<div class="post-list-item">
 						<div class="post-header">
@@ -220,20 +241,6 @@ And a few people came up with some very valid points:
 He&rsquo;s right, but that forces the attack to use SSL, and doing so can yield the defender more information about the attacker, and offer other avenues of defense.</p></div>
 						<div class="post-list-footer text-center">
 							<a href="https://malicious.link/post/2013/2013-02-27-blocking-java-exploits-malicious-signed-applets-and-0days/">Read More</a>
-						</div>
-					</div>
-				</li>
-			
-				<li>
-					<div class="post-list-item">
-						<div class="post-header">
-							<h4 class="post-link"><a href="https://malicious.link/post/2013/2013-02-22-compile-nfsshell-on-ubuntu/">Compile NFSShell on Ubuntu</a></h4>
-							<h4 class="post-date">Feb 22, 2013</h4>
-						</div>
-						<div class="post-summary"><p>This is here because I always forget how to do it
- sudo apt-get install libtirpc-dev libncurses-dev wget http://www.cs.vu.nl/pub/leendert/nfsshell.tar.gz tar zxvf nfsshell.tar.gz cd nfs ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h perl -p -i.orig -e 's/getline/getline_nfs/' nfs.c  Next part I don&rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &ldquo;uncomment the following 4 lines for Solaris 2.x&rdquo; and uncomment the 2 lines following &ldquo;For GNU readline support you need to add&rdquo;</p></div>
-						<div class="post-list-footer text-center">
-							<a href="https://malicious.link/post/2013/2013-02-22-compile-nfsshell-on-ubuntu/">Read More</a>
 						</div>
 					</div>
 				</li>

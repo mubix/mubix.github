@@ -6,10 +6,121 @@
     <description>Recent content on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Jul 2018 09:30:44 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 26 Aug 2018 08:30:44 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Stealing Certificates with Apostille</title>
+      <link>https://malicious.link/post/2018/stealing-certificates-with-apostille/</link>
+      <pubDate>Sun, 26 Aug 2018 08:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2018/stealing-certificates-with-apostille/</guid>
+      <description>&lt;p&gt;At Def Con 26, &lt;a href=&#34;https://twitter.com/singe&#34;&gt;@singe&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/_cablethief&#34;&gt;@_cyberthief&lt;/a&gt; gave a talk on enterprise wireless attacks. When it&amp;rsquo;s video is released you should check it out.&lt;/p&gt;
+
+&lt;p&gt;During that talk, they quickly touched on a tool written by &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;Rogan Dawes&lt;/a&gt; another &lt;a href=&#34;https://twitter.com/sensepost&#34;&gt;@Sensepost&lt;/a&gt;-er&amp;rsquo;s tool called &amp;ldquo;&lt;a href=&#34;https://github.com/sensepost/apostille&#34;&gt;Apostille&lt;/a&gt;&amp;rdquo;. It is esentially a certificate stealing tool. However, that over simplifies what it does.&lt;/p&gt;
+
+&lt;p&gt;Copying a certificate&amp;rsquo;s common name, email, or other fields that are inputted during creation is a relatively easy way to copy certificates, and they can look relatively good at first glance. However, this simply copy leads to many tell tail signs that it&amp;rsquo;s fake. For instance lets say I create a certificate like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@apostille-post:~# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
+Generating a 2048 bit RSA private key
+.................................................................................................................+++
+...+++
+writing new private key to &#39;mycert.pem&#39;
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter &#39;.&#39;, the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:US
+State or Province Name (full name) [Some-State]:California
+Locality Name (eg, city) []:Mountain View
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Google LLC
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:*.google.com
+Email Address []:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If I host it out, here are the results side by side with Google.com:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-01.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;Vaild From&lt;/code&gt;, the &lt;code&gt;Issued By&lt;/code&gt;, and most of the other certificate information helps this certificate to stand out as fraudulent. Also, doing this by hand is a PITA.&lt;/p&gt;
+
+&lt;p&gt;Enter &lt;strong&gt;Apostille&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s pretty straight forward to get it going, but you do need both Java&amp;rsquo;s JDK and Maven to compile it first:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@apostille-post:~# apt install -y maven default-jdk git
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;(I&amp;rsquo;m doing this on a fresh box so it needed git as well)&lt;/p&gt;
+
+&lt;p&gt;Step 2, &lt;code&gt;git clone&lt;/code&gt; the repo, and compile with Maven:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@apostille-post:~# git clone https://github.com/sensepost/apostille
+Cloning into &#39;apostille&#39;...
+remote: Counting objects: 48, done.
+remote: Total 48 (delta 0), reused 0 (delta 0), pack-reused 48
+Unpacking objects: 100% (48/48), done.
+root@apostille-post:~# cd apostille/
+root@apostille-post:~/apostille# mvn package
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Step 3, Clone your first certificate:
+&lt;code&gt;java -jar target/apostille-1.0-SNAPSHOT.jar google.com:443 tempkeystore.jks ASDqwe123 ASDqwe123&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;google.com:443&lt;/code&gt; is the endpoint that will serve a certificate chain back, this isn&amp;rsquo;t regulated to only HTTPS, but any TLS endpoint.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tempkeystore.jks&lt;/code&gt; is the Java Keystore file that we will putting the certificate chain into.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ASDqwe123&lt;/code&gt; is the &lt;code&gt;kspassword&lt;/code&gt; and then the &lt;code&gt;keypassword&lt;/code&gt; (Keystore and certificate password) - I just made them the same as this is an example and I won&amp;rsquo;t be using the keystore for anything but to export the certificates later.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In order to get the certificates out of the keystore and into a PEM format that I can use for testing, I used the following:&lt;/p&gt;
+
+&lt;p&gt;Source: &lt;a href=&#34;https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/&#34;&gt;https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@apostille-post:~/apostille# keytool -importkeystore -srckeystore tempkeystore.jks -destkeystore myapp.p12 -srcalias *.google.com -srcstoretype jks -deststoretype pkcs12
+Importing keystore tempkeystore.jks to myapp.p12...Enter destination keystore password: ASDqwe123
+Re-enter new password: ASDqwe123
+Enter source keystore password: ASDqwe123
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;(The passwords will not show up, but I put them in there so you can see what I&amp;rsquo;m inputting. Again I chose a simple password because I&amp;rsquo;m converting it one more time)&lt;/p&gt;
+
+&lt;p&gt;Then finally to a PEM like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@apostille-post:~/apostille# openssl pkcs12 -in myapp.p12 -out myapp.pem
+Enter Import Password: ASDqwe123
+Enter PEM pass phrase: WugWZ3!F3hD#8P!f
+Verifying - Enter PEM pass phrase: WugWZ3!F3hD#8P!f
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To test out how it looks I&amp;rsquo;ll reference &lt;a href=&#34;http://attackerkb.com/Web/Quick%20Web%20Servers&#34;&gt;AKB&amp;rsquo;s Quick Web Servers list&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@apostille-post:~/apostille# openssl s_server -cert myapp.pem -accept 443 -WWW
+Enter pass phrase for myapp.pem: WugWZ3!F3hD#8P!f
+Using default temp DH parameters
+ACCEPT
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the result is:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-02.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-03.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-04.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A much more believable certificate, even to the discerning eye.&lt;/p&gt;
+
+&lt;p&gt;Again, thanks to &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;@RoganDawes&lt;/a&gt; for this amazing tool.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>2018 BH/DC/BSidesLV Hiring List</title>
@@ -1104,98 +1215,6 @@ co1-red-dc-11.com
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/passwordreq2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;CIFS/SMB does not allow access to shares or IFS actions by default as per default computer/group policy. However, RDP, WinRM, and WMI work just fine.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Blocking countries via iptables</title>
-      <link>https://malicious.link/post/2016/blocking-countries-via-iptables/</link>
-      <pubDate>Fri, 28 Oct 2016 15:00:00 -0400</pubDate>
-      
-      <guid>https://malicious.link/post/2016/blocking-countries-via-iptables/</guid>
-      <description>&lt;p&gt;With all of the scanning / noise on the Internet, it&amp;rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&amp;rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&amp;rsquo;s pretty easy to get going, just &lt;code&gt;apt-get&lt;/code&gt; install the needed perl library and the addons themselves:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;apt-get install libtext-csv-xs-perl xtables-addons-common
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&amp;rsquo;t availabe (like Linode&amp;rsquo;s special kernel), you will need to find another way to get the correct headers installed.&lt;/p&gt;
-
-&lt;p&gt;Then download the Maxmind geo database, the location of the &lt;code&gt;xt_geoip_dl&lt;/code&gt; tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in &lt;code&gt;/usr/src/xtables-addons-2.6/geoip/&lt;/code&gt; as well as &lt;code&gt;/usr/lib/xtables-addons/&lt;/code&gt; YMMV.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;cd /usr/src/xtables-addons-2.6/geoip/
-./xt_geoip_dl
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You should see it downloading the IP databases:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz
-Length: 1303811 (1.2M) [application/octet-stream]
-Saving to: ‘GeoIPv6.csv.gz’
-
-GeoIPv6.csv.gz                                  100%[=========================================================================================================&amp;gt;]   1.24M  --.-KB/s   in 0.004s
-
-2016-10-28 13:55:24 (321 MB/s) - ‘GeoIPv6.csv.gz’ saved [1303811/1303811]
-
---2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
-Saving to: ‘GeoIPCountryCSV.zip’
-
-GeoIPCountryCSV.zip                             100%[=========================================================================================================&amp;gt;]   2.04M  --.-KB/s   in 0.006s
-
-2016-10-28 13:55:24 (326 MB/s) - ‘GeoIPCountryCSV.zip’ saved [2137625/2137625]
-
-FINISHED --2016-10-28 13:55:24--
-Total wall clock time: 0.1s
-Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
-Archive:  GeoIPCountryCSV.zip
-  inflating: GeoIPCountryWhois.csv
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After that, you need to &amp;ldquo;build&amp;rdquo; the lists by performing the following command in that same directory (one install didn&amp;rsquo;t automatically make the directory so ensure it&amp;rsquo;s there with the mkdir command):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;mkdir -p /usr/share/xt_geoip
-./xt_geoip_build -D /usr/share/xt_geoip *.csv
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After that you are off the the races and you can simply use the geoip module as so now:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc CN -j DROP
-iptables -A INPUT -m geoip --src-cc HK -j DROP
-iptables -A INPUT -m geoip --src-cc RU -j DROP
-iptables -A INPUT -m geoip --src-cc KR -j DROP
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Or you can go the other route and just allow from your country:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc PL -m tcp -p tcp --dport 22 -j ACCEPT
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;When looking up how to do this many people recommended updating the GeoIP database once a month. To do this I made a really simple bash script that just repeats all the things I did and added it to a monthly cron job:&lt;/p&gt;
-
-&lt;p&gt;File: 0update_maxmind&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#!/bin/bash
-
-rm -f /usr/src/xtables-addons-2.6/geoip/*.csv
-rm -rf /usr/share/xt_geoip/*
-cd /usr/src/xtables-addons-2.6/geoip/
-./xt_geoip_dl
-./xt_geoip_build -D /usr/share/xt_geoip *.csv
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Setting the cronjob:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;chmod +x 0update_maxmind
-mv 0update_maxmind /etc/cront.monthly/
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;References I found useful:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://xtables-addons.sourceforge.net/geoip.php&#34;&gt;http://xtables-addons.sourceforge.net/geoip.php&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.internetstaff.com/frustrate-ssh-scanners-geoip-iptables-blocking/&#34;&gt;https://www.internetstaff.com/frustrate-ssh-scanners-geoip-iptables-blocking/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.linode.com/stackscripts/view/3807-jeffkyjin-ipp2p+filtering&#34;&gt;https://www.linode.com/stackscripts/view/3807-jeffkyjin-ipp2p+filtering&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     

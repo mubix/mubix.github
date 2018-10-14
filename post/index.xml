@@ -6,10 +6,26 @@
     <description>Recent content in Posts on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Sep 2018 09:30:44 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 14 Oct 2018 09:30:44 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Wifi Feature Request: WPA handshakes</title>
+      <link>https://malicious.link/post/2018/wifi-feature-request-wpa-handshakes/</link>
+      <pubDate>Sun, 14 Oct 2018 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2018/wifi-feature-request-wpa-handshakes/</guid>
+      <description>&lt;p&gt;I have a bit of a feature request for all wireless assessment tools out there:&lt;/p&gt;
+
+&lt;p&gt;Many times before arriving on site for an assessment, I&amp;rsquo;ll know the ESSIDs of a target wireless network for a client. Getting channels and BSSIDs isn&amp;rsquo;t usually an option. Also, many times during the assessment I&amp;rsquo;m performing there are physical aspects to it, like guards or cameras, so sitting down in the lobby and typing out commands to De-auth that client or BSSID isn&amp;rsquo;t really great OPSEC. SO this is my ask:&lt;/p&gt;
+
+&lt;p&gt;Please make a mode or setting where I can specify a ESSID ahead of time (so I am only targeting the client networks I know of) that I can just leave running on a RaspberryPI or other small device + wireless card in my backpack. This mode would then search for WPA-PSK APs with that name, find ones with clients on it by hopping, deauth and try to capture the handshake, but would then go-back to hopping after a few minutes if failing (as I&amp;rsquo;m probably walking around the inside and outside of the building). A nice to have would that it would then exclude that network from the list provided and move on. Possibly also going after the ones with the most clients in the list automatically would be a plus as well.&lt;/p&gt;
+
+&lt;p&gt;The end result would be that I would have a couple WPA handshakes that I could then crack off-line just by walking around the building doing other things.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Erlang Authenticated Remote Code Execution</title>
@@ -1006,178 +1022,6 @@ mubix&lt;/p&gt;
 &lt;p&gt;Direct Link to Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1yzL7Y7TAP-b4Bu9j2pYsaB2VyTXEK0C_NJ19aezIFms/&#34;&gt;https://docs.google.com/spreadsheets/d/1yzL7Y7TAP-b4Bu9j2pYsaB2VyTXEK0C_NJ19aezIFms/&lt;/a&gt;&lt;/p&gt;
 
 &lt;iframe height=&#34;1200&#34; width=&#34;900&#34; src=&#34;https://docs.google.com/spreadsheets/d/1yzL7Y7TAP-b4Bu9j2pYsaB2VyTXEK0C_NJ19aezIFms/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Buying Internal Domain Access</title>
-      <link>https://malicious.link/post/2016/buying-internal-domain-access/</link>
-      <pubDate>Thu, 29 Dec 2016 07:35:28 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2016/buying-internal-domain-access/</guid>
-      <description>
-
-&lt;p&gt;&lt;strong&gt;NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;For anyone who knows me, they know that I&amp;rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&amp;rsquo;t quite explain. It all started with the following hypothesis:&lt;/p&gt;
-
-&lt;p&gt;Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.&lt;/p&gt;
-
-&lt;p&gt;This has already been proven with attacks like &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt; and other attacks that aim to &lt;a href=&#34;https://blog.ahmednabeel.com/abusing-kerberos-to-ntlm-fallback-to-defeat-windows-authentication/&#34;&gt;bypass BitLocker Full-Disk Encryption&lt;/a&gt;. So I added a twist, I thought that maybe, just maybe, that Windows will automatically add a &lt;code&gt;.com&lt;/code&gt; on to the end of these requests when attempting to find them. If I buy these domains then there is a chance I can gain &lt;strong&gt;code execution&lt;/strong&gt; using Group Policy or supplying logon scripts (BAT files).&lt;/p&gt;
-
-&lt;p&gt;Why do I think this? Because of past Def Con talks like:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;DEFCON 19: Bit-squatting: DNS Hijacking Without Exploitation
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=aT7mnSstKGs&#34;&gt;https://www.youtube.com/watch?v=aT7mnSstKGs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;DEFCON 21 - DNS May Be Hazardous to Your Health - Robert Stucke
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=ZPbyDSvGasw&#34;&gt;https://www.youtube.com/watch?v=ZPbyDSvGasw&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;But&amp;hellip; how on earth would you ever know what a internal domain controller is called? I started by searching for pastebin posts with &lt;code&gt;%LOGONSERVER%&lt;/code&gt;. This netted a few results, but when I searched for the same thing on gist.github.com I found something pretty surprising:&lt;/p&gt;
-
-&lt;h3 id=&#34;microsoft&#34;&gt;Microsoft&lt;/h3&gt;
-
-&lt;p&gt;Yes, I found a gist by what seems to be a Microsoft employee:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;Source:
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://gist.github.com/AArnott/8b39bd70630302f5c630&#34;&gt;https://gist.github.com/AArnott/8b39bd70630302f5c630&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;has been deleted  - w00tw00t!!&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;em&gt;(To Microsoft, I&amp;rsquo;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;WE INTERRUPT THIS BLOG POST TO TALK ABOUT THE SERIOUS OSINT TREASURE THESE TYPES FILES AND ENVIRONMENTAL VARIABLES ARE&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;We will break down a few of the pieces that provide OSINT value:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;COMPUTERNAME = ANDARNO-X1
-USERDNSDOMAIN = REDMOND.CORP.MICROSOFT.COM
-USERDOMAIN = REDMOND
-USERDOMAIN_ROAMINGPROFILE = REDMOND
-USERNAME = andarno
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Full domain name, user and computer name help to identify what the naming schemes are internally.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ChocolateyInstall = C:\ProgramData\chocolatey
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://chocolatey.org/&#34;&gt;Chocolatey&lt;/a&gt; is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;SSH_AGENT_PID = 9316
-SSH_AUTH_SOCK = /tmp/ssh-rbPyaDrkXVLz/agent.10020
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Honestly I&amp;rsquo;ve never seen these options on a Windows box so I&amp;rsquo;m going to assume they are the result of &lt;a href=&#34;https://www.cygwin.com/&#34;&gt;Cygwin&lt;/a&gt; being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence &lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;beyond the standard Run keys&lt;/a&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Path =
-C:\Users\andarno\git\VSIXSuppression\packages\Nerdbank.GitVersioning.1.1.2-rc\build\NativeBinaries/amd64
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\CommonExtensions\Microsoft\TestWindow
-C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.5
-C:\Program Files (x86)\MSBuild\14.0\bin
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\BIN
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools;C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\VCPackages
-C:\Program Files (x86)\HTML Help Workshop
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Performance Tools
-C:\Program Files (x86)\Windows Kits\10\bin\x86
-C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\
-C:\Users\andarno\tools\ConEmuPack
-C:\Users\andarno\tools\ConEmuPack\ConEmu
-C:\WINDOWS\system32
-C:\WINDOWS
-C:\WINDOWS\System32\Wbem
-C:\WINDOWS\System32\WindowsPowerShell\v1.0\
-C:\Program Files (x86)\Git\cmd
-C:\WINDOWS\system32\config\systemprofile\.dnx\bin
-C:\Program Files\Microsoft DNX\Dnvm\
-C:\Program Files\Microsoft SQL Server\120\Tools\Binn\
-C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\
-C:\Program Files (x86)\nodejs\
-C:\Users\andarno\.dnx\runtimes\dnx-clr-win-x86.1.0.0-beta7-12328\bin
-C:\Users\andarno\.dnx\bin
-c:\users\andarno\tools
-C:\Users\andarno\AppData\Local\Code\bin
-C:\ProgramData\chocolatey\bin
-C:\Users\andarno\AppData\Roaming\npm
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Anyone who has ever done &lt;a href=&#34;https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/&#34;&gt;DLL hijacking / preloading&lt;/a&gt; will see a lot of opportunities in a PATH variable this gigantic.&lt;/p&gt;
-
-&lt;p&gt;There is a lot more fun to be had in similar output pasted across the Internet but lets get back to our regularly scheduled blog post. Here is the juice:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;LOGONSERVER = \\CO1-RED-DC-11
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This probably means that 01, 02, and so on exist as well, but I decided just to go with a simple PoC and use the DC that I knew existed. After registering &lt;code&gt;c01-red-dc-11.com&lt;/code&gt;, almost immediately I started to get DNS requests:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ns1.co1-red-dc-11.com
-wap.co1-red-dc-11.com
-www.co1-red-dc-11.com
-mail.co1-red-dc-11.com
-m.co1-red-dc-11.com
-co1-red-dc-11.com
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The &lt;code&gt;ns1&lt;/code&gt; and &lt;code&gt;www&lt;/code&gt; were mostly just Internet scanners, but I did see a bunch of interesting requests&lt;/p&gt;
-
-&lt;h4 id=&#34;mail-co1-red-dc-11-com&#34;&gt;mail.co1-red-dc-11.com&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;101 total queries in the first 24 hours&lt;/li&gt;
-&lt;li&gt;27 unique servers querying&lt;/li&gt;
-&lt;li&gt;Query types: A/AAAA/ANY/CNAME/MX/NS/SOA/TXT&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;m-co1-red-dc-11-com&#34;&gt;m.co1-red-dc-11.com&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;1 total query in the first 24 hours&lt;/li&gt;
-&lt;li&gt;1 unique servers querying&lt;/li&gt;
-&lt;li&gt;Query types: A&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;co1-red-dc-11-com&#34;&gt;co1-red-dc-11.com&lt;/h4&gt;
-
-&lt;ul&gt;
-&lt;li&gt;1841 total queries in the first 24 hours&lt;/li&gt;
-&lt;li&gt;777 unique servers querying&lt;/li&gt;
-&lt;li&gt;Query types: A/A6/AAAA/ANY/CNAME/DNSKEY/HINFO/MX/NAPTR/NS/PTR/SOA/SPF/SRV/TXT&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I have no idea if any of these DNS requests were by real Microsoft domain joined systems but looking at the contents of the requests I assume that a few were.&lt;/p&gt;
-
-&lt;h2 id=&#34;analysis&#34;&gt;Analysis&lt;/h2&gt;
-
-&lt;p&gt;I did this with a few other &lt;code&gt;%LOGONSERVER%&lt;/code&gt;s and had similar DNS requests. I didn&amp;rsquo;t see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain &lt;code&gt;SITTINGDUCK.INFO&lt;/code&gt; and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.&lt;/p&gt;
-
-&lt;p&gt;In my lab I was able to get authentication requests and code execution by using Impacket&amp;rsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py&#34;&gt;karmaSMB.py&lt;/a&gt; to send my victim a false &lt;code&gt;Logon.bat&lt;/code&gt; very similar to the setup for &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt;. Let me reiterate something:&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Is this conclusive proof?&lt;/strong&gt; Certainly not, but it&amp;rsquo;s a start and I&amp;rsquo;m interested in what ya&amp;rsquo;ll find.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Why might this work more than it has in the past?&lt;/strong&gt; Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I&amp;rsquo;m bitter ;), it was actually my primary reason for buying a Mac).&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;How can you find the LOGONSERVER of your client?&lt;/strong&gt; Well, it&amp;rsquo;s pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.&lt;/p&gt;
-
-&lt;h2 id=&#34;one-more-thing&#34;&gt;One More Thing&amp;hellip;&lt;/h2&gt;
-
-&lt;p&gt;I also tried to think in generalities, and yes, I am the proud owner of &lt;code&gt;DC01.com&lt;/code&gt; which gets about 20 requests per second&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;::evil laugh::&lt;/strong&gt;&lt;/p&gt;
 </description>
     </item>
     

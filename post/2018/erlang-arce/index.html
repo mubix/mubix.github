@@ -6,7 +6,7 @@
 
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.49.2" />
+<meta name="generator" content="Hugo 0.42.2" />
 
 
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
@@ -98,21 +98,21 @@ ga('create', 'UA-198967-1', 'auto');
 
 <p><a href="http://erlang.org/faq/introduction.html">Erlang is a programming language</a> that I have tried to learn a few times in the past but never really dug in, that is, until recently.</p>
 
-<p>Erlange is an interesting language because it has <a href="http://erlang.org/faq/introduction.html">&ldquo;built-in concurrency, distribution, and fault tolerence&rdquo;</a>. To me, this means that it does job queing and distributed tasks right out of the gate.</p>
+<p>Erlang is an interesting language because it has <a href="http://erlang.org/faq/introduction.html">&ldquo;built-in concurrency, distribution, and fault tolerance&rdquo;</a>. To me, this means that it does job queuing and distributed tasks right out of the gate.</p>
 
 <h3 id="a-little-bit-of-history">A little bit of history</h3>
 
-<p>I first started digging into Erlang again from an attackers point of view at <a href="https://www.bsidesphilly.org/">BSides Philadelphia</a> 2016, where I talked about SolarWinds ORION. I was in the audience making last minute changes to my slides when I happened upon an &ldquo;erlang-node&rdquo; port (25672) listening. You can watch the video here (I&rsquo;ve jumped ahead to the part about the erlang port):</p>
+<p>I first started digging into Erlang again from an attackers point of view at <a href="https://www.bsidesphilly.org/">BSides Philadelphia</a> 2016, where I talked about SolarWinds ORION. I was in the audience making last minute changes to my slides when I happened upon an &ldquo;erlang-node&rdquo; port (25672) listening. You can watch the video here (I&rsquo;ve jumped ahead to the part about the Erlang port):</p>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VXUPyod6vqw?start=240" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
-<p>After I gave that talk I asked around <a href="http://novahackers.blogspot.com/p/how-to-join-and-rules.html">NoVA Hackers</a>. Luckily one such individual did, and that&rsquo;s why I love what NoVA Hackers has grown into, but this post isn&rsquo;t about that.</p>
+<p>After I gave that talk, I asked around <a href="http://novahackers.blogspot.com/p/how-to-join-and-rules.html">NoVA Hackers</a>. Luckily one such individual did, and that&rsquo;s why I love what NoVA Hackers has grown into, but this post isn&rsquo;t about that.</p>
 
-<p>With a little bit of back and forth with what I was trying to accomplish, we worked out the the needed requirements for code exection.</p>
+<p>With a little bit of back and forth with what I was trying to accomplish, we worked out the needed requirements for code execution.</p>
 
 <h3 id="erlnag-nodes">Erlnag Nodes</h3>
 
-<p>Erlang uses &ldquo;Nodes&rdquo; to execution code. As far as I can tell (and I&rsquo;ll probably be corrected) but you must run a node to execute any type of erlang code, so everything written in Erlang (RabbitMQ, CouchDB, etc) must be running a node. Erlang nodes are identified by their hostname. For my SolarWinds box, it&rsquo;s <code>WIN-PM0ID6F0AHN</code>. This is the easiest piece of information to acquire for the authenticated RCE.</p>
+<p>Erlang uses &ldquo;Nodes&rdquo; to execution code. As far as I can tell (and I&rsquo;ll probably be corrected) but you must run a node to execute any Erlang code, so everything written in Erlang (RabbitMQ, CouchDB, etc.) must be running a node. Erlang nodes are identified by their hostname. For my SolarWinds box, it&rsquo;s <code>WIN-PM0ID6F0AHN</code>. This is the most straightforward piece of information to acquire for the authenticated RCE.</p>
 
 <h3 id="the-cookie">The Cookie</h3>
 

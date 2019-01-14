@@ -6,7 +6,7 @@
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.52" />
+<meta name="generator" content="Hugo 0.53" />
 
 
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
@@ -98,6 +98,21 @@ ga('create', 'UA-198967-1', 'auto');
 			</div>
 			<ul id="post-list">
                 	
+				<li>
+					<div class="post-list-item">
+						<div class="post-header">
+							<h4 class="post-link"><a href="https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/">Multiple Dictionaries or Wordlists Using John the Ripper</a></h4>
+							<h4 class="post-date">Sep 12, 2011</h4>
+						</div>
+						<div class="post-summary"><p>John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way:
+ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt
+This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).</p></div>
+						<div class="post-list-footer text-center">
+							<a href="https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/">Read More</a>
+						</div>
+					</div>
+				</li>
+			
 				<li>
 					<div class="post-list-item">
 						<div class="post-header">
@@ -227,20 +242,6 @@ Here is the link to the ticket about the change (link) and the revision (r13057)
 						<div class="post-summary"><p>I&rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)</p></div>
 						<div class="post-list-footer text-center">
 							<a href="https://malicious.link/post/2011/2011-07-13-gpu-cracking-complaints/">Read More</a>
-						</div>
-					</div>
-				</li>
-			
-				<li>
-					<div class="post-list-item">
-						<div class="post-header">
-							<h4 class="post-link"><a href="https://malicious.link/post/2011/2011-07-07-nova-hackers-3-years-old-and-still-going-strong/">NoVA Hackers - 3 years old and still going strong</a></h4>
-							<h4 class="post-date">Jul 7, 2011</h4>
-						</div>
-						<div class="post-summary"><p>I missed the 3 year anniversary of NoVA Hackers but I did want to make a post about it since we are still going strong and are now at ~150 active members.
-Chris Gates and I started this thing together back in October of 2008 which spawned off of Chris&rsquo; idea to start a AHA (Austin Hackers Association)-like group in NoVA. It&rsquo;s ideals merged with the already going NoVA Security Luncheons that I was throwing in Reston VA and DC was where it all started.</p></div>
-						<div class="post-list-footer text-center">
-							<a href="https://malicious.link/post/2011/2011-07-07-nova-hackers-3-years-old-and-still-going-strong/">Read More</a>
 						</div>
 					</div>
 				</li>
@@ -418,7 +419,7 @@ Chris Gates and I started this thing together back in October of 2008 which spaw
 			<div class="push"></div>
 		</div>
 		<footer class="footer text-center">
-<p>Copyright &copy; 2018 Malicious.Link -
+<p>Copyright &copy; 2019 Malicious.Link -
 <span class="credit">
 	Powered by
 	<a target="_blank" href="https://gohugo.io">Hugo</a>

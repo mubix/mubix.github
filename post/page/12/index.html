@@ -101,21 +101,6 @@ ga('create', 'UA-198967-1', 'auto');
 				<li>
 					<div class="post-list-item">
 						<div class="post-header">
-							<h4 class="post-link"><a href="https://malicious.link/post/2012/2012-09-06-completely-in-memory-mimikatz-with-metasploit/">Completely In-memory Mimikatz with Metasploit</a></h4>
-							<h4 class="post-date">Sep 6, 2012</h4>
-						</div>
-						<div class="post-summary"><p>Executing WCE.exe in memory as demoed by Egypt here: https://community.rapid7.com/community/metasploit/blog/2012/05/08/eternal-sunshine-of-the-spotless-ram has two issues with it. 1, you leave a file on disk with your hashes and clear text passwords. That just won&rsquo;t do. 2. There is this DLL called WCEAUX.dll that gets written for the briefest second to disk:
-(yes I realize I&rsquo;m running this on disk &lsquo;wce32.exe&rsquo;, but it exhibits the same DLL drop when doing in-memory)
-Now, don&rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&rsquo;s the best tool for the job.</p></div>
-						<div class="post-list-footer text-center">
-							<a href="https://malicious.link/post/2012/2012-09-06-completely-in-memory-mimikatz-with-metasploit/">Read More</a>
-						</div>
-					</div>
-				</li>
-			
-				<li>
-					<div class="post-list-item">
-						<div class="post-header">
 							<h4 class="post-link"><a href="https://malicious.link/post/2012/2012-09-02-old-school-on-target-nbns-spoofing-part-2/">Old School On-target NBNS Spoofing - Part 2</a></h4>
 							<h4 class="post-date">Sep 2, 2012</h4>
 						</div>
@@ -248,6 +233,24 @@ You can pull the fork w/ branch from here: https://github.com/webstersprodigy/m
 And as soon as you do you can start doing this (using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded):</p></div>
 						<div class="post-list-footer text-center">
 							<a href="https://malicious.link/post/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/">Read More</a>
+						</div>
+					</div>
+				</li>
+			
+				<li>
+					<div class="post-list-item">
+						<div class="post-header">
+							<h4 class="post-link"><a href="https://malicious.link/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Bypassing Trend Micro&#39;s Service Protection</a></h4>
+							<h4 class="post-date">Jul 5, 2012</h4>
+						</div>
+						<div class="post-summary"><p>@jabjorkhaug posed the following question on Twitter today:
+I figured I could solve this and it would be an interesting challenge. Here is what it gets detected as:
+The service binary that is used as part of PSEXEC is located here:
+MSF Directory/data/templates/src/pe/exe/service/service.c
+The important part to look at starts at line 57:
+#define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE	8192 char cServiceName[32] = &quot;SERVICENAME&quot;; char bPayload[PAYLOAD_SIZE] = &quot;PAYLOAD:&quot;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.</p></div>
+						<div class="post-list-footer text-center">
+							<a href="https://malicious.link/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Read More</a>
 						</div>
 					</div>
 				</li>

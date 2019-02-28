@@ -6,7 +6,7 @@
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.53" />
+<meta name="generator" content="Hugo 0.54.0" />
 
 
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
@@ -98,6 +98,22 @@ ga('create', 'UA-198967-1', 'auto');
 			</div>
 			<ul id="post-list">
                 	
+				<li>
+					<div class="post-list-item">
+						<div class="post-header">
+							<h4 class="post-link"><a href="https://malicious.link/post/2016/wpad-persistence/">WPAD Persistence</a></h4>
+							<h4 class="post-date">May 22, 2016</h4>
+						</div>
+						<div class="post-summary"><p>Mostly just writing this so I can keep notes.
+Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
+I did this via PowerShell pretty easily on one of the domain controllers like so:
+PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.</p></div>
+						<div class="post-list-footer text-center">
+							<a href="https://malicious.link/post/2016/wpad-persistence/">Read More</a>
+						</div>
+					</div>
+				</li>
+			
 				<li>
 					<div class="post-list-item">
 						<div class="post-header">
@@ -220,21 +236,6 @@ and instead, show you the results once it&rsquo;s setup:</p></div>
 The follow is my current wishlist.</p></div>
 						<div class="post-list-footer text-center">
 							<a href="https://malicious.link/post/2015/intel-nuc-super-server/">Read More</a>
-						</div>
-					</div>
-				</li>
-			
-				<li>
-					<div class="post-list-item">
-						<div class="post-header">
-							<h4 class="post-link"><a href="https://malicious.link/post/2015/meterpreter-show-mount/">Meterpreter show_mount</a></h4>
-							<h4 class="post-date">Nov 2, 2015</h4>
-						</div>
-						<div class="post-summary"><p>Meterpreter’s STDAPI extension (the one that always gets loaded) has a new command. This doesn’t happen very often so it’s worth noting.
-The new command prints out the currently attached “mounts”. In windows world, that means the normal CD ROM, C drive, etc, but it also means all of the mounted network drives as well.
-This gets very interesting when you happen to find yourself in a VM environment where you can start writing files to the host:</p></div>
-						<div class="post-list-footer text-center">
-							<a href="https://malicious.link/post/2015/meterpreter-show-mount/">Read More</a>
 						</div>
 					</div>
 				</li>

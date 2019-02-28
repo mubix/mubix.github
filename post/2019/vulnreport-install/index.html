@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title> VulnReport Install &middot;  </title>
+
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="generator" content="Hugo 0.54.0" />
+
+
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://malicious.link/css/nix.css">
+
+
+<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-198967-1', 'auto');
+	  ga('send', 'pageview');
+
+</script>
+
+
+    </head>
+
+    <body>
+        <header>
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
+		</div>
+
+		
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://malicious.link/">/home/mubix</a>
+				</li>
+
+				
+				
+				<li >
+					<a href="/brandon">~/brandon</a>
+				</li>
+				
+				
+				<li >
+					<a href="/start">~/start</a>
+				</li>
+				
+				
+				<li >
+					<a href="/about">~/about</a>
+				</li>
+				
+				
+				<li >
+					<a href="/post">~/posts</a>
+				</li>
+				
+
+			</ul>
+		</div>
+	</div>
+</nav>
+</header>
+
+        <div class="container wrapper">
+            <h1><a href="https://malicious.link/post/2019/vulnreport-install/">VulnReport Install</a></h1>
+            <span class="post-date">Feb 28, 2019 </span>
+            <div class="post-content">
+                
+
+<p>A co-worker referenced a pretty cool tool released by <a href="https://twitter.com/SecureCloudDev">@SalesForce&rsquo;s security team</a> called &ldquo;<a href="http://vulnreport.io">VulnReport</a>&ldquo;</p>
+
+<p><a href="http://vulnreport.io"><img src="/images/2019/vulnreport_web.png" alt="" /></a></p>
+
+<p>I wanted to try it out so I checked out their Github report to start the install: <a href="https://github.com/salesforce/vulnreport">https://github.com/salesforce/vulnreport</a> - but there really wasn&rsquo;t much in the way of documentation on how to get it rolling unless you were deploying it to a Heroku app. I&rsquo;m not really a fan of putting vulnerability information, especially Red Team findings into the cloud so I decided to deploy it locally. Here are the steps I went through to install it and get it up and running:</p>
+
+<p><strong>Note:</strong> I started with a Debian 9.3 ISO that I had on-hand, if you use another repo your mileage may vary.</p>
+
+<h4 id="install-dependancies">Install dependancies:</h4>
+
+<p>This project uses Ruby, and many of the gems needed for the project require compiling in libraries.</p>
+
+<ul>
+<li><code>apt install -y git ruby ruby-dev ruby-bundler build-essential libssl-dev libpq-dev zlib1g-dev postgresql-server-dev-all authbind</code></li>
+</ul>
+
+<p>Next we install a Redis and Postgres server. If you already have these on the system or wish to use an established server on another systems you can most definitely do that instead of this step.</p>
+
+<ul>
+<li><code>apt install -y redis-server postgresql</code></li>
+</ul>
+
+<h4 id="setup-database">Setup Database</h4>
+
+<p>Next we just need to create the database and user we will be using for the database:</p>
+
+<pre><code>root@vulnreportio:~# su - postgres
+postgres@vulnreportio:~$ createuser -P vulnreportuser
+Enter password for new role: vulnreportpassword (NOT DISPLAYED)
+Enter it again: vulnreportpassword (NOT DISPLAYED)
+postgres@vulnreportio:~$ createdb -O vulnreportuser vulnreportdb
+postgres@vulnreportio:~$ exit
+logout
+root@vulnreportio:~#
+</code></pre>
+
+<h4 id="clone-the-repo">Clone the repo</h4>
+
+<p>Toss the repo in <code>/opt/</code> so that we can run this under another user to better secure it later but just for example we&rsquo;ll get this running as <code>root</code>.</p>
+
+<pre><code>root@vulnreportio:~# cd /opt/
+root@vulnreportio:/opt# git clone https://github.com/salesforce/vulnreport
+Cloning into 'vulnreport'...
+remote: Enumerating objects: 1191, done.
+remote: Total 1191 (delta 0), reused 0 (delta 0), pack-reused 1191
+Receiving objects: 100% (1191/1191), 2.93 MiB | 3.92 MiB/s, done.
+Resolving deltas: 100% (694/694), done.
+root@vulnreportio:/opt# cd vulnreport/
+root@vulnreportio:/opt/vulnreport#
+</code></pre>
+
+<h4 id="setup-ruby">Setup Ruby</h4>
+
+<p>At the current version the Ruby version is fixed to <code>2.1.2</code> but works just fine with later versions so you can remove the fixed Ruby version in the <code>Gemfile</code>:</p>
+
+<pre><code>root@vulnreportio:/opt/vulnreport# bundle install
+Don't run Bundler as root. Bundler can ask for sudo if it is needed, and installing your bundle as root will break this application for all non-root users on this machine.
+Your Ruby version is 2.3.3, but your Gemfile specified 2.1.2
+</code></pre>
+
+<p>Just comment out the line and things should work:</p>
+
+<p><img src="/images/2019/vulnreport_gemfile.png" alt="" /></p>
+
+<pre><code>root@vulnreportio:/opt/vulnreport# bundle install
+Don't run Bundler as root. Bundler can ask for sudo if it is needed, and installing your bundle as root will break this application for all non-root users on this
+machine.
+Fetching gem metadata from https://rubygems.org/..............
+Fetching version metadata from https://rubygems.org/...
+Fetching dependency metadata from https://rubygems.org/..
+Installing i18n 0.7.0
+Using json 1.8.3
+Installing minitest 5.8.4
+Installing thread_safe 0.3.5
+Installing addressable 2.4.0
+Installing builder 3.2.2
+Installing mini_portile2 2.0.0
+Installing bcrypt 3.1.11 with native extensions
+Installing chronic 0.10.2
+Installing daemons 1.2.3
+Installing fastercsv 1.5.5
+Installing json_pure 1.8.3
+Installing multi_json 1.11.3
+Installing stringex 1.5.1
+Installing uuidtools 2.1.5
+Installing dotenv 2.1.1
+Installing eventmachine 1.0.7 with native extensions
+Installing multi_xml 0.5.5
+Installing rack 1.6.4
+Installing systemu 2.6.5
+Installing mime-types-data 3.2016.0221
+Installing multipart-post 2.0.0
+Installing nori 2.6.0
+Installing oauth 0.5.1
+Installing pdfkit 0.8.2
+Installing pg 0.18.4 with native extensions
+Installing redis 3.3.0
+Installing rubyzip 1.2.0
+Installing rufus-scheduler 3.2.0
+Installing tilt 2.0.2
+Installing wkhtmltopdf-heroku 2.12.3.0
+Installing xml-simple 1.1.5
+Installing yard 0.8.7.6
+Installing yard-dm 0.1.1
+Using bundler 1.13.6
+Installing tzinfo 1.2.2
+Installing dm-core 1.2.1
+Installing data_objects 0.10.17
+Installing gyoku 1.3.1
+Installing nokogiri 1.6.7.2 with native extensions
+Installing bcrypt-ruby 3.1.5
+Installing rollbar 2.10.0
+Installing httparty 0.13.7
+Installing httpi 2.4.1
+Installing rack-protection 1.5.3
+Installing rack-ssl 1.4.1
+Installing rack_csrf 2.5.0
+Installing thin 1.6.4 with native extensions
+Installing macaddr 1.7.1
+Installing mime-types 3.0
+Installing rforce 0.13
+Installing yard-sinatra 1.0.0
+Installing activesupport 4.2.6
+Installing dm-aggregates 1.2.0
+Installing dm-constraints 1.2.0
+Installing dm-migrations 1.2.0
+Installing dm-serializer 1.2.2
+Installing dm-timestamps 1.2.0
+Installing dm-transactions 1.2.0
+Installing dm-validations 1.2.0
+Installing dm-do-adapter 1.2.0
+Installing do_postgres 0.10.17 with native extensions
+Installing akami 1.3.1
+Installing dm-types 1.2.2
+Installing wasabi 3.5.0
+Installing sinatra 1.4.7
+Installing uuid 2.3.8
+Installing mail 2.6.4
+Installing dm-postgres-adapter 1.2.0
+Installing data_mapper 1.2.0
+Installing savon 2.11.1
+Installing ruby-saml 1.0.0
+Installing pony 1.11
+Bundle complete! 29 Gemfile dependencies, 73 gems now installed.
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+Post-install message from bcrypt-ruby:
+
+#######################################################
+
+The bcrypt-ruby gem has changed its name to just bcrypt.  Instead of
+installing `bcrypt-ruby`, you should install `bcrypt`.  Please update your
+dependencies accordingly.
+
+#######################################################
+
+Post-install message from httparty:
+When you HTTParty, you must party hard!
+</code></pre>
+
+<h4 id="configure-vulnreport">Configure VulnReport</h4>
+
+<ul>
+<li>Create a <code>.env</code> file that looks like this:</li>
+</ul>
+
+<pre><code>export RACK_ENV=production
+export VR_SESSION_SECRET=ADD_RANDOM_STRING_HERE
+export DATABASE_URL=postgres://vulnreportuser:vulnreportpassword@localhost:5432/vulnreportdb
+export REDIS_URL=redis://localhost:6379/
+export ROLLBAR_ACCESS_TOKEN=ROLLBARTOKEN
+</code></pre>
+
+<p><img src="/images/2019/vulnreport_env.png" alt="" /></p>
+
+<p>Next we want to replace the <code>VR_SESSION_SECRET</code> with a strong relatively random string. I used a <code>sha256</code> hash of a OpenSSL random string. It&rsquo;s definitely not perfect random but it&rsquo;s in the good-enough realm that it would be very hard for someone to brute force it.</p>
+
+<p><code>sed -i  &quot;s/ADD_RANDOM_STRING_HERE/$(openssl rand -base64 32 | sha256sum | cut -d ' ' -f 1 )/&quot; .env</code></p>
+
+<p>After we are done we&rsquo;ll have something like this:</p>
+
+<pre><code>root@vulnreportio:/opt/vulnreport# cat .env
+export RACK_ENV=production
+export VR_SESSION_SECRET=0e40e9367e35bc7f6f6a0e1966a8c108c87b7f6a60e96c119779ae3b1dc08352
+export DATABASE_URL=postgres://vulnreportuser:vulnreportpassword@localhost:5432/vulnreportdb
+export REDIS_URL=redis://localhost:6379/
+export ROLLBAR_ACCESS_TOKEN=ROLLBARTOKEN
+</code></pre>
+
+<h4 id="create-a-self-signed-cert">Create a self-signed cert</h4>
+
+<p>VulnReport looks for it&rsquo;s SSL certificate in the same directory as it&rsquo;s started in and called <code>server.key</code> so we create a self-signed certifcate in the same directory as the git repo:</p>
+
+<pre><code>root@vulnreportio:/opt/vulnreport# openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
+
+Generating a RSA private key
+........+++++
+.......................................................+++++
+writing new private key to 'server.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:
+State or Province Name (full name) [Some-State]:
+Locality Name (eg, city) []:
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:
+Organizational Unit Name (eg, section) []:
+Common Name (e.g. server FQDN or YOUR name) []:
+Email Address []:
+
+root@vulnreportio:/opt/vulnreport# ls -alh server.*
+-rw-r--r-- 1 root root 1.3K Feb 28 19:56 server.crt
+-rw------- 1 root root 1.7K Feb 28 19:56 server.key
+</code></pre>
+
+<p>Of course feel free to put in any information you wish in the certificate, I just went with the defaults to make it easy.</p>
+
+<h4 id="start-vulnreport">Start VulnReport</h4>
+
+<p>First we need to SEED the database with information and tables using the <code>SEED.rb</code> file:</p>
+
+<pre><code>root@vulnreportio:/opt/vulnreport# ruby SEED.rb
+
+
+Vulnreport 3.0.3 seed script
+WARNING: This script should be run ONCE immediately after deploying and then DELETED
+
+Setting up Vulnreport now...
+
+Setting up the PostgreSQL database...
+        Done
+
+Seeding the database...
+        Done
+
+User ID 1 created for you
+
+
+ALL DONE! :)
+Login to Vulnreport now and go through the rest of the settings!
+</code></pre>
+
+<p>Then we can start up the application:</p>
+
+<pre><code>root@vulnreportio:/opt/vulnreport# ./start.sh
+Using rack adapter
+[28/Feb/2019 19:59:02] WARNING: RUNNING IN DEVELOPMENT ENVIRONMENT
+[28/Feb/2019 19:59:02] Dev environment: CRON JOBS SCHEDULER NOT ENABLED
+[28/Feb/2019 19:59:02] VRCron Registered: Monthly Allocation Notification
+[28/Feb/2019 19:59:02]  Type: cron, Schedule: 0 7 1 * *
+[28/Feb/2019 19:59:02]  Cron registered as not enabled, did not schedule
+[28/Feb/2019 19:59:02] VRCron Registered: Monthly Allocation Preset
+[28/Feb/2019 19:59:02]  Type: cron, Schedule: 0 0 1 * *
+[28/Feb/2019 19:59:02]  Cron registered as not enabled, did not schedule
+Thin web server (v1.6.4 codename Gob Bluth)
+Maximum connections set to 1024
+Listening on 0.0.0.0:443, CTRL+C to stop
+</code></pre>
+
+<p>Once it&rsquo;s started, we can log in with the default user <code>admin</code> and the default password <code>admin</code> which is quite hilariously ironic for a vulnerability reporting platform. I think the SEED file should be updated to add a vulnerability report example including the default password for it&rsquo;s own service.</p>
+
+<p><img src="/images/2019/vulnreport_start.png" alt="" /></p>
+
+<p>There are quite a few bugs that I&rsquo;ve run into that result in a &lsquo;NulClass&rsquo;. I think this is the result of lacking enough SEED data. But once you create a user, vuln, or whatever, you&rsquo;ll get this error but the creat will go through and you only really see this error once per action type.</p>
+
+<p><img src="/images/2019/vulnreport_nilclass.png" alt="" /></p>
+
+<p>Side note: I submitted this install guide as a short version to the repository itself because of the lacking installation steps here: <a href="https://github.com/salesforce/vulnreport/pull/30">https://github.com/salesforce/vulnreport/pull/30</a> but they require you to sign a document before they will accept pull requests: <a href="https://cla.salesforce.com/sign-cla">https://cla.salesforce.com/sign-cla</a>. I don&rsquo;t really have time to look over that document nor do I want to spend the time to get a lawyer to do so, so I will leave it at making a blog post about how to install it and hope that is enough to help others get this installed.</p>
+
+            </div>
+            
+            <div class="post-comments">
+                
+            </div>
+            
+            <div class="push"></div>
+        </div>
+        <footer class="footer text-center">
+<p>Copyright &copy; 2019 Malicious.Link -
+<span class="credit">
+	Powered by
+	<a target="_blank" href="https://gohugo.io">Hugo</a>
+	and
+	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
+</span>
+</p>
+
+</footer>
+
+    </body>

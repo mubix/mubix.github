@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Redteam on </title>
-    <link>https://malicious.link/tags/redteam/</link>
-    <description>Recent content in Redteam on </description>
+    <title>Redteam on malicious.link</title>
+    <link>/tags/redteam/</link>
+    <description>Recent content in Redteam on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 28 Feb 2019 09:30:44 -0500</lastBuildDate>
     
-        <atom:link href="https://malicious.link/tags/redteam/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/redteam/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>VulnReport Install</title>
-      <link>https://malicious.link/post/2019/vulnreport-install/</link>
+      <link>/post/2019/vulnreport-install/</link>
       <pubDate>Thu, 28 Feb 2019 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2019/vulnreport-install/</guid>
+      <guid>/post/2019/vulnreport-install/</guid>
       <description>
 
 &lt;p&gt;A co-worker referenced a pretty cool tool released by &lt;a href=&#34;https://twitter.com/SecureCloudDev&#34;&gt;@SalesForce&amp;rsquo;s security team&lt;/a&gt; called &amp;ldquo;&lt;a href=&#34;http://vulnreport.io&#34;&gt;VulnReport&lt;/a&gt;&amp;ldquo;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://vulnreport.io&#34;&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_web.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://vulnreport.io&#34;&gt;&lt;img src=&#34;/images/2019/vulnreport_web.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;I wanted to try it out so I checked out their Github report to start the install: &lt;a href=&#34;https://github.com/salesforce/vulnreport&#34;&gt;https://github.com/salesforce/vulnreport&lt;/a&gt; - but there really wasn&amp;rsquo;t much in the way of documentation on how to get it rolling unless you were deploying it to a Heroku app. I&amp;rsquo;m not really a fan of putting vulnerability information, especially Red Team findings into the cloud so I decided to deploy it locally. Here are the steps I went through to install it and get it up and running:&lt;/p&gt;
 
@@ -81,7 +81,7 @@ Your Ruby version is 2.3.3, but your Gemfile specified 2.1.2
 
 &lt;p&gt;Just comment out the line and things should work:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_gemfile.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_gemfile.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# bundle install
 Don&#39;t run Bundler as root. Bundler can ask for sudo if it is needed, and installing your bundle as root will break this application for all non-root users on this
@@ -191,7 +191,7 @@ export REDIS_URL=redis://localhost:6379/
 export ROLLBAR_ACCESS_TOKEN=ROLLBARTOKEN
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_env.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_env.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Next we want to replace the &lt;code&gt;VR_SESSION_SECRET&lt;/code&gt; with a strong relatively random string. I used a &lt;code&gt;sha256&lt;/code&gt; hash of a OpenSSL random string. It&amp;rsquo;s definitely not perfect random but it&amp;rsquo;s in the good-enough realm that it would be very hard for someone to brute force it.&lt;/p&gt;
 
@@ -284,11 +284,11 @@ Listening on 0.0.0.0:443, CTRL+C to stop
 
 &lt;p&gt;Once it&amp;rsquo;s started, we can log in with the default user &lt;code&gt;admin&lt;/code&gt; and the default password &lt;code&gt;admin&lt;/code&gt; which is quite hilariously ironic for a vulnerability reporting platform. I think the SEED file should be updated to add a vulnerability report example including the default password for it&amp;rsquo;s own service.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_start.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_start.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;There are quite a few bugs that I&amp;rsquo;ve run into that result in a &amp;lsquo;NulClass&amp;rsquo;. I think this is the result of lacking enough SEED data. But once you create a user, vuln, or whatever, you&amp;rsquo;ll get this error but the creat will go through and you only really see this error once per action type.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_nilclass.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_nilclass.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Side note: I submitted this install guide as a short version to the repository itself because of the lacking installation steps here: &lt;a href=&#34;https://github.com/salesforce/vulnreport/pull/30&#34;&gt;https://github.com/salesforce/vulnreport/pull/30&lt;/a&gt; but they require you to sign a document before they will accept pull requests: &lt;a href=&#34;https://cla.salesforce.com/sign-cla&#34;&gt;https://cla.salesforce.com/sign-cla&lt;/a&gt;. I don&amp;rsquo;t really have time to look over that document nor do I want to spend the time to get a lawyer to do so, so I will leave it at making a blog post about how to install it and hope that is enough to help others get this installed.&lt;/p&gt;
 </description>

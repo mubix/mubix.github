@@ -1,98 +1,132 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
     <head>
-        <title> Metasploit Payloads Explained - Part 1b &middot;  </title>
-
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.54.0" />
-
-
-<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author"
+    content="mubix">
+<meta name="description"
+    content="This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (more info). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).
+Here is the link to the ticket about the change (link) and the revision (r13057)" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/" />
 
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-
-
-<link rel="stylesheet" href="https://malicious.link/css/nix.css">
-
-
-<link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans|Roboto|Montserrat|Concert+One" rel="stylesheet">
+<title>
+    
+    Metasploit Payloads Explained - Part 1b :: malicious.link  — welcome
+    
+</title>
 
 
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-				  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Source+Code+Pro" rel="stylesheet"
+    type="text/css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
 
-ga('create', 'UA-198967-1', 'auto');
-	  ga('send', 'pageview');
 
-</script>
+<link rel="stylesheet" href="/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="theme-color" content="#252627">
+<meta itemprop="name" content="Metasploit Payloads Explained - Part 1b">
+<meta itemprop="description" content="This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (more info). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).
+Here is the link to the ticket about the change (link) and the revision (r13057)">
+
+
+<meta itemprop="datePublished" content="2011-07-17T07:49:34&#43;00:00" />
+<meta itemprop="dateModified" content="2011-07-17T07:49:34&#43;00:00" />
+<meta itemprop="wordCount" content="749">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Metasploit Payloads Explained - Part 1b"/>
+<meta name="twitter:description" content="This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (more info). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).
+Here is the link to the ticket about the change (link) and the revision (r13057)"/>
+
+
+
+<meta property="article:section" content="metasploit" />
+<meta property="article:section" content="payloads" />
+
+<meta property="article:published_time" content="2011-07-17 07:49:34 &#43;0000 &#43;0000" />
+
+
+
+
+
+
 
 
     </head>
 
-    <body>
-        <header>
-<nav class="navbar navbar-default navbar-fixed-top navbar-inverse font-header">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" id="green-terminal" href=https://malicious.link/>mubix@malicious.link ~ $</a>
-		</div>
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/post/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">boot mubix.kernel</span>
+            <span class="logo__cursor"></span>
+        
+    </div>
+</a>
 
-		
-		<div class="collapse navbar-collapse" id="navbar-collapse-1">
-			<ul class="nav navbar-nav navbar-right">
-				<li>
-					<a href="https://malicious.link/">/home/mubix</a>
-				</li>
 
-				
-				
-				<li >
-					<a href="/brandon">~/brandon</a>
-				</li>
-				
-				
-				<li >
-					<a href="/start">~/start</a>
-				</li>
-				
-				
-				<li >
-					<a href="/about">~/about</a>
-				</li>
-				
-				
-				<li >
-					<a href="/post">~/posts</a>
-				</li>
-				
-
-			</ul>
-		</div>
-	</div>
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">About</a></li><li><a href="/brandon">Brandon</a></li><li><a href="/post">Posts</a></li><li><a href="/start">Start</a></li>
+    </ul>
 </nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
 </header>
 
-        <div class="container wrapper">
-            <h1><a href="https://malicious.link/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/">Metasploit Payloads Explained - Part 1b</a></h1>
-            <span class="post-date">Jul 17, 2011 </span>
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="/post/2011/2011-07-17-metasploit-payloads-explained-part-1b/">Metasploit Payloads Explained - Part 1b</a></h2>
+
+            
+
             <div class="post-content">
                 <p>This series was interrupted a bit by the new Metasploit HTTP/HTTPS payloads (<a href="https://community.rapid7.com/community/metasploit/blog/2011/06/29/meterpreter-httphttps-communication">more info</a>). Definitely not complaining though as the new features *(as will be discussed in part 2) are some epic new additions to the payloads list. However an important change happened while the craziness over the new payloads was going on. ScriptJunkie snuck in an awesome change to msfvenom (a.k.a. msffsm).</p>
 
@@ -160,23 +194,56 @@ echo Done..
 <p>(You&rsquo;ll also notice that one of the payloads is going somewhere else.. no reason to not give your payloads every chance of getting out) Sharing is caring right?</p>
 
             </div>
-            
-            <div class="post-comments">
-                
-            </div>
-            
-            <div class="push"></div>
-        </div>
-        <footer class="footer text-center">
-<p>Copyright &copy; 2019 Malicious.Link -
-<span class="credit">
-	Powered by
-	<a target="_blank" href="https://gohugo.io">Hugo</a>
-	and
-	<a target="_blank" href="https://github.com/LordMathis/hugo-theme-nix/">Nix</a> theme.
-</span>
-</p>
+        </article>
 
+        <hr />
+
+        <div class="post-info">
+  			</div>
+
+        
+          <div id="comments" class="thin">
+</div>
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2019</span>
+            
+            <span></span>
+            <span> <a href="/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/rhazdon">rhazdon</a></span>
+        </div>
+    </div>
 </footer>
 
+            
+        </div>
+
+        
+
+
+
+
+
+<script type="text/javascript" src="/js/bundle.4b80fbbfab88198dcef181b034822e60a3e68b1c128d1dc05392a32943a18ec2f866fbcd9ce31dcf84134397161647ad605ea5c25ecf12e5fcf9d28b47e64bb5.js" integrity="sha512-S4D7v6uIGY3O8YGwNIIuYKPmixwSjR3AU5KjKUOhjsL4ZvvNnOMdz4QTQ5cWFketYF6lwl7PEuX8&#43;dKLR&#43;ZLtQ=="></script>
+
+
+
     </body>
+</html>

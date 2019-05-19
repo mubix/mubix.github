@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Proxy on </title>
-    <link>https://malicious.link/categories/proxy/</link>
-    <description>Recent content in Proxy on </description>
+    <title>Proxy on malicious.link</title>
+    <link>/categories/proxy/</link>
+    <description>Recent content in Proxy on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 10 Sep 2013 13:16:39 -0500</lastBuildDate>
     
-        <atom:link href="https://malicious.link/categories/proxy/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/categories/proxy/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Changing proxychains hardcoded DNS server</title>
-      <link>https://malicious.link/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</link>
+      <link>/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</link>
       <pubDate>Tue, 10 Sep 2013 13:16:39 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</guid>
+      <guid>/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</guid>
       <description>&lt;p&gt;If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it.&lt;/p&gt;
 
 &lt;p&gt;There isn&amp;rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
@@ -43,10 +43,10 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
     
     <item>
       <title>Setting SYSTEM&#39;s proxy settings with Metasploit</title>
-      <link>https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</link>
+      <link>/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</link>
       <pubDate>Sun, 21 Oct 2012 07:40:11 +0000</pubDate>
       
-      <guid>https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
+      <guid>/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
       <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)&lt;/p&gt;
 
 &lt;p&gt;Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.&lt;/p&gt;
@@ -65,15 +65,15 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
 
 &lt;p&gt;Enter enum_proxy:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_proxy_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;And&amp;hellip;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_proxy_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If you&amp;rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Output from it finding a disabled RemoteRegistry:&lt;/p&gt;
 
@@ -91,7 +91,7 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
 
 &lt;p&gt;Enter clone_proxy_settings module:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_proxy_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;And thats it. Still working on an actual &amp;ldquo;set_proxy&amp;rdquo; module, but this should do for now, and a lot less to type.&lt;/p&gt;
 
@@ -106,10 +106,10 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
     
     <item>
       <title>Lab Setup - Windows Proxy and Egress Filtering</title>
-      <link>https://malicious.link/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</link>
+      <link>/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</link>
       <pubDate>Sat, 06 Oct 2012 03:02:45 +0000</pubDate>
       
-      <guid>https://malicious.link/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
+      <guid>/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
 
 &lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
@@ -118,11 +118,11 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
 
 &lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_egress_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;With the following ports listening:&lt;/p&gt;
 
@@ -146,21 +146,21 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
 
 &lt;p&gt;PeerBlock can be found here: &lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;http://www.peerblock.com&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_3.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.peerblock.com/releases&#34;&gt;&lt;img src=&#34;/images/postimages/201210_egress_3.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;And is simple to set up as well (next-&amp;gt;next-&amp;gt;finish applies).&lt;/p&gt;
 
 &lt;p&gt;Go into List Manager once you have it installed and &amp;ldquo;Create a List&amp;rdquo;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
 
@@ -168,7 +168,7 @@ dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
 
 &lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;
 </description>

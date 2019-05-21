@@ -72,7 +72,7 @@
 
     </head>
 
-    <body class="dark-theme">
+    <body class="">
         <div class="container">
             <header class="header">
     <span class="header__inner">
@@ -136,18 +136,20 @@
 <ul>
 <li>This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole</li>
 </ul></li>
-<li><code>msf&gt; spool ~/myclient.log</code>
+
+<li><p><code>msf&gt; spool ~/myclient.log</code></p>
 
 <ul>
-<li>The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell. My one gripe about this one is that it doesn&rsquo;t log the actual command you issued.
-*
-<code>
-msf&gt; set ConsoleLogging true  
+<li><p>The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell. My one gripe about this one is that it doesn&rsquo;t log the actual command you issued.
+*</p>
+
+<pre><code>msf&gt; set ConsoleLogging true  
 msf&gt; set LogLevel 5  
 msf&gt; set SessionLogging true  
 msf&gt; set TimestampOutput true
-</code></li>
-<li>These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued</li>
+</code></pre></li>
+
+<li><p>These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued</p></li>
 </ul></li>
 </ul>
 

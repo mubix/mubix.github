@@ -7,8 +7,8 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&amp;rsquo;t cover is the fact that there isn&amp;rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
- cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&amp;rsquo;t record what you are doing inside of msfconsole  msf&amp;gt; spool ~/myclient." />
+    content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&#39;t cover is the fact that there isn&#39;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
+ cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&#39;t record what you are doing inside of msfconsole   msf&amp;gt; spool ~/myclient." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2011/2011-10-09-msfconsole-prompt-fiddling/" />
@@ -28,7 +28,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,21 +39,18 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="MSFConsole Prompt Fiddling">
-<meta itemprop="description" content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
- cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole  msf&gt; spool ~/myclient.">
-
-
+<meta itemprop="description" content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&#39;t cover is the fact that there isn&#39;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
+ cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&#39;t record what you are doing inside of msfconsole   msf&gt; spool ~/myclient.">
 <meta itemprop="datePublished" content="2011-10-09T06:20:22&#43;00:00" />
 <meta itemprop="dateModified" content="2011-10-09T06:20:22&#43;00:00" />
-<meta itemprop="wordCount" content="617">
+<meta itemprop="wordCount" content="616">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="MSFConsole Prompt Fiddling"/>
-<meta name="twitter:description" content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
- cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole  msf&gt; spool ~/myclient."/>
+<meta name="twitter:description" content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&#39;t cover is the fact that there isn&#39;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
+ cat ~/.msf4/logs/framework.log  This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&#39;t record what you are doing inside of msfconsole   msf&gt; spool ~/myclient."/>
 
 
 
@@ -127,55 +124,39 @@
             
 
             <div class="post-content">
-                <p>In @<a href="http://twitter.com/carnal0wnage">carnal0wnage</a> and my presentation at <a href="http://www.derbycon.com/">DerbyCon</a> 2011 we talked about using <a href="http://linux.die.net/man/1/screen">SCREEN</a> and <a href="http://linux.die.net/man/1/script">SCRIPT</a> to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:</p>
-
+                <p>In @<a href="http://twitter.com/carnal0wnage">carnal0wnage</a> and my presentation at <a href="http://www.derbycon.com/">DerbyCon</a> 2011 we talked about using <a href="http://linux.die.net/man/1/screen">SCREEN</a> and <a href="http://linux.die.net/man/1/script">SCRIPT</a> to keep connections live / use them across SSH sessions, and log everything that happens. What we didn't cover is the fact that there isn't a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:</p>
 <ul>
 <li><code>cat ~/.msf4/logs/framework.log</code>
-
 <ul>
-<li>This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole</li>
-</ul></li>
-
-<li><p><code>msf&gt; spool ~/myclient.log</code></p>
-
+<li>This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn't record what you are doing inside of msfconsole</li>
+</ul>
+</li>
+<li><code>msf&gt; spool ~/myclient.log</code>
 <ul>
-<li><p>The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell. My one gripe about this one is that it doesn&rsquo;t log the actual command you issued.
-*</p>
-
+<li>The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell. My one gripe about this one is that it doesn't log the actual command you issued.</li>
+</ul>
+</li>
+<li></li>
+</ul>
 <pre><code>msf&gt; set ConsoleLogging true  
 msf&gt; set LogLevel 5  
 msf&gt; set SessionLogging true  
 msf&gt; set TimestampOutput true
-</code></pre></li>
-
-<li><p>These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued</p></li>
-</ul></li>
+</code></pre><ul>
+<li>These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued</li>
 </ul>
-
-<p>Plenty of logging right? But none of them really &lsquo;log everything&rsquo; and time stamps are not a regular occurrence in them. Cool, but we need both. We&rsquo;ve got the &lsquo;log everything&rsquo; with the Linux &lsquo;script&rsquo; command, we just need a way to inject time stamps into our log.</p>
-
-<hr />
-
+<p>Plenty of logging right? But none of them really &lsquo;log everything&rsquo; and time stamps are not a regular occurrence in them. Cool, but we need both. We've got the &lsquo;log everything&rsquo; with the Linux &lsquo;script&rsquo; command, we just need a way to inject time stamps into our log.</p>
+<hr>
 <p><strong>Enter the ever mutable &lsquo;msf&gt;&rsquo; prompt:</strong></p>
-
-<hr />
-
+<hr>
 <p>A lesser known variable in MSFConsole is &lsquo;PROMPT&rsquo;. You can set this pretty much like any other OS can, however there are some metasploit specific things you can add. Using a three letter abbreviation you can even add color to it.</p>
-
 <p>For example lets add our hostname to our prompt:</p>
-
 <p><code>msf&gt; set PROMPT %H</code></p>
-
 <p>changes msf&gt; to myhostname&gt;</p>
-
 <p>And you can combine and add things that you wish:</p>
-
 <p><code>set PROMPT %H Just more text %U</code></p>
-
 <p>changes the prompt to:  myattackmachine Just more text mubix&gt; (%U is username)</p>
-
 <p>For reference here are the other working % variables that I know of:</p>
-
 <ul>
 <li><strong>%D</strong> = Current local directory (not sure if this changes when in meterpreter or not for the victims dir, that would be cool)</li>
 <li><strong>%H</strong> = Host name (again, would be cool if this changed when in meterpreter)</li>
@@ -185,25 +166,15 @@ msf&gt; set TimestampOutput true
 <li><strong>%T</strong> = Time stamp</li>
 <li><strong>%U</strong> = Username (yes, would be awesome if this changed in meterpreter too)</li>
 </ul>
-
-<p>Now if you wanted to add colors to that, all you would do is use something like %grn%T to make the time stamp green. You&rsquo;ll have to play around with the color&rsquo;s names as I don&rsquo;t know them all. %red %blu %blk etc&hellip;</p>
-
-<p>Combine all of that with script and you&rsquo;ve got something awesome. I set my PROMPT to:</p>
-
+<p>Now if you wanted to add colors to that, all you would do is use something like %grn%T to make the time stamp green. You'll have to play around with the color's names as I don't know them all. %red %blu %blk etc&hellip;</p>
+<p>Combine all of that with script and you've got something awesome. I set my PROMPT to:</p>
 <pre><code>msf&gt; set PROMPT %T S:%S J:%J
 1970-01-01 00:00:00 +0000 S:0 J:0&gt;
-</code></pre>
-
-<p>This gives me the number of jobs and sessions and has the time stamp every time I throw a command, so in my logs I can very easily narrow down the exact time when I did or didnt&rsquo; do something. The number of sessions and jobs are just good to know items.</p>
-
-<hr />
-
+</code></pre><p>This gives me the number of jobs and sessions and has the time stamp every time I throw a command, so in my logs I can very easily narrow down the exact time when I did or didnt&rsquo; do something. The number of sessions and jobs are just good to know items.</p>
+<hr>
 <p><strong>Throw in one more trick to make the whole thing a cake walk:</strong></p>
-
-<hr />
-
-<p>In your ~/.msf4 directory, if you haven&rsquo;t already, create a file called &lsquo;msfconsole.rc&rsquo;. This magical file will run every time you start msfconsole (<em>with the express exception of when you specify a resource file to run from the command line using the -r argument</em>). Throw your &lsquo;set PROMPT %blah %blah %blah&rsquo; in there formatted however you like, and now whenever you start msfconsole you&rsquo;ll have your handy dandy timestamp.</p>
-
+<hr>
+<p>In your ~/.msf4 directory, if you haven't already, create a file called &lsquo;msfconsole.rc&rsquo;. This magical file will run every time you start msfconsole (<em>with the express exception of when you specify a resource file to run from the command line using the -r argument</em>). Throw your &lsquo;set PROMPT %blah %blah %blah&rsquo; in there formatted however you like, and now whenever you start msfconsole you'll have your handy dandy timestamp.</p>
 <p>Shout out to @<a href="http://twitter.com/egyp7">egyp7</a> for showing me this.</p>
 
             </div>
@@ -226,7 +197,7 @@ msf&gt; set TimestampOutput true
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

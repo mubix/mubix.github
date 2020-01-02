@@ -16,38 +16,25 @@
       <pubDate>Wed, 29 Jan 2014 18:07:08 -0500</pubDate>
       
       <guid>https://malicious.link/post/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/</guid>
-      <description>&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;Quick update&lt;/strong&gt;: As &lt;a href=&#34;http://twitter.com/mikedamm&#34;&gt;@MikeDamm&lt;/a&gt; &lt;a href=&#34;http://twitter.com/mikedamm/status/428725199068864512&#34;&gt;points out&lt;/a&gt;, xargs has a &lt;code&gt;-P&lt;/code&gt; option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use &lt;code&gt;-P 0&lt;/code&gt; to do the same thing as &lt;code&gt;-j0&lt;/code&gt; with parallel, but if your version doesn&amp;rsquo;t support the &lt;code&gt;0&lt;/code&gt; you can simply use the same number parallel uses ala:&lt;/p&gt;
-
+      <description>&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;Quick update&lt;/strong&gt;: As &lt;a href=&#34;http://twitter.com/mikedamm&#34;&gt;@MikeDamm&lt;/a&gt; &lt;a href=&#34;http://twitter.com/mikedamm/status/428725199068864512&#34;&gt;points out&lt;/a&gt;, xargs has a &lt;code&gt;-P&lt;/code&gt; option that can do the same thing I&#39;m using parallel for. If you have a supported version of xargs you can use &lt;code&gt;-P 0&lt;/code&gt; to do the same thing as &lt;code&gt;-j0&lt;/code&gt; with parallel, but if your version doesn&#39;t support the &lt;code&gt;0&lt;/code&gt; you can simply use the same number parallel uses ala:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;This results in roughly the same completion time as it&amp;rsquo;s parallel counterpart. Thanks @MikeDamm!&lt;/p&gt;
-
-&lt;hr /&gt;
-
+&lt;p&gt;This results in roughly the same completion time as it&#39;s parallel counterpart. Thanks @MikeDamm!&lt;/p&gt;
+&lt;hr&gt;
 &lt;p&gt;There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)&lt;/p&gt;
-
 &lt;p&gt;Here is what I do:&lt;/p&gt;
-
-&lt;p&gt;First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at &lt;a href=&#34;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&#34;&gt;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&lt;/a&gt; (with a few minor tweaks). If you haven&amp;rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:&lt;/p&gt;
-
+&lt;p&gt;First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at &lt;a href=&#34;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&#34;&gt;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&lt;/a&gt; (with a few minor tweaks). If you haven&#39;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Now, xargs is great but does one thing at a time and can be quite slow if your subdomains list is large. With the use of the amazing tool GNU parallel you can get done in a matter of seconds, well, that or knock over your home router.&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;cat subdomains.txt | parallel -k -j0 dig +noall {}.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)&lt;/p&gt;
-
 &lt;p&gt;with an output something list this:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
 Raising ulimit -n or /etc/security/limits.conf may help.
 parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
@@ -194,8 +181,7 @@ bbs.microsoft.com.	0	IN	CNAME	transfer.microsoft.com.
 transfer.microsoft.com.	3600	IN	A	64.4.10.152
 backoffice.microsoft.com. 3600	IN	A	64.4.11.37
 backoffice.microsoft.com. 3600	IN	A	65.55.58.201
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
   </channel>

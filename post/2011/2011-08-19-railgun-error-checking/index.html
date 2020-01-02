@@ -8,7 +8,7 @@
     content="mubix">
 <meta name="description"
     content="One important thing to note about Railgun is that you are querying the API and just as if you were using C&#43;&#43; the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:
-For my example I&amp;rsquo;m using &amp;lsquo;getaddrinfo&amp;rsquo; since it&amp;rsquo;s life in Windows is somewhat odd." />
+For my example I&#39;m using &amp;lsquo;getaddrinfo&amp;rsquo; since it&#39;s life in Windows is somewhat odd." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2011/2011-08-19-railgun-error-checking/" />
@@ -28,7 +28,7 @@ For my example I&amp;rsquo;m using &amp;lsquo;getaddrinfo&amp;rsquo; since it&am
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -40,20 +40,17 @@ For my example I&amp;rsquo;m using &amp;lsquo;getaddrinfo&amp;rsquo; since it&am
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Railgun Error Checking">
 <meta itemprop="description" content="One important thing to note about Railgun is that you are querying the API and just as if you were using C&#43;&#43; the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:
-For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd.">
-
-
+For my example I&#39;m using &lsquo;getaddrinfo&rsquo; since it&#39;s life in Windows is somewhat odd.">
 <meta itemprop="datePublished" content="2011-08-19T02:13:01&#43;00:00" />
 <meta itemprop="dateModified" content="2011-08-19T02:13:01&#43;00:00" />
 <meta itemprop="wordCount" content="339">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Railgun Error Checking"/>
 <meta name="twitter:description" content="One important thing to note about Railgun is that you are querying the API and just as if you were using C&#43;&#43; the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:
-For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd."/>
+For my example I&#39;m using &lsquo;getaddrinfo&rsquo; since it&#39;s life in Windows is somewhat odd."/>
 
 
 
@@ -127,28 +124,16 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
 
             <div class="post-content">
                 <p>One important thing to note about Railgun is that you are querying the API and just as if you were using C++ the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:</p>
-
-<p>For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd. If a user has installed Windows 2000&rsquo;s IPv6 package it&rsquo;s there, if not, it&rsquo;s not. So if you run up on a WinNT box or a Win2k box that doesn&rsquo;t have an updater stack this function isn&rsquo;t going to work for you.</p>
-
+<p>For my example I'm using &lsquo;getaddrinfo&rsquo; since it's life in Windows is somewhat odd. If a user has installed Windows 2000's IPv6 package it's there, if not, it's not. So if you run up on a WinNT box or a Win2k box that doesn't have an updater stack this function isn't going to work for you.</p>
 <p>(Just as a side note, this is not dependant on the fuction being defined in Railgun already)</p>
-
 <p>getaddrinfo is in ws2_32.dll (WinSock), so we get a handle from that DLL first:</p>
-
-<pre><code class="language-ruby">modhandle = client.railgun.kernel32.GetModuleHandleA('ws2_32.dll')
-</code></pre>
-
-<p>If that returns a error in the form of a Ruby hash with &ldquo;GetLastError&rdquo; being &lsquo;127&rsquo; that means that ws2_32.dll is either not there in the process. You will need to get it loaded into the process by calling client.railgun.ws2_32 or whatever DLL you are going for. (If it is not definied in Railgun this will fail and you&rsquo;ll have to add the dll like I&rsquo;ve talked about in previous posts)</p>
-
-<p>So it&rsquo;s pretty eash to handle that. If modhandle[&ldquo;return&rdquo;] == 0 something went wrong and we need to handle it, else we got a handle address and we can continue.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">modhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetModuleHandleA(<span style="color:#e6db74">&#39;ws2_32.dll&#39;</span>)
+</code></pre></div><p>If that returns a error in the form of a Ruby hash with &ldquo;GetLastError&rdquo; being &lsquo;127&rsquo; that means that ws2_32.dll is either not there in the process. You will need to get it loaded into the process by calling client.railgun.ws2_32 or whatever DLL you are going for. (If it is not definied in Railgun this will fail and you'll have to add the dll like I've talked about in previous posts)</p>
+<p>So it's pretty eash to handle that. If modhandle[&ldquo;return&rdquo;] == 0 something went wrong and we need to handle it, else we got a handle address and we can continue.</p>
 <p>Next up is GetProcAddress:</p>
-
-<pre><code class="language-ruby">procaddr = client.railgun.kernel32.GetProcAddress(modhandle['return'], 'getaddrinfo')
-</code></pre>
-
-<p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt&rsquo; exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
-
-<p>Easy stuff, doing this on any of the Railgun scripts/post modules you have will greatly increase both the reliability and the user&rsquo;s ability to know why it didn&rsquo;t work.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">procaddr <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetProcAddress(modhandle<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>, <span style="color:#e6db74">&#39;getaddrinfo&#39;</span>)
+</code></pre></div><p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt&rsquo; exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
+<p>Easy stuff, doing this on any of the Railgun scripts/post modules you have will greatly increase both the reliability and the user's ability to know why it didn't work.</p>
 
             </div>
         </article>
@@ -170,7 +155,7 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

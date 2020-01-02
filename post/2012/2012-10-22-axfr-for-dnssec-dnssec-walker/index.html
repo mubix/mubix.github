@@ -30,7 +30,7 @@ One that I came across is Marc “van Hauser” Heuse’s talk on IPv6 titled �
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -45,16 +45,13 @@ One that I came across is Marc “van Hauser” Heuse’s talk on IPv6 titled �
 I like to go through slides of cons I can’t make it out to, and Hack-in-the-Box (HITB) Kul (Malaysia), was one such as they were very quick to release sides:
 http://conference.hitb.org/hitbsecconf2011kul/materials/
 One that I came across is Marc “van Hauser” Heuse’s talk on IPv6 titled “IPv6 Insecurity Revolutions” (Link directly to PDF on aforementioned materials link).">
-
-
 <meta itemprop="datePublished" content="2012-10-22T03:10:55&#43;00:00" />
 <meta itemprop="dateModified" content="2012-10-22T03:10:55&#43;00:00" />
 <meta itemprop="wordCount" content="606">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="AXFR for DNSSEC: DNSSEC Walker"/>
 <meta name="twitter:description" content="TL;DR – DNSSEC Walker traverses a domain’s DNSSEC records to locate it’s regular DNS records.
 I like to go through slides of cons I can’t make it out to, and Hack-in-the-Box (HITB) Kul (Malaysia), was one such as they were very quick to release sides:
@@ -133,43 +130,26 @@ One that I came across is Marc “van Hauser” Heuse’s talk on IPv6 titled �
 
             <div class="post-content">
                 <p><strong>TL;DR</strong> – DNSSEC Walker traverses a domain’s DNSSEC records to locate it’s regular DNS records.</p>
-
 <p>I like to go through slides of cons I can’t make it out to, and Hack-in-the-Box (HITB) Kul (Malaysia), was one such as they were very quick to release sides:</p>
-
 <p><a href="http://conference.hitb.org/hitbsecconf2011kul/materials/">http://conference.hitb.org/hitbsecconf2011kul/materials/</a></p>
-
 <p>One that I came across is Marc “van Hauser” Heuse’s talk on IPv6 titled “<a href="http://conference.hitb.org/hitbsecconf2012kul/materials/D1T2%20-%20Marc%20Heuse%20-%20IPv6%20Insecurity%20Revolutions.pdf">IPv6 Insecurity Revolutions</a>” (Link directly to PDF on aforementioned materials link). I definitely recommend checking it out as well as the IPv6 tools THC / Marc released (v2) here:</p>
-
 <p><a href="http://www.thc.org/thc-ipv6/">http://www.thc.org/thc-ipv6/</a></p>
-
 <p>Amazing tools, but one I could not locate in their batch was dnssecwalk (slide 41 for those following along)</p>
-
 <p>I found something that looks very similar here: <a href="http://josefsson.org/walker/">http://josefsson.org/walker/</a></p>
-
 <p>Released originally in 2001 by Simon Josefsson. If you read the TL;DR at the top, you pretty much know what to tool does, so I’ll take you through an example:</p>
-
 <p>To get this bad boy working (since it’s Perl) you need to use CPAN to install Net::DNS and Net::DNS::SEC</p>
-
-<p><strong>cpan Net::DNS</strong> (hit enter for defaults)<br />
+<p><strong>cpan Net::DNS</strong> (hit enter for defaults)    <br>
 <strong>cpan Net::DNS::SEC</strong> (same deal)</p>
-
 <p>Using the slide’s example of ripe.net (ARIN’s Euro brother) You simply point it at a domain:</p>
-
 <pre><code>./walker ripe.net
 ;; Walker by Simon Josefsson
 ;; $Id: walker,v 1.31 2005/09/20 10:16:30 jas Exp $
 ;; Net::DNS 0.68
 ;; Net::DNS::SEC 0.16
-</code></pre>
-
-<p>Then it just starts going. Unlike the tool in the slides it’s a very verbose tool and doesn’t have any “write output to file” option so piping to a file is recommended.</p>
-
+</code></pre><p>Then it just starts going. Unlike the tool in the slides it’s a very verbose tool and doesn’t have any “write output to file” option so piping to a file is recommended.</p>
 <pre><code>$ ./walker ripe.net &gt; output.txt &amp;
 [1] 32623
-</code></pre>
-
-<p>Then just run greps on it removing all of the DNS commenting with anything having a semicolon in it:</p>
-
+</code></pre><p>Then just run greps on it removing all of the DNS commenting with anything having a semicolon in it:</p>
 <pre><code>$ cat output.txt | grep -v ';' | grep IN
 ripe.net.       273     IN      SOA     pri.authdns.ripe.net. dns.ripe.net. (
 ripe.net.       17146   IN      A       193.0.6.139
@@ -212,9 +192,7 @@ _xmpp-server._tcp.ripe.net.     115     IN      RRSIG   SRV  5  4  900  20121120
                         NJpdcDaytdKNINLVCFYUJWRnXiTRFrXSi2cL4nJLGLQlt
 _xmpp-server._tcp.ripe.net.     2815    IN      RRSIG   NSEC  5
 (snipped)
-</code></pre>
-
-<p>But of course in side 40 it shows that you can simply zone transfer ripe.net anyways. But for those that aren’t so forthcoming with their zones this can be a nice thing to try.</p>
+</code></pre><p>But of course in side 40 it shows that you can simply zone transfer ripe.net anyways. But for those that aren’t so forthcoming with their zones this can be a nice thing to try.</p>
 
             </div>
         </article>
@@ -236,7 +214,7 @@ _xmpp-server._tcp.ripe.net.     2815    IN      RRSIG   NSEC  5
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

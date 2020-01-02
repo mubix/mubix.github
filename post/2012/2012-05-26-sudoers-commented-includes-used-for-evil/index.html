@@ -9,7 +9,7 @@
 <meta name="description"
     content="I found a number of things interesting when reading the following post:
 http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/
-Too bad that nmap&amp;rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&amp;rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:" />
+Too bad that nmap&#39;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&#39;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2012/2012-05-26-sudoers-commented-includes-used-for-evil/" />
@@ -29,7 +29,7 @@ Too bad that nmap&amp;rsquo;s interactive mode was taken out, but there are a gr
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -42,21 +42,18 @@ Too bad that nmap&amp;rsquo;s interactive mode was taken out, but there are a gr
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="SUDOERS Commented Includes used for Evil">
 <meta itemprop="description" content="I found a number of things interesting when reading the following post:
 http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/
-Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:">
-
-
+Too bad that nmap&#39;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&#39;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:">
 <meta itemprop="datePublished" content="2012-05-26T05:33:00&#43;00:00" />
 <meta itemprop="dateModified" content="2012-05-26T05:33:00&#43;00:00" />
-<meta itemprop="wordCount" content="178">
+<meta itemprop="wordCount" content="179">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SUDOERS Commented Includes used for Evil"/>
 <meta name="twitter:description" content="I found a number of things interesting when reading the following post:
 http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/
-Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:"/>
+Too bad that nmap&#39;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&#39;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:"/>
 
 
 
@@ -132,27 +129,16 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
 
             <div class="post-content">
                 <p>I found a number of things interesting when reading the following post:</p>
-
 <p><a href="http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/">http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/</a></p>
-
-<p>Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. </p>
-
+<p>Too bad that nmap's interactive mode was taken out, but there are a great number of other such methods, most notably VI's shell mode. </p>
 <p>But when I started looking into appending or inserting lines into /etc/sudoers for <a href="http://www.nationalccdc.org/">CCDC</a>, I happened upon an interesting function of that file. Near the end of the file there are two lines:</p>
-
 <pre><code># See sudoers(5) for more information on &quot;#include&quot; directives:  
 #includedir /etc/sudoers.d
-</code></pre>
-
-<p>Both look commented out, but in actuality, exactly as-is the #includedir line is interpreted and acted upon. So any file that you put in the /etc/sudoers.d directory counts as an extension of the /etc/sudoers file. Make a small edit to the default README file with a bunch of added # commented out lines copied directly from the sudo man page, with a</p>
-
+</code></pre><p>Both look commented out, but in actuality, exactly as-is the #includedir line is interpreted and acted upon. So any file that you put in the /etc/sudoers.d directory counts as an extension of the /etc/sudoers file. Make a small edit to the default README file with a bunch of added # commented out lines copied directly from the sudo man page, with a</p>
 <p><strong>nobody ALL = NOPASSWD: ALL</strong></p>
-
 <p>or www-data plus a webshell makes for easy re-exploitation. Just an evil way to stay hidden on a &lsquo;nix box… </p>
-
-<p><strong>Update: </strong></p>
-
+<p>**Update: **</p>
 <p><code>nmap --script &lt;(echo &quot;os.execute('/bin/sh')&quot;)</code></p>
-
 <p>&lsquo;nuf said…  (thanks <a href="https://twitter.com/bonsaiviking">@bonsaiviking</a> )</p>
 
             </div>
@@ -175,7 +161,7 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

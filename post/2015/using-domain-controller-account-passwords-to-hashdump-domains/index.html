@@ -30,7 +30,7 @@ No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -45,16 +45,13 @@ No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
 @Carlos_Perez haha, if yes, it will be a 0d ;)
 No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
 &mdash; 🥝 Benjamin Delpy (@gentilkiwi) August 2, 2015  And then later on August 28th, again about the DC$ account (Domain Controller computer account):">
-
-
 <meta itemprop="datePublished" content="2015-09-15T07:35:28-05:00" />
 <meta itemprop="dateModified" content="2015-09-15T07:35:28-05:00" />
 <meta itemprop="wordCount" content="362">
 
 
 
-<meta itemprop="keywords" content="domain controllers,dcsync,hashdump,passwords,mimikatz," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="domain controllers,dcsync,hashdump,passwords,mimikatz," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Using Domain Controller Account Passwords To HashDump Domains"/>
 <meta name="twitter:description" content="Since I follow both Carlos Perez and Benjamin Delpy on Twitter, something caught my eye on August 2nd, soon after Benjamin Delpy drops DCSync:
 @Carlos_Perez haha, if yes, it will be a 0d ;)
@@ -132,35 +129,23 @@ No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
 
             <div class="post-content">
                 <p>Since I follow both <a href="https://twitter.com/carlos_perez">Carlos Perez</a> and <a href="https://twitter.com/gentilkiwi">Benjamin Delpy</a> on Twitter, something caught my eye on August 2nd, soon after <a href="https://twitter.com/gentilkiwi">Benjamin Delpy</a> drops <a href="https://twitter.com/gentilkiwi/status/627977943923490816">DCSync</a>:</p>
-
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/Carlos_Perez?ref_src=twsrc%5Etfw">@Carlos_Perez</a> haha, if yes, it will be a 0d ;)<br>No, like always it needs some rights ;) DA is cool, maybe DC$ is enough</p>&mdash; 🥝 Benjamin Delpy (@gentilkiwi) <a href="https://twitter.com/gentilkiwi/status/627980725074153473?ref_src=twsrc%5Etfw">August 2, 2015</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-
 <p>And then later on August 28th, again about the DC$ account (Domain Controller computer account):</p>
-
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/mimikatz?src=hash&amp;ref_src=twsrc%5Etfw">#mimikatz</a> DCSync make logs with &#39;Directory Service Access&#39; DS-Replication-Get-Changes*<br>Except if you use a DC account <a href="http://t.co/QAChOGU3z7">pic.twitter.com/QAChOGU3z7</a></p>&mdash; 🥝 Benjamin Delpy (@gentilkiwi) <a href="https://twitter.com/gentilkiwi/status/637402457740562432?ref_src=twsrc%5Etfw">August 28, 2015</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-
 <p>Because DCSync is calling on &ldquo;sync&rdquo; based APIs of Active Directory, that are, by default, used only by Domain Controllers, all Domain Controller computer accounts would have the ability to do this as well as the Domain/Enterprise Admins.</p>
-
-<p>Anyone who&rsquo;s ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?</p>
-
+<p>Anyone who's ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?</p>
 <p><a href="https://support.microsoft.com/en-us/kb/154501:">https://support.microsoft.com/en-us/kb/154501:</a></p>
-
 <blockquote>
 <p>&ldquo;Machine account passwords are regularly changed for security purposes. By default, on Windows NT-based computers, the machine account password automatically changes every <strong>seven days</strong>. Starting with Windows 2000-based computers, the machine account password automatically changes every <strong>30 days</strong>.&rdquo;</p>
 </blockquote>
-
 <p>PSSSST!! That article is about how to <strong>DISABLE</strong> automatic password changing</p>
-
-<p><img src="/images/2015/activedirectory_muhaha.jpg" alt="" /></p>
-
-<p>Alright. So, I&rsquo;m not going to go into &ldquo;how&rdquo; to get the hashes for a computer account, but if you&rsquo;ve ever dumped passwords before, the computer accounts are the ones with the &ldquo;$&rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py">Impacket&rsquo;s secretsdump.py</a> to your heart&rsquo;s content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don&rsquo;t change their passwords all at the same time in that 30 day window?)</p>
-
-<p>Remember, Domain Controller&rsquo;s don&rsquo;t have a lot of other permissions, so you need to use the &ldquo;<code>-just-dc</code>&rdquo; option in SecretsDump in order for it to just do the domain dump:</p>
-
+<p><img src="/images/2015/activedirectory_muhaha.jpg" alt=""></p>
+<p>Alright. So, I'm not going to go into &ldquo;how&rdquo; to get the hashes for a computer account, but if you've ever dumped passwords before, the computer accounts are the ones with the &ldquo;$&rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py">Impacket's secretsdump.py</a> to your heart's content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don't change their passwords all at the same time in that 30 day window?)</p>
+<p>Remember, Domain Controller's don't have a lot of other permissions, so you need to use the &ldquo;<code>-just-dc</code>&rdquo; option in SecretsDump in order for it to just do the domain dump:</p>
 <pre><code>python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
 
 Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies
@@ -170,9 +155,7 @@ Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
 Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
 krbtgt:502:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-</code></pre>
-
-<p>Happy #HackersDay</p>
+</code></pre><p>Happy #HackersDay</p>
 
             </div>
         </article>
@@ -194,7 +177,7 @@ krbtgt:502:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

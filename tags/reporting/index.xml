@@ -16,34 +16,21 @@
       <pubDate>Thu, 28 Feb 2019 09:30:44 -0500</pubDate>
       
       <guid>https://malicious.link/post/2019/vulnreport-install/</guid>
-      <description>
-
-&lt;p&gt;A co-worker referenced a pretty cool tool released by &lt;a href=&#34;https://twitter.com/SecureCloudDev&#34;&gt;@SalesForce&amp;rsquo;s security team&lt;/a&gt; called &amp;ldquo;&lt;a href=&#34;http://vulnreport.io&#34;&gt;VulnReport&lt;/a&gt;&amp;ldquo;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;http://vulnreport.io&#34;&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_web.png&#34; alt=&#34;&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I wanted to try it out so I checked out their Github report to start the install: &lt;a href=&#34;https://github.com/salesforce/vulnreport&#34;&gt;https://github.com/salesforce/vulnreport&lt;/a&gt; - but there really wasn&amp;rsquo;t much in the way of documentation on how to get it rolling unless you were deploying it to a Heroku app. I&amp;rsquo;m not really a fan of putting vulnerability information, especially Red Team findings into the cloud so I decided to deploy it locally. Here are the steps I went through to install it and get it up and running:&lt;/p&gt;
-
+      <description>&lt;p&gt;A co-worker referenced a pretty cool tool released by &lt;a href=&#34;https://twitter.com/SecureCloudDev&#34;&gt;@SalesForce&#39;s security team&lt;/a&gt; called &amp;ldquo;&lt;a href=&#34;http://vulnreport.io&#34;&gt;VulnReport&lt;/a&gt;&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;http://vulnreport.io&#34;&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_web.png&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I wanted to try it out so I checked out their Github report to start the install: &lt;a href=&#34;https://github.com/salesforce/vulnreport&#34;&gt;https://github.com/salesforce/vulnreport&lt;/a&gt; - but there really wasn&#39;t much in the way of documentation on how to get it rolling unless you were deploying it to a Heroku app. I&#39;m not really a fan of putting vulnerability information, especially Red Team findings into the cloud so I decided to deploy it locally. Here are the steps I went through to install it and get it up and running:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; I started with a Debian 9.3 ISO that I had on-hand, if you use another repo your mileage may vary.&lt;/p&gt;
-
 &lt;h4 id=&#34;install-dependancies&#34;&gt;Install dependancies:&lt;/h4&gt;
-
 &lt;p&gt;This project uses Ruby, and many of the gems needed for the project require compiling in libraries.&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;apt install -y git ruby ruby-dev ruby-bundler build-essential libssl-dev libpq-dev zlib1g-dev postgresql-server-dev-all authbind&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Next we install a Redis and Postgres server. If you already have these on the system or wish to use an established server on another systems you can most definitely do that instead of this step.&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;apt install -y redis-server postgresql&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h4 id=&#34;setup-database&#34;&gt;Setup Database&lt;/h4&gt;
-
 &lt;p&gt;Next we just need to create the database and user we will be using for the database:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:~# su - postgres
 postgres@vulnreportio:~$ createuser -P vulnreportuser
 Enter password for new role: vulnreportpassword (NOT DISPLAYED)
@@ -52,12 +39,8 @@ postgres@vulnreportio:~$ createdb -O vulnreportuser vulnreportdb
 postgres@vulnreportio:~$ exit
 logout
 root@vulnreportio:~#
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;clone-the-repo&#34;&gt;Clone the repo&lt;/h4&gt;
-
-&lt;p&gt;Toss the repo in &lt;code&gt;/opt/&lt;/code&gt; so that we can run this under another user to better secure it later but just for example we&amp;rsquo;ll get this running as &lt;code&gt;root&lt;/code&gt;.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;clone-the-repo&#34;&gt;Clone the repo&lt;/h4&gt;
+&lt;p&gt;Toss the repo in &lt;code&gt;/opt/&lt;/code&gt; so that we can run this under another user to better secure it later but just for example we&#39;ll get this running as &lt;code&gt;root&lt;/code&gt;.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:~# cd /opt/
 root@vulnreportio:/opt# git clone https://github.com/salesforce/vulnreport
 Cloning into &#39;vulnreport&#39;...
@@ -67,21 +50,13 @@ Receiving objects: 100% (1191/1191), 2.93 MiB | 3.92 MiB/s, done.
 Resolving deltas: 100% (694/694), done.
 root@vulnreportio:/opt# cd vulnreport/
 root@vulnreportio:/opt/vulnreport#
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;setup-ruby&#34;&gt;Setup Ruby&lt;/h4&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;setup-ruby&#34;&gt;Setup Ruby&lt;/h4&gt;
 &lt;p&gt;At the current version the Ruby version is fixed to &lt;code&gt;2.1.2&lt;/code&gt; but works just fine with later versions so you can remove the fixed Ruby version in the &lt;code&gt;Gemfile&lt;/code&gt;:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# bundle install
 Don&#39;t run Bundler as root. Bundler can ask for sudo if it is needed, and installing your bundle as root will break this application for all non-root users on this machine.
 Your Ruby version is 2.3.3, but your Gemfile specified 2.1.2
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Just comment out the line and things should work:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_gemfile.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Just comment out the line and things should work:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_gemfile.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# bundle install
 Don&#39;t run Bundler as root. Bundler can ask for sudo if it is needed, and installing your bundle as root will break this application for all non-root users on this
 machine.
@@ -175,41 +150,27 @@ dependencies accordingly.
 
 Post-install message from httparty:
 When you HTTParty, you must party hard!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;configure-vulnreport&#34;&gt;Configure VulnReport&lt;/h4&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;configure-vulnreport&#34;&gt;Configure VulnReport&lt;/h4&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Create a &lt;code&gt;.env&lt;/code&gt; file that looks like this:&lt;/p&gt;
-
+&lt;li&gt;Create a &lt;code&gt;.env&lt;/code&gt; file that looks like this:&lt;/li&gt;
+&lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;export RACK_ENV=production
 export VR_SESSION_SECRET=ADD_RANDOM_STRING_HERE
 export DATABASE_URL=postgres://vulnreportuser:vulnreportpassword@localhost:5432/vulnreportdb
 export REDIS_URL=redis://localhost:6379/
 export ROLLBAR_ACCESS_TOKEN=ROLLBARTOKEN
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_env.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Next we want to replace the &lt;code&gt;VR_SESSION_SECRET&lt;/code&gt; with a strong relatively random string. I used a &lt;code&gt;sha256&lt;/code&gt; hash of a OpenSSL random string. It&amp;rsquo;s definitely not perfect random but it&amp;rsquo;s in the good-enough realm that it would be very hard for someone to brute force it.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_env.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Next we want to replace the &lt;code&gt;VR_SESSION_SECRET&lt;/code&gt; with a strong relatively random string. I used a &lt;code&gt;sha256&lt;/code&gt; hash of a OpenSSL random string. It&#39;s definitely not perfect random but it&#39;s in the good-enough realm that it would be very hard for someone to brute force it.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;sed -i  &amp;quot;s/ADD_RANDOM_STRING_HERE/$(openssl rand -base64 32 | sha256sum | cut -d &#39; &#39; -f 1 )/&amp;quot; .env&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;After we are done we&amp;rsquo;ll have something like this:&lt;/p&gt;
-
+&lt;p&gt;After we are done we&#39;ll have something like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# cat .env
 export RACK_ENV=production
 export VR_SESSION_SECRET=0e40e9367e35bc7f6f6a0e1966a8c108c87b7f6a60e96c119779ae3b1dc08352
 export DATABASE_URL=postgres://vulnreportuser:vulnreportpassword@localhost:5432/vulnreportdb
 export REDIS_URL=redis://localhost:6379/
 export ROLLBAR_ACCESS_TOKEN=ROLLBARTOKEN
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h4 id=&#34;create-a-self-signed-cert&#34;&gt;Create a self-signed cert&lt;/h4&gt;
-
-&lt;p&gt;VulnReport looks for it&amp;rsquo;s SSL certificate in the same directory as it&amp;rsquo;s started in and called &lt;code&gt;server.key&lt;/code&gt; so we create a self-signed certifcate in the same directory as the git repo:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;create-a-self-signed-cert&#34;&gt;Create a self-signed cert&lt;/h4&gt;
+&lt;p&gt;VulnReport looks for it&#39;s SSL certificate in the same directory as it&#39;s started in and called &lt;code&gt;server.key&lt;/code&gt; so we create a self-signed certifcate in the same directory as the git repo:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
 
 Generating a RSA private key
@@ -235,14 +196,9 @@ Email Address []:
 root@vulnreportio:/opt/vulnreport# ls -alh server.*
 -rw-r--r-- 1 root root 1.3K Feb 28 19:56 server.crt
 -rw------- 1 root root 1.7K Feb 28 19:56 server.key
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Of course feel free to put in any information you wish in the certificate, I just went with the defaults to make it easy.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Of course feel free to put in any information you wish in the certificate, I just went with the defaults to make it easy.&lt;/p&gt;
 &lt;h4 id=&#34;start-vulnreport&#34;&gt;Start VulnReport&lt;/h4&gt;
-
 &lt;p&gt;First we need to SEED the database with information and tables using the &lt;code&gt;SEED.rb&lt;/code&gt; file:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# ruby SEED.rb
 
 
@@ -262,10 +218,7 @@ User ID 1 created for you
 
 ALL DONE! :)
 Login to Vulnreport now and go through the rest of the settings!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then we can start up the application:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we can start up the application:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@vulnreportio:/opt/vulnreport# ./start.sh
 Using rack adapter
 [28/Feb/2019 19:59:02] WARNING: RUNNING IN DEVELOPMENT ENVIRONMENT
@@ -279,17 +232,11 @@ Using rack adapter
 Thin web server (v1.6.4 codename Gob Bluth)
 Maximum connections set to 1024
 Listening on 0.0.0.0:443, CTRL+C to stop
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Once it&amp;rsquo;s started, we can log in with the default user &lt;code&gt;admin&lt;/code&gt; and the default password &lt;code&gt;admin&lt;/code&gt; which is quite hilariously ironic for a vulnerability reporting platform. I think the SEED file should be updated to add a vulnerability report example including the default password for it&amp;rsquo;s own service.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_start.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;There are quite a few bugs that I&amp;rsquo;ve run into that result in a &amp;lsquo;NulClass&amp;rsquo;. I think this is the result of lacking enough SEED data. But once you create a user, vuln, or whatever, you&amp;rsquo;ll get this error but the creat will go through and you only really see this error once per action type.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_nilclass.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Side note: I submitted this install guide as a short version to the repository itself because of the lacking installation steps here: &lt;a href=&#34;https://github.com/salesforce/vulnreport/pull/30&#34;&gt;https://github.com/salesforce/vulnreport/pull/30&lt;/a&gt; but they require you to sign a document before they will accept pull requests: &lt;a href=&#34;https://cla.salesforce.com/sign-cla&#34;&gt;https://cla.salesforce.com/sign-cla&lt;/a&gt;. I don&amp;rsquo;t really have time to look over that document nor do I want to spend the time to get a lawyer to do so, so I will leave it at making a blog post about how to install it and hope that is enough to help others get this installed.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Once it&#39;s started, we can log in with the default user &lt;code&gt;admin&lt;/code&gt; and the default password &lt;code&gt;admin&lt;/code&gt; which is quite hilariously ironic for a vulnerability reporting platform. I think the SEED file should be updated to add a vulnerability report example including the default password for it&#39;s own service.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_start.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;There are quite a few bugs that I&#39;ve run into that result in a &amp;lsquo;NulClass&amp;rsquo;. I think this is the result of lacking enough SEED data. But once you create a user, vuln, or whatever, you&#39;ll get this error but the creat will go through and you only really see this error once per action type.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/vulnreport_nilclass.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Side note: I submitted this install guide as a short version to the repository itself because of the lacking installation steps here: &lt;a href=&#34;https://github.com/salesforce/vulnreport/pull/30&#34;&gt;https://github.com/salesforce/vulnreport/pull/30&lt;/a&gt; but they require you to sign a document before they will accept pull requests: &lt;a href=&#34;https://cla.salesforce.com/sign-cla&#34;&gt;https://cla.salesforce.com/sign-cla&lt;/a&gt;. I don&#39;t really have time to look over that document nor do I want to spend the time to get a lawyer to do so, so I will leave it at making a blog post about how to install it and hope that is enough to help others get this installed.&lt;/p&gt;
 </description>
     </item>
     

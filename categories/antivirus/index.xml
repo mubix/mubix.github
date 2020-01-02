@@ -17,20 +17,15 @@
       
       <guid>https://malicious.link/post/2010/2010-08-03-av-tracker/</guid>
       <description>&lt;p&gt;Ever set up a multi/handler and get an odd IP hitting it? Probably forgot about it as internet chatter? Think again, you might have just been caught&lt;/p&gt;
-
 &lt;p&gt;AV Tracker - &lt;a href=&#34;http://avtracker.info/&#34;&gt;http://avtracker.info/&lt;/a&gt; is a site that tracks the different IP addresses, hostnames, computer names and user agents that AV and other &amp;ldquo;Submit-your-malware-here&amp;rdquo; drop boxes use.&lt;/p&gt;
-
 &lt;p&gt;Peter Kleissner and his team provide&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;ranges that the hosts use&lt;/li&gt;
 &lt;li&gt;a dynamic text file with the IP addresses listed if you want to add it to some auto updating block list&lt;/li&gt;
 &lt;li&gt;a line by line IPTABLES block config&lt;/li&gt;
-&lt;li&gt;and even C code to add into your binary to make sure it doesn&amp;rsquo;t talk out from one of those addresses (I could be reading it wrong, still a beginner in C)&lt;/li&gt;
+&lt;li&gt;and even C code to add into your binary to make sure it doesn&#39;t talk out from one of those addresses (I could be reading it wrong, still a beginner in C)&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;The team has been criticized a lot by AV vendors, enough so the took down the site in January of this year. But it came back June 5th.&lt;/p&gt;
-
 &lt;p&gt;I use this site to help me know when the Incident Responders are on to me for my pen testing jobs. I do not wish to get in the debate of how a tool could be used.&lt;/p&gt;
 </description>
     </item>
@@ -41,60 +36,33 @@
       <pubDate>Thu, 03 Jun 2010 03:41:13 +0000</pubDate>
       
       <guid>https://malicious.link/post/2010/2010-06-03-av-bypass-made-stupid/</guid>
-      <description>&lt;p&gt;*&lt;strong&gt;WARNING* if you use fgdump like I did, it extracts pwdump to %TEMP% at run time, which is detected by AV.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;First of all, I was floored when this worked. Really AV? It&amp;rsquo;s that easy? Really?&lt;/p&gt;
-
-&lt;p&gt;So here is the break down, go get &amp;ldquo;&lt;a href=&#34;http://bit.ly/cVM4RE&#34;&gt;Resource Hacker&lt;/a&gt;&amp;ldquo;… You&amp;rsquo;re almost done. Only 3 steps left. (1 of which is optional)&lt;/p&gt;
-
-&lt;p&gt;I started with fgdump, a well known hashdumping/pwdump tool. It&amp;rsquo;s detected by 80% of all AVs and by all the top 10. You see this on your AV report for your domain controller, and you&amp;rsquo;re having a bad day, probably week.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;strong&gt;&lt;em&gt;WARNING&lt;/em&gt; if you use fgdump like I did, it extracts pwdump to %TEMP% at run time, which is detected by AV.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;First of all, I was floored when this worked. Really AV? It&#39;s that easy? Really?&lt;/p&gt;
+&lt;p&gt;So here is the break down, go get &amp;ldquo;&lt;a href=&#34;http://bit.ly/cVM4RE&#34;&gt;Resource Hacker&lt;/a&gt;&amp;quot;… You&#39;re almost done. Only 3 steps left. (1 of which is optional)&lt;/p&gt;
+&lt;p&gt;I started with fgdump, a well known hashdumping/pwdump tool. It&#39;s detected by 80% of all AVs and by all the top 10. You see this on your AV report for your domain controller, and you&#39;re having a bad day, probably week.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;Watch this magic trick though:&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;[*] Step 1:&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;Open Res Hacker and drag a &amp;ldquo;normal&amp;rdquo; executable on to the window or Open File.&lt;/p&gt;
-
 &lt;p&gt;Click &amp;ldquo;Save All Resources&amp;rdquo;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Essentially what you are doing in this step is simply extracting the .ico file (Icon) from the executable. Now you can do this with other tools, but we&amp;rsquo;ll be using resource hacker in a minute again, so it&amp;rsquo;s just easy to do it all with one tool.&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Essentially what you are doing in this step is simply extracting the .ico file (Icon) from the executable. Now you can do this with other tools, but we&#39;ll be using resource hacker in a minute again, so it&#39;s just easy to do it all with one tool.&lt;/p&gt;
 &lt;p&gt;We are done with this executable unless you are doing Step 2, in that case, leave it open, open another Res Hacker window and open your &amp;lsquo;evil&amp;rsquo;. (In our case, fgdump.exe)&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;[*] Step 2 (Optional):&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;If you destination executable has tell-tale signs of it&amp;rsquo;s intent, much like fgdump as seen below:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;If you destination executable has tell-tale signs of it&#39;s intent, much like fgdump as seen below:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;You can simply copy and paste the version info from your &amp;lsquo;normal&amp;rsquo; executable into your new one and hit &amp;ldquo;Compile Script&amp;rdquo;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;[*] Step 3:&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;Next we need to &amp;ldquo;Add a new Resource&amp;rdquo; (our icon) into our &amp;ldquo;evil&amp;rdquo; binary.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Once this prompt comes up, select the ICO file that shows the icon you want it to have (some binaries have a ton, so make sure it&amp;rsquo;s the right one). Put in &amp;lsquo;1&amp;rsquo; for resource name, and &amp;lsquo;1033&amp;rsquo; for your resource language. (You can play with these values, not sure what impact they have, but from the binaries I&amp;rsquo;ve looked at those values are pretty standard for a windows executable).&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Once this prompt comes up, select the ICO file that shows the icon you want it to have (some binaries have a ton, so make sure it&#39;s the right one). Put in &amp;lsquo;1&amp;rsquo; for resource name, and &amp;lsquo;1033&amp;rsquo; for your resource language. (You can play with these values, not sure what impact they have, but from the binaries I&#39;ve looked at those values are pretty standard for a windows executable).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Save your new awesome binary as something else, I chose vlc2.exe&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And… (drum roll)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Tada! Sad isn&amp;rsquo;t it? Only 1 of the top 10 AV now detect this binary. Good job AVG and Avast! You still picked it up, but Trend, Symantec, Microsoft, ClamAV, Kaspersky, Panda, Norman, NOD32, Sunbelt, F-Secure, Fortinet, BitDefender WTF guys!?&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201006_avbypass_8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Tada! Sad isn&#39;t it? Only 1 of the top 10 AV now detect this binary. Good job AVG and Avast! You still picked it up, but Trend, Symantec, Microsoft, ClamAV, Kaspersky, Panda, Norman, NOD32, Sunbelt, F-Secure, Fortinet, BitDefender WTF guys!?&lt;/p&gt;
 &lt;p&gt;Oh and Kaspersky now flags it as &amp;ldquo;not-a-virus&amp;rdquo; but still flags it.&lt;/p&gt;
 </description>
     </item>

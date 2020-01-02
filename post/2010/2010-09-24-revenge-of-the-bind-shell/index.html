@@ -8,7 +8,7 @@
     content="mubix">
 <meta name="description"
     content="Revenge of the Bind Shell from Practical Exploitation on Vimeo.
-BACKGROUND At the April 2010 NoVA Hackers meeting I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&amp;rsquo;t the only one doing this ;-)
+BACKGROUND At the April 2010 NoVA Hackers meeting I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&#39;t the only one doing this ;-)
 Before I get ahead of myself lets explain what Teredo is." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -29,7 +29,7 @@ Before I get ahead of myself lets explain what Teredo is." />
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -41,21 +41,18 @@ Before I get ahead of myself lets explain what Teredo is." />
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Revenge of the Bind Shell">
 <meta itemprop="description" content="Revenge of the Bind Shell from Practical Exploitation on Vimeo.
-BACKGROUND At the April 2010 NoVA Hackers meeting I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&rsquo;t the only one doing this ;-)
+BACKGROUND At the April 2010 NoVA Hackers meeting I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&#39;t the only one doing this ;-)
 Before I get ahead of myself lets explain what Teredo is.">
-
-
 <meta itemprop="datePublished" content="2010-09-24T15:20:56&#43;00:00" />
 <meta itemprop="dateModified" content="2010-09-24T15:20:56&#43;00:00" />
 <meta itemprop="wordCount" content="548">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Revenge of the Bind Shell"/>
 <meta name="twitter:description" content="Revenge of the Bind Shell from Practical Exploitation on Vimeo.
-BACKGROUND At the April 2010 NoVA Hackers meeting I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&rsquo;t the only one doing this ;-)
+BACKGROUND At the April 2010 NoVA Hackers meeting I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&#39;t the only one doing this ;-)
 Before I get ahead of myself lets explain what Teredo is."/>
 
 
@@ -129,50 +126,31 @@ Before I get ahead of myself lets explain what Teredo is."/>
             
 
             <div class="post-content">
-                
-
-<p><iframe src="//player.vimeo.com/video/15243189" width="500" height="313" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/15243189">Revenge of the Bind Shell</a> from <a href="http://vimeo.com/user3245922">Practical Exploitation</a> on <a href="https://vimeo.com">Vimeo</a>.</p></p>
-
+                <iframe src="//player.vimeo.com/video/15243189" width="500" height="313" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> <p><a href="http://vimeo.com/15243189">Revenge of the Bind Shell</a> from <a href="http://vimeo.com/user3245922">Practical Exploitation</a> on <a href="https://vimeo.com">Vimeo</a>.</p>
 <h2 id="background">BACKGROUND</h2>
-
-<p>At the <a href="http://novahackers.blogspot.com/2010/04/meeting-20100415-0x0002.html">April 2010 NoVA Hackers meeting</a> I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn&rsquo;t the only one doing this ;-)</p>
-
-<p>Before I get ahead of myself lets explain what Teredo is. Teredo is a tunneling service built in to Windows. It&rsquo;s intent, as far as I can tell, was to allow anyone to have access to the IPv6 enabled internet, free, and dead simple, no infrastructure changes needed. You can get into much more detail on the <a href="http://technet.microsoft.com/en-us/network/cc917486.aspx">Teredo TechNet article</a>, but essentially an internal host is asking a Teredo server/relay for an IPv6 IP address. It does this over UDP and which by default in Windows points to teredo.ipv6.microsoft.com over port 3544 (UDP).</p>
-
+<p>At the <a href="http://novahackers.blogspot.com/2010/04/meeting-20100415-0x0002.html">April 2010 NoVA Hackers meeting</a> I discussed some of the offensive uses of IPv6 on current networks. Well, around that time Microsoft issued a patch to all of the supported versions of Windows that broke my methodology. Obviously I wasn't the only one doing this ;-)</p>
+<p>Before I get ahead of myself lets explain what Teredo is. Teredo is a tunneling service built in to Windows. It's intent, as far as I can tell, was to allow anyone to have access to the IPv6 enabled internet, free, and dead simple, no infrastructure changes needed. You can get into much more detail on the <a href="http://technet.microsoft.com/en-us/network/cc917486.aspx">Teredo TechNet article</a>, but essentially an internal host is asking a Teredo server/relay for an IPv6 IP address. It does this over UDP and which by default in Windows points to teredo.ipv6.microsoft.com over port 3544 (UDP).</p>
 <p>When the tunnel is established, the host is given a 2001::/32 address. This address is a public IP. Before April this essentially meant that your Windows shares and any other listening service was publically available, despite your NAT and Firewall.</p>
-
-<p>This isn&rsquo;t as much of a problem as you might think as it&rsquo;s virtually impossible to guess or scan for an IPv6 address. So, unless you displayed it publically by connecting to Freenode or posting it online somewhere (via a demonstration video). You&rsquo;re pretty safe.</p>
-
+<p>This isn't as much of a problem as you might think as it's virtually impossible to guess or scan for an IPv6 address. So, unless you displayed it publically by connecting to Freenode or posting it online somewhere (via a demonstration video). You're pretty safe.</p>
 <h2 id="the-patch">THE PATCH</h2>
-
-<p>Microsoft made this a certainty when they issued the patch. I was unable to locate the specific one, or even identify for certain that it was April 2010, but that&rsquo;s when the initial article for <a href="&quot;http://msdn.microsoft.com/en-us/library/aa832668(VS.85">IPV6_PROTECTION_LEVEL</a>.aspx&rdquo;) was published. This is a socket level option that says, unless this flag is set to &ldquo;PROTECTION_LEVEL_UNRESTRICTED&rdquo; on the binary that is doing the communication, deny all traffic from NAT Traversals (Teredo).  (Even Netcat6 doesn&rsquo;t have this flag set!)</p>
-
+<p>Microsoft made this a certainty when they issued the patch. I was unable to locate the specific one, or even identify for certain that it was April 2010, but that's when the initial article for <a href="%22http://msdn.microsoft.com/en-us/library/aa832668(VS.85).aspx%22">IPV6_PROTECTION_LEVEL</a> was published. This is a socket level option that says, unless this flag is set to &ldquo;PROTECTION_LEVEL_UNRESTRICTED&rdquo; on the binary that is doing the communication, deny all traffic from NAT Traversals (Teredo).  (Even Netcat6 doesn't have this flag set!)</p>
 <p>Essentially, unless someone rebuilt their binary with the explicit intention to allow people to connect to it over NAT Traversals, the traffic was denied. You were still allowed to connect out, keeping in tact the initial idea for Teredo, but it broke my methodology damn it!</p>
-
-<p>I used Teredo to connect to the SMB server so that I could psexec a shell back any time I wanted before (still possible on non-patched systems) but since Microsoft doesn&rsquo;t want to add the PROTECTION_LEVEL_UNRESTRICTED flag to SMB you have to just upload and use a binary that does. Luckily, with the help of <a href="http://twitter.com/stephenfewer">Stephen Fewer</a>, the bind_ipv6_tcp payload in Metasploit does.</p>
-
+<p>I used Teredo to connect to the SMB server so that I could psexec a shell back any time I wanted before (still possible on non-patched systems) but since Microsoft doesn't want to add the PROTECTION_LEVEL_UNRESTRICTED flag to SMB you have to just upload and use a binary that does. Luckily, with the help of <a href="http://twitter.com/stephenfewer">Stephen Fewer</a>, the bind_ipv6_tcp payload in Metasploit does.</p>
 <h2 id="commands">COMMANDS</h2>
-
 <p>The commands used in the video are below:</p>
-
 <ul>
 <li><code>netsh interface ipv6 install</code></li>
 <li><code>netsh interface ipv6 set teredo enterpriseclient</code></li>
 <li><code>./mspfayload windows/meterpreter/bind_ipv6_tcp LPORT=9001 X &gt; bind.exe</code></li>
 </ul>
-
 <p>The only thing that was behind the scenes was giving my Metasploit host an IPv6 address. I used Miredo (Teredo for *nix/OSX):</p>
-
 <pre><code># Install miredo
 apt-get install miredo
 
 #Remove it from starting automatically     
 update-rc.d miredo -f remove
-</code></pre>
-
-<h2 id="protection">PROTECTION</h2>
-
-<p>Yes, it&rsquo;s that easy. Now, some of the mitigating suggestions I&rsquo;ve seen on the net is to blackhole the Microsoft Teredo server, or block the UDP port 3544. However, Miredo can act as a Teredo server/relay just fine, and can listen on any port you wish (53?). So unless you block ALL UDP outbound traffic, you are not protecting against this threat.</p>
+</code></pre><h2 id="protection">PROTECTION</h2>
+<p>Yes, it's that easy. Now, some of the mitigating suggestions I've seen on the net is to blackhole the Microsoft Teredo server, or block the UDP port 3544. However, Miredo can act as a Teredo server/relay just fine, and can listen on any port you wish (53?). So unless you block ALL UDP outbound traffic, you are not protecting against this threat.</p>
 
             </div>
         </article>
@@ -194,7 +172,7 @@ update-rc.d miredo -f remove
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

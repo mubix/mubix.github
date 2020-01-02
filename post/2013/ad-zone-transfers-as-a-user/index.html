@@ -7,11 +7,11 @@
 <meta name="author"
     content="">
 <meta name="description"
-    content="cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
+    content="_cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_
 The tired and true method for Zone Transfers are using either nslookup:
-nslookup ls -d domain.com.local  Or dig:
-dig -t AXFR domain.com.local @ns1.domain.com.local  In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:
-dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point)." />
+nslookup ls -d domain.com.local Or dig:
+dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:
+dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point)." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2013/ad-zone-transfers-as-a-user/" />
@@ -31,7 +31,7 @@ dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can 
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -42,27 +42,24 @@ dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can 
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="AD Zone Transfers as a user">
-<meta itemprop="description" content="cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
+<meta itemprop="description" content="_cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_
 The tired and true method for Zone Transfers are using either nslookup:
-nslookup ls -d domain.com.local  Or dig:
-dig -t AXFR domain.com.local @ns1.domain.com.local  In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:
-dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).">
-
-
+nslookup ls -d domain.com.local Or dig:
+dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:
+dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).">
 <meta itemprop="datePublished" content="2013-10-04T11:30:44-05:00" />
 <meta itemprop="dateModified" content="2013-10-04T11:30:44-05:00" />
 <meta itemprop="wordCount" content="416">
 
 
 
-<meta itemprop="keywords" content="windows,dns,activedirectory,dig,nslookup,dnscmd,adfind,powershell," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="windows,dns,activedirectory,dig,nslookup,dnscmd,adfind,powershell," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="AD Zone Transfers as a user"/>
-<meta name="twitter:description" content="cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
+<meta name="twitter:description" content="_cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_
 The tired and true method for Zone Transfers are using either nslookup:
-nslookup ls -d domain.com.local  Or dig:
-dig -t AXFR domain.com.local @ns1.domain.com.local  In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:
-dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point)."/>
+nslookup ls -d domain.com.local Or dig:
+dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:
+dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point)."/>
 
 
 
@@ -134,63 +131,34 @@ dnscmd /EnumZones dnscmd /ZonePrint domain.com.local  Which is handy if you can 
             
 
             <div class="post-content">
-                <p><em>cross posted from: <a href="http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html">http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html</a></em></p>
-
+                <p>_cross posted from: <a href="http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_">http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_</a></p>
 <p>The tired and true method for Zone Transfers are using either nslookup:</p>
-
 <pre><code>nslookup
 ls -d domain.com.local
-</code></pre>
-
-<p>Or dig:</p>
-
+</code></pre><p>Or dig:</p>
 <pre><code>dig -t AXFR domain.com.local @ns1.domain.com.local
-</code></pre>
-
-<p>In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:</p>
-
+</code></pre><p>In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:</p>
 <pre><code>dnscmd /EnumZones
 dnscmd /ZonePrint domain.com.local
-</code></pre>
-
-<p>Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).</p>
-
+</code></pre><p>Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).</p>
 <p>You can also use PowerShell:</p>
-
 <p><code>PS C:\Users\jdoe&gt; get-wmiobject -ComputerName dc1 -Namespace root\microsoftDNS -Class MicrosoftDNS_ResourceRecord -Filter &quot;domainname='projectmentor.net'&quot; | select textrepresentation</code></p>
-
 <p>Again, this requires you to be a very high privileged account, which is no fun. I need these computer lists as part of my internal / post-exploitation recon, not an end step.</p>
-
 <p>For the longest time I relied on a very awesome tool called &ldquo;Adfind&rdquo;:</p>
-
 <pre><code>adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
-</code></pre>
-
-<p>This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &ldquo;this&rdquo;and no &ldquo;that&rdquo; flags)</p>
-
-<p>But that wasn&rsquo;t good enough, this image kept haunting me:</p>
-
-<p><img src="/images/2013/ad-dns-zone.png" alt="" /></p>
-
-<p>It&rsquo;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.</p>
-
+</code></pre><p>This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &ldquo;this&quot;and no &ldquo;that&rdquo; flags)</p>
+<p>But that wasn't good enough, this image kept haunting me:</p>
+<p><img src="/images/2013/ad-dns-zone.png" alt=""></p>
+<p>It's Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.</p>
 <p>I spent 4 days attempting to write my own script, ldap query, prayer to  get all of the data out but was unsuccessful. On the 5th day I happened upon a very short post saying &ldquo;I did it&rdquo;, as I probably would have written the same. It comes in the form of a PowerShell script that you can find here:</p>
-
 <p>Code: <a href="https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1">https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1</a></p>
-
 <p>And is very easy to run:</p>
-
 <p><code>PS C:\Users\jdoe&gt; dns-dump.ps1 -zone projectmentor.net -dc dc1</code></p>
-
 <p>or</p>
-
 <p><code>C:\&gt; powershell -ep bypass -f dnsdump.ps1 -zone projectmentor.net -dc dc1</code></p>
-
 <p>If you put a -csv on the end of those the author has even given you the CSV format which makes the output extremely easy to parse. Now you can throw your list into your tool of choice instead of scanning random IP ranges on the targets network for important stuff you can scan directly against known good hosts.</p>
-
 <p>&ndash; mubix</p>
-
-<p>P.S. Yes I realize this isn&rsquo;t actually &ldquo;Zone Transfer&rdquo;s but its close enough</p>
+<p>P.S. Yes I realize this isn't actually &ldquo;Zone Transfer&quot;s but its close enough</p>
 
             </div>
         </article>
@@ -212,7 +180,7 @@ dnscmd /ZonePrint domain.com.local
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

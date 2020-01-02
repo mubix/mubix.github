@@ -8,8 +8,8 @@
     content="mubix">
 <meta name="description"
     content="Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &amp;ldquo;drive&amp;rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:
-start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt  Breaking that down:
- start /b - starts a process that won&amp;rsquo;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user!" />
+start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt Breaking that down:
+ start /b - starts a process that won&#39;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user!" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2012/2012-11-13-smash-and-grab-windows-dir-lists/" />
@@ -29,7 +29,7 @@ start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt  Break
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -41,22 +41,19 @@ start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt  Break
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Smash and Grab: Windows Dir Lists">
 <meta itemprop="description" content="Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &ldquo;drive&rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:
-start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt  Breaking that down:
- start /b - starts a process that won&rsquo;t hang up our current one, with the &ldquo;b&rdquo; flag meaning &ldquo;background&rdquo;, yay not visible to the user!">
-
-
+start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt Breaking that down:
+ start /b - starts a process that won&#39;t hang up our current one, with the &ldquo;b&rdquo; flag meaning &ldquo;background&rdquo;, yay not visible to the user!">
 <meta itemprop="datePublished" content="2012-11-13T08:44:47&#43;00:00" />
 <meta itemprop="dateModified" content="2012-11-13T08:44:47&#43;00:00" />
 <meta itemprop="wordCount" content="284">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Smash and Grab: Windows Dir Lists"/>
 <meta name="twitter:description" content="Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &ldquo;drive&rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:
-start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt  Breaking that down:
- start /b - starts a process that won&rsquo;t hang up our current one, with the &ldquo;b&rdquo; flag meaning &ldquo;background&rdquo;, yay not visible to the user!"/>
+start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt Breaking that down:
+ start /b - starts a process that won&#39;t hang up our current one, with the &ldquo;b&rdquo; flag meaning &ldquo;background&rdquo;, yay not visible to the user!"/>
 
 
 
@@ -130,25 +127,17 @@ start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt  Breaking 
 
             <div class="post-content">
                 <p>Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &ldquo;drive&rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:</p>
-
 <pre><code>start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt
-</code></pre>
-
-<p>Breaking that down:</p>
-
+</code></pre><p>Breaking that down:</p>
 <ul>
-<li><code>start /b</code> - starts a process that won&rsquo;t hang up our current one, with the &ldquo;b&rdquo; flag meaning &ldquo;background&rdquo;, yay not visible to the user! (unless your process forces it back)</li>
-<li><code>cmd /c</code> - no reason to explain this one it runs something.. (since dir isn&rsquo;t an executable but something that resides inside of cmd this is needed)</li>
-<li><code>dir /b /s</code> - the &ldquo;s&rdquo; means sub directories and pretty widely known. The one that isn&rsquo;t as well known is the &ldquo;b&rdquo; which means &ldquo;bare&rdquo; format. Also known as &ldquo;puts-path-on-every-line-to-make-it-easy-to-find-and-grep-stuff&rdquo; mode.</li>
+<li><code>start /b</code> - starts a process that won't hang up our current one, with the &ldquo;b&rdquo; flag meaning &ldquo;background&rdquo;, yay not visible to the user! (unless your process forces it back)</li>
+<li><code>cmd /c</code> - no reason to explain this one it runs something.. (since dir isn't an executable but something that resides inside of cmd this is needed)</li>
+<li><code>dir /b /s</code> - the &ldquo;s&rdquo; means sub directories and pretty widely known. The one that isn't as well known is the &ldquo;b&rdquo; which means &ldquo;bare&rdquo; format. Also known as &ldquo;puts-path-on-every-line-to-make-it-easy-to-find-and-grep-stuff&rdquo; mode.</li>
 </ul>
-
-<p>The path is arbitrary, if you didn&rsquo;t know you could dir list a UNC path, now ya do.</p>
-
+<p>The path is arbitrary, if you didn't know you could dir list a UNC path, now ya do.</p>
 <p>The <code>^&gt;</code> is the cool trick. If you use &ldquo;start&rdquo; to create a process in the background, re-routing its output to a file instead of just getting the fact that start began (the only thing start outputs), is made possible by this lowly &lsquo;carrot&rsquo; before the greater-than.</p>
-
-<p>And that&rsquo;s it. With big drives, come back in an hour or two and you&rsquo;ll have a perfectly grep-able file waiting for you to grep through for file names and extensions to your heart&rsquo;s content.</p>
-
-<p>One caveat, don&rsquo;t freak out if it&rsquo;s been 30 minutes and the file size is still ZERO. It doesn&rsquo;t write the output until the end, it write buffered in the process and then &ldquo;start&rdquo; pulls it back out at the end with the carrot.</p>
+<p>And that's it. With big drives, come back in an hour or two and you'll have a perfectly grep-able file waiting for you to grep through for file names and extensions to your heart's content.</p>
+<p>One caveat, don't freak out if it's been 30 minutes and the file size is still ZERO. It doesn't write the output until the end, it write buffered in the process and then &ldquo;start&rdquo; pulls it back out at the end with the carrot.</p>
 
             </div>
         </article>
@@ -170,7 +159,7 @@ start /b cmd /c dir /b /s \\nas\users_home_share$ ^&gt; shareinfo.txt  Breaking 
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

@@ -31,7 +31,7 @@ First you have to get rid of all other services." />
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -47,16 +47,13 @@ Things we need to accomplish on the server:
  Listen on all ports Answer for all hostnames and subdomains Answer for all HTTP verbs, file and folder requests  ONE: Listen on all ports
 (I used Linux, so this guide is for such, modifications to other OSs is up to the reader)
 First you have to get rid of all other services.">
-
-
 <meta itemprop="datePublished" content="2012-08-11T03:49:25&#43;00:00" />
 <meta itemprop="dateModified" content="2012-08-11T03:49:25&#43;00:00" />
 <meta itemprop="wordCount" content="479">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="LetMeOutOfYour.NET – Server Build"/>
 <meta name="twitter:description" content="In the previous post: http://www.room362.com/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html I told you about letmeoutofyour.net, but how does it work?
 Things we need to accomplish on the server:
@@ -138,48 +135,30 @@ First you have to get rid of all other services."/>
 
             <div class="post-content">
                 <p>In the previous post: <a href="/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html">http://www.room362.com/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html</a> I told you about letmeoutofyour.net, but how does it work?</p>
-
 <p>Things we need to accomplish on the server:</p>
-
 <ol>
 <li>Listen on all ports</li>
 <li>Answer for all hostnames and subdomains</li>
 <li>Answer for all HTTP verbs, file and folder requests</li>
 </ol>
-
 <p><strong>ONE: Listen on all ports</strong></p>
-
 <p>(I used Linux, so this guide is for such, modifications to other OSs is up to the reader)</p>
-
 <p>First you have to get rid of all other services. That’s harder than you would first assume, because you have to admin the box some how. You could toss SSH on a really high port, or have some kind of backend management, or just remove things from running on a multi-IP’d box. It would be impossible in this post to describe every way this is done so I’ll leave it to you to research.</p>
-
 <p>Once you have everything gone, install and start Apache or your favorite web server for Linux. Then run this very simple command that I stole from a commenter on the “<a href="https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls">Forcing Payloads Through Restrictive Firewalls</a>” post:</p>
-
 <p><code>iptables -t nat -I PREROUTING -p tcp -m state --state NEW -d 192.168.1.1 -j DNAT --to 192.168.1.1:80</code></p>
-
 <p>Where ‘192.168.1.1’ is the IP address of your box. IPv4 NATing just allowed you to listen on every single port by forwarding them all to port 80. That simple. Don’t make the mistake I did and forget to set up alternative management before you set that rule, because if you don’t you’ll be forced to find one.</p>
-
 <p><strong>TWO: Answer for all hostnames and subdomains</strong></p>
-
 <p>This is pretty easy, DNS has the concept of a wildcard hostname. You simply put an asterisk * in the place of where you would normally put a WWW however you manage your DNS and you’re good. You will also want to add a second record, an ‘@’ is used to reference the domain without a host or subdomain. So the first records makes it answer for things like <a href="http://blah.letmeoutofyour.net">http://blah.letmeoutofyour.net</a> and the second for <a href="http://letmeoutofyour.net/">http://letmeoutofyour.net/</a> – Pretty simple ya?</p>
-
 <p><strong>THREE: Answer for all HTTP verbs, file and folder requests</strong></p>
-
 <p>This is pretty simple as well. Apache’s mod_rewrite to the rescue. Here are the rules:</p>
-
 <pre><code>RewriteEngine on       
 RewriteCond %{REQUEST_METHOD} ^(.*)        
 RewriteRule .* index.html [QSA,L]        
 RewriteCond %{DOCUMENT_ROOT} !-f        
 RewriteRule ^(.*)$ index.html [QSA,L]
-</code></pre>
-
-<p>You can either apply this in an .htaccess file or directly in the site configs, up to you.</p>
-
+</code></pre><p>You can either apply this in an .htaccess file or directly in the site configs, up to you.</p>
 <p>And that’s it. It all seems really simple, but took me a good amount of time putting it all together. Next up, binaries and call backs that use this to wriggle their way out of networks.</p>
-
 <p>P.S.</p>
-
 <p>This setup throws web scanners through a loop, and if you wanted to be REALLY nasty you could have a bit of php make the index page be an endless 302 or have w00w00t linked to a random page / folder which is generated each time it’s requested.</p>
 
             </div>
@@ -202,7 +181,7 @@ RewriteRule ^(.*)$ index.html [QSA,L]
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

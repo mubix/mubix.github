@@ -7,7 +7,7 @@
 <meta name="author"
     content="">
 <meta name="description"
-    content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&amp;rsquo;t support the 0 you can simply use the same number parallel uses ala:
+    content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&#39;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&#39;t support the 0 you can simply use the same number parallel uses ala:
  cat subdomains.txt | xargs -P 122 -I subdomain dig &#43;noall subdomain." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -28,7 +28,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,20 +39,17 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Hostname bruteforcing on the cheap">
-<meta itemprop="description" content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&rsquo;t support the 0 you can simply use the same number parallel uses ala:
+<meta itemprop="description" content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&#39;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&#39;t support the 0 you can simply use the same number parallel uses ala:
  cat subdomains.txt | xargs -P 122 -I subdomain dig &#43;noall subdomain.">
-
-
 <meta itemprop="datePublished" content="2014-01-29T18:07:08-05:00" />
 <meta itemprop="dateModified" content="2014-01-29T18:07:08-05:00" />
 <meta itemprop="wordCount" content="1063">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Hostname bruteforcing on the cheap"/>
-<meta name="twitter:description" content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&rsquo;t support the 0 you can simply use the same number parallel uses ala:
+<meta name="twitter:description" content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&#39;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&#39;t support the 0 you can simply use the same number parallel uses ala:
  cat subdomains.txt | xargs -P 122 -I subdomain dig &#43;noall subdomain."/>
 
 
@@ -128,38 +125,25 @@
             
 
             <div class="post-content">
-                <hr />
-
-<p><strong>Quick update</strong>: As <a href="http://twitter.com/mikedamm">@MikeDamm</a> <a href="http://twitter.com/mikedamm/status/428725199068864512">points out</a>, xargs has a <code>-P</code> option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use <code>-P 0</code> to do the same thing as <code>-j0</code> with parallel, but if your version doesn&rsquo;t support the <code>0</code> you can simply use the same number parallel uses ala:</p>
-
+                <hr>
+<p><strong>Quick update</strong>: As <a href="http://twitter.com/mikedamm">@MikeDamm</a> <a href="http://twitter.com/mikedamm/status/428725199068864512">points out</a>, xargs has a <code>-P</code> option that can do the same thing I'm using parallel for. If you have a supported version of xargs you can use <code>-P 0</code> to do the same thing as <code>-j0</code> with parallel, but if your version doesn't support the <code>0</code> you can simply use the same number parallel uses ala:</p>
 <ul>
 <li><code>cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer</code></li>
 </ul>
-
-<p>This results in roughly the same completion time as it&rsquo;s parallel counterpart. Thanks @MikeDamm!</p>
-
-<hr />
-
+<p>This results in roughly the same completion time as it's parallel counterpart. Thanks @MikeDamm!</p>
+<hr>
 <p>There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)</p>
-
 <p>Here is what I do:</p>
-
-<p>First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at <a href="http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/">http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/</a> (with a few minor tweaks). If you haven&rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:</p>
-
+<p>First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at <a href="http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/">http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/</a> (with a few minor tweaks). If you haven't read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:</p>
 <ul>
 <li><code>cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer</code></li>
 </ul>
-
 <p>Now, xargs is great but does one thing at a time and can be quite slow if your subdomains list is large. With the use of the amazing tool GNU parallel you can get done in a matter of seconds, well, that or knock over your home router.</p>
-
 <ul>
 <li><code>cat subdomains.txt | parallel -k -j0 dig +noall {}.microsoft.com +answer</code></li>
 </ul>
-
 <p>Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)</p>
-
 <p>with an output something list this:</p>
-
 <pre><code>parallel: Warning: Only enough file handles to run 122 jobs in parallel.
 Raising ulimit -n or /etc/security/limits.conf may help.
 parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
@@ -307,7 +291,6 @@ transfer.microsoft.com.	3600	IN	A	64.4.10.152
 backoffice.microsoft.com. 3600	IN	A	64.4.11.37
 backoffice.microsoft.com. 3600	IN	A	65.55.58.201
 </code></pre>
-
             </div>
         </article>
 
@@ -328,7 +311,7 @@ backoffice.microsoft.com. 3600	IN	A	65.55.58.201
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

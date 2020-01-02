@@ -7,7 +7,7 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks   Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:" />
+    content="Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks  Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2009/2009-01-13-maltego-2-and-beyond-part-3/" />
@@ -27,7 +27,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -38,19 +38,16 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Maltego 2 and beyond - Part 3">
-<meta itemprop="description" content="Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks   Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:">
-
-
+<meta itemprop="description" content="Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks  Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:">
 <meta itemprop="datePublished" content="2009-01-13T18:23:08&#43;00:00" />
 <meta itemprop="dateModified" content="2009-01-13T18:23:08&#43;00:00" />
 <meta itemprop="wordCount" content="533">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Maltego 2 and beyond - Part 3"/>
-<meta name="twitter:description" content="Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks   Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:"/>
+<meta name="twitter:description" content="Table of Contents:  Part 1 - Introduction Part 2 - Entities and Transforms Part 3 - The Human Factor Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS) Part 5 - Hacks, Tips, and Tricks  Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:"/>
 
 
 
@@ -124,37 +121,23 @@
             
 
             <div class="post-content">
-                
-
-<h2 id="table-of-contents">Table of Contents:</h2>
-
+                <h2 id="table-of-contents">Table of Contents:</h2>
 <ul>
 <li><a href="/blog/2009/09/08/maltego-2-and-beyond-part-1">Part 1 - Introduction</a></li>
 <li><a href="/blog/2008/09/26/maltego-2-and-beyond-part-2/">Part 2 - Entities and Transforms</a></li>
 <li>Part 3 - The Human Factor</li>
 <li>Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)</li>
-<li>Part 5 - Hacks, Tips, and Tricks
-<br /></li>
+<li>Part 5 - Hacks, Tips, and Tricks</li>
 </ul>
-
 <p>Today we are taking a brief step outside of Maltego and at the end we’ll show how you can use what you have learned to take Maltego to another level. So, without further ado:</p>
-
-<p><img src="/images/postimages/200901_maltego_1.jpg" alt="" /></p>
-
+<p><img src="/images/postimages/200901_maltego_1.jpg" alt=""></p>
 <p>The Human Factor is why we all still have jobs in the security world. It is impossible for machines at this day in age to make logical leaps of faith. Yes, there is fuzzy logic, but the human brain still trumps computers on being able to instinctively make those leaps. Instinct, that word describes the whole reason for this part in the series. Just as a PI uses he gut to lead him on the right trail, as an OSINT (Open Source Intelligence) Specialist you have to use your instincts to guide your investigation as well. The following paragraphs will describe my own method of making those leaps. If you disagree or have better methods, please comment below so that others can learn as well.</p>
-
 <p>What is a logical leap of faith? Well, most pentesters do it daily if not hourly, when they assume a cracked password is going to work in other places. It’s all about betting on standards. Standards in this reference is anything that has become common place, not specifically a written rule, but those are good to. Dan Geer ‘left’ @Stake when he and other thought leaders in the security community published a paper back in 2003:</p>
-
 <p><strong>Cyber _In_Security: The Cost of Monopoly</strong> [<a href="http://www.ccianet.org/papers/cyberinsecurity.pdf">PDF</a>]</p>
-
 <p>Archived Link: <a href="http://pdf.textfiles.com/academics/cyberinsecurity.pdf">http://pdf.textfiles.com/academics/cyberinsecurity.pdf</a></p>
-
-<p><img src="/images/postimages/200901_maltego_2.png" alt="Dan Geer" /></p>
-
+<p><img src="/images/postimages/200901_maltego_2.png" alt="Dan Geer"></p>
 <p>I was originally planning on making this article full of examples on how you can make these leaps, but I have had a lot of time to think these examples and have decided against it. To practice this method you must use your own experiences. Where do people do the same thing? Think about it. I’m sure you can come up this at least a dozen examples where even you do the same thing across the board&hellip; Ok, so I can’t resist. Using the same password, or username on different sites. Seeing a User Agent that is concatenated by a proxy. The router being .1 or .2. Using full class C networks. Always adding the same core friends or co-workers to every social networking site. What about referencing the same ‘ficticous’ bank when describing a problem with that bank. What examples have you come up with?</p>
-
 <p>How do you pull this out-of-the-box thinking into Maltego? When entering an email for an entity, try putting it in under different domains (yahoo.com, aol.com, gmail.com, google.com, hotmail.com). When entering a domain, try putting it in under different TLDs (.net, .org, .tv). You might be surprised at the gems you find when you find those forgotten pieces of information. This all falls back on my mantra that you should put in ALL of the information you have (and estimated) before you even start running transforms.</p>
-
 <p>Maltego is a tool that can only take you so far. Your creativity is what makes a tool like this powerful.</p>
 
             </div>
@@ -177,7 +160,7 @@
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

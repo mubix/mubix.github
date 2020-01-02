@@ -10,12 +10,12 @@
     content="Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
 From: http://www.ntdsxtract.com/
 Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip  From: http://code.google.com/p/libesedb/
+wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/
 Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz  Extract the tools:
-tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip  Compile/make libesedb:
-root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make  Export the tables from NTDS.dit:
-root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) &#39;all&#39; exports all the tables or a single specified table with indexes, &#39;tables&#39; exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix ." />
+wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools:
+tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb:
+root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit:
+root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) &amp;#39;all&amp;#39; exports all the tables or a single specified table with indexes, &amp;#39;tables&amp;#39; exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix ." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" />
@@ -35,7 +35,7 @@ root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-201
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -49,31 +49,28 @@ root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-201
 <meta itemprop="description" content="Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
 From: http://www.ntdsxtract.com/
 Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip  From: http://code.google.com/p/libesedb/
+wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/
 Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz  Extract the tools:
-tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip  Compile/make libesedb:
-root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make  Export the tables from NTDS.dit:
+wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools:
+tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb:
+root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit:
 root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) &#39;all&#39; exports all the tables or a single specified table with indexes, &#39;tables&#39; exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix .">
-
-
 <meta itemprop="datePublished" content="2013-06-11T13:55:21&#43;00:00" />
 <meta itemprop="dateModified" content="2013-06-11T13:55:21&#43;00:00" />
 <meta itemprop="wordCount" content="913">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2"/>
 <meta name="twitter:description" content="Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
 From: http://www.ntdsxtract.com/
 Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip  From: http://code.google.com/p/libesedb/
+wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/
 Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz  Extract the tools:
-tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip  Compile/make libesedb:
-root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make  Export the tables from NTDS.dit:
+wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools:
+tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb:
+root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit:
 root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport esedbexport 20120102 Missing source file. Use esedbexport to export items stored in an Extensible Storage Engine (ESE) Database (EDB) file Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ] [ -T table_name ] [ -hvV ] source source: the source file -c: codepage of ASCII strings, options: ascii, windows-874, windows-932, windows-936, windows-1250, windows-1251, windows-1252 (default), windows-1253, windows-1254 windows-1255, windows-1256, windows-1257 or windows-1258 -h: shows this help -l: logs information about the exported items -m: export mode, option: all, tables (default) &#39;all&#39; exports all the tables or a single specified table with indexes, &#39;tables&#39; exports all the tables or a single specified table -t: specify the basename of the target directory to export to (default is the source filename) esedbexport will add the suffix ."/>
 
 
@@ -149,60 +146,44 @@ root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-201
 
             <div class="post-content">
                 <p>Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:</p>
-
 <p>From: <a href="http://www.ntdsxtract.com/">http://www.ntdsxtract.com/</a></p>
-
 <p>Download: <a href="http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip">http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip</a></p>
-
-<pre><code class="language-bash">wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-</code></pre>
-
-<p>From: <a href="http://code.google.com/p/libesedb/">http://code.google.com/p/libesedb/</a></p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+</code></pre></div><p>From: <a href="http://code.google.com/p/libesedb/">http://code.google.com/p/libesedb/</a></p>
 <p>Download: <a href="https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz">https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz</a></p>
-
-<pre><code class="language-bash">wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-</code></pre>
-
-<p>Extract the tools:</p>
-
-<pre><code class="language-bash">tar zxvf libesedb-alpha-20120102.tar.gz
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+</code></pre></div><p>Extract the tools:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">tar zxvf libesedb-alpha-20120102.tar.gz
 unzip ntdsxtract_v1_0.zip
-</code></pre>
-
-<p>Compile/make libesedb:</p>
-
-<pre><code class="language-bash">root@wpad:~/blog/# cd libesedb-20120102
+</code></pre></div><p>Compile/make libesedb:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@wpad:~/blog/# cd libesedb-20120102
 root@wpad:~/blog/libesedb-20120102# ./configure 
 root@wpad:~/blog/libesedb-20120102# make
-</code></pre>
-
-<p>Export the tables from NTDS.dit:</p>
-
-<pre><code class="language-bash">root@wpad:~/blog/libesedb-20120102# cd esedbtools/
+</code></pre></div><p>Export the tables from NTDS.dit:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@wpad:~/blog/libesedb-20120102# cd esedbtools/
 root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
-esedbexport 20120102
+esedbexport <span style="color:#ae81ff">20120102</span>
     
 Missing source file.
-Use esedbexport to export items stored in an Extensible Storage Engine (ESE)
-Database (EDB) file
+Use esedbexport to export items stored in an Extensible Storage Engine <span style="color:#f92672">(</span>ESE<span style="color:#f92672">)</span>
+Database <span style="color:#f92672">(</span>EDB<span style="color:#f92672">)</span> file
 
-Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ]
-                   [ -T table_name ] [ -hvV ] source
+Usage: esedbexport <span style="color:#f92672">[</span> -c codepage <span style="color:#f92672">]</span> <span style="color:#f92672">[</span> -l logfile <span style="color:#f92672">]</span> <span style="color:#f92672">[</span> -m mode <span style="color:#f92672">]</span> <span style="color:#f92672">[</span> -t target <span style="color:#f92672">]</span>
+                   <span style="color:#f92672">[</span> -T table_name <span style="color:#f92672">]</span> <span style="color:#f92672">[</span> -hvV <span style="color:#f92672">]</span> source
 
 	source: the source file
 
 	-c:     codepage of ASCII strings, options: ascii, windows-874,
 	        windows-932, windows-936, windows-1250, windows-1251,
-	        windows-1252 (default), windows-1253, windows-1254
+	        windows-1252 <span style="color:#f92672">(</span>default<span style="color:#f92672">)</span>, windows-1253, windows-1254
 	        windows-1255, windows-1256, windows-1257 or windows-1258
 	-h:     shows this help
 	-l:     logs information about the exported items
-	-m:     export mode, option: all, tables (default)
-	        'all' exports all the tables or a single specified table with indexes,
-	        'tables' exports all the tables or a single specified table
+	-m:     export mode, option: all, tables <span style="color:#f92672">(</span>default<span style="color:#f92672">)</span>
+	        <span style="color:#e6db74">&#39;all&#39;</span> exports all the tables or a single specified table with indexes,
+	        <span style="color:#e6db74">&#39;tables&#39;</span> exports all the tables or a single specified table
 	-t:     specify the basename of the target directory to export to
-	        (default is the source filename) esedbexport will add the suffix
+	        <span style="color:#f92672">(</span>default is the source filename<span style="color:#f92672">)</span> esedbexport will add the suffix
 	        .export to the basename
 	-T:     exports only a specific table
 	-v:     verbose output to stderr
@@ -211,40 +192,34 @@ root@wpad:~/blog/libesedb-20120102/esedbtools#
 
 
 root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
-esedbexport 20120102
+esedbexport <span style="color:#ae81ff">20120102</span>
 
 Opening file.
-Exporting table 1 (MSysObjects) out of 12.
-Exporting table 2 (MSysObjectsShadow) out of 12.
-Exporting table 3 (MSysUnicodeFixupVer2) out of 12.
-Exporting table 4 (datatable) out of 12.
-Exporting table 5 (hiddentable) out of 12.
-Exporting table 6 (link_table) out of 12.
-Exporting table 7 (sdpropcounttable) out of 12.
-Exporting table 8 (sdproptable) out of 12.
-Exporting table 9 (sd_table) out of 12.
-Exporting table 10 (MSysDefrag2) out of 12.
-Exporting table 11 (quota_table) out of 12.
-Exporting table 12 (quota_rebuild_progress_table) out of 12.
+Exporting table <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>MSysObjects<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">2</span> <span style="color:#f92672">(</span>MSysObjectsShadow<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">3</span> <span style="color:#f92672">(</span>MSysUnicodeFixupVer2<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">4</span> <span style="color:#f92672">(</span>datatable<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">5</span> <span style="color:#f92672">(</span>hiddentable<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">6</span> <span style="color:#f92672">(</span>link_table<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">7</span> <span style="color:#f92672">(</span>sdpropcounttable<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">8</span> <span style="color:#f92672">(</span>sdproptable<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">9</span> <span style="color:#f92672">(</span>sd_table<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">10</span> <span style="color:#f92672">(</span>MSysDefrag2<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">11</span> <span style="color:#f92672">(</span>quota_table<span style="color:#f92672">)</span> out of 12.
+Exporting table <span style="color:#ae81ff">12</span> <span style="color:#f92672">(</span>quota_rebuild_progress_table<span style="color:#f92672">)</span> out of 12.
 Export completed.
-</code></pre>
-
-<p>Move the exported tables to somewhere a bit easier:</p>
-
-<pre><code class="language-bash">root@wpad:~/blog/libesedb-20120102/esedbtools# 
+</code></pre></div><p>Move the exported tables to somewhere a bit easier:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@wpad:~/blog/libesedb-20120102/esedbtools# 
 root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
-</code></pre>
-
-<p>NTDS extract can do a lot more than just hashes:</p>
-
-<pre><code class="language-bash">root@wpad:~/blog# cd NTDSXtract 1.0/
+</code></pre></div><p>NTDS extract can do a lot more than just hashes:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@wpad:~/blog# cd NTDSXtract 1.0/
 root@wpad:~/blog/NTDSXtract 1.0# ls
 dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
 root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
 DSUsers
 Extracts information related to user objects
 
-usage: dsusers.py   [option]
+usage: dsusers.py   <span style="color:#f92672">[</span>option<span style="color:#f92672">]</span>
   options:
     --rid 
           List user identified by RID
@@ -261,23 +236,20 @@ usage: dsusers.py   [option]
     --membership
           List groups of which the user is a member
 root@wpad:~/blog/NTDSXtract 1.0# 
-</code></pre>
-
-<p>But we like hashes:</p>
-
-<pre><code class="language-bash">root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
+</code></pre></div><p>But we like hashes:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
 Running with options:
 	Extracting password hashes
 	Extracting password history
 Initialising engine...
-Scanning database - 100% -&gt; 3475 records processed
-Extracting schema information - 100% -&gt; 1549 records processed
+Scanning database - 100% -&gt; <span style="color:#ae81ff">3475</span> records processed
+Extracting schema information - 100% -&gt; <span style="color:#ae81ff">1549</span> records processed
 Extracting object links...
 
 List of users:
-==============
+<span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span><span style="color:#f92672">=</span>
 
-Record ID:           3562
+Record ID:           <span style="color:#ae81ff">3562</span>
 User name:           Administrator
 User principal name: 
 SAM Account name:    Administrator
@@ -291,8 +263,8 @@ Password last set:    2012-08-22 02:49:42.899576
 Last logon:           2013-05-15 04:08:04.547236
 Last logon timestamp: 2013-05-15 04:06:55.577353
 Bad password time     2013-06-07 02:34:34.560516
-Logon count:          9
-Bad password count:   1
+Logon count:          <span style="color:#ae81ff">9</span>
+Bad password count:   <span style="color:#ae81ff">1</span>
 User Account Control:
 	NORMAL_ACCOUNT
 Ancestors:
@@ -301,7 +273,7 @@ Password hashes:
 	Administrator:$NT$88e4d9fabaecf3ded18dd80905521b29:::
 Password history:
 
-Record ID:           3563
+Record ID:           <span style="color:#ae81ff">3563</span>
 User name:           Guest
 User principal name: 
 SAM Account name:    Guest
@@ -315,8 +287,8 @@ Password last set:    2013-03-14 06:54:22.029303
 Last logon:           2013-03-14 06:54:27.012817
 Last logon timestamp: 2013-03-14 06:32:41.834022
 Bad password time     2013-06-07 03:07:46.499917
-Logon count:          0
-Bad password count:   10
+Logon count:          <span style="color:#ae81ff">0</span>
+Bad password count:   <span style="color:#ae81ff">10</span>
 User Account Control:
 	PWD Not Required
 	NORMAL_ACCOUNT
@@ -327,7 +299,7 @@ Password hashes:
 	Guest:$NT$823893adfad2ada6e1a414f3ebdf58f7:::
 Password history:
 
-Record ID:           3564
+Record ID:           <span style="color:#ae81ff">3564</span>
 User name:           user
 User principal name: 
 SAM Account name:    user
@@ -341,8 +313,8 @@ Password last set:    2013-03-14 03:25:11.793912
 Last logon:           2013-06-07 02:51:54.152191
 Last logon timestamp: 2013-06-07 02:51:54.152191
 Bad password time     2013-04-19 05:25:40.412670
-Logon count:          67
-Bad password count:   0
+Logon count:          <span style="color:#ae81ff">67</span>
+Bad password count:   <span style="color:#ae81ff">0</span>
 User Account Control:
 	NORMAL_ACCOUNT
 	PWD Never Expires
@@ -357,7 +329,7 @@ Password history:
 	user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
 	user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
 
-Record ID:           3610
+Record ID:           <span style="color:#ae81ff">3610</span>
 User name:           krbtgt
 User principal name: 
 SAM Account name:    krbtgt
@@ -371,8 +343,8 @@ Password last set:    2012-08-22 03:16:03.166457
 Last logon:           Never
 Last logon timestamp: Never
 Bad password time     Never
-Logon count:          0
-Bad password count:   0
+Logon count:          <span style="color:#ae81ff">0</span>
+Bad password count:   <span style="color:#ae81ff">0</span>
 User Account Control:
 	Disabled
 	NORMAL_ACCOUNT
@@ -384,7 +356,7 @@ Password history:
 	krbtgt_nthistory0:$NT$7253e86a7254716a507a2dcb149ff2da:::
 	krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
 
-Record ID:           3762
+Record ID:           <span style="color:#ae81ff">3762</span>
 User name:           John Doe
 User principal name: jdoe@projectmentor.net
 SAM Account name:    jdoe
@@ -398,8 +370,8 @@ Password last set:    2013-04-19 07:11:49.849592
 Last logon:           2013-06-07 02:56:25.677855
 Last logon timestamp: 2013-06-05 13:04:11.674344
 Bad password time     2013-05-02 03:01:12.536251
-Logon count:          242
-Bad password count:   0
+Logon count:          <span style="color:#ae81ff">242</span>
+Bad password count:   <span style="color:#ae81ff">0</span>
 User Account Control:
 	NORMAL_ACCOUNT
 	PWD Never Expires
@@ -409,7 +381,7 @@ Password hashes:
 	John Doe:$NT$88e4d9fabaecf3ded18dd80905511b29:::
 Password history:
 
-Record ID:           3797
+Record ID:           <span style="color:#ae81ff">3797</span>
 User name:           Random User
 User principal name: randy@projectmentor.net
 SAM Account name:    randy
@@ -423,8 +395,8 @@ Password last set:    2013-04-19 06:59:25.423280
 Last logon:           2013-04-08 02:34:10.482690
 Last logon timestamp: 2013-04-08 02:34:10.482690
 Bad password time     Never
-Logon count:          1
-Bad password count:   0
+Logon count:          <span style="color:#ae81ff">1</span>
+Bad password count:   <span style="color:#ae81ff">0</span>
 User Account Control:
 	NORMAL_ACCOUNT
 	PWD Never Expires
@@ -435,9 +407,7 @@ Password hashes:
 Password history:
 root@wpad:~/blog/NTDSXtract 1.0# 
 
-</code></pre>
-
-<p>All done. Start crackin&rsquo;</p>
+</code></pre></div><p>All done. Start crackin&rsquo;</p>
 
             </div>
         </article>
@@ -459,7 +429,7 @@ root@wpad:~/blog/NTDSXtract 1.0#
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

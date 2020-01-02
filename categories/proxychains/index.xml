@@ -16,27 +16,23 @@
       <pubDate>Tue, 10 Sep 2013 13:16:39 -0500</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</guid>
-      <description>&lt;p&gt;If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it.&lt;/p&gt;
-
-&lt;p&gt;There isn&amp;rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
+      <description>&lt;p&gt;If you&#39;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&#39;t allow this out of their network, or if you are trying to resolve an internal asset, you&#39;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&#39;ve finally decided to make a note of it.&lt;/p&gt;
+&lt;p&gt;There isn&#39;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
 (on Kali linux its found here: /usr/lib/proxychains3/proxyresolv)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/sh
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# This script is called by proxychains to resolve DNS names&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;# DNS server used to resolve names&lt;/span&gt;
+DNS_SERVER&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;4.2.2.2
 
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#!/bin/sh
-# This script is called by proxychains to resolve DNS names
-# DNS server used to resolve names
-DNS_SERVER=4.2.2.2
-
-if [ $# = 0 ] ; then
-echo &amp;quot; usage:&amp;quot;
-echo &amp;quot; proxyresolv &amp;lt;hostname&amp;gt; &amp;quot;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; $# &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; ; &lt;span style=&#34;color:#66d9ef&#34;&gt;then&lt;/span&gt;
+echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; usage:&amp;#34;&lt;/span&gt;
+echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; proxyresolv &amp;lt;hostname&amp;gt; &amp;#34;&lt;/span&gt;
 exit
-fi
+&lt;span style=&#34;color:#66d9ef&#34;&gt;fi&lt;/span&gt;
 
-export LD_PRELOAD=libproxychains.so.3
-dig $1 @$DNS_SERVER +tcp | awk &#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&amp;rsquo;s internal IP, up to you, but now its documented and I&amp;rsquo;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&amp;rsquo;s blog.&lt;/p&gt;
+export LD_PRELOAD&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;libproxychains.so.3
+dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&#39;s internal IP, up to you, but now its documented and I&#39;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&#39;s blog.&lt;/p&gt;
 </description>
     </item>
     

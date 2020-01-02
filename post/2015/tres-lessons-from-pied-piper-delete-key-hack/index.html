@@ -7,8 +7,7 @@
 <meta name="author"
     content="">
 <meta name="description"
-    content="The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle.
-Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?
+    content="The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle. Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?
 Could a mindless error of pressing a delete key really cause a venerable company like Intersite to lose over nine thousand hours of content (including an irreplaceable archive of vintage yiffing videos)?" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -29,7 +28,7 @@ Could a mindless error of pressing a delete key really cause a venerable company
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -40,22 +39,17 @@ Could a mindless error of pressing a delete key really cause a venerable company
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Tres Lessons From Pied Piper Delete Key Hack">
-<meta itemprop="description" content="The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle.
-Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?
+<meta itemprop="description" content="The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle. Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?
 Could a mindless error of pressing a delete key really cause a venerable company like Intersite to lose over nine thousand hours of content (including an irreplaceable archive of vintage yiffing videos)?">
-
-
 <meta itemprop="datePublished" content="2015-09-10T10:55:08-05:00" />
 <meta itemprop="dateModified" content="2015-09-10T10:55:08-05:00" />
-<meta itemprop="wordCount" content="1022">
+<meta itemprop="wordCount" content="1026">
 
 
 
-<meta itemprop="keywords" content="hbo,silicon valley," />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="hbo,silicon valley," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Tres Lessons From Pied Piper Delete Key Hack"/>
-<meta name="twitter:description" content="The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle.
-Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?
+<meta name="twitter:description" content="The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle. Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?
 Could a mindless error of pressing a delete key really cause a venerable company like Intersite to lose over nine thousand hours of content (including an irreplaceable archive of vintage yiffing videos)?"/>
 
 
@@ -128,49 +122,27 @@ Could a mindless error of pressing a delete key really cause a venerable company
             
 
             <div class="post-content">
-                
-
-<p><img align="left" src="/images/2015/tres_comas.png">
-The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle.</p>
-
+                <img align="left" src="/images/2015/tres_comas.png">
+The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VALLEY. But there was no greater indignity than being brought to their knees by a tequila bottle.
 <p>Since episode eight “White Hat/Black Hat” aired, many skeptical viewers have asked: how could something like this happen?</p>
-
 <p>Could a mindless error of pressing a delete key really cause a venerable company like Intersite to lose over nine thousand hours of content (including an irreplaceable archive of <a href="http://imgur.com/19qEpxh">vintage yiffing videos</a>)?</p>
-
 <p>The short answer: <strong>yes</strong>.</p>
-
 <p>When the producers of SILICON VALLEY reached out to me during the writing of the episode to help design the sequence, I knew it would be tough to make the technical intricacies track for the joke. But if the team had figured out <a href="http://www.scribd.com/doc/228831637/Optimal-Tip-to-Tip-Efficiency#scribd">optimal tip-to-tip of efficiency</a> with Stanford PhDs, I was up for the challenge.</p>
-
 <p>The delete key hack is a perfect storm of bad system hygiene. The dozens of small errors that led to it are more common than most systems administrators care to admit.</p>
-
 <p>There’s a lesson here. Away from the big headlines about hacks at Sony Pictures and Target, companies every day have their systems broken by stupid errors. Most as avoidable as not putting a tequila bottle on a laptop (or letting Russ Hanneman inside your home in the first place).</p>
-
 <p>Below is the the post-mortem on how the hack went down and tres lessons we can learn from it.</p>
-
 <h1 id="the-bake-off">The Bake-Off</h1>
-
 <hr>
-
-<p><img src="/images/2015/tres_bakeoff.png" alt="" /></p>
-
+![](/images/2015/tres_bakeoff.png)
 <p>Intersite set up the bake-off between Endframe and Pied Piper by providing access to an FTP server with the target files. Each company then downloads the individual files, encodes, compresses and roundtrips the file back to the Intersite server.</p>
-
 <p>To speed up the process of the compression, the companies sequentially encode each file to save hard drive space and time waiting for them all to copy down, then they perform the operation.</p>
-
 <p>This is where all the problems originate: to deliver the compressed file, Pied Piper was given full permission to Intersite’s FTP server (because of course it’s easier to just give all permissions than manage every folder’s permissions).</p>
-
 <p>For those interested, the final Pied Piper solution for Intersite would look something like this:</p>
-
-<p><img src="/images/2015/tres_uploads.png" alt="" /></p>
-
+<p><img src="/images/2015/tres_uploads.png" alt=""></p>
 <h1 id="the-hack">The Hack</h1>
-
 <hr>
-
-<p><img src="/images/2015/tres_del.png" alt="" /></p>
-
+![](/images/2015/tres_del.png)
 <p>When Russ sets down the Tres Comas tequila bottle on Richard’s laptop he unwittingly initiates a massive delete sequence on Intersite’s server. Here are the steps:</p>
-
 <ol>
 <li>Richard navigates to bake-off directory or with the extended permissions he got into a parent folder with original content.</li>
 <li>Gilfoyle turns off the delete verification prompts in the custom software they used for the file transfer and conversion. Richard meanwhile has enabled CRC checking on the internet system, a protection measure for penetration into Pied Piper that backfires.</li>
@@ -178,58 +150,36 @@ The teflon crew at Pied Piper suffered quite a bit during Season 2 of SILICON VA
 <li>As the delete sequence launches the large file size of video spins the disks at 100% and locks the system.</li>
 <li>Hands-on access with the bottle with the persistent delete requests plus the CRC checking creates fork bomb-like effects where the Pied Piper team cannot get back into the system to stop the delete sequence. Intersite is compromised and thousands of hours of video are deleted.</li>
 </ol>
-
 <h1 id="tres-issues">Tres Issues</h1>
-
 <hr>
-
-<p><img src="/images/2015/tres_preso.png" alt="" /></p>
-
+![](/images/2015/tres_preso.png)
 <p>A myriad of problems contributed to the delete key hack. Using the OWASP framework here are the top tres issues:</p>
-
-<h2 id="a7-missing-function-level-access-control-pita-administration">A7 - Missing Function Level Access Control “PITA Administration”</h2>
-
-<p><img align="left" src="/images/2015/tres_comma_small.png">
-Intersite’s FTP server is set up to allow the bake-off users full permissions to the digital masters being used in the bake-off.</p>
-
+<h2 id="a7---missing-function-level-access-control-pita-administration">A7 - Missing Function Level Access Control “PITA Administration”</h2>
+<img align="left" src="/images/2015/tres_comma_small.png">
+Intersite’s FTP server is set up to allow the bake-off users full permissions to the digital masters being used in the bake-off. 
 <p><strong>But why were they unable to kill the transfer?</strong> There are a bunch of reasons this could happen &ndash; the SAN of which they were FTP’ed into was doing massive amounts of data deletion which can be HDD intensive (try deleting over 9000 files and watch your computer crawl).</p>
-
 <p><strong>But they would still be able to kill it on the Pied Piper end?!</strong> Not if the transfer agent was queuing up deletes as fast as it could, pegging out the server on the Pied Piper end as well. Remember, everything they had in their garage data center was going into making the conversions go as fast as possible, the transfer back was a lower priority.</p>
-
-<h2 id="a4-insecure-direct-object-reference-speed-is-everything">A4 - Insecure Direct Object Reference “speed is everything”</h2>
-
-<p><img align="left" src="/images/2015/tres_comma_small.png">
-By not locking out his screen and letting Russ Hanneman near his unsecured session where he was monitoring the transfer from, Richard allowed direct access to the “delete” key object.</p>
-
+<h2 id="a4---insecure-direct-object-reference-speed-is-everything">A4 - Insecure Direct Object Reference “speed is everything”</h2>
+<img align="left" src="/images/2015/tres_comma_small.png">
+By not locking out his screen and letting Russ Hanneman near his unsecured session where he was monitoring the transfer from, Richard allowed direct access to the “delete” key object. 
 <p><strong>But why didn’t it prompt for approving the delete?</strong> Basically when you’re in a bake-off like this, you do absolutely everything to remove any possible obstacles, like <strong>ANY</strong> prompts or approvals that you might not be around to hit “OK” on.</p>
-
-<h2 id="a6-sensitive-data-exposure-we-must-run-forward-simply-to-stay-in-place">A6 - Sensitive Data Exposure “We must run forward simply to stay in place”</h2>
-
-<p><img align="left" src="/images/2015/tres_comma_small.png">
-Intersite did not do a proper backup of their files due to cost and size constraints on their current system. In Episode 7 “Adult Content,” Molly Kendall, Intersite’s CEO, talked about how the porn industry was barely making the bills due to “free” internet porn influx. Intersite was doing its best to stay afloat in its industry and, as such, cut corners not only in the lack of proper admin for their FTP server, but also in storage costs. A mistake they will probably not make again soon.</p>
-
+<h2 id="a6---sensitive-data-exposure-we-must-run-forward-simply-to-stay-in-place">A6 - Sensitive Data Exposure “We must run forward simply to stay in place”</h2>
+<img align="left" src="/images/2015/tres_comma_small.png">
+Intersite did not do a proper backup of their files due to cost and size constraints on their current system. In Episode 7 “Adult Content,” Molly Kendall, Intersite’s CEO, talked about how the porn industry was barely making the bills due to “free” internet porn influx. Intersite was doing its best to stay afloat in its industry and, as such, cut corners not only in the lack of proper admin for their FTP server, but also in storage costs. A mistake they will probably not make again soon.
 <h1 id="tres-lessons">Tres Lessons</h1>
-
 <hr>
-
-<p><img src="/images/2015/tres_eyebrow.png" alt="" /></p>
-
-<h2 id="don-t-be-an-idiot-with-permissions">Don’t be an idiot with permissions:</h2>
-
-<p><img align="left" src="/images/2015/tres_comma_small.png">
-The easiest way in is through the front door. Ensure that everyone is on a need-to-know basis with data. Standard protections like 2-factor authentication and whitelisting IP addresses mean nothing if the wrong people access sensitive information.</p>
-
+![](/images/2015/tres_eyebrow.png)
+<h2 id="dont-be-an-idiot-with-permissions">Don’t be an idiot with permissions:</h2>
+<img align="left" src="/images/2015/tres_comma_small.png">
+The easiest way in is through the front door. Ensure that everyone is on a need-to-know basis with data. Standard protections like 2-factor authentication and whitelisting IP addresses mean nothing if the wrong people access sensitive information.
 <h2 id="back-up-your-data">Back up your data:</h2>
-
-<p><img align="left" src="/images/2015/tres_comma_small.png">
+<img align="left" src="/images/2015/tres_comma_small.png">
 It’s easy to take for granted but reliable storage is still expensive. Most small businesses don’t backup data on a daily basis. Even fewer do so with any form of redundancy or integrity checks.
 <br />
-<br /></p>
-
-<h2 id="don-t-work-with-assholes">Don’t work with assholes:</h2>
-
-<p><img align="left" src="/images/2015/tres_comma_small.png">
-Insider attacks are the hardest to detect and protect against. <a href="http://downloads.spectorsoft.com/resources/infographic/spectorsoft-2014-insider-threat-survey.pdf">Surveys</a> estimate 59% go unnoticed until it is too late. The first line of defense is common sense, only hire people you trust — and definitely not anyone who put radio on the Internet.</p>
+<br />
+<h2 id="dont-work-with-assholes">Don’t work with assholes:</h2>
+<img align="left" src="/images/2015/tres_comma_small.png">
+Insider attacks are the hardest to detect and protect against. [Surveys](http://downloads.spectorsoft.com/resources/infographic/spectorsoft-2014-insider-threat-survey.pdf) estimate 59% go unnoticed until it is too late. The first line of defense is common sense, only hire people you trust — and definitely not anyone who put radio on the Internet.
 
             </div>
         </article>
@@ -251,7 +201,7 @@ Insider attacks are the hardest to detect and protect against. <a href="http://d
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

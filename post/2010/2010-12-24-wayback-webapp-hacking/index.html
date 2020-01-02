@@ -7,8 +7,8 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&amp;rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&amp;rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive." />
+    content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&#39;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&#39;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2010/2010-12-24-wayback-webapp-hacking/" />
@@ -28,7 +28,7 @@ This module doesn&amp;rsquo;t make any requests to the targeted domain, it simpl
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,21 +39,18 @@ This module doesn&amp;rsquo;t make any requests to the targeted domain, it simpl
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Wayback Webapp Hacking">
-<meta itemprop="description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.">
-
-
+<meta itemprop="description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&#39;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&#39;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.">
 <meta itemprop="datePublished" content="2010-12-24T19:32:56&#43;00:00" />
 <meta itemprop="dateModified" content="2010-12-24T19:32:56&#43;00:00" />
 <meta itemprop="wordCount" content="275">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Wayback Webapp Hacking"/>
-<meta name="twitter:description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive."/>
+<meta name="twitter:description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&#39;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&#39;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive."/>
 
 
 
@@ -127,10 +124,8 @@ This module doesn&rsquo;t make any requests to the targeted domain, it simply ou
             
 
             <div class="post-content">
-                <p>Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).</p>
-
-<p>This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.</p>
-
+                <p>Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you'll find parts of web apps that have been long forgotten (and usually vulnerable).</p>
+<p>This module doesn't make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.</p>
 <pre><code>msf auxiliary(enum_wayback) &gt; info
        Name: Pull Archive.org stored URLs for a domain
     Version: 10394
@@ -167,28 +162,22 @@ http://portswigger.net/burp/tc.html
 http://portswigger.net/corner.gif
 
 **SNIPPED**
-</code></pre>
-
-<p>You can set the OUTFILE so that you can parse it a bit and import it into Burp, or use a quick script to make the queries yourself. Here is one I wrote in python:</p>
-
+</code></pre><p>You can set the OUTFILE so that you can parse it a bit and import it into Burp, or use a quick script to make the queries yourself. Here is one I wrote in python:</p>
 <p><code># cat requestor.py</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
+<span style="color:#f92672">import</span> urllib
+proxies <span style="color:#f92672">=</span> {<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">http</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">http://127.0.0.1:8080</span><span style="color:#e6db74">&#39;</span>}
+filename <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">/tmp/waybacklist.txt</span><span style="color:#e6db74">&#34;</span>
 
-<pre><code class="language-python">#!/usr/bin/env python
-import urllib
-proxies = {'http': 'http://127.0.0.1:8080'}
-filename = &quot;/tmp/waybacklist.txt&quot;
-
-fl = open(filename, 'r')
-for lines in fl:
-	url = str(lines)
-	if len(url) &lt; 4:
-		print &quot;Skipping blank line&quot;
-	else:
-	    print &quot;Requesting &quot; + url
-	    temp = urllib.urlopen(url, proxies=proxies).read()
-</code></pre>
-
-<p>Enjoy!</p>
+fl <span style="color:#f92672">=</span> open(filename, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;</span>)
+<span style="color:#66d9ef">for</span> lines <span style="color:#f92672">in</span> fl:
+	url <span style="color:#f92672">=</span> str(lines)
+	<span style="color:#66d9ef">if</span> len(url) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">4</span>:
+		<span style="color:#66d9ef">print</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Skipping blank line</span><span style="color:#e6db74">&#34;</span>
+	<span style="color:#66d9ef">else</span>:
+	    <span style="color:#66d9ef">print</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Requesting </span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> url
+	    temp <span style="color:#f92672">=</span> urllib<span style="color:#f92672">.</span>urlopen(url, proxies<span style="color:#f92672">=</span>proxies)<span style="color:#f92672">.</span>read()
+</code></pre></div><p>Enjoy!</p>
 
             </div>
         </article>
@@ -210,7 +199,7 @@ for lines in fl:
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

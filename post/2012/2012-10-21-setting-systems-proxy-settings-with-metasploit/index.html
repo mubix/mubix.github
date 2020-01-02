@@ -7,7 +7,7 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)" />
+    content="One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&#39;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&#39;re done for right out of the door)" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/" />
@@ -27,7 +27,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -38,19 +38,16 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Setting SYSTEM&#39;s proxy settings with Metasploit">
-<meta itemprop="description" content="One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&rsquo;re done for right out of the door)">
-
-
+<meta itemprop="description" content="One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&#39;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&#39;re done for right out of the door)">
 <meta itemprop="datePublished" content="2012-10-21T07:40:11&#43;00:00" />
 <meta itemprop="dateModified" content="2012-10-21T07:40:11&#43;00:00" />
 <meta itemprop="wordCount" content="418">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Setting SYSTEM&#39;s proxy settings with Metasploit"/>
-<meta name="twitter:description" content="One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&rsquo;re done for right out of the door)"/>
+<meta name="twitter:description" content="One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&#39;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&#39;re done for right out of the door)"/>
 
 
 
@@ -119,41 +116,26 @@
         </div>
 
         <article>
-            <h2 class="post-title"><a href="https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/">Setting SYSTEM&rsquo;s proxy settings with Metasploit</a></h2>
+            <h2 class="post-title"><a href="https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/">Setting SYSTEM's proxy settings with Metasploit</a></h2>
 
             
 
             <div class="post-content">
-                <p>One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&rsquo;re done for right out of the door)</p>
-
+                <p>One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn't have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you're done for right out of the door)</p>
 <p>Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.</p>
-
 <p>Its here if you want to take a whack at it: <code>external/source/shellcode/windows/x86/src/block/block_reverse_https_proxy.asm</code></p>
-
 <p>One of the ways @<a href="https://twitter.com/carnal0wnage">carnal0wnage</a> and I demoed @<a href="https://twitter.com/derbycon">DerbyCon</a> was using the bitsadmin binary. Windows7/Vista/2008 come with version 2.0+ which has this great ability to run the following:</p>
-
 <p><code>bitsadmin /util /setieproxy localsystem MANUAL_PROXY 192.168.1.55:3128 &quot;;&quot;</code></p>
-
 <p>(2000,XP,2003 you could upload a copy of bitsadmin that was new enough and that would still work)</p>
-
 <p>That command sets the proxy settings for the SYSTEM account. I was able to jump through hoops and do this remotely by using the windows/exec payload via psexec, then reverse_http(s) would work.</p>
-
 <p>But I wanted a better way to do this. I watched the execution of bitsadmin to see what it was doing and all it was actually doing is setting a registry key. Awesome, I can do that.</p>
-
 <p>Enter enum_proxy:</p>
-
-<p><img src="/images/postimages/201210_proxy_1.png" alt="" /></p>
-
+<p><img src="/images/postimages/201210_proxy_1.png" alt=""></p>
 <p>And&hellip;</p>
-
-<p><img src="/images/postimages/201210_proxy_2.png" alt="" /></p>
-
-<p>If you&rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):</p>
-
-<p><img src="/images/postimages/201210_proxy_3.png" alt="" /></p>
-
+<p><img src="/images/postimages/201210_proxy_2.png" alt=""></p>
+<p>If you've noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):</p>
+<p><img src="/images/postimages/201210_proxy_3.png" alt=""></p>
 <p>Output from it finding a disabled RemoteRegistry:</p>
-
 <pre><code>msf post(enum_proxy) &gt; run
 
 [-] Unable to contact remote registry service on 172.16.10.217
@@ -162,18 +144,11 @@
 [*] Setting: WPAD and AutoConfigure script
 [*] AutoConfigURL: http://anotherproxyserver/pac.pac
 [*] Post module execution completed
-</code></pre>
-
-<p>&ldquo;Awesome but you promised setting the proxy settings&rdquo;, well right now all I can give you is a cloner ;-)</p>
-
+</code></pre><p>&ldquo;Awesome but you promised setting the proxy settings&rdquo;, well right now all I can give you is a cloner ;-)</p>
 <p>Enter clone_proxy_settings module:</p>
-
-<p><img src="/images/postimages/201210_proxy_4.png" alt="" /></p>
-
+<p><img src="/images/postimages/201210_proxy_4.png" alt=""></p>
 <p>And thats it. Still working on an actual &ldquo;set_proxy&rdquo; module, but this should do for now, and a lot less to type.</p>
-
 <p>As of this post both are currently pull requests:</p>
-
 <ul>
 <li><a href="https://github.com/rapid7/metasploit-framework/pull/942">https://github.com/rapid7/metasploit-framework/pull/942</a></li>
 <li><a href="https://github.com/rapid7/metasploit-framework/pull/943">https://github.com/rapid7/metasploit-framework/pull/943</a></li>
@@ -199,7 +174,7 @@
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

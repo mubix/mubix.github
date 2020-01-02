@@ -17,48 +17,30 @@
       
       <guid>https://malicious.link/post/2012/2012-08-11-let-me-out-of-your-net-server-build/</guid>
       <description>&lt;p&gt;In the previous post: &lt;a href=&#34;https://malicious.link/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html&#34;&gt;http://www.room362.com/blog/2012/8/11/let-me-out-of-your-net-workndashintro.html&lt;/a&gt; I told you about letmeoutofyour.net, but how does it work?&lt;/p&gt;
-
 &lt;p&gt;Things we need to accomplish on the server:&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;Listen on all ports&lt;/li&gt;
 &lt;li&gt;Answer for all hostnames and subdomains&lt;/li&gt;
 &lt;li&gt;Answer for all HTTP verbs, file and folder requests&lt;/li&gt;
 &lt;/ol&gt;
-
 &lt;p&gt;&lt;strong&gt;ONE: Listen on all ports&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;(I used Linux, so this guide is for such, modifications to other OSs is up to the reader)&lt;/p&gt;
-
 &lt;p&gt;First you have to get rid of all other services. That’s harder than you would first assume, because you have to admin the box some how. You could toss SSH on a really high port, or have some kind of backend management, or just remove things from running on a multi-IP’d box. It would be impossible in this post to describe every way this is done so I’ll leave it to you to research.&lt;/p&gt;
-
 &lt;p&gt;Once you have everything gone, install and start Apache or your favorite web server for Linux. Then run this very simple command that I stole from a commenter on the “&lt;a href=&#34;https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls&#34;&gt;Forcing Payloads Through Restrictive Firewalls&lt;/a&gt;” post:&lt;/p&gt;
-
 &lt;p&gt;&lt;code&gt;iptables -t nat -I PREROUTING -p tcp -m state --state NEW -d 192.168.1.1 -j DNAT --to 192.168.1.1:80&lt;/code&gt;&lt;/p&gt;
-
 &lt;p&gt;Where ‘192.168.1.1’ is the IP address of your box. IPv4 NATing just allowed you to listen on every single port by forwarding them all to port 80. That simple. Don’t make the mistake I did and forget to set up alternative management before you set that rule, because if you don’t you’ll be forced to find one.&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;TWO: Answer for all hostnames and subdomains&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;This is pretty easy, DNS has the concept of a wildcard hostname. You simply put an asterisk * in the place of where you would normally put a WWW however you manage your DNS and you’re good. You will also want to add a second record, an ‘@’ is used to reference the domain without a host or subdomain. So the first records makes it answer for things like &lt;a href=&#34;http://blah.letmeoutofyour.net&#34;&gt;http://blah.letmeoutofyour.net&lt;/a&gt; and the second for &lt;a href=&#34;http://letmeoutofyour.net/&#34;&gt;http://letmeoutofyour.net/&lt;/a&gt; – Pretty simple ya?&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;THREE: Answer for all HTTP verbs, file and folder requests&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;This is pretty simple as well. Apache’s mod_rewrite to the rescue. Here are the rules:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;RewriteEngine on       
 RewriteCond %{REQUEST_METHOD} ^(.*)        
 RewriteRule .* index.html [QSA,L]        
 RewriteCond %{DOCUMENT_ROOT} !-f        
 RewriteRule ^(.*)$ index.html [QSA,L]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You can either apply this in an .htaccess file or directly in the site configs, up to you.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can either apply this in an .htaccess file or directly in the site configs, up to you.&lt;/p&gt;
 &lt;p&gt;And that’s it. It all seems really simple, but took me a good amount of time putting it all together. Next up, binaries and call backs that use this to wriggle their way out of networks.&lt;/p&gt;
-
 &lt;p&gt;P.S.&lt;/p&gt;
-
 &lt;p&gt;This setup throws web scanners through a loop, and if you wanted to be REALLY nasty you could have a bit of php make the index page be an endless 302 or have w00w00t linked to a random page / folder which is generated each time it’s requested.&lt;/p&gt;
 </description>
     </item>
@@ -70,29 +52,18 @@ RewriteRule ^(.*)$ index.html [QSA,L]
       
       <guid>https://malicious.link/post/2012/2012-08-10-let-me-out-of-your-net-intro/</guid>
       <description>&lt;p&gt;Something that is often useful is a known-good. Something out of the control of your adversary or outside modifiers. But back to that in a sec, egress ‘busting’ or getting your payload/backdoor/trojan/c2 out of someone’s network once you’ve gotten that ever elusive “CODE EXECUTION HAPPY DANCE” going on isn’t always easy. There is even a Metasploit payload for it called ‘allports’:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls&#34;&gt;https://community.rapid7.com/community/metasploit/blog/2009/09/24/forcing-payloads-through-restrictive-firewalls&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;There is also ‘Egress Buster’ by the guys over at TrustedSec which can do 1000 ports in just a few seconds:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://www.trustedsec.com/july-2012/egress-buster-reverse-bypassav/&#34;&gt;https://www.trustedsec.com/july-2012/egress-buster-reverse-bypassav/&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;The problem I find with these tools is that they are still straight TCP. *(Yes, yes I know most networks still allow some ports directly outbound) and these tools are still quite valid. During the span between these two tools being released, MrB released a site that listens on all 65k ports: &lt;a href=&#34;http://open.zorinaq.com/about/&#34;&gt;http://open.zorinaq.com/about/&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;Figured I should merge these ideas and add a few more capabilities (and show you how I did it so you can do so yourself), and so LetMeOutOfYour.net was born.&lt;/p&gt;
-
 &lt;p&gt;You can hit any subdomain or hostname of letmeoutofyour.net on any port with any HTTP Verb for any resource (web page or folder) and you will always receive a ‘w00tw00t’ back.&lt;/p&gt;
-
 &lt;p&gt;For example this request (removed the unimportant headers on the request to save space):&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;POST /admin/login.php HTTP/1.1       
 Host: development.letmeoutofyour.net:8081
      
 username=admin&amp;amp;password=password
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Will result in this:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Will result in this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;HTTP/1.1 200 OK       
 Date: Sat, 11 Aug 2012 02:21:54 GMT        
 Server: Apache        
@@ -105,12 +76,8 @@ Connection: Keep-Alive
 Content-Type: text/html        
        
 w00tw00t
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;All of those headers are standard Apache headers with the content being just ‘w00tw00t’. Making the connection an HTTP one opens a few doors to things like proxies. It’s ok to cackle at this point.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;All of those headers are standard Apache headers with the content being just ‘w00tw00t’. Making the connection an HTTP one opens a few doors to things like proxies. It’s ok to cackle at this point.&lt;/p&gt;
 &lt;p&gt;In the following parts I’ll show you how to build the server itself and a binary to find it’s way out of networks. Feel free to point your own domains at the IP it’s hosted on, it can handle it. Have a try, I know you want to:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;http://youshouldreally.letmeoutofyour.net/before/i/get/angry/and/youwouldntlikemewhenimangry.asp&#34;&gt;http://youshouldreally.letmeoutofyour.net/before/i/get/angry/and/youwouldntlikemewhenimangry.asp&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
@@ -122,17 +89,16 @@ w00tw00t
       
       <guid>https://malicious.link/post/2009/2009-02-03-ear-trumpet/</guid>
       <description>&lt;p&gt;I have had the idea for this app for a long time, expressed it a few times, but never really pushed, and I sure that I am not the only one who has thought of or wanted an app like &lt;a href=&#34;http://www.digininja.org/ear_trumpet.php&#34;&gt;Ear Trumpet&lt;/a&gt; by &lt;a href=&#34;http://www.digininja.org/&#34;&gt;Robin Wood&lt;/a&gt;. Well on Jan 21st Sam Buhlig posted to the &lt;a href=&#34;http://mail.pauldotcom.com/cgi-bin/mailman/listinfo/pauldotcom&#34;&gt;PaulDotCom mailing list &lt;/a&gt; asking for an app to test a firewall that would answer on all ports. A great discussion spawned off and a couple guys (Dimitrios Kapsalis, and Robin Wood) started work on it.&lt;/p&gt;
-
 &lt;p&gt;So what is Ear Trumpet? It’s a server/client app just like Cain and Abel is. But each piece has one very simple task: ear listens on a server on all TCP port, and trumpet tries to get to it on all TCP ports. That’s it.&lt;/p&gt;
-
 &lt;p&gt;What does that do for me? Well, here are two instances where it could be useful:&lt;/p&gt;
-
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;As a Firewall / Perimeter Technician, where you use it to test to see if all of your firewall rules are working properly so that no one can get through. (Outside in. Ear internal, Trumpet external)&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;As a Penetration Tester, where you use it to find exfiltration points, ways out of the network. (Inside out, Ear external, Trumpet internal), You could even put Trumpet on multiple computers in this instance and see which systems have different access out. There are sleep methods plugged into Trumpet to allow you to stay under the radar.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;As a Firewall / Perimeter Technician, where you use it to test to see if all of your firewall rules are working properly so that no one can get through. (Outside in. Ear internal, Trumpet external)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;As a Penetration Tester, where you use it to find exfiltration points, ways out of the network. (Inside out, Ear external, Trumpet internal), You could even put Trumpet on multiple computers in this instance and see which systems have different access out. There are sleep methods plugged into Trumpet to allow you to stay under the radar.&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;What can you use it for? Simple programs like this always have a million uses. Comment with your idea.&lt;/p&gt;
 </description>
     </item>

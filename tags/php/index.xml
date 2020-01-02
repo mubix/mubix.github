@@ -16,40 +16,21 @@
       <pubDate>Tue, 09 Sep 2014 11:26:38 -0500</pubDate>
       
       <guid>https://malicious.link/post/2014/osx-persistence-via-php-webshell/</guid>
-      <description>&lt;p&gt;As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, &lt;strong&gt;with root or sudo priviledge&lt;/strong&gt;, enable the &lt;strong&gt;built-in&lt;/strong&gt; apache server on OSX and it&amp;rsquo;s &lt;strong&gt;PHP&lt;/strong&gt; module&amp;hellip;.&lt;/p&gt;
-
+      <description>&lt;p&gt;As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, &lt;strong&gt;with root or sudo priviledge&lt;/strong&gt;, enable the &lt;strong&gt;built-in&lt;/strong&gt; apache server on OSX and it&#39;s &lt;strong&gt;PHP&lt;/strong&gt; module&amp;hellip;.&lt;/p&gt;
 &lt;p&gt;I am working with OSX Mavericks so your locations may vary based on the version of OSX your target it.&lt;/p&gt;
-
 &lt;p&gt;First things first is to enable the PHP module for the Apache server.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;sudo nano -w /etc/apache2/httpd.conf
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;em&gt;(vi or emacs to your heart&amp;rsquo;s content)&lt;/em&gt;. But what we are looking for is to uncomment the following line:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;em&gt;(vi or emacs to your heart&#39;s content)&lt;/em&gt;. But what we are looking for is to uncomment the following line:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;#LoadModule php5_module libexec/apache2/libphp5.so
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Once you do that, start up Apache. This can be done temporarily (won&amp;rsquo;t survive a reboot) with the &lt;code&gt;apachectl&lt;/code&gt; command:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Once you do that, start up Apache. This can be done temporarily (won&#39;t survive a reboot) with the &lt;code&gt;apachectl&lt;/code&gt; command:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo apachectl start
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/osx_apache.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/osx_apache.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Or you can make it more permanent with &lt;code&gt;launchctl&lt;/code&gt;:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;sudo launchctl load -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And undoing the damage with:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And undoing the damage with:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;After that, just drop your favorite PHP shell into the &lt;code&gt;/Library/WebServer/Documents/&lt;/code&gt; directory and you&amp;rsquo;re done. (My favorites are &lt;a href=&#34;https://github.com/b374k/b374k&#34;&gt;b374k&lt;/a&gt; and PHP Meterpreter.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/osx_php_shell.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that, just drop your favorite PHP shell into the &lt;code&gt;/Library/WebServer/Documents/&lt;/code&gt; directory and you&#39;re done. (My favorites are &lt;a href=&#34;https://github.com/b374k/b374k&#34;&gt;b374k&lt;/a&gt; and PHP Meterpreter.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/osx_php_shell.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 </description>
     </item>
     

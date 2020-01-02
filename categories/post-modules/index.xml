@@ -17,51 +17,36 @@
       
       <guid>https://malicious.link/post/2011/2011-11-02-run-post-modules-on-all-sessions/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://twitter.com/jcran&#34;&gt;Jcran&lt;/a&gt; recently blogged about an easy way to run a post module on all sessions:&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;http://blog.pentestify.com/simple-framework-domain-token-scanner&#34;&gt;http://blog.pentestify.com/simple-framework-domain-token-scanner&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
-msf enum_domain_tokens&amp;gt; irb
-framework.sessions.each do |session|
-  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
-  run_single(&amp;quot;run&amp;quot;)
-  sleep 1
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;msf&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; use post&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;windows&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;gather&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;enum_domain_tokens
+msf enum_domain_tokens&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; irb
+framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sessions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set SESSION &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;first&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.&lt;/p&gt;
 &lt;p&gt;Thinking back to &lt;a href=&#34;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&#34;&gt;http://blog.metasploit.com/2010/03/automating-metasploit-console.html&lt;/a&gt; and my rapid file PSEXEC resource file, we know we can run ruby inside of resource files with the &lt;ruby&gt; tag.&lt;/p&gt;
-
-&lt;p&gt;Save the following as runall.rc somewhere where you&amp;rsquo;ll remember:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;framework.sessions.each do |session|
-  run_single(&amp;quot;set SESSION #{session.first}&amp;quot;)
-  print_status(&amp;quot;Running #{active_module.fullname} against session #{session.first}&amp;quot;)
-  run_single(&amp;quot;run&amp;quot;)
-  sleep 1
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then when you want to run a POST module against every session you have you simply do:&lt;/p&gt;
-
+&lt;p&gt;Save the following as runall.rc somewhere where you&#39;ll remember:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sessions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set SESSION &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;first&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Running &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;active_module&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fullname&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; against session &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;first&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then when you want to run a POST module against every session you have you simply do:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf&amp;gt; use post/windows/gather/enum_domain_tokens
 msf enum_domain_tokens&amp;gt; resource runall.rc
 [*] Running post/windows/gather/enum_domain_tokens on session 1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-11-06 20:05 by Rob Fuller&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-11-06 20:05 by Rob Fuller&lt;/p&gt;
 &lt;p&gt;A commenter noticed an error in the coding for cross compatibility. The following should work better across versions:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;framework.sessions.each_key do |session|
-  run_single(&amp;quot;set SESSION #{session}&amp;quot;)
-  print_status(&amp;quot;Running #{active_module.fullname} against session #{session}&amp;quot;)
-  run_single(&amp;quot;run&amp;quot;)
-  sleep 1
-end
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sessions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each_key &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;session&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;set SESSION &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Running &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;active_module&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fullname&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt; against session &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;session&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  run_single(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+  sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
   </channel>

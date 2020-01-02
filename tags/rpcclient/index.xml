@@ -16,71 +16,46 @@
       <pubDate>Fri, 23 Jun 2017 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2017/reset-ad-user-password-with-linux/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/delegate_passwordreset.png&#34; alt=&#34;&#34; /&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/delegate_passwordreset.png&#34; alt=&#34;&#34;&gt;
 &lt;em&gt;Image showing how to allow users to be able to reset user passwords&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; If you are here because you are a helpdesk person, this is a pentest blog, so it&amp;rsquo;s coming from the mindset of a pentester, but this could just as easily be used for legitmate purposes.&lt;/p&gt;
-
+&lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; If you are here because you are a helpdesk person, this is a pentest blog, so it&#39;s coming from the mindset of a pentester, but this could just as easily be used for legitmate purposes.&lt;/p&gt;
 &lt;p&gt;There are a great many things you can do with &lt;code&gt;rpcclient&lt;/code&gt; for examples outside of this blog post see these posts by &lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;Chris Gates&lt;/a&gt;:&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://carnal0wnage.attackresearch.com/2007/07/enumerating-user-accounts-on-linux-and.html&#34;&gt;Enumerating user accounts on Linux and OS X with rpcclient&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://carnal0wnage.attackresearch.com/2007/08/more-of-using-rpcclient-to-find.html&#34;&gt;More of using rpcclient to find usernames&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://carnal0wnage.attackresearch.com/2010/06/more-with-rpcclient.html&#34;&gt;more with rpcclient&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://carnal0wnage.attackresearch.com/2012/05/from-low-to-pwned-5-honorable-mention.html&#34;&gt;From LOW to PWNED [5] Honorable Mention: Null Sessions&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;There have been plenty of times on pentests where I have had access to IT or helpdesk related accounts that had limited administrative powers. Almost always I or someone on the team found an internal wiki or share that they did have access to (and then we moved on from there), however they almost always have the ability to reset passwords.&lt;/p&gt;
-
-&lt;p&gt;I was unable to find any documentation on how to do this from a Linux host, or at the very least to do it without Active Directory Users and Computers (ADUC), which would require a Windows machine. And figuring out how to run ADUC through a meterpreter sessions wasn&amp;rsquo;t an hurdle I ever had time for in engagements. :)&lt;/p&gt;
-
-&lt;p&gt;Due to me being dumb and resetting a password of my own in my lab to something I couldn&amp;rsquo;t remember, I finally had the time to figure it out.&lt;/p&gt;
-
+&lt;p&gt;I was unable to find any documentation on how to do this from a Linux host, or at the very least to do it without Active Directory Users and Computers (ADUC), which would require a Windows machine. And figuring out how to run ADUC through a meterpreter sessions wasn&#39;t an hurdle I ever had time for in engagements. :)&lt;/p&gt;
+&lt;p&gt;Due to me being dumb and resetting a password of my own in my lab to something I couldn&#39;t remember, I finally had the time to figure it out.&lt;/p&gt;
 &lt;p&gt;If you have Samba client tools (&lt;code&gt;smbclient&lt;/code&gt;) installed, you can use &lt;code&gt;rpcclient&lt;/code&gt;.  Out of the gate, you can auth with password or kerberos (this is especially useful in situations where you have dropped into a user that has an active kerberos token or you can make one):&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@kali:~# rpcclient -U helpdesk //192.168.80.10
 Enter helpdesk&#39;s password:
 rpcclient $&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If you have the package &lt;code&gt;passing-the-hash&lt;/code&gt;, you can even do this with just a NTLM hash.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you have the package &lt;code&gt;passing-the-hash&lt;/code&gt;, you can even do this with just a NTLM hash.&lt;/p&gt;
 &lt;p&gt;In order to change a password you neet to use the &lt;code&gt;setuserinfo2&lt;/code&gt; command:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2
 Usage: setuserinfo2 username level password [password_expired]
 result was NT_STATUS_INVALID_PARAMETER
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You will not be able to change the password of anyone with &lt;code&gt;AdminCount = 1&lt;/code&gt; (aka Domain Admins and other high priv accounts):&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You will not be able to change the password of anyone with &lt;code&gt;AdminCount = 1&lt;/code&gt; (aka Domain Admins and other high priv accounts):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2 ima-domainadmin 23 &#39;ASDqwe123&#39;
 result: NT_STATUS_ACCESS_DENIED
 result was NT_STATUS_ACCESS_DENIED
 rpcclient $&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;But you can very easily target users who have alternate admin accounts:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But you can very easily target users who have alternate admin accounts:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2 adminuser 23 &#39;ASDqwe123&#39;
 rpcclient $&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Yes it would be nice if there was any sort of confirmation&amp;hellip;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Yes it would be nice if there was any sort of confirmation&amp;hellip;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;The &lt;code&gt;23&lt;/code&gt; came from &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/cc245617.aspx&#34;&gt;this MSDN article&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;If you have the package &lt;code&gt;samba-common-bin&lt;/code&gt; you can also do this with the &lt;code&gt;net&lt;/code&gt; command:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@kali:~# net rpc password adminuser -U helpdesk -S 192.168.80.10
 Enter new password for adminuser:
 Enter helpdesk&#39;s password:
 root@kali:~#
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Huge thanks for &lt;a href=&#34;https://twitter.com/agsolino&#34;&gt;Beto Solino&lt;/a&gt; of &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt; fame for his help figuring this out.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Huge thanks for &lt;a href=&#34;https://twitter.com/agsolino&#34;&gt;Beto Solino&lt;/a&gt; of &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt; fame for his help figuring this out.&lt;/p&gt;
 </description>
     </item>
     

@@ -16,67 +16,40 @@
       <pubDate>Sat, 06 May 2017 15:00:00 -0400</pubDate>
       
       <guid>https://malicious.link/post/2017/05-06-2017-password-magic-numbers/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/LAN_Manager&#34;&gt;LanManager passwords&lt;/a&gt; (&amp;ldquo;LM&amp;rdquo;) is a very old and well known password hashing function. Used way back in &lt;a href=&#34;https://en.wikipedia.org/wiki/OS/2&#34;&gt;OS/2 Warp&lt;/a&gt; and &lt;a href=&#34;https://en.wikipedia.org/wiki/MS-Net&#34;&gt;MS-Net&lt;/a&gt; (networking for MS-DOS). It was great in it&amp;rsquo;s day, however how it worked was not sustainable. The hashing was performed only haver uppercasing and splitting the password into two 7 character chunks. This meant that even if your password was 14 characters long, it was still technically only two 7 character passwords, that could be cracked separately.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/NT_LAN_Manager&#34;&gt;NTLM&lt;/a&gt;, it&amp;rsquo;s big brother came along with Windows NT (Windows 95 and Windows 98 did not have NTLM, and we don&amp;rsquo;t speak about Windows ME). Windows to this day stores both the LM and NTLM versions of passwords. This meant that if your password was under 15 characters it would still be stored in that LM crackable format (&lt;a href=&#34;https://support.microsoft.com/en-us/help/299656/how-to-prevent-windows-from-storing-a-lan-manager-hash-of-your-password-in-active-directory-and-local-sam-databases&#34;&gt;unless storage of LM is being prevented, which has become default&lt;/a&gt;).&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/LAN_Manager&#34;&gt;LanManager passwords&lt;/a&gt; (&amp;ldquo;LM&amp;rdquo;) is a very old and well known password hashing function. Used way back in &lt;a href=&#34;https://en.wikipedia.org/wiki/OS/2&#34;&gt;OS/2 Warp&lt;/a&gt; and &lt;a href=&#34;https://en.wikipedia.org/wiki/MS-Net&#34;&gt;MS-Net&lt;/a&gt; (networking for MS-DOS). It was great in it&#39;s day, however how it worked was not sustainable. The hashing was performed only haver uppercasing and splitting the password into two 7 character chunks. This meant that even if your password was 14 characters long, it was still technically only two 7 character passwords, that could be cracked separately.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/NT_LAN_Manager&#34;&gt;NTLM&lt;/a&gt;, it&#39;s big brother came along with Windows NT (Windows 95 and Windows 98 did not have NTLM, and we don&#39;t speak about Windows ME). Windows to this day stores both the LM and NTLM versions of passwords. This meant that if your password was under 15 characters it would still be stored in that LM crackable format (&lt;a href=&#34;https://support.microsoft.com/en-us/help/299656/how-to-prevent-windows-from-storing-a-lan-manager-hash-of-your-password-in-active-directory-and-local-sam-databases&#34;&gt;unless storage of LM is being prevented, which has become default&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;This is where the first &amp;ldquo;magic number&amp;rdquo; for passwords comes from. In many pentests I recommended in my reports that all sensitive passwords have a minimum of &lt;strong&gt;15 characters&lt;/strong&gt;. By doing this, no matter what the setting was for the storage of their passwords on whatever system they might be stored on, it would never be stored in LM. I even recommended it for normal users, but obviously that recommendation never stuck.&lt;/p&gt;
-
 &lt;p&gt;Recently I discovered a new &amp;ldquo;magic number&amp;rdquo; for passwords: &lt;strong&gt;28&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;Before I get into this, all of this information came from &lt;a href=&#34;https://twitter.com/hashcat&#34;&gt;Atom&lt;/a&gt; (Hashcat primary developer) &lt;a href=&#34;https://twitter.com/SolarDiz&#34;&gt;Solar Designer&lt;/a&gt; (John the Ripper) and &lt;a href=&#34;https://github.com/magnumripper&#34;&gt;Magnum&lt;/a&gt; (John the Ripper). I&amp;rsquo;m just putting it together because I had no idea this existed and I&amp;rsquo;ve been cracking passwords using both of these tools for ages. Huge thanks to them for all their help and patience.&lt;/p&gt;
-
-&lt;p&gt;It turns out, that password cracking tools have maximum character lengths for passwords. This boggled my mind for a while but it makes total sense once Atom explained that it has to do with how the tools store the password candidates (dictionary words or generated clear texts to be used in the hash comparison attempt). They are stored in GPU registers, and unfortunately the speed of storing it there comes at a price. That price is that there isn&amp;rsquo;t enough registers to store candidates over certain lengths. The maximum lengths are specific to how each hashing function works so some maximum lengths are longer than others. The general rule of thumb at least in the world of Hashcat is 55 characters.&lt;/p&gt;
-
+&lt;p&gt;Before I get into this, all of this information came from &lt;a href=&#34;https://twitter.com/hashcat&#34;&gt;Atom&lt;/a&gt; (Hashcat primary developer) &lt;a href=&#34;https://twitter.com/SolarDiz&#34;&gt;Solar Designer&lt;/a&gt; (John the Ripper) and &lt;a href=&#34;https://github.com/magnumripper&#34;&gt;Magnum&lt;/a&gt; (John the Ripper). I&#39;m just putting it together because I had no idea this existed and I&#39;ve been cracking passwords using both of these tools for ages. Huge thanks to them for all their help and patience.&lt;/p&gt;
+&lt;p&gt;It turns out, that password cracking tools have maximum character lengths for passwords. This boggled my mind for a while but it makes total sense once Atom explained that it has to do with how the tools store the password candidates (dictionary words or generated clear texts to be used in the hash comparison attempt). They are stored in GPU registers, and unfortunately the speed of storing it there comes at a price. That price is that there isn&#39;t enough registers to store candidates over certain lengths. The maximum lengths are specific to how each hashing function works so some maximum lengths are longer than others. The general rule of thumb at least in the world of Hashcat is 55 characters.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;UPDATE:&lt;/strong&gt;&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;The primary reason behind these specific length limits is that exceeding them doubles the amount of processing. The register pressure is a secondary aspect, and mostly limited to GPUs. (On CPUs, the candidate passwords themselves are not in registers.)&lt;/p&gt;
-
 &lt;p&gt;&amp;ndash; Solar Designer&lt;/p&gt;
-
 &lt;p&gt;&lt;a href=&#34;https://twitter.com/solardiz/status/861183622950334464&#34;&gt;https://twitter.com/solardiz/status/861183622950334464&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;p&gt;In the world of Windows however, passwords are stored using UTF16-LE. This means that password candidates are automatically double the character length as most other hashing functions, halving the possible maximum down to 27 characters. This means that lets say your password is a very well known quote like:&lt;/p&gt;
-
 &lt;blockquote&gt;
-&lt;p&gt;You can&amp;rsquo;t handle the truth!&lt;/p&gt;
+&lt;p&gt;You can&#39;t handle the truth!&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;who&amp;rsquo;s NTLM hash is &lt;code&gt;E478B144E719CFF85A5F2028F0DF1808&lt;/code&gt; you wouldn&amp;rsquo;t be able to crack it, even if it was in your dictionary, because it&amp;rsquo;s 28 characters. This limitation extends to any UTF16 based hash (which almost all Windows based hashing is)&lt;/p&gt;
-
+&lt;p&gt;who&#39;s NTLM hash is &lt;code&gt;E478B144E719CFF85A5F2028F0DF1808&lt;/code&gt; you wouldn&#39;t be able to crack it, even if it was in your dictionary, because it&#39;s 28 characters. This limitation extends to any UTF16 based hash (which almost all Windows based hashing is)&lt;/p&gt;
 &lt;p&gt;How do you know what the limits are? Well John the Ripper has a handy dandy argument that tells you specifics of each format:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/jtr/run# ./john --list=format-details --format=nt
 NT      81      24      24      0002000f        43      MD4 256/256 AVX2 8x3  
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As you can see in the second column it says &amp;ldquo;81&amp;rdquo;. This is the maximum number of UTF8 characters that it can fit for that format type, but because John the Ripper supports up to the full standard of 3 bytes in UTF16, the maximum again, is 27 characters.&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As you can see in the second column it says &amp;ldquo;81&amp;rdquo;. This is the maximum number of UTF8 characters that it can fit for that format type, but because John the Ripper supports up to the full standard of 3 bytes in UTF16, the maximum again, is 27 characters.&lt;/p&gt;
 &lt;p&gt;You can read more here:&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper/issues/2529&#34;&gt;https://github.com/magnumripper/JohnTheRipper/issues/2529&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-users/2017/05/04/8&#34;&gt;http://www.openwall.com/lists/john-users/2017/05/04/8&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-users/2017/05/04/9&#34;&gt;http://www.openwall.com/lists/john-users/2017/05/04/9&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;If you read through the openwall posts then you saw there is a way to compile &lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper&#34;&gt;John (jumbo)&lt;/a&gt; to squeeze out a few more characters:&lt;/p&gt;
-
 &lt;p&gt;(&lt;strong&gt;This will slow down cracking considerably&lt;/strong&gt;)&lt;/p&gt;
-
 &lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/src/#./configure --disable-native-tests CFLAGS=&#39;-O2 -mno-sse2 -mno-mmx -U__SSE__&#39;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Lets see what this gets us:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Lets see what this gets us:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/run/# ./john --list=format-details --format=nt
 NT      125     1       1       0002000f        43      MD4 32/64
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;We now have 125 total characters total (not just 41 - &lt;a href=&#34;https://twitter.com/solardiz/status/861182438818684929&#34;&gt;thanks Solar Designer for the update&lt;/a&gt;). And as you can probably guess, it cracks the password just fine now:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We now have 125 total characters total (not just 41 - &lt;a href=&#34;https://twitter.com/solardiz/status/861182438818684929&#34;&gt;thanks Solar Designer for the update&lt;/a&gt;). And as you can probably guess, it cracks the password just fine now:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/run/# ./john /tmp/hashtest.txt --format=nt --wordlist=/tmp/list.txt
 Using default input encoding: UTF-8
 Loaded 2 password hashes with no different salts (NT [MD4 32/64])
@@ -86,20 +59,12 @@ You can&#39;t handle the truth! (Martha)
 1g 0:00:00:00 DONE (2017-05-07 00:58) 33.33g/s 133.3p/s 133.3c/s 133.3C/s You can&#39;t handle the truth!
 Use the &amp;quot;--show&amp;quot; option to display all of the cracked passwords reliably
 Session completed
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Hashcat also has a branch that supports longer passwords, but currently doesn&amp;rsquo;t support NTLM:&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hashcat also has a branch that supports longer passwords, but currently doesn&#39;t support NTLM:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/hashcat/hashcat/tree/longer_passwords&#34;&gt;https://github.com/hashcat/hashcat/tree/longer_passwords&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;So now my recommendations for passwords, at least in the Windows world is 28 characters or more makes it so that without tweaking, your 28 character Jack Nicholson quote based password is safer (I mean, Mimikatz still works, and keyloggers, and so on and so forth&amp;hellip;)&lt;/p&gt;
-
 &lt;p&gt;28 characters is a bit tough to force on standard users, but making sure that at least your service, admin and &amp;ldquo;high risk&amp;rdquo; accounts are &amp;gt; 28 is a good step.&lt;/p&gt;
-
-&lt;p&gt;Solar Designer also pointed me at the Openwall product called &lt;a href=&#34;http://www.openwall.com/passwdqc/&#34;&gt;passwdqc&lt;/a&gt; which is much more affordable than other password products I&amp;rsquo;ve seen for enterprises. Here is a direct link to the Windows version that allows 30 day trial: &lt;a href=&#34;http://www.openwall.com/passwdqc/windows/&#34;&gt;http://www.openwall.com/passwdqc/windows/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;I definitely could get things wrong in this post, it&amp;rsquo;s very new to me and I&amp;rsquo;m still digging. Please hit me up with any corrections via comments below, Facbook, Twitter, IRC, Google Hangouts, Wire, Signal, AIM, Slack, LinkedIn, Mastadon, WhatsApp, Skype, smoke signals&amp;hellip; however you wish, I&amp;rsquo;ll update this post as needed. Thanks!&lt;/em&gt;&lt;/p&gt;
-
+&lt;p&gt;Solar Designer also pointed me at the Openwall product called &lt;a href=&#34;http://www.openwall.com/passwdqc/&#34;&gt;passwdqc&lt;/a&gt; which is much more affordable than other password products I&#39;ve seen for enterprises. Here is a direct link to the Windows version that allows 30 day trial: &lt;a href=&#34;http://www.openwall.com/passwdqc/windows/&#34;&gt;http://www.openwall.com/passwdqc/windows/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;I definitely could get things wrong in this post, it&#39;s very new to me and I&#39;m still digging. Please hit me up with any corrections via comments below, Facbook, Twitter, IRC, Google Hangouts, Wire, Signal, AIM, Slack, LinkedIn, Mastadon, WhatsApp, Skype, smoke signals&amp;hellip; however you wish, I&#39;ll update this post as needed. Thanks!&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&amp;ndash;
 mubix&lt;/p&gt;
 </description>

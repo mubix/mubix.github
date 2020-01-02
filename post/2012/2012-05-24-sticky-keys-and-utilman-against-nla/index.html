@@ -10,7 +10,7 @@
     content="At CCDC, Sticky Keys via RDP was a very successful re-entry point for the Red Team. You can read more about how this works here:
 http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html
 So if you can get physical access or SYSTEM/Admin access at some point and enable &#43; reach RDP, you can very easily follow those instructions and gain a level of persistance without the need of a pesky password :-)
-However, this doesn&amp;rsquo;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond." />
+However, this doesn&#39;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://malicious.link/post/2012/2012-05-24-sticky-keys-and-utilman-against-nla/" />
@@ -30,7 +30,7 @@ However, this doesn&amp;rsquo;t work so well with the advent of NLA or Network-L
     type="text/css">
 
 
-<link rel="stylesheet" href="https://malicious.link/scss/main.min.099699ab246bf26f50616f7c9f00c79d46110459d1bd727b2d07d6fc09ece082.css">
+<link rel="stylesheet" href="https://malicious.link/scss/main.min.48be1f41dc1d94d27b5663b2b359c895efd7696597f656e57d8f6c0e126c0563.css">
 
 
 
@@ -44,22 +44,19 @@ However, this doesn&amp;rsquo;t work so well with the advent of NLA or Network-L
 <meta itemprop="description" content="At CCDC, Sticky Keys via RDP was a very successful re-entry point for the Red Team. You can read more about how this works here:
 http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html
 So if you can get physical access or SYSTEM/Admin access at some point and enable &#43; reach RDP, you can very easily follow those instructions and gain a level of persistance without the need of a pesky password :-)
-However, this doesn&rsquo;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond.">
-
-
+However, this doesn&#39;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond.">
 <meta itemprop="datePublished" content="2012-05-24T17:10:24&#43;00:00" />
 <meta itemprop="dateModified" content="2012-05-24T17:10:24&#43;00:00" />
 <meta itemprop="wordCount" content="212">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Sticky Keys and Utilman against NLA"/>
 <meta name="twitter:description" content="At CCDC, Sticky Keys via RDP was a very successful re-entry point for the Red Team. You can read more about how this works here:
 http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html
 So if you can get physical access or SYSTEM/Admin access at some point and enable &#43; reach RDP, you can very easily follow those instructions and gain a level of persistance without the need of a pesky password :-)
-However, this doesn&rsquo;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond."/>
+However, this doesn&#39;t work so well with the advent of NLA or Network-Level-Authentication, which was enabled for Vista systems and beyond."/>
 
 
 
@@ -135,40 +132,24 @@ However, this doesn&rsquo;t work so well with the advent of NLA or Network-Level
 
             <div class="post-content">
                 <p>At CCDC, Sticky Keys via RDP was a very successful re-entry point for the Red Team. You can read more about how this works here:</p>
-
 <p><a href="http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html">http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html</a></p>
-
 <p>So if you can get physical access or SYSTEM/Admin access at some point and enable + reach RDP, you can very easily follow those instructions and gain a level of persistance without the need of a pesky password :-)</p>
-
-<p>However, this doesn&rsquo;t work so well with the advent of NLA or <a href="http://en.wikipedia.org/wiki/Network_Level_Authentication">Network-Level-Authentication</a>, which was enabled for Vista systems and beyond. In particular Win 2008 R2 uses it by default. StickyKeys don&rsquo;t work so well if you have to authenticate first. Boo!</p>
-
-<p><img src="/images/postimages/201205_sticky_1.png" alt="" /></p>
-
+<p>However, this doesn't work so well with the advent of NLA or <a href="http://en.wikipedia.org/wiki/Network_Level_Authentication">Network-Level-Authentication</a>, which was enabled for Vista systems and beyond. In particular Win 2008 R2 uses it by default. StickyKeys don't work so well if you have to authenticate first. Boo!</p>
+<p><img src="/images/postimages/201205_sticky_1.png" alt=""></p>
 <p>But, if you are already on a box with Admin access for a time, you can make one additional change so that you are back to Sticky Key and Utilman heaven.</p>
-
 <ul>
 <li><code>HKEY_LOCAL_MACHINESystemCurrentControlSetControlTerminal ServerWinStationsRDP-Tcp</code></li>
 </ul>
-
-<p><img src="/images/postimages/201205_sticky_2.png" alt="" /></p>
-
+<p><img src="/images/postimages/201205_sticky_2.png" alt=""></p>
 <p>Change the value of **UserAuthentication **value to <strong>0</strong>, and instantly you are back to slamming the shift key and popping system shellz.</p>
-
 <p>&ndash; mubix</p>
-
 <p><strong>P.S.</strong> I ran into permissions errors when trying to copy cmd.exe over sethc.exe and utilman.exe:</p>
-
-<p><img src="/images/postimages/201205_sticky_3.png" alt="" /></p>
-
+<p><img src="/images/postimages/201205_sticky_3.png" alt=""></p>
 <p>But a brilliant fix to this annoying security control ;-) was provided here:</p>
-
 <p><a href="http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html?showComment=1335891005473#c7632690272609583721">http://carnal0wnage.attackresearch.com/2012/04/privilege-escalation-via-sticky-keys.html?showComment=1335891005473#c7632690272609583721</a></p>
-
-<p><img src="/images/postimages/201205_sticky_4.png" alt="" /></p>
-
+<p><img src="/images/postimages/201205_sticky_4.png" alt=""></p>
 <p>By setting CMD as the debugger for sethc.exe or utilman.exe Windows executes the debugger first, so back shelling again.</p>
-
-<p><img src="/images/postimages/201205_sticky_5.png" alt="" /></p>
+<p><img src="/images/postimages/201205_sticky_5.png" alt=""></p>
 
             </div>
         </article>
@@ -190,7 +171,7 @@ However, this doesn&rsquo;t work so well with the advent of NLA or Network-Level
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2019</span>
+            <span>&copy; 2020</span>
             
             <span></span>
             <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>

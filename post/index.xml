@@ -11,16 +11,61 @@
     
     
     <item>
-      <title>2020 ShmooCon Hiring List</title>
-      <link>https://malicious.link/post/2020/2020-shmoocon-hiring-list/</link>
+      <title>Get Process List with Command Line Arguments</title>
+      <link>https://malicious.link/post/2020/get-process-list/</link>
       <pubDate>Fri, 17 Jan 2020 09:30:44 -0500</pubDate>
       
-      <guid>https://malicious.link/post/2020/2020-shmoocon-hiring-list/</guid>
-      <description>&lt;p&gt;Created the 2020 Unofficial &lt;a href=&#34;https://shmoocon.org/&#34;&gt;ShmooCon&lt;/a&gt; Hiring List. To get on the list is just complete the following form: &lt;a href=&#34;https://forms.gle/TNwx16SbmbC19jVe9&#34;&gt;https://forms.gle/TNwx16SbmbC19jVe9&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&#39;s best to submit the best info you have vs waiting on anyone, I don&#39;t change the list order for anyone.)&lt;/p&gt;
-&lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1E--eIxRQyMjdX40GCrDv8pBZhJ7QZEDGdD-Hz8bVyvs/&#34;&gt;https://docs.google.com/spreadsheets/d/1E--eIxRQyMjdX40GCrDv8pBZhJ7QZEDGdD-Hz8bVyvs/&lt;/a&gt;&lt;/p&gt;
-&lt;iframe height=&#34;2000&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vRFDzjNLoa2YL53rm0A2TpcT12PTsXQTXFSwDcK0rb0pnAvgzAB0EtR2NqdXAlN6be4J5siGIkjsgXw/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;
-</description>
+      <guid>https://malicious.link/post/2020/get-process-list/</guid>
+      <description>&lt;p&gt;One of the most useful things when doing post exploitation on Linux is grabbing a full process list. One of the reasons this is useful is because it includes the arguments passed to these processes. The arguments for a process can tell you where configs are, what passwords might have been used or just tell you the correct arugments to use when running the process yourself.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;user      281741   76190  2 14:18 pts/14   00:02:34 java -Xmx3733m -XX:+UseG1GC -jar /usr/share/zaproxy/zap-2.8.1.jar
+user      283340  281741  0 14:25 pts/14   00:00:00 /home/user/.ZAP/webdriver/linux/64/geckodriver --port=10696 -b /usr/bin/firefox
+user      283358  283340  0 14:25 pts/14   00:00:08 [firefox-esr] &amp;lt;defunct&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;On Windows however, this is a lot harder to do. As such, nearly all offensive tools that pull a process list only tell you what process it is, the PID, and maybe (if you have the permissions to view it) what user is running that process.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;C:\Users\uberuser&amp;gt;tasklist /v
+
+Image Name                     PID Session Name        Session#    Mem Usage Sta
+tus          User Name                                              CPU Time Win
+dow Title
+========================= ======== ================ =========== ============ ===
+============ ================================================== ============ ===
+=====================================================================
+System Idle Process              0 Services                   0          4 K Unk
+nown         NT AUTHORITY\SYSTEM                                   866:44:11 N/A
+
+System                           4 Services                   0        140 K Unk
+nown         N/A                                                     0:26:53 N/A
+
+smss.exe                       220 Services                   0      1,140 K Unk
+nown         N/A                                                     0:00:00 N/A
+
+csrss.exe                      308 Services                   0      3,924 K Unk                    
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The only way that I can find to get the command line arguments on Windows is through WMI. (Or 1 of 100 agents that people love to install on end points if you have access to it)&lt;/p&gt;
+&lt;p&gt;Here is how you do it from cmd: &lt;code&gt;WMIC path win32_process get Caption,Processid,Commandline&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;C:\Users\uberuser\Desktop&amp;gt;WMIC path win32_process get Caption,Processid,Commandline
+
+Caption				CommandLine				ProcessId  
+rdpclip.exe			rdpclip					1896       
+taskhostex.exe 		taskhostex.exe			204        
+explorer.exe		C:\Windows\Explorer.EXE 3748       
+ServerManager.exe 							2304       
+vmtoolsd.exe	&amp;quot;C:\Program Files\VMware\VMware Tools\vmtoolsd.exe&amp;quot; -n vmusr	60         
+
+firefox.exe		&amp;quot;C:\Program Files\Mozilla Firefox\firefox.exe&amp;quot; -contentproc --channel=&amp;quot;3728.0.819826060\1553883004&amp;quot; -parentBuildID 20200107212822 -prefsHandle 1132 -prefMapHandle 1124 -prefsLen 1 -prefMapSize 216481 -greomni &amp;quot;C:\Program Files\Mozilla Firefox\omni.ja&amp;quot; -appomni &amp;quot;C:\Program Files\Mozilla Firefox\browser\omni.ja&amp;quot; -appdir &amp;quot;C:\Program Files\Mozilla Firefox\browser&amp;quot; - 3728 &amp;quot;\\.\pipe\gecko-crash-server-pipe.3728&amp;quot; 1248 gpu 		2408       
+
+WMIC.exe			WMIC  path win32_process get Caption,Processid,CommandLine 		4428
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And via PowerShell &lt;code&gt;Get-WmiObject Win32_Process -Filter &amp;quot;name = &#39;firefox.exe&#39;&amp;quot; | Select-Object CommandLine&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PS C:\Users\uberuser&amp;gt; Get-WmiObject Win32_Process -Filter &amp;quot;name = &#39;firefox.exe&#39;&amp;quot; | Select-Object CommandLine
+
+CommandLine
+-----------
+&amp;quot;C:\Program Files\Mozilla Firefox\firefox.exe&amp;quot; -os-restarted
+&amp;quot;C:\Program Files\Mozilla Firefox\firefox.exe&amp;quot; -contentproc --channel=&amp;quot;3728.0.819826060\1553883004&amp;quot; -parentBuildID 2...
+&amp;quot;C:\Program Files\Mozilla Firefox\firefox.exe&amp;quot; -contentproc --channel=&amp;quot;3728.13.335070555\878171781&amp;quot; -childID 2 -isFo...
+&amp;quot;C:\Program Files\Mozilla Firefox\firefox.exe&amp;quot; -contentproc --channel=&amp;quot;3728.20.446400134\1597941165&amp;quot; -childID 3 -isF...
+&amp;quot;C:\Program Files\Mozilla Firefox\firefox.exe&amp;quot; -contentproc --channel=&amp;quot;3728.34.1773646251\252067495&amp;quot; -childID 5 -isF...
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So, to add to my toolkit and so I don&#39;t have to remember the exact commands every time, I wrote a super simple C# snippet to do it form me (I&#39;m sure there at 100 projects on Github and elsewhere that already do this but I didn&#39;t seem them when I looked)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8&#34;&gt;https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8&lt;/a&gt;&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8.js&#34;&gt;&lt;/script&gt;</description>
     </item>
     
     <item>
@@ -72,6 +117,19 @@ yiZ5FRNWWUCpWaM1++59qF5naU2AmqojIHxnvZlgiiclctShT6DAZ5RBbhCFHe6c
 =iOhK
 -----END PGP MESSAGE-----
 &lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+    <item>
+      <title>2020 ShmooCon Hiring List</title>
+      <link>https://malicious.link/post/2020/2020-shmoocon-hiring-list/</link>
+      <pubDate>Tue, 07 Jan 2020 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2020/2020-shmoocon-hiring-list/</guid>
+      <description>&lt;p&gt;Created the 2020 Unofficial &lt;a href=&#34;https://shmoocon.org/&#34;&gt;ShmooCon&lt;/a&gt; Hiring List. To get on the list is just complete the following form: &lt;a href=&#34;https://forms.gle/TNwx16SbmbC19jVe9&#34;&gt;https://forms.gle/TNwx16SbmbC19jVe9&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&#39;s best to submit the best info you have vs waiting on anyone, I don&#39;t change the list order for anyone.)&lt;/p&gt;
+&lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1E--eIxRQyMjdX40GCrDv8pBZhJ7QZEDGdD-Hz8bVyvs/&#34;&gt;https://docs.google.com/spreadsheets/d/1E--eIxRQyMjdX40GCrDv8pBZhJ7QZEDGdD-Hz8bVyvs/&lt;/a&gt;&lt;/p&gt;
+&lt;iframe height=&#34;2000&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vRFDzjNLoa2YL53rm0A2TpcT12PTsXQTXFSwDcK0rb0pnAvgzAB0EtR2NqdXAlN6be4J5siGIkjsgXw/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;
+</description>
     </item>
     
     <item>
@@ -673,86 +731,6 @@ ok
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&#39;s best to submit the best info you have vs waiting on anyone, I don&#39;t change the list order for anyone.)&lt;/p&gt;
 &lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/11J2oqGndmBB7mFoc_JfpMGv6S41UZRcTi7NByjavHBU/&#34;&gt;https://docs.google.com/spreadsheets/d/11J2oqGndmBB7mFoc_JfpMGv6S41UZRcTi7NByjavHBU/&lt;/a&gt;&lt;/p&gt;
 &lt;iframe height=&#34;3900&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vS3_6HGQEgYQTByN3GA2BZOhCFTwjMywdlNdu6IUXIDKdgmAVMT5sf5sep929lUtD0qgo6XupfkrF0B/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;</description>
-    </item>
-    
-    <item>
-      <title>Stealing Certificates with Apostille</title>
-      <link>https://malicious.link/post/2018/stealing-certificates-with-apostille/</link>
-      <pubDate>Sun, 26 Aug 2018 08:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2018/stealing-certificates-with-apostille/</guid>
-      <description>&lt;p&gt;At Def Con 26, &lt;a href=&#34;https://twitter.com/singe&#34;&gt;@singe&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/_cablethief&#34;&gt;@_cablethief&lt;/a&gt; gave a talk on enterprise wireless attacks. When it&#39;s video is released you should check it out.&lt;/p&gt;
-&lt;p&gt;During that talk, they quickly touched on a tool written by &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;Rogan Dawes&lt;/a&gt; another &lt;a href=&#34;https://twitter.com/sensepost&#34;&gt;@Sensepost&lt;/a&gt;-er&#39;s tool called &amp;ldquo;&lt;a href=&#34;https://github.com/sensepost/apostille&#34;&gt;Apostille&lt;/a&gt;&amp;quot;. It is esentially a certificate stealing (cloning? faking? doppelganger-ing?) tool. However, that over simplifies what it does.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;To be more accurate, Apostille generates a clone of the certificate chain, identical in as many details as possible, apart from the actual key values. One thing this could be useful for is bypassing naive cert pinning if the validation is based on details of the signing certs.&lt;/p&gt;&amp;mdash; Rogan Dawes (@RoganDawes) &lt;a href=&#34;https://twitter.com/RoganDawes/status/1033769690609463297?ref_src=twsrc%5Etfw&#34;&gt;August 26, 2018&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;Copying a certificate&#39;s common name, email, or other fields that are inputted during creation is a relatively easy way to copy certificates, and they can look relatively good at first glance. However, this simple copy leads to many tell-tail signs that it&#39;s fake. For instance lets say I create a certificate like so:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@apostille-post:~# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
-Generating a 2048 bit RSA private key
-.................................................................................................................+++
-...+++
-writing new private key to &#39;mycert.pem&#39;
------
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter &#39;.&#39;, the field will be left blank.
------
-Country Name (2 letter code) [AU]:US
-State or Province Name (full name) [Some-State]:California
-Locality Name (eg, city) []:Mountain View
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Google LLC
-Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:*.google.com
-Email Address []:
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If I host it out, here are the results side by side with Google.com:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-01.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;The &lt;code&gt;Vaild From&lt;/code&gt;, the &lt;code&gt;Issued By&lt;/code&gt;, and most of the other certificate information helps this certificate to stand out as fraudulent. Also, doing this by hand is a PITA.&lt;/p&gt;
-&lt;p&gt;Enter &lt;strong&gt;Apostille&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;It&#39;s pretty straight forward to get it going, but you do need both Java&#39;s JDK and Maven to compile it first:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@apostille-post:~# apt install -y maven default-jdk git
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(I&#39;m doing this on a fresh box so it needed git as well)&lt;/p&gt;
-&lt;p&gt;Step 2, &lt;code&gt;git clone&lt;/code&gt; the repo, and compile with Maven:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@apostille-post:~# git clone https://github.com/sensepost/apostille
-Cloning into &#39;apostille&#39;...
-remote: Counting objects: 48, done.
-remote: Total 48 (delta 0), reused 0 (delta 0), pack-reused 48
-Unpacking objects: 100% (48/48), done.
-root@apostille-post:~# cd apostille/
-root@apostille-post:~/apostille# mvn package
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Step 3, Clone your first certificate:
-&lt;code&gt;java -jar target/apostille-1.0-SNAPSHOT.jar google.com:443 tempkeystore.jks ASDqwe123 ASDqwe123&lt;/code&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;google.com:443&lt;/code&gt; is the endpoint that will serve a certificate chain back, this isn&#39;t regulated to only HTTPS, but any TLS endpoint.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;tempkeystore.jks&lt;/code&gt; is the Java Keystore file that we will putting the certificate chain into.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ASDqwe123&lt;/code&gt; is the &lt;code&gt;kspassword&lt;/code&gt; and then the &lt;code&gt;keypassword&lt;/code&gt; (Keystore and certificate password) - I just made them the same as this is an example and I won&#39;t be using the keystore for anything but to export the certificates later.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;In order to get the certificates out of the keystore and into a PEM format that I can use for testing, I used the following:&lt;/p&gt;
-&lt;p&gt;Source: &lt;a href=&#34;https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/&#34;&gt;https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@apostille-post:~/apostille# keytool -importkeystore -srckeystore tempkeystore.jks -destkeystore myapp.p12 -srcalias *.google.com -srcstoretype jks -deststoretype pkcs12
-Importing keystore tempkeystore.jks to myapp.p12...Enter destination keystore password: ASDqwe123
-Re-enter new password: ASDqwe123
-Enter source keystore password: ASDqwe123
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(The passwords will not show up, but I put them in there so you can see what I&#39;m inputting. Again I chose a simple password because I&#39;m converting it one more time)&lt;/p&gt;
-&lt;p&gt;Then finally to a PEM like so:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@apostille-post:~/apostille# openssl pkcs12 -in myapp.p12 -out myapp.pem
-Enter Import Password: ASDqwe123
-Enter PEM pass phrase: WugWZ3!F3hD#8P!f
-Verifying - Enter PEM pass phrase: WugWZ3!F3hD#8P!f
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To test out how it looks I&#39;ll reference &lt;a href=&#34;http://attackerkb.com/Web/Quick%20Web%20Servers&#34;&gt;AKB&#39;s Quick Web Servers list&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@apostille-post:~/apostille# openssl s_server -cert myapp.pem -accept 443 -WWW
-Enter pass phrase for myapp.pem: WugWZ3!F3hD#8P!f
-Using default temp DH parameters
-ACCEPT
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the result is:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-02.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-03.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-04.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;A much more believable certificate, even to the discerning eye.&lt;/p&gt;
-&lt;p&gt;Again, thanks to &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;@RoganDawes&lt;/a&gt; for this amazing tool.&lt;/p&gt;
-</description>
     </item>
     
   </channel>

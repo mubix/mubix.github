@@ -5,10 +5,27 @@
     <description>Recent content in hashcat on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 06 May 2017 15:00:00 -0400</lastBuildDate>
+    <lastBuildDate>Thu, 20 Feb 2020 09:30:44 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/tags/hashcat/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Run All Rules for Hashcat</title>
+      <link>https://malicious.link/post/2020/run-all-rules-hashcat/</link>
+      <pubDate>Thu, 20 Feb 2020 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2020/run-all-rules-hashcat/</guid>
+      <description>&lt;p&gt;This is just a quick script to demonstrate using PowerShell to run all the rules against a specific hash (or hash file), starting from the smallest file (usually the simplest rules)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Set-Location -Path &#39;C:\Program Files\hashcat\&#39;
+Get-ChildItem .\rules\ | where { $_.extension -eq &amp;quot;.rule&amp;quot; } |
+Sort-Object -Property Length | 
+% { 
+	.\hashcat64.exe -m1000 20F91778B033F841702E014D3B79148C .\rockyou.txt --loopback --rules $_.FullName
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&#39;m sure there is a better way to do this. If you know of one please hit me up on Twitter, or other social media. DMs are open.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Password Magic Numbers</title>

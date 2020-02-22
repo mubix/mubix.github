@@ -16,8 +16,8 @@
       <pubDate>Tue, 10 Sep 2013 13:16:39 -0500</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-09-10-changing-proxychains-hardcoded-dns-server/</guid>
-      <description>&lt;p&gt;If you&#39;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&#39;t allow this out of their network, or if you are trying to resolve an internal asset, you&#39;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&#39;ve finally decided to make a note of it.&lt;/p&gt;
-&lt;p&gt;There isn&#39;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
+      <description>&lt;p&gt;If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it.&lt;/p&gt;
+&lt;p&gt;There isn&amp;rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
 (on Kali linux its found here: /usr/lib/proxychains3/proxyresolv)&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/sh
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# This script is called by proxychains to resolve DNS names&lt;/span&gt;
@@ -32,7 +32,7 @@ exit
 
 export LD_PRELOAD&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;libproxychains.so.3
 dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&amp;#39;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&#39;s internal IP, up to you, but now its documented and I&#39;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&#39;s blog.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&amp;rsquo;s internal IP, up to you, but now its documented and I&amp;rsquo;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&amp;rsquo;s blog.&lt;/p&gt;
 </description>
     </item>
     
@@ -42,7 +42,7 @@ dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#3
       <pubDate>Sun, 21 Oct 2012 07:40:11 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-21-setting-systems-proxy-settings-with-metasploit/</guid>
-      <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&#39;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&#39;re done for right out of the door)&lt;/p&gt;
+      <description>&lt;p&gt;One of the great things about the reverse_http(s) payloads is that it is proxy aware. However one of the pitfalls to this is that SYSTEM doesn&amp;rsquo;t have proxy settings, nor do users who have never logged into a system (unless profile loading is triggered). The problem here arrises when you are trying to do anything as SYSTEM, also the PSEXEC only has the option of getting you a SYSTEM shell (so you&amp;rsquo;re done for right out of the door)&lt;/p&gt;
 &lt;p&gt;Now, there is a stub in Metasploit that I have been unable to complete due to my lack of knowledge in the shell code world. The stub allows you to create payloads that have static proxies, which basically invalidates the need for the following. Until then here is a few ways to set / read the proxy settings for SYSTEM or any other user for that matter.&lt;/p&gt;
 &lt;p&gt;Its here if you want to take a whack at it: &lt;code&gt;external/source/shellcode/windows/x86/src/block/block_reverse_https_proxy.asm&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;One of the ways @&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;carnal0wnage&lt;/a&gt; and I demoed @&lt;a href=&#34;https://twitter.com/derbycon&#34;&gt;DerbyCon&lt;/a&gt; was using the bitsadmin binary. Windows7/Vista/2008 come with version 2.0+ which has this great ability to run the following:&lt;/p&gt;
@@ -54,7 +54,7 @@ dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#3
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And&amp;hellip;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;If you&#39;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
+&lt;p&gt;If you&amp;rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Output from it finding a disabled RemoteRegistry:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf post(enum_proxy) &amp;gt; run
@@ -84,8 +84,8 @@ dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#3
       
       <guid>https://malicious.link/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
-&lt;p&gt;Enter Peerblock and AnalogX&#39;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
-&lt;p&gt;First we&#39;ll talk about AnalogX&#39;s proxy, you can get it here: &lt;/p&gt;
+&lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
+&lt;p&gt;First we&amp;rsquo;ll talk about AnalogX&amp;rsquo;s proxy, you can get it here: &lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
@@ -112,10 +112,10 @@ dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#3
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;You&#39;ll get this window automatically pop up, but if you don&#39;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
+&lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
-&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&#39;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
+&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&amp;rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
 &lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;

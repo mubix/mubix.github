@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&#39;t have the tools and do happen to have kerberos tools, you can pass the hash with it.
+<meta name="description" content="This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&amp;rsquo;t have the tools and do happen to have kerberos tools, you can pass the hash with it.
 Lets say with have the NTLM hash for the user uberuser and the hash is 88e4d9fabaecf3dec18dd80905521b29. The first step to do so is to create a keytab file using ktutil:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -32,7 +32,7 @@ Lets say with have the NTLM hash for the user uberuser and the hash is 88e4d9fab
 
 
 <meta itemprop="name" content="Pass the Hash with Kerberos">
-<meta itemprop="description" content="This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&#39;t have the tools and do happen to have kerberos tools, you can pass the hash with it.
+<meta itemprop="description" content="This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&rsquo;t have the tools and do happen to have kerberos tools, you can pass the hash with it.
 Lets say with have the NTLM hash for the user uberuser and the hash is 88e4d9fabaecf3dec18dd80905521b29. The first step to do so is to create a keytab file using ktutil:">
 <meta itemprop="datePublished" content="2018-07-24T08:30:44-05:00" />
 <meta itemprop="dateModified" content="2018-07-24T08:30:44-05:00" />
@@ -42,7 +42,7 @@ Lets say with have the NTLM hash for the user uberuser and the hash is 88e4d9fab
 
 <meta itemprop="keywords" content="kerberos,pth," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Pass the Hash with Kerberos"/>
-<meta name="twitter:description" content="This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&#39;t have the tools and do happen to have kerberos tools, you can pass the hash with it.
+<meta name="twitter:description" content="This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&rsquo;t have the tools and do happen to have kerberos tools, you can pass the hash with it.
 Lets say with have the NTLM hash for the user uberuser and the hash is 88e4d9fabaecf3dec18dd80905521b29. The first step to do so is to create a keytab file using ktutil:"/>
 
 
@@ -116,12 +116,12 @@ Lets say with have the NTLM hash for the user uberuser and the hash is 88e4d9fab
             
 
             <div class="post-content">
-                <p>This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don't have the tools and do happen to have kerberos tools, you can pass the hash with it.</p>
+                <p>This blog post may be of limited use, most of the time, when you have an NTLM hash, you also have the tools to use it. But, if you find yourself in a situation where you don&rsquo;t have the tools and do happen to have kerberos tools, you can pass the hash with it.</p>
 <p>Lets say with have the NTLM hash for the user <code>uberuser</code> and the hash is <code>88e4d9fabaecf3dec18dd80905521b29</code>. The first step to do so is to create a keytab file using <code>ktutil</code>:</p>
 <pre><code>root@wpad:~# ktutil
 </code></pre><p>At the <code>ktutil</code> prompt, type in the &ldquo;add entry&rdquo; (<code>addent</code>) command with the &ldquo;principals&rdquo; (<code>-p</code>) flag. Specify the user and an all uppercase version of the FQDN. Then the &ldquo;KVNO&rdquo; (<code>-k 1</code>), which is the key number. Finally the encryption type, which is <code>rc4-hmac</code> for NTLM hashes:</p>
 <pre><code>ktutil: addent -p uberuser@CORP.SOMEWHATREALNEWS.COM -k 1 -key -e rc4-hmac
-</code></pre><p>After you hit enter you'll get prompted for the rc4-hmac (NTLM) hash:</p>
+</code></pre><p>After you hit enter you&rsquo;ll get prompted for the rc4-hmac (NTLM) hash:</p>
 <pre><code>Key for uberuser@CORP.SOMEWHATREALNEWS.COM (hex): 88e4d9fabaecf3dec18dd80905521b29
 </code></pre><p>Then we write the keytab file to disk and exit <code>ktutil</code></p>
 <pre><code>ktutil: wkt /tmp/a.keytab

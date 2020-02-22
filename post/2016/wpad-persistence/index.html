@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
 <meta name="description" content="Mostly just writing this so I can keep notes.
-Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&#39;s DNS. For those who don&#39;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
+Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
 I did this via PowerShell pretty easily on one of the domain controllers like so:
 PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74 Where 107." />
 <meta name="keywords" content="" />
@@ -35,7 +35,7 @@ PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.inf
 
 <meta itemprop="name" content="WPAD Persistence">
 <meta itemprop="description" content="Mostly just writing this so I can keep notes.
-Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&#39;s DNS. For those who don&#39;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
+Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
 I did this via PowerShell pretty easily on one of the domain controllers like so:
 PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74 Where 107.">
 <meta itemprop="datePublished" content="2016-05-22T21:55:12-04:00" />
@@ -47,7 +47,7 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
 <meta itemprop="keywords" content="persistence,wpad,dns," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="WPAD Persistence"/>
 <meta name="twitter:description" content="Mostly just writing this so I can keep notes.
-Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&#39;s DNS. For those who don&#39;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
+Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol
 I did this via PowerShell pretty easily on one of the domain controllers like so:
 PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74 Where 107."/>
 
@@ -123,20 +123,20 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
 
             <div class="post-content">
                 <p>Mostly just writing this so I can keep notes.</p>
-<p>Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain's DNS. For those who don't know what this would do there is an entire Wikipedia article on the subject: <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol</a></p>
+<p>Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol</a></p>
 <p>I did this via PowerShell pretty easily on one of the domain controllers like so:</p>
 <pre><code>PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
-</code></pre><p>Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn't getting any requests for <code>wpad.dat</code></p>
+</code></pre><p>Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&rsquo;t getting any requests for <code>wpad.dat</code></p>
 <p>As they say &ldquo;there are no more original ideas&rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.</p>
 <p>but.. they also made a way to disable it - <a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></p>
-<p>Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it's a required service in later Windows server versions).</p>
-<p>I went in search of a registry key to make the modification because it's much easier to hit the <code>RemoteRegistry</code> service on all the DCs than it is to run that command. I quickly found this blog post - <a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a>.</p>
+<p>Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&rsquo;s a required service in later Windows server versions).</p>
+<p>I went in search of a registry key to make the modification because it&rsquo;s much easier to hit the <code>RemoteRegistry</code> service on all the DCs than it is to run that command. I quickly found this blog post - <a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a>.</p>
 <p>A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.</p>
 <pre><code>[22/May/2016:21:56:28 EDT] &quot;GET /wpad.dat HTTP/1.1&quot; 200 58
 - -&gt; /wpad.dat
 </code></pre><p>Now, you may be asking, &ldquo;How is setting their proxy server any kind of real persistence?&quot;, I implore you to go check out projects like <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a> and <a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></p>
-<p>Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn't do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn't disable it for the SYSTEM or other local accounts, so it's harder than just &ldquo;flip on this registry setting via GPO&rdquo;)</p>
-<p>Oh and I'll just leave this here: <a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></p>
+<p>Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&rsquo;t disable it for the SYSTEM or other local accounts, so it&rsquo;s harder than just &ldquo;flip on this registry setting via GPO&rdquo;)</p>
+<p>Oh and I&rsquo;ll just leave this here: <a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></p>
 <h3 id="references">References</h3>
 <ul>
 <li><a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></li>

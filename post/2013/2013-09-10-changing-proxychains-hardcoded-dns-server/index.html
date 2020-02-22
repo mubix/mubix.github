@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="If you&#39;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&#39;t allow this out of their network, or if you are trying to resolve an internal asset, you&#39;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&#39;ve finally decided to make a note of it." />
+<meta name="description" content="If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,7 +31,7 @@
 
 
 <meta itemprop="name" content="Changing proxychains hardcoded DNS server">
-<meta itemprop="description" content="If you&#39;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&#39;t allow this out of their network, or if you are trying to resolve an internal asset, you&#39;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&#39;ve finally decided to make a note of it.">
+<meta itemprop="description" content="If you&rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&rsquo;ve finally decided to make a note of it.">
 <meta itemprop="datePublished" content="2013-09-10T13:16:39-05:00" />
 <meta itemprop="dateModified" content="2013-09-10T13:16:39-05:00" />
 <meta itemprop="wordCount" content="234">
@@ -40,7 +40,7 @@
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Changing proxychains hardcoded DNS server"/>
-<meta name="twitter:description" content="If you&#39;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&#39;t allow this out of their network, or if you are trying to resolve an internal asset, you&#39;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&#39;ve finally decided to make a note of it."/>
+<meta name="twitter:description" content="If you&rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&rsquo;ve finally decided to make a note of it."/>
 
 
 
@@ -119,8 +119,8 @@
             
 
             <div class="post-content">
-                <p>If you've ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn't allow this out of their network, or if you are trying to resolve an internal asset, you're SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I've finally decided to make a note of it.</p>
-<p>There isn't much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &ldquo;dig&rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
+                <p>If you&rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &ldquo;hardcoded&rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&rsquo;ve finally decided to make a note of it.</p>
+<p>There isn&rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &ldquo;dig&rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
 (on Kali linux its found here: /usr/lib/proxychains3/proxyresolv)</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/sh
 </span><span style="color:#75715e"></span><span style="color:#75715e"># This script is called by proxychains to resolve DNS names</span>
@@ -135,7 +135,7 @@ exit
 
 export LD_PRELOAD<span style="color:#f92672">=</span>libproxychains.so.3
 dig $1 @$DNS_SERVER +tcp | awk <span style="color:#e6db74">&#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&#39;</span>
-</code></pre></div><p>Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement's internal IP, up to you, but now its documented and I'll never have to go searching like crazy again&hellip; as long as I remember that its on someone else's blog.</p>
+</code></pre></div><p>Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&rsquo;s internal IP, up to you, but now its documented and I&rsquo;ll never have to go searching like crazy again&hellip; as long as I remember that its on someone else&rsquo;s blog.</p>
 
             </div>
         </article>

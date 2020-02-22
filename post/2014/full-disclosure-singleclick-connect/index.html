@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Update: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&#39;t accepted via the moderator so I&#39;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.
+<meta name="description" content="Update: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&amp;rsquo;t accepted via the moderator so I&amp;rsquo;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.
 I was helping out a family member with their computer when it came up that they &amp;ldquo;already had remote help software&amp;rdquo; (SingleClickConnect or SCC), when I asked what this was, the family member said it was installed by Dell Support when trying to fix their issue." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -32,7 +32,7 @@ I was helping out a family member with their computer when it came up that they 
 
 
 <meta itemprop="name" content="Full Disclosure - SingleClick Connect">
-<meta itemprop="description" content="Update: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&#39;t accepted via the moderator so I&#39;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.
+<meta itemprop="description" content="Update: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&rsquo;t accepted via the moderator so I&rsquo;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.
 I was helping out a family member with their computer when it came up that they &ldquo;already had remote help software&rdquo; (SingleClickConnect or SCC), when I asked what this was, the family member said it was installed by Dell Support when trying to fix their issue.">
 <meta itemprop="datePublished" content="2014-09-15T11:26:38-05:00" />
 <meta itemprop="dateModified" content="2014-09-15T11:26:38-05:00" />
@@ -42,7 +42,7 @@ I was helping out a family member with their computer when it came up that they 
 
 <meta itemprop="keywords" content="full disclosure,singleclick," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Full Disclosure - SingleClick Connect"/>
-<meta name="twitter:description" content="Update: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&#39;t accepted via the moderator so I&#39;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.
+<meta name="twitter:description" content="Update: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&rsquo;t accepted via the moderator so I&rsquo;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.
 I was helping out a family member with their computer when it came up that they &ldquo;already had remote help software&rdquo; (SingleClickConnect or SCC), when I asked what this was, the family member said it was installed by Dell Support when trying to fix their issue."/>
 
 
@@ -116,21 +116,21 @@ I was helping out a family member with their computer when it came up that they 
             
 
             <div class="post-content">
-                <p><strong>Update</strong>: I originally posted this to the Full Disclosure mailing list but for some reason it wasn't accepted via the moderator so I'm posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.</p>
+                <p><strong>Update</strong>: I originally posted this to the Full Disclosure mailing list but for some reason it wasn&rsquo;t accepted via the moderator so I&rsquo;m posting it here. First, so that the information does get out there, and second to see if anyone knows why it may have been rejected.</p>
 <p>I was helping out a family member with their computer when it came up that they &ldquo;already had remote help software&rdquo; (SingleClickConnect or SCC), when I asked what this was, the family member said it was installed by Dell Support when trying to fix their issue. This was in 2008. I removed it, and helped to fix the issue.</p>
 <p>In 2010 another issue arose on the new computer (Dell again) of the same family member. Again, calling support first they had installed this software.</p>
-<p><strong>Disclaimer</strong>: I can not say for certain that it was Dell's support rep, or even that it was them that installed it, but if Dell is using this as a means of support they should probably cease for the following reasons:</p>
+<p><strong>Disclaimer</strong>: I can not say for certain that it was Dell&rsquo;s support rep, or even that it was them that installed it, but if Dell is using this as a means of support they should probably cease for the following reasons:</p>
 <p>Apache (port 40080) listening 0.0.0.0, MySQL (port 17771) listening 127.0.0.1, PHP, and UltraVNC (5900) are installed as a part of the software package.</p>
 <h2 id="issue-1">ISSUE #1</h2>
 <p>Without decoding the ionCube &ldquo;copyright protecting&rdquo; software a large number of XSS, CSRF, and SQLi vulnerabilities were found, all unauthenticated to the web app that runs there.</p>
-<p>No specifics are being posted on these vulnerabilities as I assume the site on the net (company's site), where a registered user would log in are the same as the ones locally hosted (at least the app looks the same and has similar page structure)</p>
+<p>No specifics are being posted on these vulnerabilities as I assume the site on the net (company&rsquo;s site), where a registered user would log in are the same as the ones locally hosted (at least the app looks the same and has similar page structure)</p>
 <h2 id="issue-2">ISSUE #2</h2>
-<p>MySQL's root password is blank and there are two other default accounts as well allowing easy privilege escalation to SYSTEM (via the SCC local account - see ISSUE #5):</p>
+<p>MySQL&rsquo;s root password is blank and there are two other default accounts as well allowing easy privilege escalation to SYSTEM (via the SCC local account - see ISSUE #5):</p>
 <pre><code>dsl *7E1CA3417E3A159A9188657F44C7034A8E9FDFF2
 tera *B2744A6BC5E8B1667BE5AED0111A2B941356E4A4
 </code></pre><p>^ uncracked at this point. For all I know they could be randomized at install</p>
 <h2 id="issue-3">ISSUE #3</h2>
-<p>Another service listens on 0.0.0.0 via port 17667 that I haven't been able to identify, however when you connect to the socket, it starts listing users, services, printers and interfaces (and that is without sending any data to it).</p>
+<p>Another service listens on 0.0.0.0 via port 17667 that I haven&rsquo;t been able to identify, however when you connect to the socket, it starts listing users, services, printers and interfaces (and that is without sending any data to it).</p>
 <pre><code>$ ncat 172.16.102.149 17667
 8�TXPBASELINEXP_BASEP�RAdministratorGuestHelpAssistantSingleClick
 AdminSUPPORT_388945a0!aCACAMD PCNET Family PCI Ethernet Adapter -
@@ -169,12 +169,12 @@ Utilisateur principal       : SingleClick Admin
 </code></pre><h2 id="concern-1">CONCERN #1</h2>
 <p>As far as I can tell the software continuously scans you local network for other computers and file system for changes and reports these back to the central server so that when you login to their service you can see your files and connect to other systems in the LAN of the machine SingleClickConnect is installed on.</p>
 <h2 id="concern-2">CONCERN #2</h2>
-<p>The user account password that you use to register and connect remotely is stored in the database. This actually looks decently done, or I just haven't been able to identify the storage</p>
+<p>The user account password that you use to register and connect remotely is stored in the database. This actually looks decently done, or I just haven&rsquo;t been able to identify the storage</p>
 <pre><code>Database: p2p
 Table:    config_info
 Value:    “user_hash”
 </code></pre><h2 id="concern-3">CONCERN #3</h2>
-<p>Not sure what this registry key contains other than being named Cred4RA and assuming it's credentials for the remote administration. Hopefully encrypted some how.</p>
+<p>Not sure what this registry key contains other than being named Cred4RA and assuming it&rsquo;s credentials for the remote administration. Hopefully encrypted some how.</p>
 <pre><code>[HKEY_LOCAL_MACHINE\SOFTWARE\SingleClick Systems\Advanced Networking
 Service\Settings\Remote Access]
 &quot;ConfigState&quot;=dword:00000001

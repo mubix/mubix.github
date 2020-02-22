@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="You&#39;ve got shell, and a set of credentials but you&#39;re coming up empty on what you can do with those credentials. This is especially problematic when you can&#39;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
-(I&#39;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)" />
+<meta name="description" content="You&amp;rsquo;ve got shell, and a set of credentials but you&amp;rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&amp;rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
+(I&amp;rsquo;m not trying to pull some some &amp;ldquo;insert magic here&amp;rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -32,8 +32,8 @@
 
 
 <meta itemprop="name" content="Finding Admin Access">
-<meta itemprop="description" content="You&#39;ve got shell, and a set of credentials but you&#39;re coming up empty on what you can do with those credentials. This is especially problematic when you can&#39;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
-(I&#39;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)">
+<meta itemprop="description" content="You&rsquo;ve got shell, and a set of credentials but you&rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
+(I&rsquo;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)">
 <meta itemprop="datePublished" content="2012-10-31T01:28:22&#43;00:00" />
 <meta itemprop="dateModified" content="2012-10-31T01:28:22&#43;00:00" />
 <meta itemprop="wordCount" content="686">
@@ -42,8 +42,8 @@
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Finding Admin Access"/>
-<meta name="twitter:description" content="You&#39;ve got shell, and a set of credentials but you&#39;re coming up empty on what you can do with those credentials. This is especially problematic when you can&#39;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
-(I&#39;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)"/>
+<meta name="twitter:description" content="You&rsquo;ve got shell, and a set of credentials but you&rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
+(I&rsquo;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)"/>
 
 
 
@@ -120,40 +120,40 @@
             
 
             <div class="post-content">
-                <p>You've got shell, and a set of credentials but you're coming up empty on what you can do with those credentials. This is especially problematic when you can't get past UAC as you are either in a AlwaysNotify situation or not a local admin.</p>
-<p>(I'm not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)</p>
+                <p>You&rsquo;ve got shell, and a set of credentials but you&rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.</p>
+<p>(I&rsquo;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)</p>
 <p>Enter the auxiliary module: <code>auxiliary/admin/smb/check_dir_file</code></p>
-<p>First we set up a route as aux modules don't have a &ldquo;SESSION&rdquo; parameter:</p>
+<p>First we set up a route as aux modules don&rsquo;t have a &ldquo;SESSION&rdquo; parameter:</p>
 <p><img src="/images/postimages/201210_adminaccess_1.png" alt=""></p>
 <p>Use the module and set our credentials:</p>
 <p><img src="/images/postimages/201210_adminaccess_2.png" alt=""></p>
-<p>Next, set ADMIN$ as we can't guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range</p>
+<p>Next, set ADMIN$ as we can&rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range</p>
 <p><img src="/images/postimages/201210_adminaccess_3.png" alt=""></p>
 <p>A simple &lsquo;run&rsquo; and away it goes:</p>
 <p><img src="/images/postimages/201210_adminaccess_4.png" alt=""></p>
-<p>So we can see that our lowly user that doesn't have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.</p>
+<p>So we can see that our lowly user that doesn&rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.</p>
 <p>=============================================================================</p>
 <p>The rest of this has nothing to do about admin access, just some tricks to do it better</p>
 <p>=============================================================================</p>
-<p>As many of you know I'm not a huge fan of sending packets I don't need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)</p>
+<p>As many of you know I&rsquo;m not a huge fan of sending packets I don&rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)</p>
 <p>[<strong>Update</strong>: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]</p>
 <p>Enter computer_browser_discovery:</p>
 <p><img src="/images/postimages/201210_adminaccess_5.png" alt=""></p>
-<p>This module does the equivalent of &lsquo;net view&rsquo; to get a list of computers on the domain. You can change the LTYPE to &ldquo;SQL&rdquo; to just get MSSQL boxes but we're going for everything:</p>
+<p>This module does the equivalent of &lsquo;net view&rsquo; to get a list of computers on the domain. You can change the LTYPE to &ldquo;SQL&rdquo; to just get MSSQL boxes but we&rsquo;re going for everything:</p>
 <p><img src="/images/postimages/201210_adminaccess_6.png" alt=""></p>
-<p>As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn't show up at all as it's not on the domain. So the benefits is that it's quieter on the wire and you probably will find hosts that aren't in your immediate IP range. (Not the case here simply because I don't have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.</p>
-<p>Next we add the found host's IP addresses to a text file (targethosts.txt)</p>
-<p>[because at the time of this writing the computer_browser_discovery module doesn't add the hosts to the MSF database]</p>
+<p>As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&rsquo;t show up at all as it&rsquo;s not on the domain. So the benefits is that it&rsquo;s quieter on the wire and you probably will find hosts that aren&rsquo;t in your immediate IP range. (Not the case here simply because I don&rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.</p>
+<p>Next we add the found host&rsquo;s IP addresses to a text file (targethosts.txt)</p>
+<p>[because at the time of this writing the computer_browser_discovery module doesn&rsquo;t add the hosts to the MSF database]</p>
 <p>Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:</p>
 <p><img src="/images/postimages/201210_adminaccess_7.png" alt=""></p>
 <p>(We still have our route set up so this is module is going through our low privilege user still)</p>
 <p>And now we have info in the DB for better targeting:</p>
 <p><img src="/images/postimages/201210_adminaccess_8.png" alt=""></p>
-<p>Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you've found port 445 open (everything smb_version finds will be shown in services)</p>
-<p>One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don't have many hosts):</p>
+<p>Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&rsquo;ve found port 445 open (everything smb_version finds will be shown in services)</p>
+<p>One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&rsquo;t have many hosts):</p>
 <p><img src="/images/postimages/201210_adminaccess_9.png" alt=""></p>
-<p>I used the range this blog is hosted on 1) because for some reason my stupid VM wasn't resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.</p>
-<p>So to wrap up, we have a ton of ways to find hosts that don't involve traditional scanning (smb_version is the only thing that comes close). And we've located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don't ever discount the access you already have. Tunnel vision is the pentesters worst enemy.</p>
+<p>I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.</p>
+<p>So to wrap up, we have a ton of ways to find hosts that don&rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.</p>
 
             </div>
         </article>

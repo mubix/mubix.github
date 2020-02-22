@@ -20,7 +20,7 @@
 &lt;center&gt;![](/images/2017/nonsecure_dns_updates.png)&lt;/center&gt;
 &lt;p&gt;The module was originally written by &lt;a href=&#34;https://twitter.com/kingsabri&#34;&gt;King Sabri&lt;/a&gt;, with many touch ups and the spoofing capability by &lt;a href=&#34;https://twitter.com/busterbcook&#34;&gt;busterbcook&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;You can read up on the pull request in &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/8599&#34;&gt;pr/#8599&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Just to drive home the point I&#39;ll be using my Exchange server as a target:&lt;/p&gt;
+&lt;p&gt;Just to drive home the point I&amp;rsquo;ll be using my Exchange server as a target:&lt;/p&gt;
 &lt;center&gt; **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**&lt;/center&gt;
 &lt;center&gt;![](/images/2017/before_dns_update.png)&lt;/center&gt;
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
@@ -50,7 +50,7 @@ Auxiliary action:
    Name    Description
    ----    -----------
    UPDATE  Add or update a record. (default)
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&#39;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&amp;rsquo;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
 
 Auxiliary actions:
@@ -61,7 +61,7 @@ Auxiliary actions:
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&#39;m injecting isn&#39;t on the same subnet as the domain.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&amp;rsquo;m injecting isn&amp;rsquo;t on the same subnet as the domain.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
 DOMAIN =&amp;gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &amp;gt; set HOSTNAME sdexchange
@@ -92,13 +92,13 @@ msf auxiliary(dyn_dns_update) &amp;gt;
       <pubDate>Wed, 07 Dec 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/passwordreq-no-a-hacker-prospective/</guid>
-      <description>&lt;p&gt;Ever have one of those topics that you know you&#39;ve looked up 100 times but never can remember the answer?&lt;/p&gt;
+      <description>&lt;p&gt;Ever have one of those topics that you know you&amp;rsquo;ve looked up 100 times but never can remember the answer?&lt;/p&gt;
 &lt;p&gt;I was having one of those moments in a recent conversation on the NoVA Hackers mailing list (If you want to join &lt;a href=&#34;https://novahackers.blogspot.com/p/how-to-join-and-rules.html&#34;&gt;please read the instructions&lt;/a&gt; before &lt;a href=&#34;https://twitter.com/mubix/status/719726427785007104&#34;&gt;requesting to join&lt;/a&gt;)&lt;/p&gt;
 &lt;p&gt;The question came up as to what effect &amp;ldquo;Password Required: No&amp;rdquo; means in a &lt;code&gt;net user UserName&lt;/code&gt; is.&lt;/p&gt;
-&lt;p&gt;As usual, MSDN isn&#39;t very helpful:&lt;/p&gt;
+&lt;p&gt;As usual, MSDN isn&amp;rsquo;t very helpful:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;/passwordreq:{yes | no} - Specifies whether a user account must have a password. The default is yes.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;from: &lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc771865%28v=ws.11%29.aspx&#34;&gt;https://technet.microsoft.com/en-us/library/cc771865%28v=ws.11%29.aspx&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;An old ISS finding wasn&#39;t any more helpful:&lt;/p&gt;
+&lt;p&gt;An old ISS finding wasn&amp;rsquo;t any more helpful:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;A User account has been detected with no password required. No password requirement allows attackers unauthorized access, including the ability to take over and replace processes, and access other computers on the network.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;from: &lt;a href=&#34;http://www.iss.net/security_center/reference/vulntemp/nt-usernopw.htm&#34;&gt;http://www.iss.net/security_center/reference/vulntemp/nt-usernopw.htm&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;But they did at least provide mitigations and remediation steps.&lt;/p&gt;
@@ -117,7 +117,7 @@ msf auxiliary(dyn_dns_update) &amp;gt;
       <pubDate>Tue, 14 Jun 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/smb-http-auth-capture-via-scf/</guid>
-      <description>&lt;p&gt;Recently saw a link to an SCF file. Didn&#39;t know what those were
+      <description>&lt;p&gt;Recently saw a link to an SCF file. Didn&amp;rsquo;t know what those were
 so I went digging. Turns out they are a simple text based file that
 controls Windows Explorer. ;-)&lt;/p&gt;
 &lt;p&gt;Here are the examples I found via the references:&lt;/p&gt;
@@ -133,7 +133,7 @@ Command=3
 IconFile=shdocvw.dll,-118
 [IE]
 Command=Channels
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This didn&#39;t work for me at all, probably because Internet Explorer doesn&#39;t have &amp;ldquo;Channels&amp;rdquo; anymore.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This didn&amp;rsquo;t work for me at all, probably because Internet Explorer doesn&amp;rsquo;t have &amp;ldquo;Channels&amp;rdquo; anymore.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Minimize all windows:&lt;/strong&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[Shell]
 Command=2
@@ -152,8 +152,8 @@ opened that folder it automatically attempted to authenticate to the
 share that I specified. Lots easier than writing an LNK file.&lt;/p&gt;
 &lt;p&gt;My gut is telling me there is more to this file format than meets the
 eye, especially when there are malware writers using it as well. I
-haven&#39;t been able to get my hands on one to see what they are doing
-inside the file, but I assume it&#39;s not just to minimize all windows.&lt;/p&gt;
+haven&amp;rsquo;t been able to get my hands on one to see what they are doing
+inside the file, but I assume it&amp;rsquo;s not just to minimize all windows.&lt;/p&gt;
 &lt;p&gt;There are some hints that you can invoke COM objects.. who knows&amp;hellip;&lt;/p&gt;
 &lt;h2 id=&#34;references&#34;&gt;References:&lt;/h2&gt;
 &lt;ul&gt;
@@ -171,10 +171,10 @@ inside the file, but I assume it&#39;s not just to minimize all windows.&lt;/p&g
       <pubDate>Mon, 05 Oct 2015 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2015/dotnet-dnvm-for-persistence-on-developer-machines/</guid>
-      <description>&lt;p&gt;One of the best resources for persistence mechanisms is &lt;a href=&#34;https://twitter.com/Hexacorn&#34;&gt;Hexacorn&#39;s&lt;/a&gt; blog.
+      <description>&lt;p&gt;One of the best resources for persistence mechanisms is &lt;a href=&#34;https://twitter.com/Hexacorn&#34;&gt;Hexacorn&amp;rsquo;s&lt;/a&gt; blog.
 &lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;http://www.hexacorn.com/blog/category/autostart-persistence/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;If you haven&#39;t checked out his &amp;ldquo;Beyond good ol&amp;rsquo; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&#39;t see up there:&lt;/p&gt;
-&lt;p&gt;DNVM (&lt;a href=&#34;https://github.com/aspnet/dnvm&#34;&gt;https://github.com/aspnet/dnvm&lt;/a&gt;) is the DotNet Version Manager and it&#39;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&#39;s there to help to specify which runtime to use for applications, much like &lt;a href=&#34;https://rvm.io/&#34;&gt;RVM (Ruby Version Manager)&lt;/a&gt; is for Ruby. With their goal being that you can install .Net and &lt;a href=&#34;http://docs.asp.net/en/latest/getting-started/index.html&#34;&gt;run .Net applications on Linux and Mac&lt;/a&gt; as well using DNVM.&lt;/p&gt;
+&lt;p&gt;If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&amp;rsquo; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:&lt;/p&gt;
+&lt;p&gt;DNVM (&lt;a href=&#34;https://github.com/aspnet/dnvm&#34;&gt;https://github.com/aspnet/dnvm&lt;/a&gt;) is the DotNet Version Manager and it&amp;rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&amp;rsquo;s there to help to specify which runtime to use for applications, much like &lt;a href=&#34;https://rvm.io/&#34;&gt;RVM (Ruby Version Manager)&lt;/a&gt; is for Ruby. With their goal being that you can install .Net and &lt;a href=&#34;http://docs.asp.net/en/latest/getting-started/index.html&#34;&gt;run .Net applications on Linux and Mac&lt;/a&gt; as well using DNVM.&lt;/p&gt;
 &lt;p&gt;Once installed it adds a &amp;ldquo;DNX_HOME&amp;rdquo; environmental variable:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/dnx_reg.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Inside the folder specified are 3 directories:&lt;/p&gt;
@@ -183,12 +183,12 @@ inside the file, but I assume it&#39;s not just to minimize all windows.&lt;/p&g
 &lt;pre&gt;&lt;code&gt;C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
 C:\Program Files\Microsoft DNX\Dnvm\
 C:\Users\mubix\.dnx\bin
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&#39;ll come back to that in another post)&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&amp;rsquo;ll come back to that in another post)&lt;/p&gt;
 &lt;p&gt;Lets take a look at what is in those folders:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/dnvm_folders.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Interesting, why don&#39;t we see what the command dnvm does:&lt;/p&gt;
+&lt;p&gt;Interesting, why don&amp;rsquo;t we see what the command dnvm does:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/dnvm_cmd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Seriously&amp;hellip; I probably don&#39;t even have to continue at this point&amp;hellip;&lt;/p&gt;
+&lt;p&gt;Seriously&amp;hellip; I probably don&amp;rsquo;t even have to continue at this point&amp;hellip;&lt;/p&gt;
 &lt;p&gt;But, if I run dnvm from the command prompt (as a developer would) it runs it from inside that protected directory in Program Files right?&amp;hellip; RIGHT?! Nope..&lt;/p&gt;
 &lt;p&gt;Edit the dnvm.cmd with a bit of &lt;a href=&#34;http://www.powershellempire.com/&#34;&gt;PowerShell Empire&lt;/a&gt; stager (minus the &lt;strong&gt;-W Hidden&lt;/strong&gt;, because we need the user to actually get the output of the dnvm command) and&amp;hellip;.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
@@ -212,29 +212,29 @@ C:\Users\mubix\.dnx\bin
       <pubDate>Thu, 14 Aug 2014 11:26:38 -0500</pubDate>
       
       <guid>https://malicious.link/post/2014/milkman-creating-processes-as-any-currently-logged-in-user/</guid>
-      <description>&lt;p&gt;One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as &lt;strong&gt;SYSTEM&lt;/strong&gt;. What&#39;s the problem with that? Isn&#39;t &lt;strong&gt;SYSTEM&lt;/strong&gt; god mode? Ya, and normally I&#39;d agree that it&#39;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know &lt;strong&gt;SYSTEM&lt;/strong&gt; doesn&#39;t get any proxy settings.&lt;/p&gt;
+      <description>&lt;p&gt;One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as &lt;strong&gt;SYSTEM&lt;/strong&gt;. What&amp;rsquo;s the problem with that? Isn&amp;rsquo;t &lt;strong&gt;SYSTEM&lt;/strong&gt; god mode? Ya, and normally I&amp;rsquo;d agree that it&amp;rsquo;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know &lt;strong&gt;SYSTEM&lt;/strong&gt; doesn&amp;rsquo;t get any proxy settings.&lt;/p&gt;
 &lt;p&gt;Here is a blog post that I made &lt;a href=&#34;https://malicious.link/blog/2012/10/21/setting-systems-proxy-settings-with-metasploit/&#34;&gt;about setting the proxies for SYSTEM&lt;/a&gt; but leaving settings like this set is not only sloppy but hard to clean up.&lt;/p&gt;
 &lt;p&gt;Along comes &lt;code&gt;RunAsCurrentUser-2.0.3.1.exe&lt;/code&gt; I found this gem by messing up a search on google for RunAsUser. Found it &lt;a href=&#34;https://www-304.ibm.com/support/docview.wss?uid=swg21506033&#34;&gt;on this IBM support post&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/201408_ibm_runascurrentuser.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Link to direct download: &lt;a href=&#34;http://software.bigfix.com/download/bes/util/RunAsCurrentUser-2.0.3.1.exe&#34;&gt;http://software.bigfix.com/download/bes/util/RunAsCurrentUser-2.0.3.1.exe&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Here is a mirror uploaded to my Post Exploitation repo: &lt;a href=&#34;https://github.com/mubix/post-exploitation/blob/master/win32bins/RunAsCurrentUser-2.0.3.1.exe&#34;&gt;https://github.com/mubix/post-exploitation/blob/master/win32bins/RunAsCurrentUser-2.0.3.1.exe&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This binary takes a path to another executable as an argument. It then finds the currently logged in user and starts the provided executable as that user. AWESOME! This basically solves the whole  PSEXEC-&amp;gt;SYSTEM no-proxy settings issue. And it&#39;s created by a legitimate company for legitimate reasons? w00tw00t. Game on!&lt;/p&gt;
+&lt;p&gt;This binary takes a path to another executable as an argument. It then finds the currently logged in user and starts the provided executable as that user. AWESOME! This basically solves the whole  PSEXEC-&amp;gt;SYSTEM no-proxy settings issue. And it&amp;rsquo;s created by a legitimate company for legitimate reasons? w00tw00t. Game on!&lt;/p&gt;
 &lt;p&gt;Only two problems:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;It is 335K, which doesn&#39;t seem like much but over high latency lines that can take an eternity to transfer, especially over doubly encrypted channels like with a reverse_https meterpreter session.&lt;/p&gt;
+&lt;p&gt;It is 335K, which doesn&amp;rsquo;t seem like much but over high latency lines that can take an eternity to transfer, especially over doubly encrypted channels like with a reverse_https meterpreter session.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;It takes an argument which normally isn&#39;t a huge challenge, but in our specific use case, psexec modules in Metasploit, it isn&#39;t something we can do easily. You would have to upload your C2 binary, as well as the 335K RunAsCurrentUser over to the target host, then run the psexec_command module to execute them both, one as the argument of the other. Kinda sloppy.&lt;/p&gt;
+&lt;p&gt;It takes an argument which normally isn&amp;rsquo;t a huge challenge, but in our specific use case, psexec modules in Metasploit, it isn&amp;rsquo;t something we can do easily. You would have to upload your C2 binary, as well as the 335K RunAsCurrentUser over to the target host, then run the psexec_command module to execute them both, one as the argument of the other. Kinda sloppy.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;So I set to try and figure out how this binary did it&#39;s magic. As I&#39;m not much of a reverse engineer I &lt;a href=&#34;https://www.virustotal.com/en/file/1a9b518c775e2a85a7c47801e9b8221df338a65ad8df326485e4cd2aea22fe52/analysis/&#34;&gt;uploaded it to VirusTotal&lt;/a&gt; so I could take a look at it&#39;s insides (plus, double check to see if it was being detected as malicious at all).&lt;/p&gt;
-&lt;p&gt;As far as I can tell the important pieces are the Windows API calls &lt;strong&gt;ImpersonateLoggedOnUser&lt;/strong&gt;, and &lt;strong&gt;CreateProcessAsUserA&lt;/strong&gt;. I set to trying to reproduce what it did in &lt;a href=&#34;https://www.autoitscript.com/site/autoit/&#34;&gt;AutoIT (awesome stuff if you have never checked it out)&lt;/a&gt;. I couldn&#39;t quite get the API calls right, so I decided to give C++ a shot. Turned out to be pretty simple. I present to you &amp;ldquo;Milkman&amp;rdquo;:&lt;/p&gt;
+&lt;p&gt;So I set to try and figure out how this binary did it&amp;rsquo;s magic. As I&amp;rsquo;m not much of a reverse engineer I &lt;a href=&#34;https://www.virustotal.com/en/file/1a9b518c775e2a85a7c47801e9b8221df338a65ad8df326485e4cd2aea22fe52/analysis/&#34;&gt;uploaded it to VirusTotal&lt;/a&gt; so I could take a look at it&amp;rsquo;s insides (plus, double check to see if it was being detected as malicious at all).&lt;/p&gt;
+&lt;p&gt;As far as I can tell the important pieces are the Windows API calls &lt;strong&gt;ImpersonateLoggedOnUser&lt;/strong&gt;, and &lt;strong&gt;CreateProcessAsUserA&lt;/strong&gt;. I set to trying to reproduce what it did in &lt;a href=&#34;https://www.autoitscript.com/site/autoit/&#34;&gt;AutoIT (awesome stuff if you have never checked it out)&lt;/a&gt;. I couldn&amp;rsquo;t quite get the API calls right, so I decided to give C++ a shot. Turned out to be pretty simple. I present to you &amp;ldquo;Milkman&amp;rdquo;:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/5d0cacdabfe092922fa3&#34;&gt;https://gist.github.com/mubix/5d0cacdabfe092922fa3&lt;/a&gt;  &lt;strong&gt;(full source included below)&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This program (once compiled) takes one argument (or none at all) and runs calc.exe for every instance of the process you tell it to. If you run it without arguments it auto selects explorer.exe. So if you create a service:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp\&amp;gt;sc create SuperService binpath= C:\Temp\milkman.exe type= own start= auto
 [SC] CreateService SUCCESS
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It will start up every time the computer starts, which is completely useless, since there won&#39;t be any users logged in at that point, but you get where this can go. Features to add to this at point are:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It will start up every time the computer starts, which is completely useless, since there won&amp;rsquo;t be any users logged in at that point, but you get where this can go. Features to add to this at point are:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Create a service binary that responds to START/STOP/PAUSE commands and such so that running this as a persistence method would actually be useful.&lt;/li&gt;
 &lt;li&gt;Add a loop so that it continues to run checking for explorer.exe every so often so it can catch when someone is logged in.&lt;/li&gt;
@@ -267,9 +267,9 @@ dnscmd /ZonePrint domain.com.local
 &lt;p&gt;For the longest time I relied on a very awesome tool called &amp;ldquo;Adfind&amp;rdquo;:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &amp;ldquo;this&amp;quot;and no &amp;ldquo;that&amp;rdquo; flags)&lt;/p&gt;
-&lt;p&gt;But that wasn&#39;t good enough, this image kept haunting me:&lt;/p&gt;
+&lt;p&gt;But that wasn&amp;rsquo;t good enough, this image kept haunting me:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2013/ad-dns-zone.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;It&#39;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.&lt;/p&gt;
 &lt;p&gt;I spent 4 days attempting to write my own script, ldap query, prayer to  get all of the data out but was unsuccessful. On the 5th day I happened upon a very short post saying &amp;ldquo;I did it&amp;rdquo;, as I probably would have written the same. It comes in the form of a PowerShell script that you can find here:&lt;/p&gt;
 &lt;p&gt;Code: &lt;a href=&#34;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&#34;&gt;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And is very easy to run:&lt;/p&gt;
@@ -278,7 +278,7 @@ dnscmd /ZonePrint domain.com.local
 &lt;p&gt;&lt;code&gt;C:\&amp;gt; powershell -ep bypass -f dnsdump.ps1 -zone projectmentor.net -dc dc1&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;If you put a -csv on the end of those the author has even given you the CSV format which makes the output extremely easy to parse. Now you can throw your list into your tool of choice instead of scanning random IP ranges on the targets network for important stuff you can scan directly against known good hosts.&lt;/p&gt;
 &lt;p&gt;&amp;ndash; mubix&lt;/p&gt;
-&lt;p&gt;P.S. Yes I realize this isn&#39;t actually &amp;ldquo;Zone Transfer&amp;quot;s but its close enough&lt;/p&gt;
+&lt;p&gt;P.S. Yes I realize this isn&amp;rsquo;t actually &amp;ldquo;Zone Transfer&amp;quot;s but its close enough&lt;/p&gt;
 </description>
     </item>
     

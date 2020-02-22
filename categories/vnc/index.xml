@@ -16,20 +16,20 @@
       <pubDate>Mon, 21 Mar 2011 02:12:29 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-03-21-metasploit-vnc-password-extraction/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://carnal0wnage.blogspot.com/2011/03/vnc-passwords-and-metasploit-and-des.html&#34;&gt;Chris Gates wrote a blog post&lt;/a&gt; about the &amp;lsquo;getvncpw&amp;rsquo; meterpreter script. I ran into the same issue on Penetration Tests in the past but didn&#39;t know much about the wacked out version of DES that RFB (the VNC protocol) was using. Not being a fan of manually editing a binary and compiling each time I had a password to crack I wanted to find another way, but didn&#39;t get a chance to.&lt;/p&gt;
+      <description>&lt;p&gt;&lt;a href=&#34;http://carnal0wnage.blogspot.com/2011/03/vnc-passwords-and-metasploit-and-des.html&#34;&gt;Chris Gates wrote a blog post&lt;/a&gt; about the &amp;lsquo;getvncpw&amp;rsquo; meterpreter script. I ran into the same issue on Penetration Tests in the past but didn&amp;rsquo;t know much about the wacked out version of DES that RFB (the VNC protocol) was using. Not being a fan of manually editing a binary and compiling each time I had a password to crack I wanted to find another way, but didn&amp;rsquo;t get a chance to.&lt;/p&gt;
 &lt;p&gt;Yesterday I saw this ticket: &lt;a href=&#34;https://www.metasploit.com/redmine/issues/3183&#34;&gt;https://www.metasploit.com/redmine/issues/3183&lt;/a&gt; and thought to myself: &amp;ldquo;Thats definitely within my coding ability to contribute a patch for&amp;rdquo;. After almost 15 hours of coding between 9 pm on Saturday and 8 pm on Sunday. It went far and beyond just adding in a bit of code to support UltraVNC.&lt;/p&gt;
 &lt;p&gt;changelog:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Complete rewrite as a post module instead of a meterpreter script&lt;/li&gt;
 &lt;li&gt;Passwords of less than 8 characters are correctly padded (&lt;a href=&#34;https://www.metasploit.com/redmine/projects/framework/repository/revisions/12033&#34;&gt;thanks jduck&lt;/a&gt;)&lt;/li&gt;
 &lt;li&gt;UltraVNC checks added&lt;/li&gt;
-&lt;li&gt;TightVNC checks added for both VNC and it&#39;s control console&lt;/li&gt;
+&lt;li&gt;TightVNC checks added for both VNC and it&amp;rsquo;s control console&lt;/li&gt;
 &lt;li&gt;Made it very simple to add new checks in either the registry or in a file&lt;/li&gt;
 &lt;li&gt;Output is a bit more verbose (lets you know something is happening&lt;/li&gt;
 &lt;li&gt;Reports authentication credentials found to database&lt;/li&gt;
 &lt;li&gt;Identifies the port that VNC is running on as well&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;It isn&#39;t in the metasploit trunk so until/if if gets added you can get it here:&lt;/p&gt;
+&lt;p&gt;It isn&amp;rsquo;t in the metasploit trunk so until/if if gets added you can get it here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/8215705&#34;&gt;enum_vnc_pw.rb&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;If you have a check, find it breaks for some reason or another, or just want to tell me that I suck, please leave a comment or email me.&lt;/p&gt;
 &lt;p&gt;Here it is in action against my VM with 3 different VNC servers on it (calling the post module in two separate ways) :&lt;/p&gt;

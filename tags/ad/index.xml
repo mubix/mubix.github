@@ -20,7 +20,7 @@
 &lt;center&gt;![](/images/2017/nonsecure_dns_updates.png)&lt;/center&gt;
 &lt;p&gt;The module was originally written by &lt;a href=&#34;https://twitter.com/kingsabri&#34;&gt;King Sabri&lt;/a&gt;, with many touch ups and the spoofing capability by &lt;a href=&#34;https://twitter.com/busterbcook&#34;&gt;busterbcook&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;You can read up on the pull request in &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/8599&#34;&gt;pr/#8599&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Just to drive home the point I&#39;ll be using my Exchange server as a target:&lt;/p&gt;
+&lt;p&gt;Just to drive home the point I&amp;rsquo;ll be using my Exchange server as a target:&lt;/p&gt;
 &lt;center&gt; **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**&lt;/center&gt;
 &lt;center&gt;![](/images/2017/before_dns_update.png)&lt;/center&gt;
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
@@ -50,7 +50,7 @@ Auxiliary action:
    Name    Description
    ----    -----------
    UPDATE  Add or update a record. (default)
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&#39;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&amp;rsquo;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
 
 Auxiliary actions:
@@ -61,7 +61,7 @@ Auxiliary actions:
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&#39;m injecting isn&#39;t on the same subnet as the domain.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&amp;rsquo;m injecting isn&amp;rsquo;t on the same subnet as the domain.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
 DOMAIN =&amp;gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &amp;gt; set HOSTNAME sdexchange

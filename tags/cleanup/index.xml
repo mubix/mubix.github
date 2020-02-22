@@ -16,11 +16,11 @@
       <pubDate>Thu, 12 Oct 2017 11:30:44 -0500</pubDate>
       
       <guid>https://malicious.link/post/2017/automatically-deleting-old-gmail-mail/</guid>
-      <description>&lt;p&gt;Like many of you I&#39;m a gmail hoarder. I never deleting anything, just &amp;ldquo;archive&amp;rdquo; everything. I &amp;ldquo;might&amp;rdquo; need it later, or &amp;ldquo;I&#39;ll get to it when I have time&amp;rdquo;. If we get really honest with ourselves, we never will actually get to it, and because we have this buffer, this procrastination opportunity, we grab it. We use words like &amp;ldquo;but I may need proof of X&amp;rdquo;, or &amp;ldquo;I could need to reference this&amp;rdquo;, or &amp;ldquo;I don&#39;t really want to put this person in my contacts so I&#39;ll just save the email&amp;rdquo;.&lt;/p&gt;
-&lt;p&gt;Personally I have made a choice to force myself to be more engaged in my email going forward. I have set a Google Script to run through all of my email every day and if it is older than 90 days, and doesn&#39;t have the specail label &amp;ldquo;keep&amp;rdquo; on it, it&#39;s gone. I obviously didn&#39;t care enough about whatever was going on in that email to take the time to respond to it.&lt;/p&gt;
+      <description>&lt;p&gt;Like many of you I&amp;rsquo;m a gmail hoarder. I never deleting anything, just &amp;ldquo;archive&amp;rdquo; everything. I &amp;ldquo;might&amp;rdquo; need it later, or &amp;ldquo;I&amp;rsquo;ll get to it when I have time&amp;rdquo;. If we get really honest with ourselves, we never will actually get to it, and because we have this buffer, this procrastination opportunity, we grab it. We use words like &amp;ldquo;but I may need proof of X&amp;rdquo;, or &amp;ldquo;I could need to reference this&amp;rdquo;, or &amp;ldquo;I don&amp;rsquo;t really want to put this person in my contacts so I&amp;rsquo;ll just save the email&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;Personally I have made a choice to force myself to be more engaged in my email going forward. I have set a Google Script to run through all of my email every day and if it is older than 90 days, and doesn&amp;rsquo;t have the specail label &amp;ldquo;keep&amp;rdquo; on it, it&amp;rsquo;s gone. I obviously didn&amp;rsquo;t care enough about whatever was going on in that email to take the time to respond to it.&lt;/p&gt;
 &lt;p&gt;Whatever your reason for finding this post, here is how I got it done:&lt;/p&gt;
 &lt;p&gt;At first I started with just searching for a way to make a simple filter to do this. There are plenty of blog posts that show you this is possible, but it turns out that at some point Gmail switched to only applying filters to incoming messages (makes sense, lots less overhead, no need to load EVERYONEs email every hour). This makes deleting messages older than X impossible with simple filters however. I did however learn of a search query term you can use to find messages/threads older than X. Imaginatively called &lt;code&gt;older_than:&lt;/code&gt;. So a search in Gmail for &lt;code&gt;older_than:90d&lt;/code&gt; resulted in exactly the emails I wanted to find.&lt;/p&gt;
-&lt;p&gt;That&#39;s when I started looking into Google Scripting. The language is pretty easy and straight forward if you have ever programmed in anything like Javascript or C++.&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s when I started looking into Google Scripting. The language is pretty easy and straight forward if you have ever programmed in anything like Javascript or C++.&lt;/p&gt;
 &lt;p&gt;Using the API reference here: &lt;a href=&#34;https://developers.google.com/apps-script/reference/gmail/&#34;&gt;https://developers.google.com/apps-script/reference/gmail/&lt;/a&gt; I was able to cobble together the following in about 20 minutes:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;function DeleteOldEmail () {
 	var threads;
@@ -33,10 +33,10 @@
 		GmailApp.moveThreadToTrash(thread);
 	}
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now, that script leaves a lot to be desired. It doesn&#39;t have any case where a label like &amp;ldquo;save&amp;rdquo; or &amp;ldquo;keep&amp;rdquo; might come into play, it just hauls off and deletes everything old. But before we start improving lets show you how it looks when you&#39;re actually doing it (I&#39;ll comment out the &amp;ldquo;moveThreadToTrash in the screenshots)&lt;/p&gt;
-&lt;p&gt;Go to &lt;a href=&#34;https://script.google.com/&#34;&gt;https://script.google.com/&lt;/a&gt; and you&#39;ll be presented with a new project if you haven&#39;t been here before:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now, that script leaves a lot to be desired. It doesn&amp;rsquo;t have any case where a label like &amp;ldquo;save&amp;rdquo; or &amp;ldquo;keep&amp;rdquo; might come into play, it just hauls off and deletes everything old. But before we start improving lets show you how it looks when you&amp;rsquo;re actually doing it (I&amp;rsquo;ll comment out the &amp;ldquo;moveThreadToTrash in the screenshots)&lt;/p&gt;
+&lt;p&gt;Go to &lt;a href=&#34;https://script.google.com/&#34;&gt;https://script.google.com/&lt;/a&gt; and you&amp;rsquo;ll be presented with a new project if you haven&amp;rsquo;t been here before:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Then, copy and past the code in and save it. It&#39;ll ask you to name the project. I just named it DeleteOldEmail. Feel free to name it anything you wish. It is what is going to show up in your Google Security &amp;ldquo;Approve Apps&amp;rdquo; list.&lt;/p&gt;
+&lt;p&gt;Then, copy and past the code in and save it. It&amp;rsquo;ll ask you to name the project. I just named it DeleteOldEmail. Feel free to name it anything you wish. It is what is going to show up in your Google Security &amp;ldquo;Approve Apps&amp;rdquo; list.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;The first time I ran this I commented out the lines for deleting and added in a &amp;ldquo;Logger&amp;rdquo; line just so I knew what would be deleted:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;function DeleteOldEmail () {
@@ -53,15 +53,15 @@
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then run it, the first time you run it, it will ask for permissions:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;If you try this out and decide you don&#39;t like it you can revoke the permissions here: &lt;a href=&#34;https://myaccount.google.com/permissions&#34;&gt;https://myaccount.google.com/permissions&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you try this out and decide you don&amp;rsquo;t like it you can revoke the permissions here: &lt;a href=&#34;https://myaccount.google.com/permissions&#34;&gt;https://myaccount.google.com/permissions&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;If you went with the logging you&#39;ll see something like this if you go to &lt;strong&gt;View-&amp;gt;Logs&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;If you went with the logging you&amp;rsquo;ll see something like this if you go to &lt;strong&gt;View-&amp;gt;Logs&lt;/strong&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Last step is to set this up so it automatically runs, I mean that&#39;s the whole point. For that, we go to &lt;strong&gt;Edit-&amp;gt;Current Project&#39;s Triggers&lt;/strong&gt;. And we are greeted with the following (once we click to add a new trigger):&lt;/p&gt;
+&lt;p&gt;Last step is to set this up so it automatically runs, I mean that&amp;rsquo;s the whole point. For that, we go to &lt;strong&gt;Edit-&amp;gt;Current Project&amp;rsquo;s Triggers&lt;/strong&gt;. And we are greeted with the following (once we click to add a new trigger):&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;I chose to set up mine to run every 12 hours, but you can set it to run once a day, once a week, whatever.&lt;/p&gt;
-&lt;p&gt;Again, this script leaves a lot to be desired, You can totally mess with the query search string any way you wish. I&#39;ve created a Github repository that I&#39;ll put improvements on the script: &lt;a href=&#34;https://github.com/mubix/GScriptOldEmal&#34;&gt;https://github.com/mubix/GScriptOldEmal&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Have fun with it. The two improvments I&#39;ll be adding are the label exclusion for &amp;ldquo;keep&amp;rdquo; and notifications (a list of email subjects deleted)&lt;/p&gt;
+&lt;p&gt;Again, this script leaves a lot to be desired, You can totally mess with the query search string any way you wish. I&amp;rsquo;ve created a Github repository that I&amp;rsquo;ll put improvements on the script: &lt;a href=&#34;https://github.com/mubix/GScriptOldEmal&#34;&gt;https://github.com/mubix/GScriptOldEmal&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Have fun with it. The two improvments I&amp;rsquo;ll be adding are the label exclusion for &amp;ldquo;keep&amp;rdquo; and notifications (a list of email subjects deleted)&lt;/p&gt;
 &lt;p&gt;Thanks for your time.&lt;/p&gt;
 </description>
     </item>

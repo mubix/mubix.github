@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
 <meta name="description" content="Idea came thanks to cktricky from: http://cktricky.blogspot.com/
-A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&#39;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &amp;ldquo;Google Bot gets to see everything&amp;rdquo; feature." />
+A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&amp;rsquo;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &amp;ldquo;Google Bot gets to see everything&amp;rdquo; feature." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -33,7 +33,7 @@ A bunch of sites on the web give you different pages depending on the browser yo
 
 <meta itemprop="name" content="Brute-Forcing Compatibility">
 <meta itemprop="description" content="Idea came thanks to cktricky from: http://cktricky.blogspot.com/
-A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&#39;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature.">
+A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&rsquo;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature.">
 <meta itemprop="datePublished" content="2009-11-19T20:20:00&#43;00:00" />
 <meta itemprop="dateModified" content="2009-11-19T20:20:00&#43;00:00" />
 <meta itemprop="wordCount" content="225">
@@ -43,7 +43,7 @@ A bunch of sites on the web give you different pages depending on the browser yo
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Brute-Forcing Compatibility"/>
 <meta name="twitter:description" content="Idea came thanks to cktricky from: http://cktricky.blogspot.com/
-A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&#39;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature."/>
+A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&rsquo;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature."/>
 
 
 
@@ -119,9 +119,9 @@ A bunch of sites on the web give you different pages depending on the browser yo
 
             <div class="post-content">
                 <p>Idea came thanks to cktricky from: <a href="http://cktricky.blogspot.com/">http://cktricky.blogspot.com/</a></p>
-<p>A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I'm sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature. Well, I had an idea to take Burp's Intruder and &ldquo;Brute Force&rdquo; any compatibility coding that a site may have. Especially if there is a restricted section of the page that you know is there, but don't have access to.</p>
+<p>A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&rsquo;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature. Well, I had an idea to take Burp&rsquo;s Intruder and &ldquo;Brute Force&rdquo; any compatibility coding that a site may have. Especially if there is a restricted section of the page that you know is there, but don&rsquo;t have access to.</p>
 <p>To start off you need a list of user agents. I pulled mine from the User-Agent Switcher lists I found on the web since they are in easily parsed XML.</p>
-<p>From: <a href="http://www1.qainsight.net:8080/2007/05/18/Four+Links+To+UserAgent+List+And+An+Update+To+The+Useragent+Import.aspx">Qainsight's UA Lists</a>.</p>
+<p>From: <a href="http://www1.qainsight.net:8080/2007/05/18/Four+Links+To+UserAgent+List+And+An+Update+To+The+Useragent+Import.aspx">Qainsight&rsquo;s UA Lists</a>.</p>
 <p>I downloaded: <a href="http://qainsight.net/content/binary/AgentStrings20070517.xml">http://qainsight.net/content/binary/AgentStrings20070517.xml</a></p>
 <p>There are plenty of ways to parse XML in your scripting language of choice but here is some dirty bash script that worked for me:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat AgentStrings20070517.xml | grep <span style="color:#e6db74">&#34;useragent=&#34;</span> | grep -v <span style="color:#e6db74">&#34;*&#34;</span> | awk -F <span style="color:#e6db74">&#39;&#34;&#39;</span> <span style="color:#e6db74">&#39;{print $4}&#39;</span> &gt; useragents.txt
@@ -129,7 +129,7 @@ A bunch of sites on the web give you different pages depending on the browser yo
 <p><img src="/images/postimages/200911_useragent_1.png" alt=""></p>
 <p>And import useragents.txt into Intruder and kick it off.</p>
 <p><img src="/images/postimages/200911_useragent_2.png" alt=""></p>
-<p>If any of the &lsquo;payloads&rsquo; come back with anything different, it's definitely something to look into.</p>
+<p>If any of the &lsquo;payloads&rsquo; come back with anything different, it&rsquo;s definitely something to look into.</p>
 
             </div>
         </article>

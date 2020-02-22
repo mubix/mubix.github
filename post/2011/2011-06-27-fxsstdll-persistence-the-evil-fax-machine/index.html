@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
 <meta name="description" content="Nick Harbour wrote a post on Mandiants blog about some Malware that was using a dll called &amp;lsquo;fxsst.dll&amp;rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:
- The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&#39;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&amp;hellip; no it couldn&#39;t be that simple&amp;hellip; lets see:" />
+ The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&amp;rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&amp;hellip; no it couldn&amp;rsquo;t be that simple&amp;hellip; lets see:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -33,7 +33,7 @@
 
 <meta itemprop="name" content="fxsst.dll persistence: the evil fax machine">
 <meta itemprop="description" content="Nick Harbour wrote a post on Mandiants blog about some Malware that was using a dll called &lsquo;fxsst.dll&rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:
- The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&#39;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&hellip; no it couldn&#39;t be that simple&hellip; lets see:">
+ The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&hellip; no it couldn&rsquo;t be that simple&hellip; lets see:">
 <meta itemprop="datePublished" content="2011-06-27T14:32:16&#43;00:00" />
 <meta itemprop="dateModified" content="2011-06-27T14:32:16&#43;00:00" />
 <meta itemprop="wordCount" content="305">
@@ -43,7 +43,7 @@
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="fxsst.dll persistence: the evil fax machine"/>
 <meta name="twitter:description" content="Nick Harbour wrote a post on Mandiants blog about some Malware that was using a dll called &lsquo;fxsst.dll&rsquo; to hide and stay persistent on a system. The DLL is used by Windows when it is acting as a Fax server (anyone still do that?). He mentions some very interesting points:
- The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&#39;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&hellip; no it couldn&#39;t be that simple&hellip; lets see:"/>
+ The DLL gets loaded at login by Explorer The DLL exists in System32 but is looked for in Windows first Explorer doesn&rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)  I thought&hellip; no it couldn&rsquo;t be that simple&hellip; lets see:"/>
 
 
 
@@ -122,19 +122,19 @@
 <ul>
 <li>The DLL gets loaded at login by Explorer</li>
 <li>The DLL exists in System32 but is looked for in Windows first</li>
-<li>Explorer doesn't try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)</li>
+<li>Explorer doesn&rsquo;t try to use anything inside of it via exports unless the system is acting as a fax server (aka safe to put a pretty bland DLL there)</li>
 </ul>
-<p>I thought&hellip; no it couldn't be that simple&hellip; lets see:</p>
+<p>I thought&hellip; no it couldn&rsquo;t be that simple&hellip; lets see:</p>
 <p><img src="/images/postimages/201106_fxsst_1.png" alt=""></p>
 <p>We have our victim in a session and are going to make a DLL that points back to our reverse_https multi handler over port 443</p>
 <p><img src="/images/postimages/201106_fxsst_2.png" alt=""></p>
-<p>Ok, we've got our super evil fxsst.dll now lets put it in place.</p>
+<p>Ok, we&rsquo;ve got our super evil fxsst.dll now lets put it in place.</p>
 <p><img src="/images/postimages/201106_fxsst_3.png" alt=""></p>
-<p>Lets test it out just to make sure it works. I will use the PID of explorer.exe (cause thats where it's going to be normally) and I'm going to use the method I talked about in the <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter">Remote DLL Injection post</a>.</p>
+<p>Lets test it out just to make sure it works. I will use the PID of explorer.exe (cause thats where it&rsquo;s going to be normally) and I&rsquo;m going to use the method I talked about in the <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter">Remote DLL Injection post</a>.</p>
 <p><img src="/images/postimages/201106_fxsst_4.png" alt=""></p>
 <p>Woot! Ok, so the DLL works, but does it load when a user logs in&hellip; (drop out of our 2 sessions first)</p>
 <p><img src="/images/postimages/201106_fxsst_5.png" alt=""></p>
-<p>Thats me logging in 2 times because I couldn't believe that it worked. System was fine, and I had a shell. These tests were performed on XP. On Win7 x64 it make the systems freeze up. Right now the DLL payload generation in Metasploit for 64bit systems isn't setup. So, stay away from doing this on x64 bit systems at least with the Metasploit DLL, since it's run at login so you'll have to use psexec or another session to actually remove the file while everyone is logged out. TEST PRIOR TO USE as always.</p>
+<p>Thats me logging in 2 times because I couldn&rsquo;t believe that it worked. System was fine, and I had a shell. These tests were performed on XP. On Win7 x64 it make the systems freeze up. Right now the DLL payload generation in Metasploit for 64bit systems isn&rsquo;t setup. So, stay away from doing this on x64 bit systems at least with the Metasploit DLL, since it&rsquo;s run at login so you&rsquo;ll have to use psexec or another session to actually remove the file while everyone is logged out. TEST PRIOR TO USE as always.</p>
 
             </div>
         </article>

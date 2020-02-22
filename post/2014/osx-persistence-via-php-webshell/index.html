@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, with root or sudo priviledge, enable the built-in apache server on OSX and it&#39;s PHP module&amp;hellip;.
+<meta name="description" content="As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, with root or sudo priviledge, enable the built-in apache server on OSX and it&amp;rsquo;s PHP module&amp;hellip;.
 I am working with OSX Mavericks so your locations may vary based on the version of OSX your target it.
 First things first is to enable the PHP module for the Apache server." />
 <meta name="keywords" content="" />
@@ -33,7 +33,7 @@ First things first is to enable the PHP module for the Apache server." />
 
 
 <meta itemprop="name" content="OSX Persistence via PHP Webshell">
-<meta itemprop="description" content="As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, with root or sudo priviledge, enable the built-in apache server on OSX and it&#39;s PHP module&hellip;.
+<meta itemprop="description" content="As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, with root or sudo priviledge, enable the built-in apache server on OSX and it&rsquo;s PHP module&hellip;.
 I am working with OSX Mavericks so your locations may vary based on the version of OSX your target it.
 First things first is to enable the PHP module for the Apache server.">
 <meta itemprop="datePublished" content="2014-09-09T11:26:38-05:00" />
@@ -44,7 +44,7 @@ First things first is to enable the PHP module for the Apache server.">
 
 <meta itemprop="keywords" content="osx,persistence,php," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="OSX Persistence via PHP Webshell"/>
-<meta name="twitter:description" content="As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, with root or sudo priviledge, enable the built-in apache server on OSX and it&#39;s PHP module&hellip;.
+<meta name="twitter:description" content="As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, with root or sudo priviledge, enable the built-in apache server on OSX and it&rsquo;s PHP module&hellip;.
 I am working with OSX Mavericks so your locations may vary based on the version of OSX your target it.
 First things first is to enable the PHP module for the Apache server."/>
 
@@ -119,20 +119,20 @@ First things first is to enable the PHP module for the Apache server."/>
             
 
             <div class="post-content">
-                <p>As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, <strong>with root or sudo priviledge</strong>, enable the <strong>built-in</strong> apache server on OSX and it's <strong>PHP</strong> module&hellip;.</p>
+                <p>As I learn more and more about OSX I find things that surprise me. For instance, in this post I will be showing you how to, <strong>with root or sudo priviledge</strong>, enable the <strong>built-in</strong> apache server on OSX and it&rsquo;s <strong>PHP</strong> module&hellip;.</p>
 <p>I am working with OSX Mavericks so your locations may vary based on the version of OSX your target it.</p>
 <p>First things first is to enable the PHP module for the Apache server.</p>
 <pre><code>sudo nano -w /etc/apache2/httpd.conf
-</code></pre><p><em>(vi or emacs to your heart's content)</em>. But what we are looking for is to uncomment the following line:</p>
+</code></pre><p><em>(vi or emacs to your heart&rsquo;s content)</em>. But what we are looking for is to uncomment the following line:</p>
 <pre><code>#LoadModule php5_module libexec/apache2/libphp5.so
-</code></pre><p>Once you do that, start up Apache. This can be done temporarily (won't survive a reboot) with the <code>apachectl</code> command:</p>
+</code></pre><p>Once you do that, start up Apache. This can be done temporarily (won&rsquo;t survive a reboot) with the <code>apachectl</code> command:</p>
 <pre><code>sudo apachectl start
 </code></pre><p><img src="/images/2014/osx_apache.png" alt=""></p>
 <p>Or you can make it more permanent with <code>launchctl</code>:</p>
 <pre><code>sudo launchctl load -w /System/Library/LaunchDaemons/org.apache.httpd.plist
 </code></pre><p>And undoing the damage with:</p>
 <pre><code>sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-</code></pre><p>After that, just drop your favorite PHP shell into the <code>/Library/WebServer/Documents/</code> directory and you're done. (My favorites are <a href="https://github.com/b374k/b374k">b374k</a> and PHP Meterpreter.</p>
+</code></pre><p>After that, just drop your favorite PHP shell into the <code>/Library/WebServer/Documents/</code> directory and you&rsquo;re done. (My favorites are <a href="https://github.com/b374k/b374k">b374k</a> and PHP Meterpreter.</p>
 <p><img src="/images/2014/osx_php_shell.png" alt=""></p>
 
             </div>

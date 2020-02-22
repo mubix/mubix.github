@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&#39;ve had to fall back on dropping binaries which I really don&#39;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&#39;ll be back to passing the hash. Here is how, with a bit of the thought process first:" />
+<meta name="description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,7 +31,7 @@
 
 
 <meta itemprop="name" content="Dumping Hashes on Win2k8 R2 x64 with Metasploit">
-<meta itemprop="description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&#39;ve had to fall back on dropping binaries which I really don&#39;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&#39;ll be back to passing the hash. Here is how, with a bit of the thought process first:">
+<meta itemprop="description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:">
 <meta itemprop="datePublished" content="2011-05-16T02:35:31&#43;00:00" />
 <meta itemprop="dateModified" content="2011-05-16T02:35:31&#43;00:00" />
 <meta itemprop="wordCount" content="1005">
@@ -40,7 +40,7 @@
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Dumping Hashes on Win2k8 R2 x64 with Metasploit"/>
-<meta name="twitter:description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&#39;ve had to fall back on dropping binaries which I really don&#39;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&#39;ll be back to passing the hash. Here is how, with a bit of the thought process first:"/>
+<meta name="twitter:description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:"/>
 
 
 
@@ -121,7 +121,7 @@
             
 
             <div class="post-content">
-                <p>When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I've had to fall back on dropping binaries which I really don't like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you'll be back to passing the hash. Here is how, with a bit of the thought process first:</p>
+                <p>When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:</p>
 <pre><code>                ##                          ###           ##    ##
  ##  ##  #### ###### ####  #####   #####    ##    ####        ######
 ####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
@@ -215,7 +215,7 @@ Current pid: 2992
 
 meterpreter &gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-</code></pre><p>Ah, the wonderful &lsquo;The parameter is incorrect&rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn't the issue, but lets do a &lsquo;getprivs&rsquo; just in case:</p>
+</code></pre><p>Ah, the wonderful &lsquo;The parameter is incorrect&rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&rsquo;t the issue, but lets do a &lsquo;getprivs&rsquo; just in case:</p>
 <pre><code>meterpreter &gt; getprivs    
 ============================================================
 Enabled Process Privileges
@@ -275,7 +275,7 @@ jane.user??:1105:MYLMHASH:MYNTLMHASH:::
 DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
 
 meterpreter &gt; 
-</code></pre><p>w00t. So I don't know why, but it seems that you have to be in a &lsquo;SYSTEM&rsquo; process who's primary token (started by SYSTEM) is SYSTEM (since &lsquo;getsystem&rsquo; wasn't working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you're on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.</p>
+</code></pre><p>w00t. So I don&rsquo;t know why, but it seems that you have to be in a &lsquo;SYSTEM&rsquo; process who&rsquo;s primary token (started by SYSTEM) is SYSTEM (since &lsquo;getsystem&rsquo; wasn&rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.</p>
 <p><strong>Update</strong> on 2011-05-15 23:39 by Rob Fuller</p>
 <p>As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.</p>
 

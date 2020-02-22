@@ -16,13 +16,13 @@
       <pubDate>Tue, 06 Sep 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/snagging-creds-from-locked-machines/</guid>
-      <description>&lt;p&gt;First off, this is dead simple and shouldn&#39;t work, but it does. Also, there is no possible way that I&#39;m the first one that has identified this, but here it is (&lt;strong&gt;trust me, I tested it so many ways to confirm it because I couldn&#39;t believe it was true&lt;/strong&gt;)&lt;/p&gt;
+      <description>&lt;p&gt;First off, this is dead simple and shouldn&amp;rsquo;t work, but it does. Also, there is no possible way that I&amp;rsquo;m the first one that has identified this, but here it is (&lt;strong&gt;trust me, I tested it so many ways to confirm it because I couldn&amp;rsquo;t believe it was true&lt;/strong&gt;)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; USB Ethernet + DHCP + Responder == Creds&lt;/p&gt;
 &lt;h1 id=&#34;thesis&#34;&gt;Thesis:&lt;/h1&gt;
-&lt;p&gt;If I plug in a device that masquerades as a USB Ethernet adapter and has a computer on the other end, can I capture credentials from a system, even when locked out (yes, logged in, just locked). (..or do even more, but we&#39;ll save that for another time, this post is already too long)&lt;/p&gt;
+&lt;p&gt;If I plug in a device that masquerades as a USB Ethernet adapter and has a computer on the other end, can I capture credentials from a system, even when locked out (yes, logged in, just locked). (..or do even more, but we&amp;rsquo;ll save that for another time, this post is already too long)&lt;/p&gt;
 &lt;h2 id=&#34;device-setup&#34;&gt;Device Setup&lt;/h2&gt;
-&lt;p&gt;I started off with a &lt;a href=&#34;https://inversepath.com/usbarmory&#34;&gt;USB Armory&lt;/a&gt; ($155) but below I&#39;ll show you how to do this with a &lt;a href=&#34;http://hakshop.myshopify.com/collections/lan-turtle/products/lan-turtle&#34;&gt;Hak5 Turtle&lt;/a&gt; ($49.99) as well.&lt;/p&gt;
-&lt;p&gt;I&#39;ll leave the setting up of the base device itself to you, but here are some links that can start you on your way:&lt;/p&gt;
+&lt;p&gt;I started off with a &lt;a href=&#34;https://inversepath.com/usbarmory&#34;&gt;USB Armory&lt;/a&gt; ($155) but below I&amp;rsquo;ll show you how to do this with a &lt;a href=&#34;http://hakshop.myshopify.com/collections/lan-turtle/products/lan-turtle&#34;&gt;Hak5 Turtle&lt;/a&gt; ($49.99) as well.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;ll leave the setting up of the base device itself to you, but here are some links that can start you on your way:&lt;/p&gt;
 &lt;h3 id=&#34;usb-armory&#34;&gt;USB Armory&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Debian/Jessie - &lt;a href=&#34;https://github.com/inversepath/usbarmory/wiki/Starting#preparing-your-own-microsd-card&#34;&gt;https://github.com/inversepath/usbarmory/wiki/Starting#preparing-your-own-microsd-card&lt;/a&gt;&lt;/li&gt;
@@ -34,19 +34,19 @@
 &lt;li&gt;Turtle video guides and wiki: &lt;a href=&#34;https://lanturtle.com/wiki/#!videos.md&#34;&gt;https://lanturtle.com/wiki/#!videos.md&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;tools&#34;&gt;Tools&lt;/h2&gt;
-&lt;p&gt;Basically the capturing is done with &lt;a href=&#34;https://twitter.com/pythonresponder&#34;&gt;Laurent Gaffié&#39;s&lt;/a&gt; &lt;a href=&#34;https://github.com/lgandx/Responder&#34;&gt;Responder&lt;/a&gt; so you need to find a way to get Responder onto the device. The Hak5 Turtle already has a module for it:&lt;/p&gt;
+&lt;p&gt;Basically the capturing is done with &lt;a href=&#34;https://twitter.com/pythonresponder&#34;&gt;Laurent Gaffié&amp;rsquo;s&lt;/a&gt; &lt;a href=&#34;https://github.com/lgandx/Responder&#34;&gt;Responder&lt;/a&gt; so you need to find a way to get Responder onto the device. The Hak5 Turtle already has a module for it:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/turtleshell.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;You do have to &amp;ldquo;Enable&amp;rdquo; the module for the first time (plugged into Internet access) to get it to actually download all of dependencies and package itself.&lt;/p&gt;
 &lt;p&gt;Then you also need to do a &lt;code&gt;opkg update&lt;/code&gt; and &lt;code&gt;opkg install python-openssl&lt;/code&gt; so that Responder will run correctly. This is only a temporary issue as the module is being fixed to include this step.&lt;/p&gt;
 &lt;p&gt;As for the USB Armory is you can either use SCP, Internet Connection Sharing, the USB host/client adapter:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2016/usbarmory_host_adapter.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;The default install of Debian/Jessie doesn&#39;t have Python installed so you will have to work through all of the dependencies (on the Kali version this is not needed) and will require Internet access to perform:&lt;/p&gt;
+&lt;p&gt;The default install of Debian/Jessie doesn&amp;rsquo;t have Python installed so you will have to work through all of the dependencies (on the Kali version this is not needed) and will require Internet access to perform:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;apt-get install -y python git python-pip python-dev screen sqlite3
 pip install pycrypto
 git clone https://github.com/spiderlabs/responder
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;configuration&#34;&gt;Configuration&lt;/h2&gt;
 &lt;h3 id=&#34;armory&#34;&gt;Armory&lt;/h3&gt;
-&lt;p&gt;First, setting up the interface isn&#39;t needed but it will help with consistence since each image for the Armory come with different default IP addresses and it&#39;s good to set a solid base.&lt;/p&gt;
+&lt;p&gt;First, setting up the interface isn&amp;rsquo;t needed but it will help with consistence since each image for the Armory come with different default IP addresses and it&amp;rsquo;s good to set a solid base.&lt;/p&gt;
 &lt;h4 id=&#34;etcnetworkinterfaces&#34;&gt;/etc/network/interfaces&lt;/h4&gt;
 &lt;pre&gt;&lt;code&gt;# interfaces(5) file used by ifup(8) and ifdown(8)
 # Include files from /etc/network/interfaces.d:
@@ -111,7 +111,7 @@ exit 0
 &lt;pre&gt;&lt;code&gt;# Logging
 deflog on
 logfile /root/logs/screenlog_$USER_.%H.%n.%Y%m%d-%0c:%s.%t.log
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That&#39;s it, you should be able to reboot your USB Armory and start picking up creds anywhere you can stick a USB in.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;That&amp;rsquo;s it, you should be able to reboot your USB Armory and start picking up creds anywhere you can stick a USB in.&lt;/p&gt;
 &lt;h3 id=&#34;hak5-turtle-1&#34;&gt;Hak5 Turtle&lt;/h3&gt;
 &lt;p&gt;Everything is pretty much already done for you, the only difference is that opkg is your package manager:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;opkg update
@@ -125,7 +125,7 @@ opkg install python-openssl screen
 &lt;/code&gt;&lt;/pre&gt;&lt;h1 id=&#34;why-does-this-work&#34;&gt;Why does this work?&lt;/h1&gt;
 &lt;ol&gt;
 &lt;li&gt;Because USB is Plug-and-Play. This means that even if a system is locked out, the device still gets installed. Now, I believe there are restrictions on what types of devices are allowed to install at a locked out state on newer operating systems (Win10/El Capitan), but Ethernet/LAN is definitely on the white list.&lt;/li&gt;
-&lt;li&gt;Computers are constantly creating traffic, even if you don&#39;t have any browsers or applications open, and most computers trust their local network for some reason (I know the technical bits on &amp;lsquo;why&amp;rsquo;, just complaining&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Computers are constantly creating traffic, even if you don&amp;rsquo;t have any browsers or applications open, and most computers trust their local network for some reason (I know the technical bits on &amp;lsquo;why&amp;rsquo;, just complaining&amp;hellip;)&lt;/li&gt;
 &lt;li&gt;Network preference when there are more than gateway or network connection is based on &amp;ldquo;metrics&amp;rdquo; on Windows and a combination of metrics and &lt;a href=&#34;https://support.apple.com/kb/PH18458?locale=en_US&#34;&gt;&amp;ldquo;preference&amp;rdquo; on OSX&lt;/a&gt;, but by default &amp;ldquo;wired&amp;rdquo; and &amp;ldquo;newer/faster&amp;rdquo; always win out.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;This means that by plugging in the device it quickly becomes the gateway, DNS server, WPAD server and others thanks to Responder.&lt;/p&gt;
@@ -151,7 +151,7 @@ opkg install python-openssl screen
 &lt;li&gt;Windows XP SP3&lt;/li&gt;
 &lt;li&gt;Windows 7 SP1&lt;/li&gt;
 &lt;li&gt;Windows 10 (Enterprise and Home)&lt;/li&gt;
-&lt;li&gt;OSX El Capitan / Mavericks (I was able to get creds on both of these but I&#39;m still testing to see if it was a fluke, or my own configurations)&lt;/li&gt;
+&lt;li&gt;OSX El Capitan / Mavericks (I was able to get creds on both of these but I&amp;rsquo;m still testing to see if it was a fluke, or my own configurations)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;I still have not tested on Linux, I will make a new post on if that works. Please leave comments below if you see things I can improve upon, or errors.&lt;/p&gt;
 &lt;h3 id=&#34;usb-armory-vs-hak5-lan-turtle&#34;&gt;USB Armory vs Hak5 LAN Turtle&lt;/h3&gt;

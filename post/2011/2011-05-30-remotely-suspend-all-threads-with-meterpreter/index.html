@@ -126,13 +126,13 @@ pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targ
                 <p>Just a follow up to my previous post. One of the things that sets that method apart is the fact that the suspension (once the DLL injection occurs) comes from within the process, and it suspends all the child processes as well.</p>
 <p>Another way you can do this without the injection is just sending a suspend to all the threads in the process.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">pid <span style="color:#f92672">=</span> <span style="color:#ae81ff">2980</span>
-<span style="color:#f92672"></span>targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
+targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
 targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>each_thread <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span>
 	targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>open(x)<span style="color:#f92672">.</span>suspend
 <span style="color:#66d9ef">end</span>
-</code></pre></div><p>We open the process just like we did before, and make a very simple &lsquo;each_thread&rsquo; loop. There are a few AVs engines that detected this as tampering. But if you target isn't AV&hellip; Say it's Process Explorer during CCDC, this might just confuse them enough to buy you some time to do other things without their watchful eye on you.</p>
-<p>The other cool thing that happened when I did this was Process Explorer didn't detect the process as suspended. If you looked under the thread list they were all suspended but not the process itself according to Process Explorer.</p>
-<p>Not rocket science at all, but that's because it's built into the framework. Just another thing that metasploit makes dead simple.</p>
+</code></pre></div><p>We open the process just like we did before, and make a very simple &lsquo;each_thread&rsquo; loop. There are a few AVs engines that detected this as tampering. But if you target isn&rsquo;t AV&hellip; Say it&rsquo;s Process Explorer during CCDC, this might just confuse them enough to buy you some time to do other things without their watchful eye on you.</p>
+<p>The other cool thing that happened when I did this was Process Explorer didn&rsquo;t detect the process as suspended. If you looked under the thread list they were all suspended but not the process itself according to Process Explorer.</p>
+<p>Not rocket science at all, but that&rsquo;s because it&rsquo;s built into the framework. Just another thing that metasploit makes dead simple.</p>
 
             </div>
         </article>

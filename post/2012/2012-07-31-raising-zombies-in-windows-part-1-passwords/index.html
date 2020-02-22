@@ -5,9 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&#39;t always there is the user. They take lunches, go home at a reasonable time and generally aren&#39;t really appreciative of our (pentester/red teamer)&amp;lsquo;s schedule.
+<meta name="description" content="With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;lsquo;s schedule.
 A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:
-w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&#39;re good right?" />
+w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right?" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -33,9 +33,9 @@ w00t, we the user is present, we can migrate our meterepreter session into that 
 
 
 <meta itemprop="name" content="Raising Zombies in Windows: Part 1 - Passwords">
-<meta itemprop="description" content="With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&#39;t always there is the user. They take lunches, go home at a reasonable time and generally aren&#39;t really appreciative of our (pentester/red teamer)&lsquo;s schedule.
+<meta itemprop="description" content="With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&rsquo;t really appreciative of our (pentester/red teamer)&lsquo;s schedule.
 A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &lsquo;runas.exe&rsquo;:
-w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&#39;re good right?">
+w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&rsquo;re good right?">
 <meta itemprop="datePublished" content="2012-07-31T20:20:15&#43;00:00" />
 <meta itemprop="dateModified" content="2012-07-31T20:20:15&#43;00:00" />
 <meta itemprop="wordCount" content="352">
@@ -44,9 +44,9 @@ w00t, we the user is present, we can migrate our meterepreter session into that 
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Raising Zombies in Windows: Part 1 - Passwords"/>
-<meta name="twitter:description" content="With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&#39;t always there is the user. They take lunches, go home at a reasonable time and generally aren&#39;t really appreciative of our (pentester/red teamer)&lsquo;s schedule.
+<meta name="twitter:description" content="With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&rsquo;t really appreciative of our (pentester/red teamer)&lsquo;s schedule.
 A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &lsquo;runas.exe&rsquo;:
-w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&#39;re good right?"/>
+w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&rsquo;re good right?"/>
 
 
 
@@ -125,22 +125,22 @@ w00t, we the user is present, we can migrate our meterepreter session into that 
             
 
             <div class="post-content">
-                <p>With the use of Mimikatz and WCE, clear text passwords are much more common. What isn't always there is the user. They take lunches, go home at a reasonable time and generally aren't really appreciative of our (pentester/red teamer)&lsquo;s schedule.</p>
+                <p>With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&rsquo;t really appreciative of our (pentester/red teamer)&lsquo;s schedule.</p>
 <p>A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &lsquo;runas.exe&rsquo;:</p>
 <p><img src="/images/postimages/201207_zombies_1.png" alt=""></p>
-<p>w00t, we the user is present, we can migrate our meterepreter session into that notepad and we're good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you're generally SOL.</p>
+<p>w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&rsquo;re generally SOL.</p>
 <p>There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:</p>
 <p><img src="/images/postimages/201207_zombies_2.png" alt=""></p>
 <p>(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)</p>
-<p>Another way if you don't mind dropping / creating a custom bin, AutoIT makes this REALLY simple:</p>
+<p>Another way if you don&rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:</p>
 <p><img src="/images/postimages/201207_zombies_3.png" alt=""></p>
-<p>This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter's execute command with the &ldquo;-m&rdquo; argument after you've built the AutoIT script into a EXE.</p>
+<p>This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&rsquo;s execute command with the &ldquo;-m&rdquo; argument after you&rsquo;ve built the AutoIT script into a EXE.</p>
 <p>But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">a <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetStartupInfoW(<span style="color:#ae81ff">56</span><span style="color:#f92672"></span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">lpStartupInfo</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>
-client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>advapi32<span style="color:#f92672">.</span>CreateProcessWithLogonW(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">USER</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DOMAIN</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">PASSWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">LOGON_WITH_PROFILE</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">notepad.exe</span><span style="color:#e6db74">&#34;</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">0</span><span style="color:#f92672"></span>,<span style="color:#66d9ef">nil</span>,<span style="color:#66d9ef">nil</span>,a,<span style="color:#ae81ff">32</span><span style="color:#f92672"></span>)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">a <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetStartupInfoW(<span style="color:#ae81ff">56</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;lpStartupInfo&#34;</span><span style="color:#f92672">]</span>
+client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>advapi32<span style="color:#f92672">.</span>CreateProcessWithLogonW(<span style="color:#e6db74">&#34;USER&#34;</span>,<span style="color:#e6db74">&#34;DOMAIN&#34;</span>,<span style="color:#e6db74">&#34;PASSWORD&#34;</span>,<span style="color:#e6db74">&#34;LOGON_WITH_PROFILE&#34;</span>,<span style="color:#e6db74">&#34;notepad.exe&#34;</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">nil</span>,<span style="color:#66d9ef">nil</span>,a,<span style="color:#ae81ff">32</span>)
 </code></pre></div><p>This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>advapi32<span style="color:#f92672">.</span>LogonUserA(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">USER</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">DOMAIN</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">PASSWORD</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">LOGON32_LOGON_INTERACTIVE</span><span style="color:#e6db74">&#34;</span>,<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">LOGON32_PROVIDER_DEFAULT</span><span style="color:#e6db74">&#34;</span>,<span style="color:#ae81ff">4</span><span style="color:#f92672"></span>)
-</code></pre></div><p>List the tokens available with Incognito, your new user will be there, steal it and you're done. You now have the ability to user that account/domain token on any of the hosts you've compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn't logged in but you wanna grab all of their IE saved passwords ;-)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>advapi32<span style="color:#f92672">.</span>LogonUserA(<span style="color:#e6db74">&#34;USER&#34;</span>,<span style="color:#e6db74">&#34;DOMAIN&#34;</span>,<span style="color:#e6db74">&#34;PASSWORD&#34;</span>,<span style="color:#e6db74">&#34;LOGON32_LOGON_INTERACTIVE&#34;</span>,<span style="color:#e6db74">&#34;LOGON32_PROVIDER_DEFAULT&#34;</span>,<span style="color:#ae81ff">4</span>)
+</code></pre></div><p>List the tokens available with Incognito, your new user will be there, steal it and you&rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)</p>
 
             </div>
         </article>

@@ -5,9 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="First of all, get Robert @RSnake Hansen&#39;s RFI list here:
+<meta name="description" content="First of all, get Robert @RSnake Hansen&amp;rsquo;s RFI list here:
 http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/
-it&#39;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
+it&amp;rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
 cat rfi-locations.dat | grep -v &amp;quot;^#&amp;quot; | awk -F &#39;?&#39; &#39;{print $1}&#39; | sort -u &amp;gt; rsnake_list.txt This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -34,9 +34,9 @@ cat rfi-locations.dat | grep -v &amp;quot;^#&amp;quot; | awk -F &#39;?&#39; &#39
 
 
 <meta itemprop="name" content="@RSnake ’s RFI List in Burp Suite">
-<meta itemprop="description" content="First of all, get Robert @RSnake Hansen&#39;s RFI list here:
+<meta itemprop="description" content="First of all, get Robert @RSnake Hansen&rsquo;s RFI list here:
 http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/
-it&#39;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
+it&rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
 cat rfi-locations.dat | grep -v &quot;^#&quot; | awk -F &#39;?&#39; &#39;{print $1}&#39; | sort -u &gt; rsnake_list.txt This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder.">
 <meta itemprop="datePublished" content="2010-01-30T17:00:13&#43;00:00" />
 <meta itemprop="dateModified" content="2010-01-30T17:00:13&#43;00:00" />
@@ -46,9 +46,9 @@ cat rfi-locations.dat | grep -v &quot;^#&quot; | awk -F &#39;?&#39; &#39;{print 
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="@RSnake ’s RFI List in Burp Suite"/>
-<meta name="twitter:description" content="First of all, get Robert @RSnake Hansen&#39;s RFI list here:
+<meta name="twitter:description" content="First of all, get Robert @RSnake Hansen&rsquo;s RFI list here:
 http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/
-it&#39;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
+it&rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
 cat rfi-locations.dat | grep -v &quot;^#&quot; | awk -F &#39;?&#39; &#39;{print $1}&#39; | sort -u &gt; rsnake_list.txt This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder."/>
 
 
@@ -126,17 +126,17 @@ cat rfi-locations.dat | grep -v &quot;^#&quot; | awk -F &#39;?&#39; &#39;{print 
             
 
             <div class="post-content">
-                <p>First of all, get Robert @RSnake Hansen's RFI list here:</p>
+                <p>First of all, get Robert @RSnake Hansen&rsquo;s RFI list here:</p>
 <p><a href="http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/">http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/</a></p>
-<p>it's a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:</p>
+<p>it&rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:</p>
 <pre><code>cat rfi-locations.dat | grep -v &quot;^#&quot; | awk -F '?' '{print $1}' | sort -u &gt; rsnake_list.txt
 </code></pre><p>This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder. If it pops any of them, not only have you better identified what is running on the site, but you might have just found RFI.</p>
 <p>But I wanted to take this a step further:</p>
 <p><img src="/images/postimages/201001_rsnake_1.png" alt=""></p>
-<p>The OSVDB archive allows you to download their entire database of vulnerabilities (after signing up for an account). I downloaded the CSV version so that I could parse it similar to how I did RSnakes. However, it definitely wasn't that easy.</p>
+<p>The OSVDB archive allows you to download their entire database of vulnerabilities (after signing up for an account). I downloaded the CSV version so that I could parse it similar to how I did RSnakes. However, it definitely wasn&rsquo;t that easy.</p>
 <p>I downloaded osvd-csv.latest.tar.gz, extracted it and ran the following:</p>
 <pre><code>cat * | grep -i &quot;remote file inclusion&quot; | grep -v &quot;,0$&quot; | awk -F &quot;,&quot; '{print $13}' | sed 's/^&quot;//' | set 's/&quot;$//' | sort -u &gt; osvdb_rfi.txt
-</code></pre><p>Which got me close. About 3 hours of manual editing after that and I had another list of ~1750 possible remote file inclusions. Is this a full proof way of getting every possibility from the database? Definitely not, but it's close, and I'd love to see some one modify and tweak my bash line to get it even closer. (Or find a completely different way)</p>
+</code></pre><p>Which got me close. About 3 hours of manual editing after that and I had another list of ~1750 possible remote file inclusions. Is this a full proof way of getting every possibility from the database? Definitely not, but it&rsquo;s close, and I&rsquo;d love to see some one modify and tweak my bash line to get it even closer. (Or find a completely different way)</p>
 <p><strong>Update</strong> on 2010-02-01 14:17 by Rob Fuller</p>
 <p>RSnake has updated his list, same link, same file name with about 2300 RFIs now.</p>
 

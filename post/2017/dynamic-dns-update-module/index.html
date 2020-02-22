@@ -123,7 +123,7 @@ You can read up on the pull request in pr/#8599"/>
 <center>![](/images/2017/nonsecure_dns_updates.png)</center>
 <p>The module was originally written by <a href="https://twitter.com/kingsabri">King Sabri</a>, with many touch ups and the spoofing capability by <a href="https://twitter.com/busterbcook">busterbcook</a></p>
 <p>You can read up on the pull request in <a href="https://github.com/rapid7/metasploit-framework/pull/8599">pr/#8599</a></p>
-<p>Just to drive home the point I'll be using my Exchange server as a target:</p>
+<p>Just to drive home the point I&rsquo;ll be using my Exchange server as a target:</p>
 <center> **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**</center>
 <center>![](/images/2017/before_dns_update.png)</center>
 <p>If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.</p>
@@ -153,7 +153,7 @@ Auxiliary action:
    Name    Description
    ----    -----------
    UPDATE  Add or update a record. (default)
-</code></pre><p>It has 3 different actions, but you'll mostly want <code>UPDATE</code>. <code>UPDATE</code> will automatically delete a record if it exists already and then add the record back with your specified settings.</p>
+</code></pre><p>It has 3 different actions, but you&rsquo;ll mostly want <code>UPDATE</code>. <code>UPDATE</code> will automatically delete a record if it exists already and then add the record back with your specified settings.</p>
 <pre><code>msf auxiliary(dyn_dns_update) &gt; show actions
 
 Auxiliary actions:
@@ -164,7 +164,7 @@ Auxiliary actions:
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
 
-</code></pre><p>Here are the settings I chose. Notice the IP address that I'm injecting isn't on the same subnet as the domain.</p>
+</code></pre><p>Here are the settings I chose. Notice the IP address that I&rsquo;m injecting isn&rsquo;t on the same subnet as the domain.</p>
 <pre><code>msf auxiliary(dyn_dns_update) &gt; set DOMAIN sittingduck.info
 DOMAIN =&gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &gt; set HOSTNAME sdexchange

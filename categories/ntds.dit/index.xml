@@ -17,8 +17,8 @@
       
       <guid>https://malicious.link/post/2014/2014-05-14-dumping-ntds-dot-dit-domain-hashes-using-samba/</guid>
       <description>&lt;p&gt;So there was this blog post that talking about a number of ways to dump windows credentials by &lt;a href=&#34;https://twitter.com/lanjelot&#34;&gt;@lanjelot&lt;/a&gt; [definitly someone to follow] - here: &lt;a href=&#34;https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/&#34;&gt;https://www.securusglobal.com/community/2013/12/20/dumping-windows-credentials/&lt;/a&gt; and at the very bottom of this post it says &amp;ldquo;&lt;strong&gt;AD Replication (EXPERIMENTAL)&lt;/strong&gt;&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it &lt;strong&gt;&lt;em&gt;doesn&#39;t require code execution in any way on the domain controller&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;Notice: I am not doing this on a Kali Linux box, there is already an install of Samba there and I didn&#39;t want to try uninstalling or modifying the one installed.&lt;/p&gt;
+&lt;p&gt;What it boils down to is if you can position a system that can do DNS resolution to the target domain, and perform some other UDP traffic, you can fake join a samba server you control to a domain and it &lt;strong&gt;&lt;em&gt;doesn&amp;rsquo;t require code execution in any way on the domain controller&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Notice: I am not doing this on a Kali Linux box, there is already an install of Samba there and I didn&amp;rsquo;t want to try uninstalling or modifying the one installed.&lt;/p&gt;
 &lt;p&gt;First, you need this patch:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;wget http://files.securusglobal.com/samba-4.1.0_replication-only-patch.txt&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;and Samba 4.1.0&lt;/p&gt;
@@ -42,7 +42,7 @@ make
 make install
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Prepare the box:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;rm -rf /var/lib/samba; mkdir /var/lib/samba; rm -f /etc/samba/smb.conf
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Next you need to make sure you are resolving correctly (if you can&#39;t resolve the SRV record &lt;code&gt;_ldap._tcp.sittingduck.info&lt;/code&gt; (sittingduck.info being the domain) then this isn&#39;t going to work.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Next you need to make sure you are resolving correctly (if you can&amp;rsquo;t resolve the SRV record &lt;code&gt;_ldap._tcp.sittingduck.info&lt;/code&gt; (sittingduck.info being the domain) then this isn&amp;rsquo;t going to work.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;echo nameserver 192.168.92.37 &amp;gt; /etc/resolv.conf # this is the IP address of the DC
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then start the clone:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;/usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator

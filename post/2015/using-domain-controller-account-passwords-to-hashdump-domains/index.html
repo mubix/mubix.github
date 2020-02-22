@@ -131,15 +131,15 @@ No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>Because DCSync is calling on &ldquo;sync&rdquo; based APIs of Active Directory, that are, by default, used only by Domain Controllers, all Domain Controller computer accounts would have the ability to do this as well as the Domain/Enterprise Admins.</p>
-<p>Anyone who's ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?</p>
+<p>Anyone who&rsquo;s ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?</p>
 <p><a href="https://support.microsoft.com/en-us/kb/154501:">https://support.microsoft.com/en-us/kb/154501:</a></p>
 <blockquote>
 <p>&ldquo;Machine account passwords are regularly changed for security purposes. By default, on Windows NT-based computers, the machine account password automatically changes every <strong>seven days</strong>. Starting with Windows 2000-based computers, the machine account password automatically changes every <strong>30 days</strong>.&rdquo;</p>
 </blockquote>
 <p>PSSSST!! That article is about how to <strong>DISABLE</strong> automatic password changing</p>
 <p><img src="/images/2015/activedirectory_muhaha.jpg" alt=""></p>
-<p>Alright. So, I'm not going to go into &ldquo;how&rdquo; to get the hashes for a computer account, but if you've ever dumped passwords before, the computer accounts are the ones with the &ldquo;$&rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py">Impacket's secretsdump.py</a> to your heart's content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don't change their passwords all at the same time in that 30 day window?)</p>
-<p>Remember, Domain Controller's don't have a lot of other permissions, so you need to use the &ldquo;<code>-just-dc</code>&rdquo; option in SecretsDump in order for it to just do the domain dump:</p>
+<p>Alright. So, I&rsquo;m not going to go into &ldquo;how&rdquo; to get the hashes for a computer account, but if you&rsquo;ve ever dumped passwords before, the computer accounts are the ones with the &ldquo;$&rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py">Impacket&rsquo;s secretsdump.py</a> to your heart&rsquo;s content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don&rsquo;t change their passwords all at the same time in that 30 day window?)</p>
+<p>Remember, Domain Controller&rsquo;s don&rsquo;t have a lot of other permissions, so you need to use the &ldquo;<code>-just-dc</code>&rdquo; option in SecretsDump in order for it to just do the domain dump:</p>
 <pre><code>python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
 
 Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies

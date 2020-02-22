@@ -20,7 +20,7 @@
 &lt;center&gt;![](/images/2017/nonsecure_dns_updates.png)&lt;/center&gt;
 &lt;p&gt;The module was originally written by &lt;a href=&#34;https://twitter.com/kingsabri&#34;&gt;King Sabri&lt;/a&gt;, with many touch ups and the spoofing capability by &lt;a href=&#34;https://twitter.com/busterbcook&#34;&gt;busterbcook&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;You can read up on the pull request in &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/pull/8599&#34;&gt;pr/#8599&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Just to drive home the point I&#39;ll be using my Exchange server as a target:&lt;/p&gt;
+&lt;p&gt;Just to drive home the point I&amp;rsquo;ll be using my Exchange server as a target:&lt;/p&gt;
 &lt;center&gt; **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**&lt;/center&gt;
 &lt;center&gt;![](/images/2017/before_dns_update.png)&lt;/center&gt;
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
@@ -50,7 +50,7 @@ Auxiliary action:
    Name    Description
    ----    -----------
    UPDATE  Add or update a record. (default)
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&#39;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&amp;rsquo;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
 
 Auxiliary actions:
@@ -61,7 +61,7 @@ Auxiliary actions:
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&#39;m injecting isn&#39;t on the same subnet as the domain.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&amp;rsquo;m injecting isn&amp;rsquo;t on the same subnet as the domain.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
 DOMAIN =&amp;gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &amp;gt; set HOSTNAME sdexchange
@@ -93,7 +93,7 @@ msf auxiliary(dyn_dns_update) &amp;gt;
       
       <guid>https://malicious.link/post/2016/buying-internal-domain-access/</guid>
       <description>&lt;p&gt;&lt;strong&gt;NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;For anyone who knows me, they know that I&#39;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&#39;t quite explain. It all started with the following hypothesis:&lt;/p&gt;
+&lt;p&gt;For anyone who knows me, they know that I&amp;rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&amp;rsquo;t quite explain. It all started with the following hypothesis:&lt;/p&gt;
 &lt;p&gt;Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.&lt;/p&gt;
 &lt;p&gt;This has already been proven with attacks like &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt; and other attacks that aim to &lt;a href=&#34;https://blog.ahmednabeel.com/abusing-kerberos-to-ntlm-fallback-to-defeat-windows-authentication/&#34;&gt;bypass BitLocker Full-Disk Encryption&lt;/a&gt;. So I added a twist, I thought that maybe, just maybe, that Windows will automatically add a &lt;code&gt;.com&lt;/code&gt; on to the end of these requests when attempting to find them. If I buy these domains then there is a chance I can gain &lt;strong&gt;code execution&lt;/strong&gt; using Group Policy or supplying logon scripts (BAT files).&lt;/p&gt;
 &lt;p&gt;Why do I think this? Because of past Def Con talks like:&lt;/p&gt;
@@ -120,7 +120,7 @@ msf auxiliary(dyn_dns_update) &amp;gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;(To Microsoft, I&#39;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(To Microsoft, I&amp;rsquo;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;WE INTERRUPT THIS BLOG POST TO TALK ABOUT THE SERIOUS OSINT TREASURE THESE TYPES FILES AND ENVIRONMENTAL VARIABLES ARE&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;We will break down a few of the pieces that provide OSINT value:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;COMPUTERNAME &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ANDARNO-X1
@@ -133,7 +133,7 @@ USERNAME &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; andarno
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;a href=&#34;https://chocolatey.org/&#34;&gt;Chocolatey&lt;/a&gt; is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;SSH_AGENT_PID &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 9316
 SSH_AUTH_SOCK &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; /tmp/ssh-rbPyaDrkXVLz/agent.10020
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Honestly I&#39;ve never seen these options on a Windows box so I&#39;m going to assume they are the result of &lt;a href=&#34;https://www.cygwin.com/&#34;&gt;Cygwin&lt;/a&gt; being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence &lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;beyond the standard Run keys&lt;/a&gt;.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Honestly I&amp;rsquo;ve never seen these options on a Windows box so I&amp;rsquo;m going to assume they are the result of &lt;a href=&#34;https://www.cygwin.com/&#34;&gt;Cygwin&lt;/a&gt; being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence &lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;beyond the standard Run keys&lt;/a&gt;.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;Path &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
 C:&lt;span style=&#34;color:#ae81ff&#34;&gt;\U&lt;/span&gt;sers&lt;span style=&#34;color:#ae81ff&#34;&gt;\a&lt;/span&gt;ndarno&lt;span style=&#34;color:#ae81ff&#34;&gt;\g&lt;/span&gt;it&lt;span style=&#34;color:#ae81ff&#34;&gt;\V&lt;/span&gt;SIXSuppression&lt;span style=&#34;color:#ae81ff&#34;&gt;\p&lt;/span&gt;ackages&lt;span style=&#34;color:#ae81ff&#34;&gt;\N&lt;/span&gt;erdbank.GitVersioning.1.1.2-rc&lt;span style=&#34;color:#ae81ff&#34;&gt;\b&lt;/span&gt;uild&lt;span style=&#34;color:#ae81ff&#34;&gt;\N&lt;/span&gt;ativeBinaries/amd64
 C:&lt;span style=&#34;color:#ae81ff&#34;&gt;\P&lt;/span&gt;rogram Files &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;x86&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\M&lt;/span&gt;icrosoft Visual Studio 14.0&lt;span style=&#34;color:#ae81ff&#34;&gt;\C&lt;/span&gt;ommon7&lt;span style=&#34;color:#ae81ff&#34;&gt;\I&lt;/span&gt;DE&lt;span style=&#34;color:#ae81ff&#34;&gt;\C&lt;/span&gt;ommonExtensions&lt;span style=&#34;color:#ae81ff&#34;&gt;\M&lt;/span&gt;icrosoft&lt;span style=&#34;color:#ae81ff&#34;&gt;\T&lt;/span&gt;estWindow
@@ -196,12 +196,12 @@ co1-red-dc-11.com
 &lt;/ul&gt;
 &lt;p&gt;I have no idea if any of these DNS requests were by real Microsoft domain joined systems but looking at the contents of the requests I assume that a few were.&lt;/p&gt;
 &lt;h2 id=&#34;analysis&#34;&gt;Analysis&lt;/h2&gt;
-&lt;p&gt;I did this with a few other &lt;code&gt;%LOGONSERVER%&lt;/code&gt;s and had similar DNS requests. I didn&#39;t see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain &lt;code&gt;SITTINGDUCK.INFO&lt;/code&gt; and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.&lt;/p&gt;
-&lt;p&gt;In my lab I was able to get authentication requests and code execution by using Impacket&#39;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py&#34;&gt;karmaSMB.py&lt;/a&gt; to send my victim a false &lt;code&gt;Logon.bat&lt;/code&gt; very similar to the setup for &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt;. Let me reiterate something:&lt;/p&gt;
+&lt;p&gt;I did this with a few other &lt;code&gt;%LOGONSERVER%&lt;/code&gt;s and had similar DNS requests. I didn&amp;rsquo;t see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain &lt;code&gt;SITTINGDUCK.INFO&lt;/code&gt; and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.&lt;/p&gt;
+&lt;p&gt;In my lab I was able to get authentication requests and code execution by using Impacket&amp;rsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py&#34;&gt;karmaSMB.py&lt;/a&gt; to send my victim a false &lt;code&gt;Logon.bat&lt;/code&gt; very similar to the setup for &lt;a href=&#34;https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack&#34;&gt;MS15-011&lt;/a&gt;. Let me reiterate something:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Is this conclusive proof?&lt;/strong&gt; Certainly not, but it&#39;s a start and I&#39;m interested in what ya&#39;ll find.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Why might this work more than it has in the past?&lt;/strong&gt; Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I&#39;m bitter ;), it was actually my primary reason for buying a Mac).&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;How can you find the LOGONSERVER of your client?&lt;/strong&gt; Well, it&#39;s pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Is this conclusive proof?&lt;/strong&gt; Certainly not, but it&amp;rsquo;s a start and I&amp;rsquo;m interested in what ya&amp;rsquo;ll find.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Why might this work more than it has in the past?&lt;/strong&gt; Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I&amp;rsquo;m bitter ;), it was actually my primary reason for buying a Mac).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How can you find the LOGONSERVER of your client?&lt;/strong&gt; Well, it&amp;rsquo;s pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.&lt;/p&gt;
 &lt;h2 id=&#34;one-more-thing&#34;&gt;One More Thing&amp;hellip;&lt;/h2&gt;
 &lt;p&gt;I also tried to think in generalities, and yes, I am the proud owner of &lt;code&gt;DC01.com&lt;/code&gt; which gets about 20 requests per second&amp;hellip;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;::evil laugh::&lt;/strong&gt;&lt;/p&gt;
@@ -214,9 +214,9 @@ co1-red-dc-11.com
       <pubDate>Fri, 17 Jun 2016 07:35:28 -0500</pubDate>
       
       <guid>https://malicious.link/post/2016/linkedin-nxdomains/</guid>
-      <description>&lt;p&gt;I recently asked a friend if I could have just a list of the domains in the LinkedIn dump, no passwords, not full emails, just domains. I run a program that I lovingly call &amp;ldquo;DeepMagic&amp;rdquo; and I feed it domains whenever I can. Well, this time when I tossed the list of domains into the engine it started spitting out tons of errors. There was a total of &lt;strong&gt;9,436,804&lt;/strong&gt; unique domains names in the list, and for anyone who works with DNS that isn&#39;t a very big number, so I didn&#39;t think very much of it and didn&#39;t know why it would choke on a list that small.&lt;/p&gt;
-&lt;p&gt;When I looked at the logs I noticed that there was a very large percentage of the domains that were coming up with NXDOMAIN. Most of the time this means that the domain isn&#39;t registered, but can also mean that no name servers are registered for the domain (this usually happens when a corporation doesn&#39;t want to maintain the domain but still wants to hold onto it for brand management).&lt;/p&gt;
-&lt;p&gt;I let the resolution keep going and just parsed out all of the NXDOMAINs, but when I saw the list of NXDOMAINs go over 90,000 and I wasn&#39;t even out of the &amp;lsquo;A&#39;s yet, I took a different approach. I sorted the list by count to find the most used domains (using of course my favorite &lt;code&gt;sort | uniq -c | sort -n&lt;/code&gt; that I think everyone who&#39;s ever done text parsing on Linux knows).&lt;/p&gt;
+      <description>&lt;p&gt;I recently asked a friend if I could have just a list of the domains in the LinkedIn dump, no passwords, not full emails, just domains. I run a program that I lovingly call &amp;ldquo;DeepMagic&amp;rdquo; and I feed it domains whenever I can. Well, this time when I tossed the list of domains into the engine it started spitting out tons of errors. There was a total of &lt;strong&gt;9,436,804&lt;/strong&gt; unique domains names in the list, and for anyone who works with DNS that isn&amp;rsquo;t a very big number, so I didn&amp;rsquo;t think very much of it and didn&amp;rsquo;t know why it would choke on a list that small.&lt;/p&gt;
+&lt;p&gt;When I looked at the logs I noticed that there was a very large percentage of the domains that were coming up with NXDOMAIN. Most of the time this means that the domain isn&amp;rsquo;t registered, but can also mean that no name servers are registered for the domain (this usually happens when a corporation doesn&amp;rsquo;t want to maintain the domain but still wants to hold onto it for brand management).&lt;/p&gt;
+&lt;p&gt;I let the resolution keep going and just parsed out all of the NXDOMAINs, but when I saw the list of NXDOMAINs go over 90,000 and I wasn&amp;rsquo;t even out of the &amp;lsquo;A&amp;rsquo;s yet, I took a different approach. I sorted the list by count to find the most used domains (using of course my favorite &lt;code&gt;sort | uniq -c | sort -n&lt;/code&gt; that I think everyone who&amp;rsquo;s ever done text parsing on Linux knows).&lt;/p&gt;
 &lt;p&gt;It lead to a few surprises, first, people still use AOL and earthlink?&lt;/p&gt;
 &lt;p&gt;Second&amp;hellip; well just look for yourself:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;32952409 gmail.com
@@ -248,7 +248,7 @@ co1-red-dc-11.com
 304012 mac.com
 266076 yahoo.in
 262010 yahoo.ca
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&#39;ve never heard of rediffmail, you?&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&amp;rsquo;ve never heard of rediffmail, you?&lt;/p&gt;
 &lt;p&gt;Anyways, I pushed the list in this order into a simple script:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;cat domains_count.txt | xargs -P &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; -n &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; sh -c &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;./findnx2.sh $1 $2&amp;#39;&lt;/span&gt; argv0 | tee nxdomains.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is what is in &lt;code&gt;findnx2.sh&lt;/code&gt;:&lt;/p&gt;
@@ -313,10 +313,10 @@ pichosti.info is open with count 813
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Basic analysis of this list:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;I thought that LinkedIn validated sign ups with an email, kinda hard to do with all these domains that are obviously mistyped, unless of course they just keep the database record around indefinitely&lt;/li&gt;
-&lt;li&gt;XXXXXXXXX is an ISP that went out of business in 2011, their domain is available for register and would probably mean 7606 accounts up for grabs, if not more that&#39;s why I redacted it, but I wanted to mention it just to demonstrate how powerful this type of analysis of a hacked site&#39;s dump can be. $10 to purchase a domain is much cheaper and more wide spread than cracking time passwords just for LinkedIn (well, one can dream that everyone uses unique passwords).&lt;/li&gt;
-&lt;li&gt;WoWHackGold was also up for grabs, I picked it up just to see what kind of traffic is still going to it, these guys sold hacked WoW accounts so I don&#39;t particularly feel inclined protect their info.&lt;/li&gt;
+&lt;li&gt;XXXXXXXXX is an ISP that went out of business in 2011, their domain is available for register and would probably mean 7606 accounts up for grabs, if not more that&amp;rsquo;s why I redacted it, but I wanted to mention it just to demonstrate how powerful this type of analysis of a hacked site&amp;rsquo;s dump can be. $10 to purchase a domain is much cheaper and more wide spread than cracking time passwords just for LinkedIn (well, one can dream that everyone uses unique passwords).&lt;/li&gt;
+&lt;li&gt;WoWHackGold was also up for grabs, I picked it up just to see what kind of traffic is still going to it, these guys sold hacked WoW accounts so I don&amp;rsquo;t particularly feel inclined protect their info.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;What can someone do with this knowledge? Well, all they have to do to reset any of the accounts registered with one of these domains is simply purchase it, set up a catch-all email address and watch the account information roll in. The &amp;ldquo;accounts&amp;rdquo; they would have access to isn&#39;t limited to LinkedIn either, could be anything that people use email addresses to sign up for.&lt;/p&gt;
+&lt;p&gt;What can someone do with this knowledge? Well, all they have to do to reset any of the accounts registered with one of these domains is simply purchase it, set up a catch-all email address and watch the account information roll in. The &amp;ldquo;accounts&amp;rdquo; they would have access to isn&amp;rsquo;t limited to LinkedIn either, could be anything that people use email addresses to sign up for.&lt;/p&gt;
 &lt;p&gt;/mubix&lt;/p&gt;
 &lt;p&gt;P.S. I have seen account take-overs of GMail accounts using &amp;ldquo;backup&amp;rdquo; accounts in this way. I assume Google has too since they ask me every so often now to make sure my backup email is correct.&lt;/p&gt;
 </description>
@@ -329,20 +329,20 @@ pichosti.info is open with count 813
       
       <guid>https://malicious.link/post/2016/wpad-persistence/</guid>
       <description>&lt;p&gt;Mostly just writing this so I can keep notes.&lt;/p&gt;
-&lt;p&gt;Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&#39;s DNS. For those who don&#39;t know what this would do there is an entire Wikipedia article on the subject: &lt;a href=&#34;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&#34;&gt;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&amp;rsquo;s DNS. For those who don&amp;rsquo;t know what this would do there is an entire Wikipedia article on the subject: &lt;a href=&#34;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&#34;&gt;https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;I did this via PowerShell pretty easily on one of the domain controllers like so:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&#39;t getting any requests for &lt;code&gt;wpad.dat&lt;/code&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&amp;rsquo;t getting any requests for &lt;code&gt;wpad.dat&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;As they say &amp;ldquo;there are no more original ideas&amp;rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.&lt;/p&gt;
 &lt;p&gt;but.. they also made a way to disable it - &lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&#39;s a required service in later Windows server versions).&lt;/p&gt;
-&lt;p&gt;I went in search of a registry key to make the modification because it&#39;s much easier to hit the &lt;code&gt;RemoteRegistry&lt;/code&gt; service on all the DCs than it is to run that command. I quickly found this blog post - &lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&amp;rsquo;s a required service in later Windows server versions).&lt;/p&gt;
+&lt;p&gt;I went in search of a registry key to make the modification because it&amp;rsquo;s much easier to hit the &lt;code&gt;RemoteRegistry&lt;/code&gt; service on all the DCs than it is to run that command. I quickly found this blog post - &lt;a href=&#34;http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html&#34;&gt;EnableGlobalQueryBlockLisst registry key&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[22/May/2016:21:56:28 EDT] &amp;quot;GET /wpad.dat HTTP/1.1&amp;quot; 200 58
 - -&amp;gt; /wpad.dat
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now, you may be asking, &amp;ldquo;How is setting their proxy server any kind of real persistence?&amp;quot;, I implore you to go check out projects like &lt;a href=&#34;https://mitmproxy.org/&#34;&gt;mitmproxy&lt;/a&gt;, &lt;a href=&#34;https://github.com/byt3bl33d3r/MITMf&#34;&gt;mitmf&lt;/a&gt; and &lt;a href=&#34;https://github.com/secretsquirrel/BDFProxy&#34;&gt;BDFProxy&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&#39;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&#39;t disable it for the SYSTEM or other local accounts, so it&#39;s harder than just &amp;ldquo;flip on this registry setting via GPO&amp;rdquo;)&lt;/p&gt;
-&lt;p&gt;Oh and I&#39;ll just leave this here: &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&amp;rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&amp;rsquo;t disable it for the SYSTEM or other local accounts, so it&amp;rsquo;s harder than just &amp;ldquo;flip on this registry setting via GPO&amp;rdquo;)&lt;/p&gt;
+&lt;p&gt;Oh and I&amp;rsquo;ll just leave this here: &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx&#34;&gt;Proxy servers and WinRM&lt;/a&gt;&lt;/p&gt;
 &lt;h3 id=&#34;references&#34;&gt;References&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc995158.aspx&#34;&gt;Removing WPAD from DNS block list&lt;/a&gt;&lt;/li&gt;
@@ -377,9 +377,9 @@ dnscmd /ZonePrint domain.com.local
 &lt;p&gt;For the longest time I relied on a very awesome tool called &amp;ldquo;Adfind&amp;rdquo;:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &amp;ldquo;this&amp;quot;and no &amp;ldquo;that&amp;rdquo; flags)&lt;/p&gt;
-&lt;p&gt;But that wasn&#39;t good enough, this image kept haunting me:&lt;/p&gt;
+&lt;p&gt;But that wasn&amp;rsquo;t good enough, this image kept haunting me:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2013/ad-dns-zone.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;It&#39;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s Active Directory Explorer by SysInternals. It shows the complete list of DNS records, stored as objects in Active Directory that I was able to get to as a basic domain user. This means all of the static DNS records for the unix systems and mainframes and other systems outside of the purely Windows world are there as well.&lt;/p&gt;
 &lt;p&gt;I spent 4 days attempting to write my own script, ldap query, prayer to  get all of the data out but was unsuccessful. On the 5th day I happened upon a very short post saying &amp;ldquo;I did it&amp;rdquo;, as I probably would have written the same. It comes in the form of a PowerShell script that you can find here:&lt;/p&gt;
 &lt;p&gt;Code: &lt;a href=&#34;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&#34;&gt;https://github.com/mmessano/PowerShell/blob/master/dns-dump.ps1&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And is very easy to run:&lt;/p&gt;
@@ -388,7 +388,7 @@ dnscmd /ZonePrint domain.com.local
 &lt;p&gt;&lt;code&gt;C:\&amp;gt; powershell -ep bypass -f dnsdump.ps1 -zone projectmentor.net -dc dc1&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;If you put a -csv on the end of those the author has even given you the CSV format which makes the output extremely easy to parse. Now you can throw your list into your tool of choice instead of scanning random IP ranges on the targets network for important stuff you can scan directly against known good hosts.&lt;/p&gt;
 &lt;p&gt;&amp;ndash; mubix&lt;/p&gt;
-&lt;p&gt;P.S. Yes I realize this isn&#39;t actually &amp;ldquo;Zone Transfer&amp;quot;s but its close enough&lt;/p&gt;
+&lt;p&gt;P.S. Yes I realize this isn&amp;rsquo;t actually &amp;ldquo;Zone Transfer&amp;quot;s but its close enough&lt;/p&gt;
 </description>
     </item>
     

@@ -16,7 +16,7 @@
       <pubDate>Mon, 16 May 2011 02:35:31 +0000</pubDate>
       
       <guid>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</guid>
-      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&#39;ve had to fall back on dropping binaries which I really don&#39;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&#39;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
+      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;                ##                          ###           ##    ##
  ##  ##  #### ###### ####  #####   #####    ##    ####        ######
 ####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
@@ -110,7 +110,7 @@ Current pid: 2992
 
 meterpreter &amp;gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&#39;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&amp;rsquo;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
 ============================================================
 Enabled Process Privileges
@@ -170,7 +170,7 @@ jane.user??:1105:MYLMHASH:MYNTLMHASH:::
 DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
 
 meterpreter &amp;gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t. So I don&#39;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&#39;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&#39;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&#39;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t. So I don&amp;rsquo;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&amp;rsquo;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&amp;rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&amp;rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-05-15 23:39 by Rob Fuller&lt;/p&gt;
 &lt;p&gt;As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.&lt;/p&gt;
 </description>

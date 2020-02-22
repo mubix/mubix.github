@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="With all of the scanning / noise on the Internet, it&#39;s nice to get rid of a large chunk of it simply by blocking an entire country&#39;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&#39;s pretty easy to get going, just apt-get install the needed perl library and the addons themselves:
+<meta name="description" content="With all of the scanning / noise on the Internet, it&amp;rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&amp;rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&amp;rsquo;s pretty easy to get going, just apt-get install the needed perl library and the addons themselves:
 apt-get install libtext-csv-xs-perl xtables-addons-common!Warning: This does require proper linux headers to be available to compile the kernel module." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -32,7 +32,7 @@ apt-get install libtext-csv-xs-perl xtables-addons-common!Warning: This does re
 
 
 <meta itemprop="name" content="Blocking countries via iptables">
-<meta itemprop="description" content="With all of the scanning / noise on the Internet, it&#39;s nice to get rid of a large chunk of it simply by blocking an entire country&#39;s worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it&#39;s pretty easy to get going, just apt-get install the needed perl library and the addons themselves:
+<meta itemprop="description" content="With all of the scanning / noise on the Internet, it&rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it&rsquo;s pretty easy to get going, just apt-get install the needed perl library and the addons themselves:
 apt-get install libtext-csv-xs-perl xtables-addons-common!Warning: This does require proper linux headers to be available to compile the kernel module.">
 <meta itemprop="datePublished" content="2016-10-28T15:00:00-04:00" />
 <meta itemprop="dateModified" content="2016-10-28T15:00:00-04:00" />
@@ -42,7 +42,7 @@ apt-get install libtext-csv-xs-perl xtables-addons-common!Warning: This does re
 
 <meta itemprop="keywords" content="iptables,xtables,firewall," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Blocking countries via iptables"/>
-<meta name="twitter:description" content="With all of the scanning / noise on the Internet, it&#39;s nice to get rid of a large chunk of it simply by blocking an entire country&#39;s worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it&#39;s pretty easy to get going, just apt-get install the needed perl library and the addons themselves:
+<meta name="twitter:description" content="With all of the scanning / noise on the Internet, it&rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it&rsquo;s pretty easy to get going, just apt-get install the needed perl library and the addons themselves:
 apt-get install libtext-csv-xs-perl xtables-addons-common!Warning: This does require proper linux headers to be available to compile the kernel module."/>
 
 
@@ -116,9 +116,9 @@ apt-get install libtext-csv-xs-perl xtables-addons-common!Warning: This does re
             
 
             <div class="post-content">
-                <p>With all of the scanning / noise on the Internet, it's nice to get rid of a large chunk of it simply by blocking an entire country's worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it's pretty easy to get going, just <code>apt-get</code> install the needed perl library and the addons themselves:</p>
+                <p>With all of the scanning / noise on the Internet, it&rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &ldquo;xtables-addons&rdquo;. On Debian/Ubuntu it&rsquo;s pretty easy to get going, just <code>apt-get</code> install the needed perl library and the addons themselves:</p>
 <pre><code>apt-get install libtext-csv-xs-perl xtables-addons-common
-</code></pre><p>!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren't availabe (like Linode's special kernel), you will need to find another way to get the correct headers installed.</p>
+</code></pre><p>!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&rsquo;t availabe (like Linode&rsquo;s special kernel), you will need to find another way to get the correct headers installed.</p>
 <p>Then download the Maxmind geo database, the location of the <code>xt_geoip_dl</code> tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in <code>/usr/src/xtables-addons-2.6/geoip/</code> as well as <code>/usr/lib/xtables-addons/</code> YMMV.</p>
 <pre><code>cd /usr/src/xtables-addons-2.6/geoip/
 ./xt_geoip_dl
@@ -144,7 +144,7 @@ Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
 Archive:  GeoIPCountryCSV.zip
   inflating: GeoIPCountryWhois.csv
 
-</code></pre><p>After that, you need to &ldquo;build&rdquo; the lists by performing the following command in that same directory (one install didn't automatically make the directory so ensure it's there with the mkdir command):</p>
+</code></pre><p>After that, you need to &ldquo;build&rdquo; the lists by performing the following command in that same directory (one install didn&rsquo;t automatically make the directory so ensure it&rsquo;s there with the mkdir command):</p>
 <pre><code>mkdir -p /usr/share/xt_geoip
 ./xt_geoip_build -D /usr/share/xt_geoip *.csv
 </code></pre><p>After that you are off the the races and you can simply use the geoip module as so now:</p>

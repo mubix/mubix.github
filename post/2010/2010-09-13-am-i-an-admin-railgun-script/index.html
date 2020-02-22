@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&#39;t have a way to quickly check this. You could drop to a shell, check the local users group &amp;ldquo;Adminitrators&amp;rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &amp;lsquo;getsystem&amp;rsquo; and if one works other than Kitrap0d. You could also just do a &amp;lsquo;ps&amp;rsquo; and notice that you can see &amp;lsquo;SYSTEM&amp;rsquo; processes." />
+<meta name="description" content="When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&amp;rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &amp;ldquo;Adminitrators&amp;rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &amp;lsquo;getsystem&amp;rsquo; and if one works other than Kitrap0d. You could also just do a &amp;lsquo;ps&amp;rsquo; and notice that you can see &amp;lsquo;SYSTEM&amp;rsquo; processes." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,7 +31,7 @@
 
 
 <meta itemprop="name" content="Am I an Admin? Railgun Script">
-<meta itemprop="description" content="When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&#39;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes.">
+<meta itemprop="description" content="When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes.">
 <meta itemprop="datePublished" content="2010-09-13T17:45:31&#43;00:00" />
 <meta itemprop="dateModified" content="2010-09-13T17:45:31&#43;00:00" />
 <meta itemprop="wordCount" content="270">
@@ -40,7 +40,7 @@
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Am I an Admin? Railgun Script"/>
-<meta name="twitter:description" content="When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&#39;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes."/>
+<meta name="twitter:description" content="When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes."/>
 
 
 
@@ -119,44 +119,44 @@
             
 
             <div class="post-content">
-                <p>When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn't have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes.</p>
-<p>But, I wanted to make a way that check a bunch of sessions all at once. So I wrote &ldquo;AmIAdmin.rb&rdquo; which uses meterpreter's railgun extension to execute &ldquo;IsUserAdmin&rdquo;.</p>
-<p>Being that Shell32.dll isn't included in railgun by default we have to add it. After writing it I decided to add some checks. These checks make sure that each piece of the script isn't already loaded. It's a good reference for doing this in the future.</p>
+                <p>When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes.</p>
+<p>But, I wanted to make a way that check a bunch of sessions all at once. So I wrote &ldquo;AmIAdmin.rb&rdquo; which uses meterpreter&rsquo;s railgun extension to execute &ldquo;IsUserAdmin&rdquo;.</p>
+<p>Being that Shell32.dll isn&rsquo;t included in railgun by default we have to add it. After writing it I decided to add some checks. These checks make sure that each piece of the script isn&rsquo;t already loaded. It&rsquo;s a good reference for doing this in the future.</p>
 <p>(you can remove the print_status lines if you want the script to be quieter)</p>
 <p>Here is the script for your consumption:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> client<span style="color:#f92672">.</span>platform <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">x64/win32</span><span style="color:#e6db74">&#34;</span>        
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Railgun is currently not supported for x64 bit systems</span><span style="color:#e6db74">&#34;</span>         
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">if</span> client<span style="color:#f92672">.</span>platform <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;x64/win32&#34;</span>        
+	print_status <span style="color:#e6db74">&#34;Railgun is currently not supported for x64 bit systems&#34;</span>         
 <span style="color:#66d9ef">raise</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Script</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Completed</span>        
 <span style="color:#66d9ef">end</span>
 
 <span style="color:#66d9ef">if</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>present? <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span>       
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Railgun already loaded.. skipping</span><span style="color:#e6db74">&#34;</span>         
+	print_status <span style="color:#e6db74">&#34;Railgun already loaded.. skipping&#34;</span>         
 <span style="color:#66d9ef">else</span>        
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Loading Railgun</span><span style="color:#e6db74">&#34;</span>         
-	client<span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">railgun</span><span style="color:#e6db74">&#34;</span>)        
+	print_status <span style="color:#e6db74">&#34;Loading Railgun&#34;</span>         
+	client<span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>use(<span style="color:#e6db74">&#34;railgun&#34;</span>)        
 <span style="color:#66d9ef">end</span>
 
 <span style="color:#66d9ef">if</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>dll<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;shell32&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>       
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Adding Shell32.dll</span><span style="color:#e6db74">&#34;</span>         
+	print_status <span style="color:#e6db74">&#34;Adding Shell32.dll&#34;</span>         
 	client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_dll(<span style="color:#e6db74">&#39;shell32&#39;</span>,<span style="color:#e6db74">&#39;shell32&#39;</span>)        
 <span style="color:#66d9ef">else</span>        
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Shell32 already loaded.. skipping</span><span style="color:#e6db74">&#34;</span>         
+	print_status <span style="color:#e6db74">&#34;Shell32 already loaded.. skipping&#34;</span>         
 <span style="color:#66d9ef">end</span>
 
 <span style="color:#66d9ef">if</span> (client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>shell32<span style="color:#f92672">.</span>functions<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;IsUserAnAdmin&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>       
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Adding the IsUserAnAdmin function</span><span style="color:#e6db74">&#34;</span>         
-	client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;shell32&#39;</span>, <span style="color:#e6db74">&#39;IsUserAnAdmin&#39;</span>, <span style="color:#e6db74">&#39;BOOL&#39;</span>, <span style="color:#f92672">[</span><span style="color:#f92672">]</span>)        
+	print_status <span style="color:#e6db74">&#34;Adding the IsUserAnAdmin function&#34;</span>         
+	client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;shell32&#39;</span>, <span style="color:#e6db74">&#39;IsUserAnAdmin&#39;</span>, <span style="color:#e6db74">&#39;BOOL&#39;</span>, <span style="color:#f92672">[]</span>)        
 <span style="color:#66d9ef">else</span>        
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">IsUserAnAdmin already loaded.. skipping</span><span style="color:#e6db74">&#34;</span>         
+	print_status <span style="color:#e6db74">&#34;IsUserAnAdmin already loaded.. skipping&#34;</span>         
 <span style="color:#66d9ef">end</span>
 
-print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Running the IsUserAnAdmin function</span><span style="color:#e6db74">&#34;</span>        
+print_status <span style="color:#e6db74">&#34;Running the IsUserAnAdmin function&#34;</span>        
 status <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>shell32<span style="color:#f92672">.</span>IsUserAnAdmin()
 
-<span style="color:#66d9ef">if</span> status<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">return</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> <span style="color:#66d9ef">then</span>       
-	print_status <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">You are an administrator</span><span style="color:#e6db74">&#34;</span>         
+<span style="color:#66d9ef">if</span> status<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;return&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> <span style="color:#66d9ef">then</span>       
+	print_status <span style="color:#e6db74">&#34;You are an administrator&#34;</span>         
 <span style="color:#66d9ef">else</span>        
-	print_error <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">You are not an administrator</span><span style="color:#e6db74">&#34;</span>         
+	print_error <span style="color:#e6db74">&#34;You are not an administrator&#34;</span>         
 <span style="color:#66d9ef">end</span>
 </code></pre></div>
             </div>

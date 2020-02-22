@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
 <meta name="description" content="NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH
-For anyone who knows me, they know that I&#39;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&#39;t quite explain. It all started with the following hypothesis:
+For anyone who knows me, they know that I&amp;rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&amp;rsquo;t quite explain. It all started with the following hypothesis:
 Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -34,7 +34,7 @@ Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers t
 
 <meta itemprop="name" content="Buying Internal Domain Access">
 <meta itemprop="description" content="NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH
-For anyone who knows me, they know that I&#39;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&#39;t quite explain. It all started with the following hypothesis:
+For anyone who knows me, they know that I&rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&rsquo;t quite explain. It all started with the following hypothesis:
 Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.">
 <meta itemprop="datePublished" content="2016-12-29T07:35:28-05:00" />
 <meta itemprop="dateModified" content="2016-12-29T07:35:28-05:00" />
@@ -45,7 +45,7 @@ Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers t
 <meta itemprop="keywords" content="dns," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Buying Internal Domain Access"/>
 <meta name="twitter:description" content="NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH
-For anyone who knows me, they know that I&#39;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&#39;t quite explain. It all started with the following hypothesis:
+For anyone who knows me, they know that I&rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&rsquo;t quite explain. It all started with the following hypothesis:
 Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain."/>
 
 
@@ -120,7 +120,7 @@ Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers t
 
             <div class="post-content">
                 <p><strong>NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH</strong></p>
-<p>For anyone who knows me, they know that I've been obsessed with DNS for a long time. However, in this post I will show results of something I can't quite explain. It all started with the following hypothesis:</p>
+<p>For anyone who knows me, they know that I&rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&rsquo;t quite explain. It all started with the following hypothesis:</p>
 <p>Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.</p>
 <p>This has already been proven with attacks like <a href="https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack">MS15-011</a> and other attacks that aim to <a href="https://blog.ahmednabeel.com/abusing-kerberos-to-ntlm-fallback-to-defeat-windows-authentication/">bypass BitLocker Full-Disk Encryption</a>. So I added a twist, I thought that maybe, just maybe, that Windows will automatically add a <code>.com</code> on to the end of these requests when attempting to find them. If I buy these domains then there is a chance I can gain <strong>code execution</strong> using Group Policy or supplying logon scripts (BAT files).</p>
 <p>Why do I think this? Because of past Def Con talks like:</p>
@@ -147,7 +147,7 @@ Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers t
 </ul>
 </li>
 </ul>
-<p><em>(To Microsoft, I'm fully willing to transfer the domain or null route it until it expires, whichever you prefer)</em></p>
+<p><em>(To Microsoft, I&rsquo;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)</em></p>
 <p><strong>WE INTERRUPT THIS BLOG POST TO TALK ABOUT THE SERIOUS OSINT TREASURE THESE TYPES FILES AND ENVIRONMENTAL VARIABLES ARE</strong></p>
 <p>We will break down a few of the pieces that provide OSINT value:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">COMPUTERNAME <span style="color:#f92672">=</span> ANDARNO-X1
@@ -160,7 +160,7 @@ USERNAME <span style="color:#f92672">=</span> andarno
 </code></pre></div><p><a href="https://chocolatey.org/">Chocolatey</a> is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SSH_AGENT_PID <span style="color:#f92672">=</span> 9316
 SSH_AUTH_SOCK <span style="color:#f92672">=</span> /tmp/ssh-rbPyaDrkXVLz/agent.10020
-</code></pre></div><p>Honestly I've never seen these options on a Windows box so I'm going to assume they are the result of <a href="https://www.cygwin.com/">Cygwin</a> being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence <a href="http://www.hexacorn.com/blog/category/autostart-persistence/">beyond the standard Run keys</a>.</p>
+</code></pre></div><p>Honestly I&rsquo;ve never seen these options on a Windows box so I&rsquo;m going to assume they are the result of <a href="https://www.cygwin.com/">Cygwin</a> being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence <a href="http://www.hexacorn.com/blog/category/autostart-persistence/">beyond the standard Run keys</a>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Path <span style="color:#f92672">=</span>
 C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\g</span>it<span style="color:#ae81ff">\V</span>SIXSuppression<span style="color:#ae81ff">\p</span>ackages<span style="color:#ae81ff">\N</span>erdbank.GitVersioning.1.1.2-rc<span style="color:#ae81ff">\b</span>uild<span style="color:#ae81ff">\N</span>ativeBinaries/amd64
 C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\I</span>DE<span style="color:#ae81ff">\C</span>ommonExtensions<span style="color:#ae81ff">\M</span>icrosoft<span style="color:#ae81ff">\T</span>estWindow
@@ -223,12 +223,12 @@ co1-red-dc-11.com
 </ul>
 <p>I have no idea if any of these DNS requests were by real Microsoft domain joined systems but looking at the contents of the requests I assume that a few were.</p>
 <h2 id="analysis">Analysis</h2>
-<p>I did this with a few other <code>%LOGONSERVER%</code>s and had similar DNS requests. I didn't see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain <code>SITTINGDUCK.INFO</code> and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.</p>
-<p>In my lab I was able to get authentication requests and code execution by using Impacket's <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py">karmaSMB.py</a> to send my victim a false <code>Logon.bat</code> very similar to the setup for <a href="https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack">MS15-011</a>. Let me reiterate something:</p>
+<p>I did this with a few other <code>%LOGONSERVER%</code>s and had similar DNS requests. I didn&rsquo;t see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain <code>SITTINGDUCK.INFO</code> and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.</p>
+<p>In my lab I was able to get authentication requests and code execution by using Impacket&rsquo;s <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py">karmaSMB.py</a> to send my victim a false <code>Logon.bat</code> very similar to the setup for <a href="https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack">MS15-011</a>. Let me reiterate something:</p>
 <p><strong>I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH</strong></p>
-<p><strong>Is this conclusive proof?</strong> Certainly not, but it's a start and I'm interested in what ya'll find.</p>
-<p><strong>Why might this work more than it has in the past?</strong> Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I'm bitter ;), it was actually my primary reason for buying a Mac).</p>
-<p><strong>How can you find the LOGONSERVER of your client?</strong> Well, it's pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.</p>
+<p><strong>Is this conclusive proof?</strong> Certainly not, but it&rsquo;s a start and I&rsquo;m interested in what ya&rsquo;ll find.</p>
+<p><strong>Why might this work more than it has in the past?</strong> Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I&rsquo;m bitter ;), it was actually my primary reason for buying a Mac).</p>
+<p><strong>How can you find the LOGONSERVER of your client?</strong> Well, it&rsquo;s pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.</p>
 <h2 id="one-more-thing">One More Thing&hellip;</h2>
 <p>I also tried to think in generalities, and yes, I am the proud owner of <code>DC01.com</code> which gets about 20 requests per second&hellip;</p>
 <p><strong>::evil laugh::</strong></p>

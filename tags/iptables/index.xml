@@ -16,9 +16,9 @@
       <pubDate>Fri, 28 Oct 2016 15:00:00 -0400</pubDate>
       
       <guid>https://malicious.link/post/2016/blocking-countries-via-iptables/</guid>
-      <description>&lt;p&gt;With all of the scanning / noise on the Internet, it&#39;s nice to get rid of a large chunk of it simply by blocking an entire country&#39;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&#39;s pretty easy to get going, just &lt;code&gt;apt-get&lt;/code&gt; install the needed perl library and the addons themselves:&lt;/p&gt;
+      <description>&lt;p&gt;With all of the scanning / noise on the Internet, it&amp;rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&amp;rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&amp;rsquo;s pretty easy to get going, just &lt;code&gt;apt-get&lt;/code&gt; install the needed perl library and the addons themselves:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;apt-get install libtext-csv-xs-perl xtables-addons-common
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&#39;t availabe (like Linode&#39;s special kernel), you will need to find another way to get the correct headers installed.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&amp;rsquo;t availabe (like Linode&amp;rsquo;s special kernel), you will need to find another way to get the correct headers installed.&lt;/p&gt;
 &lt;p&gt;Then download the Maxmind geo database, the location of the &lt;code&gt;xt_geoip_dl&lt;/code&gt; tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in &lt;code&gt;/usr/src/xtables-addons-2.6/geoip/&lt;/code&gt; as well as &lt;code&gt;/usr/lib/xtables-addons/&lt;/code&gt; YMMV.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;cd /usr/src/xtables-addons-2.6/geoip/
 ./xt_geoip_dl
@@ -44,7 +44,7 @@ Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
 Archive:  GeoIPCountryCSV.zip
   inflating: GeoIPCountryWhois.csv
 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that, you need to &amp;ldquo;build&amp;rdquo; the lists by performing the following command in that same directory (one install didn&#39;t automatically make the directory so ensure it&#39;s there with the mkdir command):&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that, you need to &amp;ldquo;build&amp;rdquo; the lists by performing the following command in that same directory (one install didn&amp;rsquo;t automatically make the directory so ensure it&amp;rsquo;s there with the mkdir command):&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;mkdir -p /usr/share/xt_geoip
 ./xt_geoip_build -D /usr/share/xt_geoip *.csv
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that you are off the the races and you can simply use the geoip module as so now:&lt;/p&gt;

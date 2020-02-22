@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&#39;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&#39;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive." />
+<meta name="description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&amp;rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&amp;rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -32,8 +32,8 @@ This module doesn&#39;t make any requests to the targeted domain, it simply outp
 
 
 <meta itemprop="name" content="Wayback Webapp Hacking">
-<meta itemprop="description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&#39;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&#39;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.">
+<meta itemprop="description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.">
 <meta itemprop="datePublished" content="2010-12-24T19:32:56&#43;00:00" />
 <meta itemprop="dateModified" content="2010-12-24T19:32:56&#43;00:00" />
 <meta itemprop="wordCount" content="275">
@@ -42,8 +42,8 @@ This module doesn&#39;t make any requests to the targeted domain, it simply outp
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Wayback Webapp Hacking"/>
-<meta name="twitter:description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&#39;ll find parts of web apps that have been long forgotten (and usually vulnerable).
-This module doesn&#39;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive."/>
+<meta name="twitter:description" content="Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive."/>
 
 
 
@@ -120,8 +120,8 @@ This module doesn&#39;t make any requests to the targeted domain, it simply outp
             
 
             <div class="post-content">
-                <p>Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you'll find parts of web apps that have been long forgotten (and usually vulnerable).</p>
-<p>This module doesn't make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.</p>
+                <p>Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).</p>
+<p>This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.</p>
 <pre><code>msf auxiliary(enum_wayback) &gt; info
        Name: Pull Archive.org stored URLs for a domain
     Version: 10394
@@ -162,16 +162,16 @@ http://portswigger.net/corner.gif
 <p><code># cat requestor.py</code></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python</span>
 <span style="color:#f92672">import</span> urllib
-proxies <span style="color:#f92672">=</span> {<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">http</span><span style="color:#e6db74">&#39;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">http://127.0.0.1:8080</span><span style="color:#e6db74">&#39;</span>}
-filename <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">/tmp/waybacklist.txt</span><span style="color:#e6db74">&#34;</span>
+proxies <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;http&#39;</span>: <span style="color:#e6db74">&#39;http://127.0.0.1:8080&#39;</span>}
+filename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/tmp/waybacklist.txt&#34;</span>
 
-fl <span style="color:#f92672">=</span> open(filename, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;</span>)
+fl <span style="color:#f92672">=</span> open(filename, <span style="color:#e6db74">&#39;r&#39;</span>)
 <span style="color:#66d9ef">for</span> lines <span style="color:#f92672">in</span> fl:
 	url <span style="color:#f92672">=</span> str(lines)
 	<span style="color:#66d9ef">if</span> len(url) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">4</span>:
-		<span style="color:#66d9ef">print</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Skipping blank line</span><span style="color:#e6db74">&#34;</span>
+		<span style="color:#66d9ef">print</span> <span style="color:#e6db74">&#34;Skipping blank line&#34;</span>
 	<span style="color:#66d9ef">else</span>:
-	    <span style="color:#66d9ef">print</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Requesting </span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> url
+	    <span style="color:#66d9ef">print</span> <span style="color:#e6db74">&#34;Requesting &#34;</span> <span style="color:#f92672">+</span> url
 	    temp <span style="color:#f92672">=</span> urllib<span style="color:#f92672">.</span>urlopen(url, proxies<span style="color:#f92672">=</span>proxies)<span style="color:#f92672">.</span>read()
 </code></pre></div><p>Enjoy!</p>
 

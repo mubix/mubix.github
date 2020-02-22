@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as SYSTEM. What&#39;s the problem with that? Isn&#39;t SYSTEM god mode? Ya, and normally I&#39;d agree that it&#39;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know SYSTEM doesn&#39;t get any proxy settings." />
+<meta name="description" content="One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as SYSTEM. What&amp;rsquo;s the problem with that? Isn&amp;rsquo;t SYSTEM god mode? Ya, and normally I&amp;rsquo;d agree that it&amp;rsquo;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know SYSTEM doesn&amp;rsquo;t get any proxy settings." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,7 +31,7 @@
 
 
 <meta itemprop="name" content="Milkman: Creating processes as any currently logged in user">
-<meta itemprop="description" content="One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as SYSTEM. What&#39;s the problem with that? Isn&#39;t SYSTEM god mode? Ya, and normally I&#39;d agree that it&#39;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know SYSTEM doesn&#39;t get any proxy settings.">
+<meta itemprop="description" content="One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as SYSTEM. What&rsquo;s the problem with that? Isn&rsquo;t SYSTEM god mode? Ya, and normally I&rsquo;d agree that it&rsquo;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know SYSTEM doesn&rsquo;t get any proxy settings.">
 <meta itemprop="datePublished" content="2014-08-14T11:26:38-05:00" />
 <meta itemprop="dateModified" content="2014-08-14T11:26:38-05:00" />
 <meta itemprop="wordCount" content="595">
@@ -40,7 +40,7 @@
 
 <meta itemprop="keywords" content="code,psexec,milkman,windows," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Milkman: Creating processes as any currently logged in user"/>
-<meta name="twitter:description" content="One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as SYSTEM. What&#39;s the problem with that? Isn&#39;t SYSTEM god mode? Ya, and normally I&#39;d agree that it&#39;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know SYSTEM doesn&#39;t get any proxy settings."/>
+<meta name="twitter:description" content="One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as SYSTEM. What&rsquo;s the problem with that? Isn&rsquo;t SYSTEM god mode? Ya, and normally I&rsquo;d agree that it&rsquo;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know SYSTEM doesn&rsquo;t get any proxy settings."/>
 
 
 
@@ -113,29 +113,29 @@
             
 
             <div class="post-content">
-                <p>One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as <strong>SYSTEM</strong>. What's the problem with that? Isn't <strong>SYSTEM</strong> god mode? Ya, and normally I'd agree that it's the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know <strong>SYSTEM</strong> doesn't get any proxy settings.</p>
+                <p>One of the problems with using PSEXEC from Metasploit (any of the psexec modules) is that it runs as <strong>SYSTEM</strong>. What&rsquo;s the problem with that? Isn&rsquo;t <strong>SYSTEM</strong> god mode? Ya, and normally I&rsquo;d agree that it&rsquo;s the best level to have, but the defenses these days have gotten better, and getting direct connections out is pretty rare. That leaves proxies, and as you know <strong>SYSTEM</strong> doesn&rsquo;t get any proxy settings.</p>
 <p>Here is a blog post that I made <a href="/blog/2012/10/21/setting-systems-proxy-settings-with-metasploit/">about setting the proxies for SYSTEM</a> but leaving settings like this set is not only sloppy but hard to clean up.</p>
 <p>Along comes <code>RunAsCurrentUser-2.0.3.1.exe</code> I found this gem by messing up a search on google for RunAsUser. Found it <a href="https://www-304.ibm.com/support/docview.wss?uid=swg21506033">on this IBM support post</a>.</p>
 <p><img src="/images/2014/201408_ibm_runascurrentuser.png" alt=""></p>
 <p>Link to direct download: <a href="http://software.bigfix.com/download/bes/util/RunAsCurrentUser-2.0.3.1.exe">http://software.bigfix.com/download/bes/util/RunAsCurrentUser-2.0.3.1.exe</a></p>
 <p>Here is a mirror uploaded to my Post Exploitation repo: <a href="https://github.com/mubix/post-exploitation/blob/master/win32bins/RunAsCurrentUser-2.0.3.1.exe">https://github.com/mubix/post-exploitation/blob/master/win32bins/RunAsCurrentUser-2.0.3.1.exe</a></p>
-<p>This binary takes a path to another executable as an argument. It then finds the currently logged in user and starts the provided executable as that user. AWESOME! This basically solves the whole  PSEXEC-&gt;SYSTEM no-proxy settings issue. And it's created by a legitimate company for legitimate reasons? w00tw00t. Game on!</p>
+<p>This binary takes a path to another executable as an argument. It then finds the currently logged in user and starts the provided executable as that user. AWESOME! This basically solves the whole  PSEXEC-&gt;SYSTEM no-proxy settings issue. And it&rsquo;s created by a legitimate company for legitimate reasons? w00tw00t. Game on!</p>
 <p>Only two problems:</p>
 <ol>
 <li>
-<p>It is 335K, which doesn't seem like much but over high latency lines that can take an eternity to transfer, especially over doubly encrypted channels like with a reverse_https meterpreter session.</p>
+<p>It is 335K, which doesn&rsquo;t seem like much but over high latency lines that can take an eternity to transfer, especially over doubly encrypted channels like with a reverse_https meterpreter session.</p>
 </li>
 <li>
-<p>It takes an argument which normally isn't a huge challenge, but in our specific use case, psexec modules in Metasploit, it isn't something we can do easily. You would have to upload your C2 binary, as well as the 335K RunAsCurrentUser over to the target host, then run the psexec_command module to execute them both, one as the argument of the other. Kinda sloppy.</p>
+<p>It takes an argument which normally isn&rsquo;t a huge challenge, but in our specific use case, psexec modules in Metasploit, it isn&rsquo;t something we can do easily. You would have to upload your C2 binary, as well as the 335K RunAsCurrentUser over to the target host, then run the psexec_command module to execute them both, one as the argument of the other. Kinda sloppy.</p>
 </li>
 </ol>
-<p>So I set to try and figure out how this binary did it's magic. As I'm not much of a reverse engineer I <a href="https://www.virustotal.com/en/file/1a9b518c775e2a85a7c47801e9b8221df338a65ad8df326485e4cd2aea22fe52/analysis/">uploaded it to VirusTotal</a> so I could take a look at it's insides (plus, double check to see if it was being detected as malicious at all).</p>
-<p>As far as I can tell the important pieces are the Windows API calls <strong>ImpersonateLoggedOnUser</strong>, and <strong>CreateProcessAsUserA</strong>. I set to trying to reproduce what it did in <a href="https://www.autoitscript.com/site/autoit/">AutoIT (awesome stuff if you have never checked it out)</a>. I couldn't quite get the API calls right, so I decided to give C++ a shot. Turned out to be pretty simple. I present to you &ldquo;Milkman&rdquo;:</p>
+<p>So I set to try and figure out how this binary did it&rsquo;s magic. As I&rsquo;m not much of a reverse engineer I <a href="https://www.virustotal.com/en/file/1a9b518c775e2a85a7c47801e9b8221df338a65ad8df326485e4cd2aea22fe52/analysis/">uploaded it to VirusTotal</a> so I could take a look at it&rsquo;s insides (plus, double check to see if it was being detected as malicious at all).</p>
+<p>As far as I can tell the important pieces are the Windows API calls <strong>ImpersonateLoggedOnUser</strong>, and <strong>CreateProcessAsUserA</strong>. I set to trying to reproduce what it did in <a href="https://www.autoitscript.com/site/autoit/">AutoIT (awesome stuff if you have never checked it out)</a>. I couldn&rsquo;t quite get the API calls right, so I decided to give C++ a shot. Turned out to be pretty simple. I present to you &ldquo;Milkman&rdquo;:</p>
 <p><a href="https://gist.github.com/mubix/5d0cacdabfe092922fa3">https://gist.github.com/mubix/5d0cacdabfe092922fa3</a>  <strong>(full source included below)</strong></p>
 <p>This program (once compiled) takes one argument (or none at all) and runs calc.exe for every instance of the process you tell it to. If you run it without arguments it auto selects explorer.exe. So if you create a service:</p>
 <pre><code>C:\temp\&gt;sc create SuperService binpath= C:\Temp\milkman.exe type= own start= auto
 [SC] CreateService SUCCESS
-</code></pre><p>It will start up every time the computer starts, which is completely useless, since there won't be any users logged in at that point, but you get where this can go. Features to add to this at point are:</p>
+</code></pre><p>It will start up every time the computer starts, which is completely useless, since there won&rsquo;t be any users logged in at that point, but you get where this can go. Features to add to this at point are:</p>
 <ol>
 <li>Create a service binary that responds to START/STOP/PAUSE commands and such so that running this as a persistence method would actually be useful.</li>
 <li>Add a loop so that it continues to run checking for explorer.exe every so often so it can catch when someone is logged in.</li>

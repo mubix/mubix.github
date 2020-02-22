@@ -130,19 +130,19 @@ msf&gt; use post/windows/gather/enum_domain_tokens msf enum_domain_tokens&gt; ir
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">msf<span style="color:#f92672">&gt;</span> use post<span style="color:#f92672">/</span>windows<span style="color:#f92672">/</span>gather<span style="color:#f92672">/</span>enum_domain_tokens
 msf enum_domain_tokens<span style="color:#f92672">&gt;</span> irb
 framework<span style="color:#f92672">.</span>sessions<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>session<span style="color:#f92672">|</span>
-  run_single(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">set SESSION </span><span style="color:#e6db74">#{</span>session<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-  run_single(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">run</span><span style="color:#e6db74">&#34;</span>)
+  run_single(<span style="color:#e6db74">&#34;set SESSION </span><span style="color:#e6db74">#{</span>session<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+  run_single(<span style="color:#e6db74">&#34;run&#34;</span>)
   sleep <span style="color:#ae81ff">1</span>
-<span style="color:#f92672"></span><span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 </code></pre></div><p>You use the POST module, drop to IRB and run those 4 lines, and bam, you win. With resource files we can automate this a bit more and have it so that we do this effortlessly with any post module.</p>
 <p>Thinking back to <a href="http://blog.metasploit.com/2010/03/automating-metasploit-console.html">http://blog.metasploit.com/2010/03/automating-metasploit-console.html</a> and my rapid file PSEXEC resource file, we know we can run ruby inside of resource files with the <ruby> tag.</p>
-<p>Save the following as runall.rc somewhere where you'll remember:</p>
+<p>Save the following as runall.rc somewhere where you&rsquo;ll remember:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">framework<span style="color:#f92672">.</span>sessions<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>session<span style="color:#f92672">|</span>
-  run_single(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">set SESSION </span><span style="color:#e6db74">#{</span>session<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-  print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Running </span><span style="color:#e6db74">#{</span>active_module<span style="color:#f92672">.</span>fullname<span style="color:#e6db74">}</span><span style="color:#e6db74"> against session </span><span style="color:#e6db74">#{</span>session<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-  run_single(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">run</span><span style="color:#e6db74">&#34;</span>)
+  run_single(<span style="color:#e6db74">&#34;set SESSION </span><span style="color:#e6db74">#{</span>session<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+  print_status(<span style="color:#e6db74">&#34;Running </span><span style="color:#e6db74">#{</span>active_module<span style="color:#f92672">.</span>fullname<span style="color:#e6db74">}</span><span style="color:#e6db74"> against session </span><span style="color:#e6db74">#{</span>session<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+  run_single(<span style="color:#e6db74">&#34;run&#34;</span>)
   sleep <span style="color:#ae81ff">1</span>
-<span style="color:#f92672"></span><span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 </code></pre></div><p>Then when you want to run a POST module against every session you have you simply do:</p>
 <pre><code>msf&gt; use post/windows/gather/enum_domain_tokens
 msf enum_domain_tokens&gt; resource runall.rc
@@ -150,11 +150,11 @@ msf enum_domain_tokens&gt; resource runall.rc
 </code></pre><p><strong>Update</strong> on 2011-11-06 20:05 by Rob Fuller</p>
 <p>A commenter noticed an error in the coding for cross compatibility. The following should work better across versions:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">framework<span style="color:#f92672">.</span>sessions<span style="color:#f92672">.</span>each_key <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>session<span style="color:#f92672">|</span>
-  run_single(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">set SESSION </span><span style="color:#e6db74">#{</span>session<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-  print_status(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Running </span><span style="color:#e6db74">#{</span>active_module<span style="color:#f92672">.</span>fullname<span style="color:#e6db74">}</span><span style="color:#e6db74"> against session </span><span style="color:#e6db74">#{</span>session<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-  run_single(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">run</span><span style="color:#e6db74">&#34;</span>)
+  run_single(<span style="color:#e6db74">&#34;set SESSION </span><span style="color:#e6db74">#{</span>session<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+  print_status(<span style="color:#e6db74">&#34;Running </span><span style="color:#e6db74">#{</span>active_module<span style="color:#f92672">.</span>fullname<span style="color:#e6db74">}</span><span style="color:#e6db74"> against session </span><span style="color:#e6db74">#{</span>session<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+  run_single(<span style="color:#e6db74">&#34;run&#34;</span>)
   sleep <span style="color:#ae81ff">1</span>
-<span style="color:#f92672"></span><span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 </code></pre></div>
             </div>
         </article>

@@ -120,15 +120,15 @@ I wrote a quick script that you can throw in the meterpreter scripts folder to a
             <div class="post-content">
                 <p>Say you go for the 500+ shells on an internal test or your phishing exersice goes way better than you thought. Well you need to get your bearings quickly and going into each shell and doing a ps, then looking through the list for all the users logged in is a bit of a pain and defintely not ideal.</p>
 <p>I wrote a quick script that you can throw in the meterpreter scripts folder to aide you a bit with this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">users <span style="color:#f92672">=</span> <span style="color:#f92672">[</span><span style="color:#f92672">]</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">users <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
 client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>each_process <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span>
-        users <span style="color:#f92672">&lt;&lt;</span> x<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">user</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">]</span>
+        users <span style="color:#f92672">&lt;&lt;</span> x<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;user&#34;</span><span style="color:#f92672">]</span>
 <span style="color:#66d9ef">end</span>
 
 users<span style="color:#f92672">.</span>sort!
 users<span style="color:#f92672">.</span>uniq!
-users<span style="color:#f92672">.</span>delete_if {<span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> x <span style="color:#f92672">=~</span> <span style="color:#e6db74">/</span><span style="color:#e6db74">^NT AUTHORITY</span><span style="color:#e6db74">/</span>}
-users<span style="color:#f92672">.</span>delete_if {<span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> x <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">&#34;</span>}
+users<span style="color:#f92672">.</span>delete_if {<span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> x <span style="color:#f92672">=~</span> <span style="color:#e6db74">/^NT AUTHORITY/</span>}
+users<span style="color:#f92672">.</span>delete_if {<span style="color:#f92672">|</span>x<span style="color:#f92672">|</span> x <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>}
 loggedin <span style="color:#f92672">=</span> users<span style="color:#f92672">.</span>join(<span style="color:#e6db74">&#39;, &#39;</span>)
 print_status(loggedin)
 </code></pre></div><p>All it does is automate the process I said above, used in concert with the &lsquo;sessions -s&rsquo; command makes life a bit easier:</p>
@@ -146,7 +146,7 @@ print_status(loggedin)
 [*] COMPUTERNAME\Administrator, DOMAIN2\AdminUser7
 [*] Session 7 (victimgatewayaddress:39901):
 [*] DOMAIN\User55
-</code></pre><p>You can see from this output I probably want to start with session 2, and probably 6 as well as it seems to be on another domain and an admin to boot. The example is small but on a larger scale this can start to be much more important for time management. I'm sure there are some of you out there that realized after spending hours with another session that you had one with a DA signed into it on a different system.</p>
+</code></pre><p>You can see from this output I probably want to start with session 2, and probably 6 as well as it seems to be on another domain and an admin to boot. The example is small but on a larger scale this can start to be much more important for time management. I&rsquo;m sure there are some of you out there that realized after spending hours with another session that you had one with a DA signed into it on a different system.</p>
 <p>Just a disclaimer, this ONLY shows who is logged into the sessions you have, not remote systems.</p>
 
             </div>

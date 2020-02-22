@@ -33,31 +33,31 @@ PROJECTMENTOR FILESHARE 173.26.10.207
       <pubDate>Sat, 01 Sep 2012 05:16:14 +0000</pubDate>
       
       <guid>https://malicious.link/post/2012/2012-09-01-old-school-on-target-nbns-spoofing/</guid>
-      <description>&lt;p&gt;One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (&lt;a href=&#34;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&#34;&gt;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&lt;/a&gt;) . Wesley&#39;s stuff can be found here: &lt;a href=&#34;http://www.mcgrewsecurity.com/tools/nbnspoof/&#34;&gt;http://www.mcgrewsecurity.com/tools/nbnspoof/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Wesley&#39;s stuff eventually lead to this awesome post on the Packetstan blog: &lt;a href=&#34;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&#34;&gt;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &amp;ldquo;on-site&amp;rdquo; only attack. But if you read through Sid&#39;s paper from 2007 this doesn&#39;t have to be the case. He uses a tool written by &amp;ldquo;Patrick Chambet&amp;rdquo; back in 2005 for the Honeynet project: &lt;a href=&#34;http://seclists.org/honeypots/2005/q4/46&#34;&gt;http://seclists.org/honeypots/2005/q4/46&lt;/a&gt; called &amp;ldquo;FakeNetbiosDGM and FakeNetbiosNS&amp;rdquo;.&lt;/p&gt;
+      <description>&lt;p&gt;One of pen testers favorite attacks is NBNS spoofing. Now Wesley who I originally learned this attack from, traced this back to sid (&lt;a href=&#34;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&#34;&gt;http://www.notsosecure.com/folder2/2007/03/14/abusing-tcpip-name-resolution-in-windows-to-carry-out-phishing-attacks/&lt;/a&gt;) . Wesley&amp;rsquo;s stuff can be found here: &lt;a href=&#34;http://www.mcgrewsecurity.com/tools/nbnspoof/&#34;&gt;http://www.mcgrewsecurity.com/tools/nbnspoof/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Wesley&amp;rsquo;s stuff eventually lead to this awesome post on the Packetstan blog: &lt;a href=&#34;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&#34;&gt;http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;and in that post the Metasploit module to do it all is demoed. But there in lies the rub. With each degree of separation we have more and more solidified in into a &amp;ldquo;on-site&amp;rdquo; only attack. But if you read through Sid&amp;rsquo;s paper from 2007 this doesn&amp;rsquo;t have to be the case. He uses a tool written by &amp;ldquo;Patrick Chambet&amp;rdquo; back in 2005 for the Honeynet project: &lt;a href=&#34;http://seclists.org/honeypots/2005/q4/46&#34;&gt;http://seclists.org/honeypots/2005/q4/46&lt;/a&gt; called &amp;ldquo;FakeNetbiosDGM and FakeNetbiosNS&amp;rdquo;.&lt;/p&gt;
 &lt;p&gt;Finding the tools was no easy task though, googling for the file name, the author or the project just netted me this link:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&#34;&gt;http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Gotta love the Wayback Machine, I finally found it here: &lt;a href=&#34;http://wayback.archive.org/web/*/http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&#34;&gt;http://wayback.archive.org/web/*/http://honeynet.rstack.org/tools/FakeNetBIOS-0.91.zip&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;and eventually also here (on the author&#39;s site of all places): &lt;a href=&#34;http://www.chambet.com/tools.html&#34;&gt;http://www.chambet.com/tools.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;and eventually also here (on the author&amp;rsquo;s site of all places): &lt;a href=&#34;http://www.chambet.com/tools.html&#34;&gt;http://www.chambet.com/tools.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Question is, does it still work?? 2nd Question, how well does it work through/with Meterpreter?&lt;/p&gt;
-&lt;p&gt;(As a side note, I haven&#39;t tried, but you might be able to use Py2Exe or PyInstaller to run nbnspoof.py on a windows box)&lt;/p&gt;
+&lt;p&gt;(As a side note, I haven&amp;rsquo;t tried, but you might be able to use Py2Exe or PyInstaller to run nbnspoof.py on a windows box)&lt;/p&gt;
 &lt;p&gt;When running it on XP SP3 I get the following&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_fakenetbios_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Booooooooo, and on Windows 7 I get this:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_fakenetbios_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Ok, error 10013 is a permissions issue, I can deal with that..&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_fakenetbios_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Run as Administrator it works! But something is wrong with the communication because the host doing the lookup doesn&#39;t get the correct resolution back.&lt;/p&gt;
-&lt;p&gt;From what I can google it looks as though Windows Firewall has an &amp;lsquo;Anti-Spoofing&amp;rsquo; outbound filter, so these &amp;ldquo;Bytes sent&amp;rdquo; don&#39;t even make it to Wireshark.&lt;/p&gt;
+&lt;p&gt;Run as Administrator it works! But something is wrong with the communication because the host doing the lookup doesn&amp;rsquo;t get the correct resolution back.&lt;/p&gt;
+&lt;p&gt;From what I can google it looks as though Windows Firewall has an &amp;lsquo;Anti-Spoofing&amp;rsquo; outbound filter, so these &amp;ldquo;Bytes sent&amp;rdquo; don&amp;rsquo;t even make it to Wireshark.&lt;/p&gt;
 &lt;p&gt;I have created a Github repository, stuck the contents of the zip file in it and this is where I ask for help. If you know 1) how to disable the Windows Anti-spoofing filter or 2) How to circumvent it please leave a comment here, and issue on the repo or email me directly.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;UPDATE (1&amp;amp;2 solved for this use case)&lt;/strong&gt;: &lt;a href=&#34;https://malicious.link/blog/2012/09/02/old-school-on-target-nbns-spoofing-part-2/&#34;&gt;/blog/2012/09/02/old-school-on-target-nbns-spoofing-part-2/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The other thing is, if you want to improve the code, that would be awesome too, submit a pull request, I&#39;d love to get this thing going again and make it into something that we can solidly use over a Meterpreter session.&lt;/p&gt;
+&lt;p&gt;The other thing is, if you want to improve the code, that would be awesome too, submit a pull request, I&amp;rsquo;d love to get this thing going again and make it into something that we can solidly use over a Meterpreter session.&lt;/p&gt;
 &lt;p&gt;Github repo: &lt;a href=&#34;https://github.com/mubix/FakeNetBIOS&#34;&gt;https://github.com/mubix/FakeNetBIOS&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And if the only commit to this repo 5 years from now is &amp;ldquo;Initial commit&amp;rdquo; then at the very least it will be some where the next blogger who picks up the trail can get it from.&lt;/p&gt;
 &lt;p&gt;P.S. If you know how to solve the issue on XP, that would be an awesome fix as well.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;UPDATE 2: Looks like the XP issue ahas the Anti-spoofing too. (i.e it works great if you use the IP of the actual IP of the box with different hostnames)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;&lt;em&gt;I guess the only improvement I&#39;d look for is for an .&lt;/em&gt; (ALL HOSTS) ability&lt;/em&gt;*&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;em&gt;I guess the only improvement I&amp;rsquo;d look for is for an .&lt;/em&gt; (ALL HOSTS) ability&lt;/em&gt;*&lt;/p&gt;
 </description>
     </item>
     

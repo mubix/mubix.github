@@ -134,9 +134,9 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 <p>In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack. To boil this down, an attacker gets a victim to attempt to authenticate to an attacker controlled box. The attack delays its responses to the victim and replays the important parts of the authentication that the victim sent back at the victim. You can find out a lot more about this vulnerability here: <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay">https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay</a></p>
 <p>One thing to take away from that post is that the patch stops Attacker &lt;=&gt; Victim, but does not / cannot fix Victim &lt;=&gt; Attacker &lt;=&gt; <strong>Victim2</strong> (use authentication from Victim to replay to Victim2)</p>
 <p><strong>MS10_046:</strong> <a href="http://www.cvedetails.com/cve/CVE-2010-2568/">http://www.cvedetails.com/cve/CVE-2010-2568/</a></p>
-<p>In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut's icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &lsquo;Change Icon&rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)</p>
+<p>In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut&rsquo;s icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &lsquo;Change Icon&rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)</p>
 <p><strong>The Setup:</strong></p>
-<p>If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine's IP and use SMB_Relay to replay those credentials to a system in which we've identified by one means or another as an &lsquo;important&rsquo; host to get on.</p>
+<p>If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine&rsquo;s IP and use SMB_Relay to replay those credentials to a system in which we&rsquo;ve identified by one means or another as an &lsquo;important&rsquo; host to get on.</p>
 <p>Attacker uploads malicious LNK file to network share on <strong>FILE SHARE</strong></p>
 <p>Victim views it on <strong>WORKSTATION</strong> that initiates an connection to <strong>ATTACKER</strong></p>
 <p>Attacker relays those authentication attempts to <strong>FILE SHARE</strong>, gaining code execution if &lsquo;Victim&rsquo; is an admin on <strong>FILE SHARE</strong></p>
@@ -144,7 +144,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 <p>Your mileage will vary based on where you put the LNK file.</p>
 <p><strong>The Video:</strong></p>
 <center><iframe align=center width="560" height="315" src="//www.youtube.com/embed/FxekUPY5ojU" frameborder="0" allowfullscreen></iframe></center>
-<p>I have created a post module to automate the process of creating and uploading the LNK file (so you don't have to have a Windows box lying around). Here it is in action:</p>
+<p>I have created a post module to automate the process of creating and uploading the LNK file (so you don&rsquo;t have to have a Windows box lying around). Here it is in action:</p>
 <pre><code>Module options (post/windows/escalate/droplnk):
 
    Name          Current Setting  Required  Description
@@ -164,7 +164,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 </code></pre><p>You can find the code here:</p>
 <p><a href="https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb">https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb</a></p>
 <p><strong>Going forward:</strong></p>
-<p>Obviously this isn't so effective remotely out of the box and there currently isn't a SMB_Relay for WebDAV (although I'm guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:</p>
+<p>Obviously this isn&rsquo;t so effective remotely out of the box and there currently isn&rsquo;t a SMB_Relay for WebDAV (although I&rsquo;m guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:</p>
 <ul>
 <li><strong>Step 1</strong>: Disable SMB on Port 445 (it will still operate on 139 as it is a failover), this setting requires a reboot to take effect and can be done using the following command:
 <ul>
@@ -178,8 +178,8 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 </li>
 <li><strong>Step 3</strong>: Set up SMB_Relay listening on that port on your attacker with a route in meterpreter to send all relayed authentication through your meterpreter session into and at the targeted host.</li>
 </ul>
-<p>These steps can get you noticed in almost every way, so it's not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)</p>
-<p>The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren't admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.</p>
+<p>These steps can get you noticed in almost every way, so it&rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)</p>
+<p>The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.</p>
 <p>just saying&rsquo;…. /me nudges the Metasploit devs…</p>
 <h3 id="references">References:</h3>
 <h4 id="smb_relay-references">SMB_Relay References:</h4>
@@ -193,8 +193,8 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 <ul>
 <li>Microsoft advisory - <a href="http://technet.microsoft.com/en-us/security/advisory/2286198">http://technet.microsoft.com/en-us/security/advisory/2286198</a></li>
 <li>Metasploit blog post - <a href="https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening">https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening</a></li>
-<li>Some of HDM's research - <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws">https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws</a></li>
-<li>ISS's advisory - <a href="http://blogs.iss.net/archive/remotedllpreloadingv.html">http://blogs.iss.net/archive/remotedllpreloadingv.html</a></li>
+<li>Some of HDM&rsquo;s research - <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws">https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws</a></li>
+<li>ISS&rsquo;s advisory - <a href="http://blogs.iss.net/archive/remotedllpreloadingv.html">http://blogs.iss.net/archive/remotedllpreloadingv.html</a></li>
 <li>Metasploit module - <a href="http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader">http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader</a></li>
 <li>Video of the module in action - <a href="http://www.commonexploits.com/?p=151">http://www.commonexploits.com/?p=151</a></li>
 </ul>

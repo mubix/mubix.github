@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="pragmatk">
 <meta name="description" content="I had a bet with my friend about getting #1 on the Crazy Taxi high score page (== motivation for this post).
-For those who have not been introduced to it yet, it&#39;s a Facebook/Flash/2.0 resurrection of a much older game.
+For those who have not been introduced to it yet, it&amp;rsquo;s a Facebook/Flash/2.0 resurrection of a much older game.
 Not having extreme timing skills, I quickly gave up on getting the 2,000,000 points required to make it the &amp;ldquo;normal&amp;rdquo; way: My first try was modifying the outgoing HTTP traffic using the Tamper Data plugin for Firefox (to catch the obvious ones)." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -34,7 +34,7 @@ Not having extreme timing skills, I quickly gave up on getting the 2,000,000 poi
 
 <meta itemprop="name" content="Hacking Crazy Taxi">
 <meta itemprop="description" content="I had a bet with my friend about getting #1 on the Crazy Taxi high score page (== motivation for this post).
-For those who have not been introduced to it yet, it&#39;s a Facebook/Flash/2.0 resurrection of a much older game.
+For those who have not been introduced to it yet, it&rsquo;s a Facebook/Flash/2.0 resurrection of a much older game.
 Not having extreme timing skills, I quickly gave up on getting the 2,000,000 points required to make it the &ldquo;normal&rdquo; way: My first try was modifying the outgoing HTTP traffic using the Tamper Data plugin for Firefox (to catch the obvious ones).">
 <meta itemprop="datePublished" content="2009-10-17T15:36:52&#43;00:00" />
 <meta itemprop="dateModified" content="2009-10-17T15:36:52&#43;00:00" />
@@ -45,7 +45,7 @@ Not having extreme timing skills, I quickly gave up on getting the 2,000,000 poi
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Hacking Crazy Taxi"/>
 <meta name="twitter:description" content="I had a bet with my friend about getting #1 on the Crazy Taxi high score page (== motivation for this post).
-For those who have not been introduced to it yet, it&#39;s a Facebook/Flash/2.0 resurrection of a much older game.
+For those who have not been introduced to it yet, it&rsquo;s a Facebook/Flash/2.0 resurrection of a much older game.
 Not having extreme timing skills, I quickly gave up on getting the 2,000,000 points required to make it the &ldquo;normal&rdquo; way: My first try was modifying the outgoing HTTP traffic using the Tamper Data plugin for Firefox (to catch the obvious ones)."/>
 
 
@@ -126,10 +126,10 @@ Not having extreme timing skills, I quickly gave up on getting the 2,000,000 poi
 
             <div class="post-content">
                 <p>I had a bet with my friend about getting #1 on the Crazy Taxi high score page (== motivation for this post).</p>
-<p>For those who have not been introduced to it yet, it's a Facebook/Flash/2.0 resurrection of a much older game.</p>
+<p>For those who have not been introduced to it yet, it&rsquo;s a Facebook/Flash/2.0 resurrection of a much older game.</p>
 <p>Not having extreme timing skills, I quickly gave up on getting the 2,000,000 points required to make it the &ldquo;normal&rdquo; way: My first try was modifying the outgoing HTTP traffic using the Tamper Data plugin for Firefox (to catch the obvious ones). The Crazy Taxi Flash does actually submit your score using HTTP in clear text (IIRC they have a reflected XSS there as well), but the GET-param is only used for displaying a score - nothing is saved. By the looks of things, they seem to be RC4-encrypting the score as some sort of weak client-side anti-tamper protection, and even though singling out the request that submitted the score was no pain at a all - it actually said &ldquo;submitScore&rdquo; - decompiling the Flash, however, was.</p>
-<p>At first I tried with flasm, but for some reason flasm went all bananas when confronted with the Crazy Taxi flash files, so I started sketching up a Flash / AS3 deobfuscator / decompiler with <a href="http://frigolit.net">Frigolit</a> - and then I realized that simply debugging the host process would be far the fastest way to do it. I started out with setting my score to &ldquo;6661337&rdquo;, but someone had &ldquo;beat&rdquo; it the day after. I wanted to be on top, and I didn't want to have to &ldquo;maintain&rdquo; my position. I wanted the maximum score, so that made me look into matters and discover that the score was stored in a signed double (I think they use PHP ;).</p>
-<p>Here's a video of me &ldquo;achieving&rdquo; 0x7fff ffff points. A nice little thing is that if you go above 0x7ffff ffff (&gt;=0x8000 0000), the sign will flip and your numbers will &ldquo;shrink&rdquo; instead of growing. Damn I would like to see the frustrated faces of all them other script kiddies when they sit at home, trying to raise their scores and getting minus values instead :-)</p>
+<p>At first I tried with flasm, but for some reason flasm went all bananas when confronted with the Crazy Taxi flash files, so I started sketching up a Flash / AS3 deobfuscator / decompiler with <a href="http://frigolit.net">Frigolit</a> - and then I realized that simply debugging the host process would be far the fastest way to do it. I started out with setting my score to &ldquo;6661337&rdquo;, but someone had &ldquo;beat&rdquo; it the day after. I wanted to be on top, and I didn&rsquo;t want to have to &ldquo;maintain&rdquo; my position. I wanted the maximum score, so that made me look into matters and discover that the score was stored in a signed double (I think they use PHP ;).</p>
+<p>Here&rsquo;s a video of me &ldquo;achieving&rdquo; 0x7fff ffff points. A nice little thing is that if you go above 0x7ffff ffff (&gt;=0x8000 0000), the sign will flip and your numbers will &ldquo;shrink&rdquo; instead of growing. Damn I would like to see the frustrated faces of all them other script kiddies when they sit at home, trying to raise their scores and getting minus values instead :-)</p>
 <p><object width="400" height="225"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=7105034&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=ff9933&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=7105034&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=ff9933&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="225"></embed></object></p>
 <p><a href="http://vimeo.com/7105034">Hacking Crazy Taxi</a> from <a href="http://vimeo.com/pragmatk">Joe Pragmatk</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
 

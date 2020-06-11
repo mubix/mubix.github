@@ -134,7 +134,7 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
 <p>A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.</p>
 <pre><code>[22/May/2016:21:56:28 EDT] &quot;GET /wpad.dat HTTP/1.1&quot; 200 58
 - -&gt; /wpad.dat
-</code></pre><p>Now, you may be asking, &ldquo;How is setting their proxy server any kind of real persistence?&quot;, I implore you to go check out projects like <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a> and <a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></p>
+</code></pre><p>Now, you may be asking, &ldquo;How is setting their proxy server any kind of real persistence?&rdquo;, I implore you to go check out projects like <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a> and <a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></p>
 <p>Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&rsquo;t disable it for the SYSTEM or other local accounts, so it&rsquo;s harder than just &ldquo;flip on this registry setting via GPO&rdquo;)</p>
 <p>Oh and I&rsquo;ll just leave this here: <a href="https://msdn.microsoft.com/en-us/library/ee309366%28v=vs.85%29.aspx">Proxy servers and WinRM</a></p>
 <h3 id="references">References</h3>

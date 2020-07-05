@@ -19,12 +19,12 @@
       <description>&lt;p&gt;Use-cases:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network.&lt;/li&gt;
-&lt;li&gt;Pentester that wants to identify ports and protocols that can be used for a pentest to gain C2 outbound.&lt;/li&gt;
+&lt;li&gt;Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound.&lt;/li&gt;
 &lt;li&gt;Purple Team testing ports and protocol detection for C2.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Egress testing is an interesting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &amp;ldquo;Beyond Corp&amp;rdquo; model. Or, you may find a network of a small business that hasn&amp;rsquo;t put much thought into outbound egress, but follow traditional best practices allowing only specific ports out. Or, you may be up against an enterprise that only allow proxied connections outbound with full protocol filtering and analysis.&lt;/p&gt;
-&lt;p&gt;I created LetMeOutOfYour.net not only check for ports open but also give easily confirm-able responses that you have reached the correct protocol.&lt;/p&gt;
-&lt;p&gt;The design idea is that the server listens on all ports multiplexed for the most common 3 protocols (HTTP, HTTPS, and SSH). DNS is setup up in a way that all hostnames and sub-domains also route to the LMO host. On SSH the server host key is used to confirm successful, non-modified connections. HTTP is set up to listen not only on any port, but also any URI. HTTPS has a valid SSL certificate thanks to LetsEncrypt.&lt;/p&gt;
+&lt;p&gt;Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &amp;ldquo;Beyond Corp&amp;rdquo; model. Or, you may find a network of a small business that hasn&amp;rsquo;t put much thought into outbound egress but follow traditional best practices allowing only specific ports out. You may be up against an enterprise that only allows proxied connections outbound with full protocol filtering and analysis.&lt;/p&gt;
+&lt;p&gt;I created LetMeOutOfYour.net to handle all of these situations. I wanted a service that allows for confirmable responses via as many protocols as possible over any port.&lt;/p&gt;
+&lt;p&gt;The design idea is that the server listens on all ports multiplexed for the most common three protocols (HTTP, HTTPS, and SSH). DNS is setup up in a way that all hostnames and sub-domains also route to the LMO host. On SSH, the server host key is used to confirm successful, non-modified connections. HTTP is set up to listen not only on any port but also any URI. HTTPS has a valid SSL certificate, thanks to LetsEncrypt.&lt;/p&gt;
 &lt;p&gt;For example:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://randomstring2321.letmeoutofyour.net:3821/return/to/path.wsdl&#34;&gt;https://randomstring2321.letmeoutofyour.net:3821/return/to/path.wsdl&lt;/a&gt; Response: (w00tw00t)&lt;/li&gt;

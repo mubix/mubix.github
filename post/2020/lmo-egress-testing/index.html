@@ -36,7 +36,7 @@
  IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that wants to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2.  Egress testing is an interesting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &ldquo;Beyond Corp&rdquo; model.">
 <meta itemprop="datePublished" content="2020-07-04T09:14:33-04:00" />
 <meta itemprop="dateModified" content="2020-07-04T09:14:33-04:00" />
-<meta itemprop="wordCount" content="951">
+<meta itemprop="wordCount" content="1023">
 
 
 
@@ -187,7 +187,7 @@ random<span style="color:#f92672">.</span>shuffle(ports)
       print_open(<span style="color:#e6db74">&#34;Success! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
   <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>ConnectionError:
     print_closed(<span style="color:#e6db74">&#34;Failed! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-</code></pre></div><p>This is the function to test SSH. It actually</p>
+</code></pre></div><p>This is the function to test SSH. It actually is pretty interesting because using Paramiko there isn&rsquo;t a direct way just ask for remote host key that I&rsquo;ve found, but you can attempt to connect, catch that it fails because either the host key isn&rsquo;t in known_hosts or because no user name or password is supplied. Both errors still result in the <code>client</code> object being populated with the remote host&rsquo;s host key and this is what we use to compare against.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_ssh</span>(domain, port):
   client <span style="color:#f92672">=</span> SSHClient()
   vprint(<span style="color:#e6db74">&#34;Trying SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))

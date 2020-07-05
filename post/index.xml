@@ -5,10 +5,189 @@
     <description>Recent content in Posts on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Mar 2020 09:30:44 -0500</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jul 2020 09:14:33 -0400</lastBuildDate>
     
         <atom:link href="https://malicious.link/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Let Me Out of Your Net - Egress Testing</title>
+      <link>https://malicious.link/post/2020/lmo-egress-testing/</link>
+      <pubDate>Sat, 04 Jul 2020 09:14:33 -0400</pubDate>
+      
+      <guid>https://malicious.link/post/2020/lmo-egress-testing/</guid>
+      <description>&lt;p&gt;Use-cases:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network.&lt;/li&gt;
+&lt;li&gt;Pentester that wants to identify ports and protocols that can be used for a pentest to gain C2 outbound.&lt;/li&gt;
+&lt;li&gt;Purple Team testing ports and protocol detection for C2.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Egress testing is an interesting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &amp;ldquo;Beyond Corp&amp;rdquo; model. Or, you may find a network of a small business that hasn&amp;rsquo;t put much thought into outbound egress, but follow traditional best practices allowing only specific ports out. Or, you may be up against an enterprise that only allow proxied connections outbound with full protocol filtering and analysis.&lt;/p&gt;
+&lt;p&gt;I created LetMeOutOfYour.net not only check for ports open but also give easily confirm-able responses that you have reached the correct protocol.&lt;/p&gt;
+&lt;p&gt;The design idea is that the server listens on all ports multiplexed for the most common 3 protocols (HTTP, HTTPS, and SSH). DNS is setup up in a way that all hostnames and sub-domains also route to the LMO host. On SSH the server host key is used to confirm successful, non-modified connections. HTTP is set up to listen not only on any port, but also any URI. HTTPS has a valid SSL certificate thanks to LetsEncrypt.&lt;/p&gt;
+&lt;p&gt;For example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://randomstring2321.letmeoutofyour.net:3821/return/to/path.wsdl&#34;&gt;https://randomstring2321.letmeoutofyour.net:3821/return/to/path.wsdl&lt;/a&gt; Response: (w00tw00t)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://test.woot.letmeoutofyour.net:22/cool/stuff.php&#34;&gt;http://test.woot.letmeoutofyour.net:22/cool/stuff.php&lt;/a&gt; Response: (w00tw00t)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The following is a script to test a range of ports with HTTP, HTTPS, and SSH and confirm the response&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;Just beginning with libraries. Paramiko is a SSH library for Python, and Concurrent.Futures is a method for creating concurrency/threading to speed up the script.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; socket
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; concurrent.futures
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; paramiko.client &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SSHClient
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; paramiko
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here are the variable to configure the script:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ports: Two examples for specifying a list of ports, or doing a range is available.&lt;/li&gt;
+&lt;li&gt;Domain: Anyone can set up their own LMO server
+using this Ansible script: &lt;a href=&#34;https://gitlab.com/mubix/letmeoutofyour.net&#34;&gt;LetMeOutOfYour.net Server Setup&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Verbose: Adds output saying what is being tested at that time.&lt;/li&gt;
+&lt;li&gt;printOpen and printClosed: These options can help determine how much output you want. If you are in a network that has mostly open connections you may only want things that are closed, or if you are egress testing a more closed network you may only want open. Or you may want everything and just filter it later.&lt;/li&gt;
+&lt;li&gt;ThreadCount: How many threads to spin up to get through your list.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Finally it randomizes the list so that you aren&amp;rsquo;t hitting everything in order.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# VARIABLES&lt;/span&gt;
+ports &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;445&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3389&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;]
+&lt;span style=&#34;color:#75715e&#34;&gt;#ports = list(range(1,65536))&lt;/span&gt;
+
+domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;letmeoutofyour.net&amp;#34;&lt;/span&gt;
+verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
+printOpen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+printClosed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+
+threadcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
+
+random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;These functions are just checking if the different verbosity levels are set and printing if they are.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Verbosity - set to False above if you don&amp;#39;t want output&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vprint&lt;/span&gt;(status):
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(status)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Print open ports&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_open&lt;/span&gt;(status):
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printOpen &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Print closed ports&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_closed&lt;/span&gt;(status):
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printClosed &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[-] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is the function to test the HTTP/HTTPS connections:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_web&lt;/span&gt;(base, domain, port):
+  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Testing: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+    r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port), timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;w00tw00t&amp;#34;&lt;/span&gt;:
+      print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exceptions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectionError:
+    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is the function to test SSH. It actually&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_ssh&lt;/span&gt;(domain, port):
+  client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SSHClient()
+  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Trying SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+    client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(domain, port, timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; paramiko&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ssh_exception&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SSHException:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; socket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;timeout:
+    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;
+  key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_transport()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_remote_server_key()
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; key&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_base64() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&amp;#34;&lt;/span&gt;:
+    print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the &amp;ldquo;main&amp;rdquo; portion of the script (yes, I need to actually make a main function&amp;hellip;)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; concurrent&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;futures&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ThreadPoolExecutor(threadcount) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; executor:
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; port &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ports:
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTP&lt;/span&gt;
+    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://&amp;#34;&lt;/span&gt;
+    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTPS&lt;/span&gt;
+    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt;
+    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
+    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the script all put together:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; socket
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; concurrent.futures
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; paramiko.client &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SSHClient
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; paramiko
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# VARIABLES&lt;/span&gt;
+ports &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;445&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3389&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;]
+&lt;span style=&#34;color:#75715e&#34;&gt;#ports = list(range(1,65536))&lt;/span&gt;
+
+domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;letmeoutofyour.net&amp;#34;&lt;/span&gt;
+verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
+printOpen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+printClosed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
+
+threadcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
+
+random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
+
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Verbosity - set to False above if you don&amp;#39;t want output&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vprint&lt;/span&gt;(status):
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(status)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Print open ports&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_open&lt;/span&gt;(status):
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printOpen &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# Print closed ports&lt;/span&gt;
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_closed&lt;/span&gt;(status):
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printClosed &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[-] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_web&lt;/span&gt;(base, domain, port):
+  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Testing: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+    r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port), timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;w00tw00t&amp;#34;&lt;/span&gt;:
+      print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exceptions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectionError:
+    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_ssh&lt;/span&gt;(domain, port):
+  client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SSHClient()
+  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Trying SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+    client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(domain, port, timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; paramiko&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ssh_exception&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SSHException:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; socket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;timeout:
+    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;
+  key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_transport()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_remote_server_key()
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; key&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_base64() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&amp;#34;&lt;/span&gt;:
+    print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; concurrent&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;futures&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ThreadPoolExecutor(threadcount) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; executor:
+  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; port &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ports:
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTP&lt;/span&gt;
+    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://&amp;#34;&lt;/span&gt;
+    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTPS&lt;/span&gt;
+    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt;
+    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
+    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
     
     <item>
       <title>2020 Pandemic SIP Hiring List</title>
@@ -736,20 +915,6 @@ Listening on 0.0.0.0:443, CTRL+C to stop
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
 &lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1HnDVbXqQU74X8RyLdTPZ36ZPlbpXYk5ByO1uw55eWI0/&#34;&gt;https://docs.google.com/spreadsheets/d/1HnDVbXqQU74X8RyLdTPZ36ZPlbpXYk5ByO1uw55eWI0/&lt;/a&gt;&lt;/p&gt;
 &lt;iframe height=&#34;3900&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vRQdjd_XkEwUH9ZavinpWRptb8VOlwtbFwrmDjEWs5qi4rBhbJbXXpGdx-oIC2sTgN9nw10pz_4hC-b/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;</description>
-    </item>
-    
-    <item>
-      <title>Wifi Feature Request: WPA handshakes</title>
-      <link>https://malicious.link/post/2018/wifi-feature-request-wpa-handshakes/</link>
-      <pubDate>Sun, 14 Oct 2018 09:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2018/wifi-feature-request-wpa-handshakes/</guid>
-      <description>&lt;p&gt;I have a bit of a feature request for all wireless assessment tools out there:&lt;/p&gt;
-&lt;p&gt;Many times before arriving on site for an assessment, I&amp;rsquo;ll know the ESSIDs of a target wireless network for a client. Getting channels and BSSIDs isn&amp;rsquo;t usually an option. Also, many times during the assessment I&amp;rsquo;m performing there are physical aspects to it, like guards or cameras, so sitting down in the lobby and typing out commands to De-auth that client or BSSID isn&amp;rsquo;t really great OPSEC. SO this is my ask:&lt;/p&gt;
-&lt;p&gt;Please make a mode or setting where I can specify a ESSID ahead of time (so I am only targeting the client networks I know of) that I can just leave running on a RaspberryPI or other small device + wireless card in my backpack. This mode would then search for WPA-PSK APs with that name, find ones with clients on it by hopping, deauth and try to capture the handshake, but would then go-back to hopping after a few minutes if failing (as I&amp;rsquo;m probably walking around the inside and outside of the building). A nice to have would that it would then exclude that network from the list provided and move on. Possibly also going after the ones with the most clients in the list automatically would be a plus as well.&lt;/p&gt;
-&lt;p&gt;The end result would be that I would have a couple WPA handshakes that I could then crack off-line just by walking around the building doing other things.&lt;/p&gt;
-&lt;p&gt;The key to this whole thing is not to get stuck on a single BSSID or client, and be able to reliably move on to another channel, BSSID or target ESSID without interaction. Let the WPA Handshake Hunting begin!&lt;/p&gt;
-</description>
     </item>
     
   </channel>

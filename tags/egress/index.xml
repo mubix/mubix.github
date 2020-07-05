@@ -1,13 +1,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>firewall on malicious.link</title>
-    <link>https://malicious.link/tags/firewall/</link>
-    <description>Recent content in firewall on malicious.link</description>
+    <title>egress on malicious.link</title>
+    <link>https://malicious.link/tags/egress/</link>
+    <description>Recent content in egress on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 04 Jul 2020 09:14:33 -0400</lastBuildDate>
     
-        <atom:link href="https://malicious.link/tags/firewall/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://malicious.link/tags/egress/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -187,71 +187,6 @@ random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
     &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
     executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>Blocking countries via iptables</title>
-      <link>https://malicious.link/post/2016/blocking-countries-via-iptables/</link>
-      <pubDate>Fri, 28 Oct 2016 15:00:00 -0400</pubDate>
-      
-      <guid>https://malicious.link/post/2016/blocking-countries-via-iptables/</guid>
-      <description>&lt;p&gt;With all of the scanning / noise on the Internet, it&amp;rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&amp;rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&amp;rsquo;s pretty easy to get going, just &lt;code&gt;apt-get&lt;/code&gt; install the needed perl library and the addons themselves:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;apt-get install libtext-csv-xs-perl xtables-addons-common
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&amp;rsquo;t availabe (like Linode&amp;rsquo;s special kernel), you will need to find another way to get the correct headers installed.&lt;/p&gt;
-&lt;p&gt;Then download the Maxmind geo database, the location of the &lt;code&gt;xt_geoip_dl&lt;/code&gt; tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in &lt;code&gt;/usr/src/xtables-addons-2.6/geoip/&lt;/code&gt; as well as &lt;code&gt;/usr/lib/xtables-addons/&lt;/code&gt; YMMV.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cd /usr/src/xtables-addons-2.6/geoip/
-./xt_geoip_dl
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You should see it downloading the IP databases:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz
-Length: 1303811 (1.2M) [application/octet-stream]
-Saving to: ‘GeoIPv6.csv.gz’
-
-GeoIPv6.csv.gz                                  100%[=========================================================================================================&amp;gt;]   1.24M  --.-KB/s   in 0.004s
-
-2016-10-28 13:55:24 (321 MB/s) - ‘GeoIPv6.csv.gz’ saved [1303811/1303811]
-
---2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
-Saving to: ‘GeoIPCountryCSV.zip’
-
-GeoIPCountryCSV.zip                             100%[=========================================================================================================&amp;gt;]   2.04M  --.-KB/s   in 0.006s
-
-2016-10-28 13:55:24 (326 MB/s) - ‘GeoIPCountryCSV.zip’ saved [2137625/2137625]
-
-FINISHED --2016-10-28 13:55:24--
-Total wall clock time: 0.1s
-Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
-Archive:  GeoIPCountryCSV.zip
-  inflating: GeoIPCountryWhois.csv
-
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that, you need to &amp;ldquo;build&amp;rdquo; the lists by performing the following command in that same directory (one install didn&amp;rsquo;t automatically make the directory so ensure it&amp;rsquo;s there with the mkdir command):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;mkdir -p /usr/share/xt_geoip
-./xt_geoip_build -D /usr/share/xt_geoip *.csv
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that you are off the the races and you can simply use the geoip module as so now:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc CN -j DROP
-iptables -A INPUT -m geoip --src-cc HK -j DROP
-iptables -A INPUT -m geoip --src-cc RU -j DROP
-iptables -A INPUT -m geoip --src-cc KR -j DROP
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Or you can go the other route and just allow from your country:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc PL -m tcp -p tcp --dport 22 -j ACCEPT
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;When looking up how to do this many people recommended updating the GeoIP database once a month. To do this I made a really simple bash script that just repeats all the things I did and added it to a monthly cron job:&lt;/p&gt;
-&lt;p&gt;File: 0update_maxmind&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#!/bin/bash
-
-rm -f /usr/src/xtables-addons-2.6/geoip/*.csv
-rm -rf /usr/share/xt_geoip/*
-cd /usr/src/xtables-addons-2.6/geoip/
-./xt_geoip_dl
-./xt_geoip_build -D /usr/share/xt_geoip *.csv
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Setting the cronjob:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chmod +x 0update_maxmind
-mv 0update_maxmind /etc/cront.monthly/
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;References I found useful:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://xtables-addons.sourceforge.net/geoip.php&#34;&gt;http://xtables-addons.sourceforge.net/geoip.php&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.internetstaff.com/frustrate-ssh-scanners-geoip-iptables-blocking/&#34;&gt;https://www.internetstaff.com/frustrate-ssh-scanners-geoip-iptables-blocking/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.linode.com/stackscripts/view/3807-jeffkyjin-ipp2p+filtering&#34;&gt;https://www.linode.com/stackscripts/view/3807-jeffkyjin-ipp2p+filtering&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
     </item>
     
   </channel>

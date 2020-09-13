@@ -40,7 +40,8 @@ Set-Location -Path &#39;C:\Program Files\hashcat\&#39;Get-ChildItem .\rules\ | 
 
 
 
-<meta itemprop="keywords" content="hashcat,powershell,passwordcracking,passwords," /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="hashcat,powershell,passwordcracking,passwords," />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Run All Rules for Hashcat"/>
 <meta name="twitter:description" content="This is just a quick script to demonstrate using PowerShell to run all the rules against a specific hash (or hash file), starting from the smallest file (usually the simplest rules)
 Set-Location -Path &#39;C:\Program Files\hashcat\&#39;Get-ChildItem .\rules\ | where { $_.extension -eq &quot;.rule&quot; } |Sort-Object -Property Length | % { .\hashcat64.exe -m1000 20F91778B033F841702E014D3B79148C .\rockyou.txt --loopback --rules $_.FullName}I&rsquo;m sure there is a better way to do this. If you know of one please hit me up on Twitter, or other social media."/>

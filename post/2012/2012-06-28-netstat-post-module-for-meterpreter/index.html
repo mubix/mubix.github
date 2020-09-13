@@ -38,13 +38,14 @@ session.railgun.add_function(&amp;#39;iphlpapi&amp;#39;, &amp;#39;GetTcpTable&am
 Added to trunk: https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb
 I promised this one a while ago, sorry for the delay. This only does TCP, it&rsquo;d be trivial to do UDP as well but never really found anything interesting and actively going on on the UDP side. It&rsquo;s real simple, first we&rsquo;ve gotta add the GetTcpTable function to railgun:
 session.railgun.add_function(&#39;iphlpapi&#39;, &#39;GetTcpTable&#39;, &#39;DWORD&#39;, [ [&#39;PBLOB&#39;, &#39;pTcpTable&#39;, &#39;out&#39;], [&#39;PDWORD&#39;, &#39;pdwSize&#39;, &#39;inout&#39;], [&#39;BOOL&#39;, &#39;bOrder&#39;, &#39;in&#39;] ]) Then gauge the size of the table:">
-<meta itemprop="datePublished" content="2012-06-28T13:18:52&#43;00:00" />
-<meta itemprop="dateModified" content="2012-06-28T13:18:52&#43;00:00" />
+<meta itemprop="datePublished" content="2012-06-28T13:18:52+00:00" />
+<meta itemprop="dateModified" content="2012-06-28T13:18:52+00:00" />
 <meta itemprop="wordCount" content="272">
 
 
 
-<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Netstat Post Module for Meterpreter"/>
 <meta name="twitter:description" content="Submitted it to MSF via pull request here: https://github.com/rapid7/metasploit-framework/pull/538
 Added to trunk: https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/tcpnetstat.rb

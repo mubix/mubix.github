@@ -316,7 +316,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;h2 id=&#34;what-are-spns&#34;&gt;What are SPNs&lt;/h2&gt;
 &lt;p&gt;[Service Principal Names](&lt;a href=&#34;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85&#34;&gt;https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85&lt;/a&gt;).aspx) (SPNs) are:&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;a unique identifier of a service instance. SPNs are used by Kerberos authentication to associate a service instance with a service logon account.&amp;rdquo; - MSDN&lt;/p&gt;
+&lt;p&gt;a unique identifier of a service instance. SPNs are used by Kerberos authentication to associate a service instance with a service logon account.&amp;quot; - MSDN&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Basically mapping a service running on a server to an account it&amp;rsquo;s running as so that it can do / accept kerberos authentication. Normally, these services, like &amp;ldquo;CIFS&amp;rdquo; (Windows Shares) run under the context of the computer account.&lt;/p&gt;
 &lt;h2 id=&#34;why-would-they-be-associated-with-users&#34;&gt;Why would they be associated with users?&lt;/h2&gt;
@@ -411,7 +411,7 @@ CN=MSSQL Service Admin,CN=Users,DC=sittingduck,DC=info
         MSSQLSvc/WIN2K8R2.sittingduck.info
 
 Existing SPN found!
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Each line that starts with &amp;ldquo;CN&amp;rdquo; is an account&amp;rdquo; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Each line that starts with &amp;ldquo;CN&amp;rdquo; is an account&amp;quot; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.&lt;/p&gt;
 &lt;h3 id=&#34;get-spn&#34;&gt;Get-SPN&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;Link: &lt;a href=&#34;https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN&#34;&gt;nullbind&amp;rsquo;s Get-SPN folder in the Powershellery repo&lt;/a&gt;&lt;/li&gt;

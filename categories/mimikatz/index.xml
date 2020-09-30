@@ -36,7 +36,7 @@ icacls C:\open\ /grant Everyone:(OI)(CI)F /t
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We are setting &amp;ldquo;Everyone&amp;rdquo; permissions on a Share (net share) and NTFS (icacls) level for this to work properly.&lt;/p&gt;
 &lt;p&gt;Step 2. Set registry keys. There are two registry keys that we need to set. The first allows Null Sessions to our new share and the second allows null users to have the &amp;ldquo;Everyone&amp;rdquo; token so that we don&amp;rsquo;t have to get crazy with our permissions. I have create a meterpreter script that has a bunch of error checking here: &lt;a href=&#34;https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/massmimi_reg.rb&#34;&gt;massmimi_reg.rb&lt;/a&gt;
-or you can just make the following changes&amp;rdquo;&lt;/p&gt;
+or you can just make the following changes&amp;quot;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;HKLM\System\CurrentControlSet\services\LanmanServer\Parameters NullSessionShares REG_MULTI_SZ  = open
 HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp;quot; = 1
 &lt;/code&gt;&lt;/pre&gt;
@@ -146,7 +146,7 @@ mimikatz # sekurlsa::logonPasswords full
 &lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_11.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
+&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&#39; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
 </description>
@@ -263,7 +263,7 @@ do_cmd(handle, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;getLogonPasswo
 &lt;p&gt;His blog is here: &lt;a href=&#34;http://blog.gentilkiwi.com/&#34;&gt;http://blog.gentilkiwi.com/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And since a picture is worth a thousand words:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201204_phdays_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;You should really go check out what he is going to present&amp;hellip; just sayin&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;You should really go check out what he is going to present&amp;hellip; just sayin&#39;&lt;/p&gt;
 </description>
     </item>
     

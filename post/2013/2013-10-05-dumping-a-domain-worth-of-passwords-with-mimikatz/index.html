@@ -144,7 +144,7 @@ icacls C:\open\ /grant Everyone:(OI)(CI)F /t
 </code></pre>
 <p>We are setting &ldquo;Everyone&rdquo; permissions on a Share (net share) and NTFS (icacls) level for this to work properly.</p>
 <p>Step 2. Set registry keys. There are two registry keys that we need to set. The first allows Null Sessions to our new share and the second allows null users to have the &ldquo;Everyone&rdquo; token so that we don&rsquo;t have to get crazy with our permissions. I have create a meterpreter script that has a bunch of error checking here: <a href="https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/massmimi_reg.rb">massmimi_reg.rb</a>
-or you can just make the following changes&rdquo;</p>
+or you can just make the following changes&quot;</p>
 <pre><code>HKLM\System\CurrentControlSet\services\LanmanServer\Parameters NullSessionShares REG_MULTI_SZ  = open
 HKLM\System\CurrentControlSet\Contol\Lsa &quot;EveryoneIncludesAnonymous&quot; = 1
 </code></pre>

@@ -128,7 +128,7 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
 <p>So it&rsquo;s pretty eash to handle that. If modhandle[&ldquo;return&rdquo;] == 0 something went wrong and we need to handle it, else we got a handle address and we can continue.</p>
 <p>Next up is GetProcAddress:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">procaddr <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetProcAddress(modhandle<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>, <span style="color:#e6db74">&#39;getaddrinfo&#39;</span>)
-</code></pre></div><p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt&rsquo; exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
+</code></pre></div><p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt' exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
 <p>Easy stuff, doing this on any of the Railgun scripts/post modules you have will greatly increase both the reliability and the user&rsquo;s ability to know why it didn&rsquo;t work.</p>
 
             </div>

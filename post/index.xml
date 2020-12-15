@@ -5,10 +5,248 @@
     <description>Recent content in Posts on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 26 Nov 2020 09:30:44 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 15 Dec 2020 00:30:44 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>SolarFlare Release: Password Dumper for SolarWinds Orion</title>
+      <link>https://malicious.link/post/2020/solarflare-release-password-dumper-for-solarwinds-orion/</link>
+      <pubDate>Tue, 15 Dec 2020 00:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2020/solarflare-release-password-dumper-for-solarwinds-orion/</guid>
+      <description>&lt;h2 id=&#34;tldr&#34;&gt;TL;DR&lt;/h2&gt;
+&lt;p&gt;Here are the concerns I have regarding the SolarWinds/FireEye breach:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The accounts stored in an organization&amp;rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &amp;ldquo;removed&amp;rdquo; from the interface, I am unsure).&lt;/li&gt;
+&lt;li&gt;The re-infection possibilities, from one-time access to SolarWinds Orion database and file system, is being underestimated. Attackers can directly re-infect SolarWinds Orion systems through Erlang and other vulnerabilities. Rotating these credentials is HARD.&lt;/li&gt;
+&lt;li&gt;Not enough is being talked about on how to properly secure SolarWinds Orion machines.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I&amp;rsquo;m releasing this tool after a lot of thought surrounding the SolarWinds/FireEye breach. It&amp;rsquo;s been in development since 2015. The reason I developed SolarFlare in the first place was to assist in my Red Team engagements. The main reason to release the tool publicly, right now, is so businesses can identify one facet of the possible severity of this breach, using a simple command-line tool they can run on their own SolarWinds Orion machines. SolarFlare can help identify the accounts that may have been compromised during this breach.&lt;/p&gt;
+&lt;p&gt;SolarWinds is not an easy application to quickly identify which credentials are stored in the database. SolarFlare parses all of the needed pieces, connects to the database, and decrypts (where possible) all of the account data stored in the database. I have seen everything from regular Active Directory accounts, to AWS/Azure/Meraki API keys, and Cisco enable passwords.&lt;/p&gt;
+&lt;p&gt;Now that I&amp;rsquo;ve mentioned their encryption, before we start going down this rabbit hole, I must say that SolarWinds did a &lt;strong&gt;fantastic&lt;/strong&gt; job at doing as much cryptography as possible to ensure that credential theft is not trivial. They had even made more improvements since 2015 when I first started researching the product. However, at the end of the day, SolarWinds Orion needs to have the ability to use the credentials in clear text, so no matter how much encryption they add, it will only ever be obfuscation.&lt;/p&gt;
+&lt;h2 id=&#34;history&#34;&gt;History&lt;/h2&gt;
+&lt;p&gt;In 2016 I gave two talks, one at BSidesPhilly and the other at KiwiCon2016, down in New Zealand. These talks focused on the credentials I was able to steal out of SolarWinds Orion. At this time, I did not release any tooling to exploit access to SolarWinds, but I did talk about how reversing the credentials could easily be done due to the use of an exportable self-generated RSA key.&lt;/p&gt;
+&lt;h3 id=&#34;video-from-bsidesphily-2016&#34;&gt;Video from BSidesPhily 2016&lt;/h3&gt;
+&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/VXUPyod6vqw&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;h3 id=&#34;kiwicon-2016&#34;&gt;KiwiCon 2016&lt;/h3&gt;
+&lt;iframe src=&#34;//www.slideshare.net/slideshow/embed_code/key/FBkXrKZmGENvF4&#34; width=&#34;595&#34; height=&#34;485&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34; style=&#34;border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;&#34; allowfullscreen&gt; &lt;/iframe&gt; &lt;div style=&#34;margin-bottom:5px&#34;&gt; &lt;strong&gt; &lt;a href=&#34;//www.slideshare.net/mubix/kiwicon-2016-kicking-orions-assets&#34; title=&#34;KiwiCon 2016 - Kicking Orion&amp;#x27;s Assets&#34; target=&#34;_blank&#34;&gt;KiwiCon 2016 - Kicking Orion&amp;#x27;s Assets&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&#34;https://www.slideshare.net/mubix&#34; target=&#34;_blank&#34;&gt;Rob Fuller&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;
+&lt;h3 id=&#34;erlang&#34;&gt;Erlang&lt;/h3&gt;
+&lt;p&gt;Fast forward to 2018, &lt;a href=&#34;https://malicious.link/post/2018/erlang-arce/&#34;&gt;I released a blog post&lt;/a&gt;, again about SolarWinds, where I talked more about the severe effects of exploiting SolarWinds Orion. SolarWinds makes use of RabbitMQ, which uses Erlang (a distributed programming language). An attacker with file-level access to the SolarWinds machine, either through code execution, access to backup files, or just a poorly permissioned share, could steal the file &lt;code&gt;.erlang.cookie&lt;/code&gt; from the ProgramData directory and have SYSTEM level code execution to this day.&lt;/p&gt;
+&lt;p&gt;Changing this &amp;ldquo;cookie&amp;rdquo; is non-trivial. You there isn&amp;rsquo;t a method in the SolarWinds Orion interface to do so. I have been successful with just shutting down all of the SolarWinds services, alerting the string in the file, and starting the services back up, but I cannot guarantee this won&amp;rsquo;t break things in more robust corporate installs. A more complete method of defense is to simply &lt;strong&gt;Block port 25672/tcp inbound to your SolarWinds Orion box&lt;/strong&gt;. This is the port that can be remotely accessed for remote code execution if an attacker has stolen the &lt;code&gt;.erlang.cookie&lt;/code&gt; file.&lt;/p&gt;
+&lt;h3 id=&#34;hd-moore&#34;&gt;HD Moore&lt;/h3&gt;
+&lt;p&gt;A few months later, &lt;a href=&#34;https://twitter.com/hdm&#34;&gt;HD Moore&lt;/a&gt; released a &lt;a href=&#34;https://www.atredis.com/blog/2018/10/24/fun-with-the-solarwinds-orion-platform&#34;&gt;blog post on the Atradis blog&lt;/a&gt; talking about the password hashing in SolarWinds Orion as well as how to decrypt the password from the SolarWinds Orion database. He also released the &lt;a href=&#34;https://github.com/atredispartners/solarwinds-orion-cryptography&#34;&gt;tools on Github to do so&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Also, the password cracking tools &lt;a href=&#34;https://github.com/hashcat/hashcat/issues/1736&#34;&gt;Hashcat&lt;/a&gt; and &lt;a href=&#34;https://github.com/openwall/john/pull/3449&#34;&gt;John the Ripper&lt;/a&gt; added cracking capabilities for SolarWinds Orion password hashes.&lt;/p&gt;
+&lt;h3 id=&#34;npm&#34;&gt;NPM&lt;/h3&gt;
+&lt;p&gt;In 2019, &lt;a href=&#34;https://twitter.com/VerSprite&#34;&gt;VeraSprite&lt;/a&gt; researchers released CVE-2019-8917. This vulnerability affected SolarWinds Orion 12.3 and the WCF protocol it incorporated for communications. &lt;a href=&#34;https://versprite.com/blog/security-research/exploitation-of-remote-services/&#34;&gt;There was a blog post&lt;/a&gt;, and a short video demonstrating the vulnerability. This vulnerability resulted in remote code execution as SYSTEM on the SolarWinds machine but does require valid credentials for the SolarWinds Orion interface.&lt;/p&gt;
+&lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/IE8LBmwZBgE&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;h2 id=&#34;present-day&#34;&gt;Present Day&lt;/h2&gt;
+&lt;p&gt;Today I am releasing SolarFlare. SolarFlare is a Authentication Audit / Password dumping tool originally designed for Red Team engagements, but can be used to audit the exposure SolarWinds Orion systems pose to an organization. Below I will walk through each section of the output from SolarFlare. There are no options or arguments.&lt;/p&gt;
+&lt;h3 id=&#34;erlang-cookie&#34;&gt;Erlang Cookie&lt;/h3&gt;
+&lt;p&gt;This function simply reads the &lt;code&gt;.erlang.cookie&lt;/code&gt; file from the &lt;code&gt;ProgramData&lt;/code&gt; directory where it&amp;rsquo;s stored. You can find this file at &lt;code&gt;%PROGRAMDATA%\SolarWinds\Orion\RabbitMQ\.erlang.cookie&lt;/code&gt;. It is a randomized string created during installation. This string does not change as far as I have observed. This string is also stored in the database.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;============================================
+| Collecting RabbitMQ Erlang Cookie
+|       Erlang Cookie: abcdefg12456789abcde
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;rsa-key&#34;&gt;RSA Key&lt;/h3&gt;
+&lt;p&gt;The &amp;ldquo;SolarWinds-Orion&amp;rdquo; RSA key is stored in the SYSTEM/LocalMachine certificate store and is generated during install. This certificate is used as the PKI based encryption/decryption for credentials stored int the database. I do not know why this certificate is generated in a way that makes it exportable. But, it doesn&amp;rsquo;t not need to be exportable for the decryption to be used. This certificate can be used along with the &lt;a href=&#34;https://github.com/atredispartners/solarwinds-orion-cryptography&#34;&gt;Atradis tool on Github to decrypt credentials from the database, &lt;strong&gt;offline&lt;/strong&gt;.&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;============================================
+| Collecting SolarWinds Certificate
+|       SolarWinds Orion Certificate Found!
+|       Subject Name: CN=SolarWinds-Orion
+|       Thumbprint  : BE85C6C3AACA8840E166187B6AB8C6BA9DA8DE80
+|       Password    : alcvabkajp4
+|       Private Key : MIIKHwIBAzCCCd8GCSqGSIb3DQEHAaCCCdAEggn&amp;lt;snip&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;dat-file&#34;&gt;DAT file&lt;/h3&gt;
+&lt;p&gt;The DAT file is a recent (2019/2018?) additional encryption that was added to SolarWinds Orion. The file is also located in the ProgramData directory: &lt;code&gt;%PROGRAMDATA%\SolarWinds\Keystorage\CryptoHelper\default.dat&lt;/code&gt;. This file is encrypted with the SYSTEM/LocalMachien DPAPI master keys. Once decrypted, much like the exporting of the RSA private key, it can be used to decrypt the AES based encrypted accounts in the database, &lt;strong&gt;offline&lt;/strong&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;| Collecting Default.DAT file
+|       Encrypted: 01000000D08C9DDF0115D&amp;lt;snip&amp;gt;
+|       Decrypted: 5D3CE5B08C9201E636BCF&amp;lt;snip&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;swnetperfmondb&#34;&gt;SWNetPerfMon.DB&lt;/h3&gt;
+&lt;p&gt;SolarWinds Orion stores it&amp;rsquo;s credentials for the database in a file called &lt;code&gt;SWNetPerfMon.DB&lt;/code&gt; which can be found in the installation directory (usually Program Files). The scary piece of this file is that no matter how many software updates, or migrations of the data happen (from SQL server to SQL server), it stores all of the previous credentials, databases, and server names of the previous setups in this file.&lt;/p&gt;
+&lt;p&gt;There is also a newer file called &lt;code&gt;SolarWindsDatabaseAccessCredential.json&lt;/code&gt; that can be found the ProgramData again: &lt;code&gt;%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json&lt;/code&gt;. This file is where the username and password are sometimes stored for the database.&lt;/p&gt;
+&lt;p&gt;The credentials are encrypted with the SYSTEM/LocalMachine DPAPI master keys, this time with a static set of entropy: &amp;ldquo;20120309&amp;rdquo;. I have never been able to find the significance of this date in regards to SolarWinds. If anyone knows, please let me know, I&amp;rsquo;m super curious.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;============================================
+| Collecting Database Credentials          |
+|       Path to SWNetPerfMon.DB is: C:\Program Files (x86)\SolarWinds\Orion\SWNetPerfMon.DB
+|       Connection String: Server=(local)\SOLARWINDS_ORION;Database=SolarWindsOrion;User ID=SolarWindsOrionDatabaseUser;Password=SUPERSECRETPASSWORDHERE
+|       Number of database credentials found: 1
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;connecting-to-the-database&#34;&gt;Connecting to the Database&lt;/h3&gt;
+&lt;p&gt;The code then attempts to automatically connect to the databases that it&amp;rsquo;s found and find the most current SolarWinds database.&lt;/p&gt;
+&lt;h3 id=&#34;exporting-the-key-table&#34;&gt;Exporting the Key Table&lt;/h3&gt;
+&lt;p&gt;I currently haven&amp;rsquo;t put in enough time to identify what this table is used for, but it looks to me like it may be the private key for the RSA key, and the DAT file, encrypted in a different way. If this is the case, then you may not even need access to the SolarWinds Orion server itself, possibly you&amp;rsquo;d just need access to the database where SolarWinds stores it&amp;rsquo;s data.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;============================================
+| DB - Exporting Key Table                 |
+|       KeyID: 1
+|       Encrypted Key: LmjknGhSXTC&amp;lt;snip&amp;gt;
+|       Kind: Aes256
+|       Purpose: master
+|       Protection Type: 1
+|       Protection Value: BE85C6C3AACA8&amp;lt;snip&amp;gt;
+|       Protection Details: {}
+------------------------------------------------
+|       KeyID: 2
+|       Encrypted Key: //pj6a4FaCyfv/Rgs&amp;lt;snip&amp;gt;
+|       Kind: Aes256
+|       Purpose: oldcryptohelper
+|       Protection Type: 0
+|       Protection Value: 1
+|       Protection Details: {&amp;quot;IV&amp;quot;:&amp;quot;oj3JCT7Cft&amp;lt;snip&amp;gt;&amp;quot;}
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;exporting-the-accounts-table&#34;&gt;Exporting the Accounts Table&lt;/h3&gt;
+&lt;p&gt;The accounts table is used to store credentials used to access the SolarWinds interface. It has changed a lot since my initial research. There used to be a column called &amp;ldquo;Password&amp;rdquo; that stored a credential that looked like this: &lt;code&gt;11-417578424799297-9-6260697430795685763067724&lt;/code&gt;. Many current installation still store this passwords in this manner, if it wasn&amp;rsquo;t a clean install. This is simple encoding with long division.&lt;/p&gt;
+&lt;p&gt;If you are interested in the code you can see it here&lt;/p&gt;
+&lt;p&gt;At the time of this writing there is &lt;a href=&#34;https://github.com/hashcat/hashcat/issues/2620&#34;&gt;a pull request to add the newer version of password hashing&lt;/a&gt; that SolarWinds uses to store credentials used to access SolarWinds.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The major concern about SolarWinds Orion accounts is that it upper cases all account passwords&lt;/strong&gt;. This means that the key space to attempt to crack them is 26 characters smaller (without the lowercase characters). This means that even though SolarWinds uses PBDKF12, 1000 iterations of it, and SHA512 hashing, cracking the account passwords is exponentially easier and faster.&lt;/p&gt;
+&lt;p&gt;Admin and Guest are common across installs. The guest account used to be enabled by default, which would allow attackers to gain access to the interface. This is no longer the case. There are two new accounts &lt;code&gt;_system&lt;/code&gt; which has it&amp;rsquo;s password stored in the credential database, and &lt;code&gt;iprequest&lt;/code&gt; which I believe is a result of the one of the features I installed on the VM. The &lt;code&gt;_system&lt;/code&gt; account is enabled by default and is an administrator. Even though this account has a randomized password, it being stored in the database means I can decrypt it, instead of trying to crack it.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;============================================
+| DB - Exporting Accounts Table            |
+|        Account: _system
+|        Password Hash: qE9ClH&amp;lt;snip&amp;gt;
+|        Password Salt: XgtO8XNWc/KiIdglGOnxvw==
+|        Hashcat Mode 12501: $solarwinds$1$XgtO8XNWc/KiIdglGOnxvw==$qE9ClHDI&amp;lt;snip&amp;gt;
+|        Account Enabled: Y
+|        Allow Admin: Y
+|        Last Login: 12/15/2020
+--------------------------------------------
+|        Account: Admin
+|        Password Hash: IfAEwA7LXxOAH7ORCG0ZYeq&amp;lt;snip&amp;gt;
+|        Password Salt: jNhn3i2XtHfY8y4EOmNdiQ==
+|        Hashcat Mode 12501: $solarwinds$1$jNhn3i2XtHfY8y4EOmNdiQ==$IfAEwA7LXxOAH7ORCG0ZY&amp;lt;snip&amp;gt;
+|        Account Enabled: Y
+|        Allow Admin: Y
+|        Last Login: 12/02/2020
+--------------------------------------------
+|        Account: Guest
+|        Password Hash: Y/EMuOWMNfCd&amp;lt;snip&amp;gt;
+|        Salt is NULL in DB so lowercase username is used: guest
+|        Hashcat Mode 12500: $solarwinds$0$guest$Y/EMuOWMNfCd&amp;lt;snip&amp;gt;
+|        Account Enabled: N
+|        Allow Admin: N
+|        Last Login: 12/30/1899
+--------------------------------------------
+|        Account: iprequest
+|        Password Hash: 7zskGWFukuHuwQ&amp;lt;snip&amp;gt;
+|        Salt is NULL in DB so lowercase username is used: iprequest
+|        Hashcat Mode 12500: $solarwinds$0$iprequest$7zskGWFukuHuwQ&amp;lt;snip&amp;gt;
+|        Account Enabled: Y
+|        Allow Admin: N
+|        Last Login: 01/01/1900
+--------------------------------------------
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;exporting-the-credentials-table&#34;&gt;Exporting the Credentials Table&lt;/h3&gt;
+&lt;p&gt;Finally the actual credential table. I&amp;rsquo;ve observed 4 different methods for storing credentials here:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Clear text (as is the case for SNMP community strings)&lt;/li&gt;
+&lt;li&gt;Encrypted with the RSA key (this is the older method, being phased out it appears)&lt;/li&gt;
+&lt;li&gt;Encrypted with AES using the &lt;code&gt;default.dat&lt;/code&gt; file as the decryption key&lt;/li&gt;
+&lt;li&gt;Encrypted using &lt;a href=&#34;https://www.nuget.org/packages/System.Security.Cryptography.Xml/&#34;&gt;Microsoft&amp;rsquo;s XML encryption/decryption method&lt;/a&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;SolarFlare recognizes all of them, and will attempt to decrypt them accordingly. This is where you will find AWS API keys, vCenter credentials, SNMPv3 credentials, Cisco router and switch passwords and enable passwords. This is where the scary bits are.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;============================================
+| DB - Exporting Credentials Table         |
+------------------1--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: _system
+|       Desc: Cortex Integration
+|       Owner: CORE
+|               Password: 9dM-5pH/&amp;amp;amp;Y(KU-v
+|               Username: _system
+------------------1--------------------------
+------------------2--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: JobEngine
+|       Desc: Job Engine router TCP endpoint credentials
+|       Owner: JobEngine
+|               Password: +fBByxJFsK+da6ZN2wKvLTKC/PWUzFlfIvvwtW/XqvA=
+|               Username: KWPPhiYJmE8+fRF6qlkxulK2tf3t79TQOAk1ywBMVOI=
+------------------2--------------------------
+------------------3--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV2
+| Name: public
+|       Desc:
+|       Owner: Orion
+|               Community: public
+------------------3--------------------------
+------------------4--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV2
+| Name: private
+|       Desc:
+|       Owner: Orion
+|               Community: private
+------------------4--------------------------
+------------------5--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: Erlang cookie
+|       Desc: Erlang clustering cookie
+|       Owner: Erlang
+|               Password: abcdefg12456789abcde
+|               Username: ignored
+------------------5--------------------------
+------------------6--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: RabbitMQ user account
+|       Desc: RabbitMQ user account for Message Bus
+|       Owner: RabbitMQ
+|               Password: LtVmCrzlTNyWmwxpxJMi
+|               Username: orion
+------------------6--------------------------
+------------------7--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV3
+| Name: User: snmpv3user, Context: thisisthecontext
+|       Desc:
+|       Owner: Orion
+|               AuthenticationKeyIsPassword: false
+|               AuthenticationPassword: ASDqwe123
+|               AuthenticationType: SHA1
+|               Context: thisisthecontext
+|               PrivacyKeyIsPassword: false
+|               PrivacyPassword: ASDqwe123
+|               PrivacyType: AES256
+|               UserName: snmpv3user
+------------------7--------------------------
+------------------8--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV3
+| Name: User: rootsnmpv3, Context: newcontextv3
+|       Desc:
+|       Owner: Orion
+|               AuthenticationKeyIsPassword: true
+|               AuthenticationPassword: ASDqwe123
+|               AuthenticationType: MD5
+|               Context: newcontextv3
+|               PrivacyKeyIsPassword: true
+|               PrivacyPassword: ASDqwe123
+|               PrivacyType: AES128
+|               UserName: rootsnmpv3
+------------------8--------------------------
+------------------9--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: DomainAdmin
+|       Desc:
+|       Owner: Orion
+|               Password: ASDqwe123
+|               Username: SITTINGDUCK\uberuser
+------------------9--------------------------
+------------------10--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: DomainJoiner
+|       Desc:
+|       Owner: Orion
+|               Password: ASDqwe123
+|               Username: superadmin@sittingduck.info
+------------------10--------------------------
+------------------11--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: vesxi
+|       Desc: vesxi
+|       Owner: VIM
+|               Password: ASDqwe123
+|               Username: root
+------------------11--------------------------
+============================================
+============================================
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you&amp;rsquo;ve made it this far, you can find the project over at &lt;a href=&#34;https://github.com/mubix/solarflare&#34;&gt;https://github.com/mubix/solarflare&lt;/a&gt;.
+Also, for defenders, I have added the creation of the file &amp;ldquo;SolarFlare&amp;rdquo; in &lt;code&gt;C:\Windows\Temp\&lt;/code&gt; when you run SolarFlare. Hopefully that will help catch any pentesters or script kiddies that don&amp;rsquo;t read code or compile for themselves.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>2020 OSCP Contest</title>
@@ -695,68 +933,6 @@ yiZ5FRNWWUCpWaM1++59qF5naU2AmqojIHxnvZlgiiclctShT6DAZ5RBbhCFHe6c
 &lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
 &lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1Sxk5qAKH54Yg_wo5XHygHZYiIJhlLFzVfc0MBbdQg2I/&#34;&gt;https://docs.google.com/spreadsheets/d/1Sxk5qAKH54Yg_wo5XHygHZYiIJhlLFzVfc0MBbdQg2I/&lt;/a&gt;&lt;/p&gt;
 &lt;iframe height=&#34;3900&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vSpfQvv-3grZNuTn0nGT0O3h6gXAaH7IvgBVPy7FKpfFRE2JZljQopc-YomgQTIdeFfiJC4FfiuQITJ/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;</description>
-    </item>
-    
-    <item>
-      <title>Grumpy Hackers</title>
-      <link>https://malicious.link/post/2019/grumpy-hackers/</link>
-      <pubDate>Fri, 24 May 2019 08:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2019/grumpy-hackers/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/grumpyhackers/logo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h3 id=&#34;a-little-history&#34;&gt;A little history&lt;/h3&gt;
-&lt;p&gt;A couple months ago &lt;a href=&#34;https:/twitter.com/carnal0wnage&#34;&gt;@carnal0wnage&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/bsdbandit&#34;&gt;@bsdbandit&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/theblindhacker&#34;&gt;@theblindhacker&lt;/a&gt; (I&amp;rsquo;m sure I&amp;rsquo;ll get corrected if I&amp;rsquo;m wrong here) were at &lt;a href=&#34;https://twitter.com/novahackers&#34;&gt;NoVAHackers&lt;/a&gt; just talking in the parking lot after the event and thought that it would be nice if they didn&amp;rsquo;t have to wait a month to have conversations like they were having each month out in the parking lot after the events. In passing @carnal0wnage told me about this and I set out to make it happen (for selfish reasons, I wanted to talk to them too).&lt;/p&gt;
-&lt;h3 id=&#34;what-is-it&#34;&gt;What is it?&lt;/h3&gt;
-&lt;p&gt;It&amp;rsquo;s a conversation, just like we had in the parking lot. Each week on Wednesday night at 9:15 PM EST a group of &amp;ldquo;Grumpy Hackers&amp;rdquo; get on &lt;a href=&#34;https://discord.gg/k2JaSbw&#34;&gt;Discord&lt;/a&gt; and talk like we would outside of NoVAHackers. We just so happen to also stream the entire conversation to &lt;a href=&#34;https://twitch.tv/GrumpyHackers&#34;&gt;Twitch&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;whos-invited-how-do-i-get-on-the-show&#34;&gt;Who&amp;rsquo;s invited? How do I get on the show?&lt;/h2&gt;
-&lt;p&gt;Everyone is invited to participate in whatever way they wish. Here are some ways going from least involved to most:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Just watch/listen to the show on Twitch&lt;/li&gt;
-&lt;li&gt;Just watch/listen to the show on Discord&lt;/li&gt;
-&lt;li&gt;Chat with us during the show in Twitch/Discord&lt;/li&gt;
-&lt;li&gt;Hit us up on Twitter about the links or submitting your own for us to talk about via &lt;a href=&#34;https://twitter.com/GrumpyHackers&#34;&gt;@GrumpyHackers&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Ask us to have a certain guest on the show via Twitch chat / Discord chat / or Twitter&lt;/li&gt;
-&lt;li&gt;Talk to us in the &amp;ldquo;#pre-show-chat&amp;rdquo; room before the show&lt;/li&gt;
-&lt;li&gt;Join the show. You don&amp;rsquo;t have to say a thing if you don&amp;rsquo;t want to but we do have a fuzzy rule that everyone on the show must bring a topic or link to discuss.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;To join the Discord just click on the image below:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://discord.gg/k2JaSbw&#34;&gt;&lt;img src=&#34;https://malicious.link/images/2019/grumpyhackers/discord.png&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;For those who don&amp;rsquo;t know, Discord is a lot like Slack but it has built in voice channels like TeamSpeak or similar software (this makes it very easy to get people together without having to share Skype usernames or set up a call.)&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/grumpyhackers/schedule.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;when&#34;&gt;When?&lt;/h2&gt;
-&lt;p&gt;Every Wednesday, at around 8:45 - 8:50 people start showing up in the &amp;ldquo;#pre-show-chat&amp;rdquo; voice channel so we can BS, talk about what topics we have for the night and get an idea of who&amp;rsquo;s going to stream. We start the stream around 9:15ish and it goes until we run out of things to talk about or everyone gets tired and wants to go to bed.&lt;/p&gt;
-&lt;h2 id=&#34;do-i-have-to-stay-for-the-whole-show&#34;&gt;Do I have to stay for the whole show?&lt;/h2&gt;
-&lt;h2 id=&#34;do-i-have-to-be-there-for-the-start-of-the-show&#34;&gt;Do I have to be there for the start of the show?&lt;/h2&gt;
-&lt;h1 id=&#34;no&#34;&gt;No.&lt;/h1&gt;
-&lt;p&gt;There is ZERO specific structure to the show. It&amp;rsquo;s a conversation among friends, colleagues, etc. You are more than welcome to join in 15 minutes late, go take care of something and then join in another hour later.&lt;/p&gt;
-&lt;p&gt;We do have a few rules about the show if you choose to join us via chat or on the show:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/grumpyhackers/rules.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Familiarize yourself with the Twitch Community Guidelines.&lt;/p&gt;
-&lt;p&gt;Above all, keep chat wholesome, respectful, and fun. Here&amp;rsquo;s a detailed list of rules.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;No insults, hate speech, or disrespectful comments. Talking down to other viewers unironically is not acceptable.&lt;/li&gt;
-&lt;li&gt;No political or religious discussion, unless VERY topical (e.g. The second coming of Christ is happening how do you feel?)&lt;/li&gt;
-&lt;li&gt;No elitism/toxicity towards other players of certain heroes or console/PC players (You can hate Mercy, but don&amp;rsquo;t hate Mercy players.)&lt;/li&gt;
-&lt;li&gt;No dramatic streamer/esports topics or disrespectful comments on other players or streamers. Do not bring &amp;ldquo;toaster this guy said you suck on his stream&amp;rdquo; comments here. (Don&amp;rsquo;t bring any to others either.)&lt;/li&gt;
-&lt;li&gt;Memes and occasional spam is okay, but do not RUIN THE CHAT EXPERIENCE for any longer than a minute.&lt;/li&gt;
-&lt;li&gt;Do not blatantly (or subtly &amp;ldquo;I STREAM BTW&amp;rdquo;) promote streams. There is a discord channel for this so it doesn&amp;rsquo;t have to be in chat.&lt;/li&gt;
-&lt;li&gt;Don&amp;rsquo;t pressure me into doing things you want like I&amp;rsquo;m some entertainment monkey (singing/dancing/playing specific game/duoing with specific player.) Suggestions and memes are fine, but don&amp;rsquo;t overdo it.&lt;/li&gt;
-&lt;li&gt;No unsolicited sub gift requests.
-If you accidentally break a rule and get timed out, don&amp;rsquo;t get all up in arms about it. Just chill and come back, we don&amp;rsquo;t hate you.&lt;/li&gt;
-&lt;li&gt;NO SUPER EDGY JOKES. Any distasteful or insensitive comments are subject to moderation.&lt;/li&gt;
-&lt;li&gt;Respect other people in the stream. If they are clearly breaking ToS then it&amp;rsquo;s fine to point it out and laugh, but don&amp;rsquo;t make fun of people or randomly say &amp;ldquo;this person sucks lol&amp;rdquo; for no reason.&lt;/li&gt;
-&lt;li&gt;&lt;em&gt;Rules respectfully borrowed from &lt;a href=&#34;https://www.twitch.tv/eviltoaster&#34;&gt;eviltoaster&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;twitch&#34;&gt;Twitch&lt;/h2&gt;
-&lt;p&gt;So, please subscribe / follow:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Twitch Link: &lt;a href=&#34;https://www.twitch.tv/GrumpyHackers&#34;&gt;https://www.twitch.tv/GrumpyHackers&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Twitter Link: &lt;a href=&#34;https://twitter.com/GrumpyHackers&#34;&gt;https://twitter.com/GrumpyHackers&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Discord Link: &lt;a href=&#34;https://discord.gg/k2JaSbw&#34;&gt;https://discord.gg/k2JaSbw&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Thanks! And we&amp;rsquo;ll see you on the show! Now, GET OFF OUR LAWN!!!&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2019/grumpyhackers/cobol.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-</description>
     </item>
     
   </channel>

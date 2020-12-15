@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="TL;DR Here are the concerns I have regarding the SolarWinds/FireEye breach:
+ The accounts stored in an organization&amp;rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &amp;ldquo;removed&amp;rdquo; from the interface, I am unsure)." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://malicious.link/post/2020/solarflare-release-password-dumper-for-solarwinds-orion/" />
+
+
+    <title>
+        
+            SolarFlare Release: Password Dumper for SolarWinds Orion :: malicious.link  — welcome
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.min.5dcefbf8102eb536dd3e2de53ffebfa58599ab2435c241a0db81728a5e015f2e.css">
+
+
+
+
+<meta itemprop="name" content="SolarFlare Release: Password Dumper for SolarWinds Orion">
+<meta itemprop="description" content="TL;DR Here are the concerns I have regarding the SolarWinds/FireEye breach:
+ The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure).">
+<meta itemprop="datePublished" content="2020-12-15T00:30:44-05:00" />
+<meta itemprop="dateModified" content="2020-12-15T00:30:44-05:00" />
+<meta itemprop="wordCount" content="2202">
+
+
+
+<meta itemprop="keywords" content="tool,password,github,solarwinds,orion," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SolarFlare Release: Password Dumper for SolarWinds Orion"/>
+<meta name="twitter:description" content="TL;DR Here are the concerns I have regarding the SolarWinds/FireEye breach:
+ The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure)."/>
+
+
+
+
+
+    <meta property="article:published_time" content="2020-12-15 00:30:44 -0500 EST" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/post/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">boot mubix.kernel</span>
+            <span class="logo__cursor" style=""></span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://malicious.link/about">About</a></li><li><a href="https://malicious.link/brandon">Brandon</a></li><li><a href="https://malicious.link/post">Posts</a></li><li><a href="https://malicious.link/start">Start</a></li><li><a href="https://malicious.link/tags">Tags</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://malicious.link/post/2020/solarflare-release-password-dumper-for-solarwinds-orion/">SolarFlare Release: Password Dumper for SolarWinds Orion</a></h2>
+
+            
+
+            <div class="post-content">
+                <h2 id="tldr">TL;DR</h2>
+<p>Here are the concerns I have regarding the SolarWinds/FireEye breach:</p>
+<ol>
+<li>The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure).</li>
+<li>The re-infection possibilities, from one-time access to SolarWinds Orion database and file system, is being underestimated. Attackers can directly re-infect SolarWinds Orion systems through Erlang and other vulnerabilities. Rotating these credentials is HARD.</li>
+<li>Not enough is being talked about on how to properly secure SolarWinds Orion machines.</li>
+</ol>
+<p>I&rsquo;m releasing this tool after a lot of thought surrounding the SolarWinds/FireEye breach. It&rsquo;s been in development since 2015. The reason I developed SolarFlare in the first place was to assist in my Red Team engagements. The main reason to release the tool publicly, right now, is so businesses can identify one facet of the possible severity of this breach, using a simple command-line tool they can run on their own SolarWinds Orion machines. SolarFlare can help identify the accounts that may have been compromised during this breach.</p>
+<p>SolarWinds is not an easy application to quickly identify which credentials are stored in the database. SolarFlare parses all of the needed pieces, connects to the database, and decrypts (where possible) all of the account data stored in the database. I have seen everything from regular Active Directory accounts, to AWS/Azure/Meraki API keys, and Cisco enable passwords.</p>
+<p>Now that I&rsquo;ve mentioned their encryption, before we start going down this rabbit hole, I must say that SolarWinds did a <strong>fantastic</strong> job at doing as much cryptography as possible to ensure that credential theft is not trivial. They had even made more improvements since 2015 when I first started researching the product. However, at the end of the day, SolarWinds Orion needs to have the ability to use the credentials in clear text, so no matter how much encryption they add, it will only ever be obfuscation.</p>
+<h2 id="history">History</h2>
+<p>In 2016 I gave two talks, one at BSidesPhilly and the other at KiwiCon2016, down in New Zealand. These talks focused on the credentials I was able to steal out of SolarWinds Orion. At this time, I did not release any tooling to exploit access to SolarWinds, but I did talk about how reversing the credentials could easily be done due to the use of an exportable self-generated RSA key.</p>
+<h3 id="video-from-bsidesphily-2016">Video from BSidesPhily 2016</h3>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VXUPyod6vqw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<h3 id="kiwicon-2016">KiwiCon 2016</h3>
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/FBkXrKZmGENvF4" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/mubix/kiwicon-2016-kicking-orions-assets" title="KiwiCon 2016 - Kicking Orion&#x27;s Assets" target="_blank">KiwiCon 2016 - Kicking Orion&#x27;s Assets</a> </strong> from <strong><a href="https://www.slideshare.net/mubix" target="_blank">Rob Fuller</a></strong> </div>
+<h3 id="erlang">Erlang</h3>
+<p>Fast forward to 2018, <a href="https://malicious.link/post/2018/erlang-arce/">I released a blog post</a>, again about SolarWinds, where I talked more about the severe effects of exploiting SolarWinds Orion. SolarWinds makes use of RabbitMQ, which uses Erlang (a distributed programming language). An attacker with file-level access to the SolarWinds machine, either through code execution, access to backup files, or just a poorly permissioned share, could steal the file <code>.erlang.cookie</code> from the ProgramData directory and have SYSTEM level code execution to this day.</p>
+<p>Changing this &ldquo;cookie&rdquo; is non-trivial. You there isn&rsquo;t a method in the SolarWinds Orion interface to do so. I have been successful with just shutting down all of the SolarWinds services, alerting the string in the file, and starting the services back up, but I cannot guarantee this won&rsquo;t break things in more robust corporate installs. A more complete method of defense is to simply <strong>Block port 25672/tcp inbound to your SolarWinds Orion box</strong>. This is the port that can be remotely accessed for remote code execution if an attacker has stolen the <code>.erlang.cookie</code> file.</p>
+<h3 id="hd-moore">HD Moore</h3>
+<p>A few months later, <a href="https://twitter.com/hdm">HD Moore</a> released a <a href="https://www.atredis.com/blog/2018/10/24/fun-with-the-solarwinds-orion-platform">blog post on the Atradis blog</a> talking about the password hashing in SolarWinds Orion as well as how to decrypt the password from the SolarWinds Orion database. He also released the <a href="https://github.com/atredispartners/solarwinds-orion-cryptography">tools on Github to do so</a>.</p>
+<p>Also, the password cracking tools <a href="https://github.com/hashcat/hashcat/issues/1736">Hashcat</a> and <a href="https://github.com/openwall/john/pull/3449">John the Ripper</a> added cracking capabilities for SolarWinds Orion password hashes.</p>
+<h3 id="npm">NPM</h3>
+<p>In 2019, <a href="https://twitter.com/VerSprite">VeraSprite</a> researchers released CVE-2019-8917. This vulnerability affected SolarWinds Orion 12.3 and the WCF protocol it incorporated for communications. <a href="https://versprite.com/blog/security-research/exploitation-of-remote-services/">There was a blog post</a>, and a short video demonstrating the vulnerability. This vulnerability resulted in remote code execution as SYSTEM on the SolarWinds machine but does require valid credentials for the SolarWinds Orion interface.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IE8LBmwZBgE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<h2 id="present-day">Present Day</h2>
+<p>Today I am releasing SolarFlare. SolarFlare is a Authentication Audit / Password dumping tool originally designed for Red Team engagements, but can be used to audit the exposure SolarWinds Orion systems pose to an organization. Below I will walk through each section of the output from SolarFlare. There are no options or arguments.</p>
+<h3 id="erlang-cookie">Erlang Cookie</h3>
+<p>This function simply reads the <code>.erlang.cookie</code> file from the <code>ProgramData</code> directory where it&rsquo;s stored. You can find this file at <code>%PROGRAMDATA%\SolarWinds\Orion\RabbitMQ\.erlang.cookie</code>. It is a randomized string created during installation. This string does not change as far as I have observed. This string is also stored in the database.</p>
+<pre><code>============================================
+| Collecting RabbitMQ Erlang Cookie
+|       Erlang Cookie: abcdefg12456789abcde
+</code></pre><h3 id="rsa-key">RSA Key</h3>
+<p>The &ldquo;SolarWinds-Orion&rdquo; RSA key is stored in the SYSTEM/LocalMachine certificate store and is generated during install. This certificate is used as the PKI based encryption/decryption for credentials stored int the database. I do not know why this certificate is generated in a way that makes it exportable. But, it doesn&rsquo;t not need to be exportable for the decryption to be used. This certificate can be used along with the <a href="https://github.com/atredispartners/solarwinds-orion-cryptography">Atradis tool on Github to decrypt credentials from the database, <strong>offline</strong>.</a></p>
+<pre><code>============================================
+| Collecting SolarWinds Certificate
+|       SolarWinds Orion Certificate Found!
+|       Subject Name: CN=SolarWinds-Orion
+|       Thumbprint  : BE85C6C3AACA8840E166187B6AB8C6BA9DA8DE80
+|       Password    : alcvabkajp4
+|       Private Key : MIIKHwIBAzCCCd8GCSqGSIb3DQEHAaCCCdAEggn&lt;snip&gt;
+</code></pre><h3 id="dat-file">DAT file</h3>
+<p>The DAT file is a recent (2019/2018?) additional encryption that was added to SolarWinds Orion. The file is also located in the ProgramData directory: <code>%PROGRAMDATA%\SolarWinds\Keystorage\CryptoHelper\default.dat</code>. This file is encrypted with the SYSTEM/LocalMachien DPAPI master keys. Once decrypted, much like the exporting of the RSA private key, it can be used to decrypt the AES based encrypted accounts in the database, <strong>offline</strong>.</p>
+<pre><code>| Collecting Default.DAT file
+|       Encrypted: 01000000D08C9DDF0115D&lt;snip&gt;
+|       Decrypted: 5D3CE5B08C9201E636BCF&lt;snip&gt;
+</code></pre><h3 id="swnetperfmondb">SWNetPerfMon.DB</h3>
+<p>SolarWinds Orion stores it&rsquo;s credentials for the database in a file called <code>SWNetPerfMon.DB</code> which can be found in the installation directory (usually Program Files). The scary piece of this file is that no matter how many software updates, or migrations of the data happen (from SQL server to SQL server), it stores all of the previous credentials, databases, and server names of the previous setups in this file.</p>
+<p>There is also a newer file called <code>SolarWindsDatabaseAccessCredential.json</code> that can be found the ProgramData again: <code>%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json</code>. This file is where the username and password are sometimes stored for the database.</p>
+<p>The credentials are encrypted with the SYSTEM/LocalMachine DPAPI master keys, this time with a static set of entropy: &ldquo;20120309&rdquo;. I have never been able to find the significance of this date in regards to SolarWinds. If anyone knows, please let me know, I&rsquo;m super curious.</p>
+<pre><code>============================================
+| Collecting Database Credentials          |
+|       Path to SWNetPerfMon.DB is: C:\Program Files (x86)\SolarWinds\Orion\SWNetPerfMon.DB
+|       Connection String: Server=(local)\SOLARWINDS_ORION;Database=SolarWindsOrion;User ID=SolarWindsOrionDatabaseUser;Password=SUPERSECRETPASSWORDHERE
+|       Number of database credentials found: 1
+</code></pre><h3 id="connecting-to-the-database">Connecting to the Database</h3>
+<p>The code then attempts to automatically connect to the databases that it&rsquo;s found and find the most current SolarWinds database.</p>
+<h3 id="exporting-the-key-table">Exporting the Key Table</h3>
+<p>I currently haven&rsquo;t put in enough time to identify what this table is used for, but it looks to me like it may be the private key for the RSA key, and the DAT file, encrypted in a different way. If this is the case, then you may not even need access to the SolarWinds Orion server itself, possibly you&rsquo;d just need access to the database where SolarWinds stores it&rsquo;s data.</p>
+<pre><code>============================================
+| DB - Exporting Key Table                 |
+|       KeyID: 1
+|       Encrypted Key: LmjknGhSXTC&lt;snip&gt;
+|       Kind: Aes256
+|       Purpose: master
+|       Protection Type: 1
+|       Protection Value: BE85C6C3AACA8&lt;snip&gt;
+|       Protection Details: {}
+------------------------------------------------
+|       KeyID: 2
+|       Encrypted Key: //pj6a4FaCyfv/Rgs&lt;snip&gt;
+|       Kind: Aes256
+|       Purpose: oldcryptohelper
+|       Protection Type: 0
+|       Protection Value: 1
+|       Protection Details: {&quot;IV&quot;:&quot;oj3JCT7Cft&lt;snip&gt;&quot;}
+</code></pre><h3 id="exporting-the-accounts-table">Exporting the Accounts Table</h3>
+<p>The accounts table is used to store credentials used to access the SolarWinds interface. It has changed a lot since my initial research. There used to be a column called &ldquo;Password&rdquo; that stored a credential that looked like this: <code>11-417578424799297-9-6260697430795685763067724</code>. Many current installation still store this passwords in this manner, if it wasn&rsquo;t a clean install. This is simple encoding with long division.</p>
+<p>If you are interested in the code you can see it here</p>
+<p>At the time of this writing there is <a href="https://github.com/hashcat/hashcat/issues/2620">a pull request to add the newer version of password hashing</a> that SolarWinds uses to store credentials used to access SolarWinds.</p>
+<p><strong>The major concern about SolarWinds Orion accounts is that it upper cases all account passwords</strong>. This means that the key space to attempt to crack them is 26 characters smaller (without the lowercase characters). This means that even though SolarWinds uses PBDKF12, 1000 iterations of it, and SHA512 hashing, cracking the account passwords is exponentially easier and faster.</p>
+<p>Admin and Guest are common across installs. The guest account used to be enabled by default, which would allow attackers to gain access to the interface. This is no longer the case. There are two new accounts <code>_system</code> which has it&rsquo;s password stored in the credential database, and <code>iprequest</code> which I believe is a result of the one of the features I installed on the VM. The <code>_system</code> account is enabled by default and is an administrator. Even though this account has a randomized password, it being stored in the database means I can decrypt it, instead of trying to crack it.</p>
+<pre><code>============================================
+| DB - Exporting Accounts Table            |
+|        Account: _system
+|        Password Hash: qE9ClH&lt;snip&gt;
+|        Password Salt: XgtO8XNWc/KiIdglGOnxvw==
+|        Hashcat Mode 12501: $solarwinds$1$XgtO8XNWc/KiIdglGOnxvw==$qE9ClHDI&lt;snip&gt;
+|        Account Enabled: Y
+|        Allow Admin: Y
+|        Last Login: 12/15/2020
+--------------------------------------------
+|        Account: Admin
+|        Password Hash: IfAEwA7LXxOAH7ORCG0ZYeq&lt;snip&gt;
+|        Password Salt: jNhn3i2XtHfY8y4EOmNdiQ==
+|        Hashcat Mode 12501: $solarwinds$1$jNhn3i2XtHfY8y4EOmNdiQ==$IfAEwA7LXxOAH7ORCG0ZY&lt;snip&gt;
+|        Account Enabled: Y
+|        Allow Admin: Y
+|        Last Login: 12/02/2020
+--------------------------------------------
+|        Account: Guest
+|        Password Hash: Y/EMuOWMNfCd&lt;snip&gt;
+|        Salt is NULL in DB so lowercase username is used: guest
+|        Hashcat Mode 12500: $solarwinds$0$guest$Y/EMuOWMNfCd&lt;snip&gt;
+|        Account Enabled: N
+|        Allow Admin: N
+|        Last Login: 12/30/1899
+--------------------------------------------
+|        Account: iprequest
+|        Password Hash: 7zskGWFukuHuwQ&lt;snip&gt;
+|        Salt is NULL in DB so lowercase username is used: iprequest
+|        Hashcat Mode 12500: $solarwinds$0$iprequest$7zskGWFukuHuwQ&lt;snip&gt;
+|        Account Enabled: Y
+|        Allow Admin: N
+|        Last Login: 01/01/1900
+--------------------------------------------
+</code></pre><h3 id="exporting-the-credentials-table">Exporting the Credentials Table</h3>
+<p>Finally the actual credential table. I&rsquo;ve observed 4 different methods for storing credentials here:</p>
+<ol>
+<li>Clear text (as is the case for SNMP community strings)</li>
+<li>Encrypted with the RSA key (this is the older method, being phased out it appears)</li>
+<li>Encrypted with AES using the <code>default.dat</code> file as the decryption key</li>
+<li>Encrypted using <a href="https://www.nuget.org/packages/System.Security.Cryptography.Xml/">Microsoft&rsquo;s XML encryption/decryption method</a>.</li>
+</ol>
+<p>SolarFlare recognizes all of them, and will attempt to decrypt them accordingly. This is where you will find AWS API keys, vCenter credentials, SNMPv3 credentials, Cisco router and switch passwords and enable passwords. This is where the scary bits are.</p>
+<pre><code>============================================
+| DB - Exporting Credentials Table         |
+------------------1--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: _system
+|       Desc: Cortex Integration
+|       Owner: CORE
+|               Password: 9dM-5pH/&amp;amp;Y(KU-v
+|               Username: _system
+------------------1--------------------------
+------------------2--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: JobEngine
+|       Desc: Job Engine router TCP endpoint credentials
+|       Owner: JobEngine
+|               Password: +fBByxJFsK+da6ZN2wKvLTKC/PWUzFlfIvvwtW/XqvA=
+|               Username: KWPPhiYJmE8+fRF6qlkxulK2tf3t79TQOAk1ywBMVOI=
+------------------2--------------------------
+------------------3--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV2
+| Name: public
+|       Desc:
+|       Owner: Orion
+|               Community: public
+------------------3--------------------------
+------------------4--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV2
+| Name: private
+|       Desc:
+|       Owner: Orion
+|               Community: private
+------------------4--------------------------
+------------------5--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: Erlang cookie
+|       Desc: Erlang clustering cookie
+|       Owner: Erlang
+|               Password: abcdefg12456789abcde
+|               Username: ignored
+------------------5--------------------------
+------------------6--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: RabbitMQ user account
+|       Desc: RabbitMQ user account for Message Bus
+|       Owner: RabbitMQ
+|               Password: LtVmCrzlTNyWmwxpxJMi
+|               Username: orion
+------------------6--------------------------
+------------------7--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV3
+| Name: User: snmpv3user, Context: thisisthecontext
+|       Desc:
+|       Owner: Orion
+|               AuthenticationKeyIsPassword: false
+|               AuthenticationPassword: ASDqwe123
+|               AuthenticationType: SHA1
+|               Context: thisisthecontext
+|               PrivacyKeyIsPassword: false
+|               PrivacyPassword: ASDqwe123
+|               PrivacyType: AES256
+|               UserName: snmpv3user
+------------------7--------------------------
+------------------8--------------------------
+| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV3
+| Name: User: rootsnmpv3, Context: newcontextv3
+|       Desc:
+|       Owner: Orion
+|               AuthenticationKeyIsPassword: true
+|               AuthenticationPassword: ASDqwe123
+|               AuthenticationType: MD5
+|               Context: newcontextv3
+|               PrivacyKeyIsPassword: true
+|               PrivacyPassword: ASDqwe123
+|               PrivacyType: AES128
+|               UserName: rootsnmpv3
+------------------8--------------------------
+------------------9--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: DomainAdmin
+|       Desc:
+|       Owner: Orion
+|               Password: ASDqwe123
+|               Username: SITTINGDUCK\uberuser
+------------------9--------------------------
+------------------10--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: DomainJoiner
+|       Desc:
+|       Owner: Orion
+|               Password: ASDqwe123
+|               Username: superadmin@sittingduck.info
+------------------10--------------------------
+------------------11--------------------------
+| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+| Name: vesxi
+|       Desc: vesxi
+|       Owner: VIM
+|               Password: ASDqwe123
+|               Username: root
+------------------11--------------------------
+============================================
+============================================
+</code></pre><p>If you&rsquo;ve made it this far, you can find the project over at <a href="https://github.com/mubix/solarflare">https://github.com/mubix/solarflare</a>.
+Also, for defenders, I have added the creation of the file &ldquo;SolarFlare&rdquo; in <code>C:\Windows\Temp\</code> when you run SolarFlare. Hopefully that will help catch any pentesters or script kiddies that don&rsquo;t read code or compile for themselves.</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+  				<p>
+  					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://malicious.link/tags/tool">tool</a></span><span class="tag"><a href="https://malicious.link/tags/password">password</a></span><span class="tag"><a href="https://malicious.link/tags/github">github</a></span><span class="tag"><a href="https://malicious.link/tags/solarwinds">solarwinds</a></span><span class="tag"><a href="https://malicious.link/tags/orion">orion</a></span>
+  				</p>
+  			</div>
+
+        
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2020</span>
+            
+            <span></span>
+            <span> <a href="https://malicious.link/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/rhazdon">rhazdon</a></span>
+        </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.2d5469329143160ae2456a69c3c76dc2d0a3b212b46afe291a51bd68650ed6f8697e001dab54f1c272c77ce08092a8c55e5bb4314e0ee334aab4b927ec896638.js" integrity="sha512-LVRpMpFDFgriRWppw8dtwtCjshK0av4pGlG9aGUO1vhpfgAdq1TxwnLHfOCAkqjFXlu0MU4O4zSqtLkn7IlmOA=="></script>
+
+
+
+    </body>
+</html>

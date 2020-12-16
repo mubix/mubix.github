@@ -37,7 +37,7 @@
  The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure).">
 <meta itemprop="datePublished" content="2020-12-15T00:30:44-05:00" />
 <meta itemprop="dateModified" content="2020-12-15T00:30:44-05:00" />
-<meta itemprop="wordCount" content="2396">
+<meta itemprop="wordCount" content="2397">
 
 
 
@@ -238,7 +238,7 @@
 |       Protection Details: {&quot;IV&quot;:&quot;oj3JCT7Cft&lt;snip&gt;&quot;}
 </code></pre><h3 id="exporting-the-accounts-table">Exporting the Accounts Table</h3>
 <p>The accounts table is used to store credentials used to access the SolarWinds interface. It has changed a lot since my initial research. There used to be a column called &ldquo;Password&rdquo; that stored a credential that looked like this: <code>11-417578424799297-9-6260697430795685763067724</code>. Many current installation still store this passwords in this manner, if it wasn&rsquo;t a clean install. This is simple encoding with long division.</p>
-<p>If you are interested in the code you can see it here</p>
+<p>If you are interested in the code you can see it here: <a href="https://github.com/mubix/solarflare/blob/b87da0b515d20964490dd922f3ef5bc17ed397f3/SolarFlare/Program.cs#L441">https://github.com/mubix/solarflare/blob/b87da0b515d20964490dd922f3ef5bc17ed397f3/SolarFlare/Program.cs#L441</a></p>
 <p>At the time of this writing there is <a href="https://github.com/hashcat/hashcat/issues/2620">a pull request to add the newer version of password hashing</a> that SolarWinds uses to store credentials used to access SolarWinds.</p>
 <p><strong>The major concern about SolarWinds Orion accounts is that it upper cases all account passwords</strong>. This means that the key space to attempt to crack them is 26 characters smaller (without the lowercase characters). This means that even though SolarWinds uses PBDKF12, 1000 iterations of it, and SHA512 hashing, cracking the account passwords is exponentially easier and faster.</p>
 <p>Admin and Guest are common across installs. The guest account used to be enabled by default, which would allow attackers to gain access to the interface. This is no longer the case. There are two new accounts <code>_system</code> which has it&rsquo;s password stored in the credential database, and <code>iprequest</code> which I believe is a result of the one of the features I installed on the VM. The <code>_system</code> account is enabled by default and is an administrator. Even though this account has a randomized password, it being stored in the database means I can decrypt it, instead of trying to crack it.</p>

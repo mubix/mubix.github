@@ -64,7 +64,7 @@
 |       Decrypted: 5D3CE5B08C9201E636BCF&amp;lt;snip&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;swnetperfmondb&#34;&gt;SWNetPerfMon.DB&lt;/h3&gt;
 &lt;p&gt;SolarWinds Orion stores it&amp;rsquo;s credentials for the database in a file called &lt;code&gt;SWNetPerfMon.DB&lt;/code&gt; which can be found in the installation directory (usually Program Files). The scary piece of this file is that no matter how many software updates, or migrations of the data happen (from SQL server to SQL server), it stores all of the previous credentials, databases, and server names of the previous setups in this file.&lt;/p&gt;
-&lt;p&gt;There is also a newer file called &lt;code&gt;SolarWindsDatabaseAccessCredential.json&lt;/code&gt; that can be found the ProgramData again: &lt;code&gt;%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json&lt;/code&gt;. This file is where the username and password are sometimes stored for the database.&lt;/p&gt;
+&lt;p&gt;There is also a newer file called &lt;code&gt;SolarWindsDatabaseAccessCredential.json&lt;/code&gt; that can be found in ProgramData again: &lt;code&gt;%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json&lt;/code&gt;. This file is where the username and password are sometimes stored for the database.&lt;/p&gt;
 &lt;p&gt;The credentials are encrypted with the SYSTEM/LocalMachine DPAPI master keys, this time with a static set of entropy: &amp;ldquo;20120309&amp;rdquo;. I have never been able to find the significance of this date in regards to SolarWinds. If anyone knows, please let me know, I&amp;rsquo;m super curious.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;============================================
 | Collecting Database Credentials          |

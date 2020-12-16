@@ -208,7 +208,7 @@
 |       Decrypted: 5D3CE5B08C9201E636BCF&lt;snip&gt;
 </code></pre><h3 id="swnetperfmondb">SWNetPerfMon.DB</h3>
 <p>SolarWinds Orion stores it&rsquo;s credentials for the database in a file called <code>SWNetPerfMon.DB</code> which can be found in the installation directory (usually Program Files). The scary piece of this file is that no matter how many software updates, or migrations of the data happen (from SQL server to SQL server), it stores all of the previous credentials, databases, and server names of the previous setups in this file.</p>
-<p>There is also a newer file called <code>SolarWindsDatabaseAccessCredential.json</code> that can be found the ProgramData again: <code>%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json</code>. This file is where the username and password are sometimes stored for the database.</p>
+<p>There is also a newer file called <code>SolarWindsDatabaseAccessCredential.json</code> that can be found in ProgramData again: <code>%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json</code>. This file is where the username and password are sometimes stored for the database.</p>
 <p>The credentials are encrypted with the SYSTEM/LocalMachine DPAPI master keys, this time with a static set of entropy: &ldquo;20120309&rdquo;. I have never been able to find the significance of this date in regards to SolarWinds. If anyone knows, please let me know, I&rsquo;m super curious.</p>
 <pre><code>============================================
 | Collecting Database Credentials          |

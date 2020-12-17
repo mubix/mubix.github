@@ -38,6 +38,17 @@
 &lt;h3 id=&#34;hd-moore&#34;&gt;HD Moore&lt;/h3&gt;
 &lt;p&gt;A few months later, &lt;a href=&#34;https://twitter.com/hdm&#34;&gt;HD Moore&lt;/a&gt; released a &lt;a href=&#34;https://www.atredis.com/blog/2018/10/24/fun-with-the-solarwinds-orion-platform&#34;&gt;blog post on the Atredis blog&lt;/a&gt; talking about the password hashing in SolarWinds Orion as well as how to decrypt the password from the SolarWinds Orion database. He also released the &lt;a href=&#34;https://github.com/atredispartners/solarwinds-orion-cryptography&#34;&gt;tools on Github to do so&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Also, the password cracking tools &lt;a href=&#34;https://github.com/hashcat/hashcat/issues/1736&#34;&gt;Hashcat&lt;/a&gt; and &lt;a href=&#34;https://github.com/openwall/john/pull/3449&#34;&gt;John the Ripper&lt;/a&gt; added cracking capabilities for SolarWinds Orion password hashes.&lt;/p&gt;
+&lt;h3 id=&#34;cpl3h&#34;&gt;CPL3H&lt;/h3&gt;
+&lt;p&gt;In July of 2019, CPLSEC/&lt;a href=&#34;https://twitter.com/cpl3h&#34;&gt;CPL3H&lt;/a&gt; put together &lt;a href=&#34;https://ijustwannared.team/2019/07/13/badministration-solarwinds/&#34;&gt;a blog post&lt;/a&gt; about adding modules to their (&lt;a href=&#34;https://twitter.com/DarknessCherry&#34;&gt;DarknessCherry&lt;/a&gt; &amp;amp; CPLSEC) tool &lt;a href=&#34;https://github.com/ThunderGunExpress/BADministration&#34;&gt;BADministrator&lt;/a&gt;. These are the modules they released (directly ripped from the blog post):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;solarwinds-enum – Enumerates all Solarwinds clients&lt;/li&gt;
+&lt;li&gt;solarwinds-listalerts – Lists Solarwinds alerts&lt;/li&gt;
+&lt;li&gt;solarwinds-alertremove – Removes the malicious alert used in the syscmd module&lt;/li&gt;
+&lt;li&gt;solarwinds-syscmd – Executes system commands on the NMS server&lt;/li&gt;
+&lt;li&gt;BADministration_SWDump.exe – Standalone memory scraper which (hopefully) retrieves Solarwinds WMI credentials&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The SWDump tool steals the WMI credentials (usually Domain Admin or at least admin on a lot of systems) from client machines that have the SolarWinds log collector service installed.&lt;/p&gt;
+&lt;p&gt;Teh SYSCmd utilizies importing alert configurations to execute commands directly on the SolarWinds system as SYSTEM. You do need to be an administrator level user to do so, but it does this via the SolarWinds web API, so even if you have all other ports blocked to attacker, if they can achieve SolarWinds admin credentials, they can still get code execution on the machine.&lt;/p&gt;
 &lt;h3 id=&#34;npm&#34;&gt;NPM&lt;/h3&gt;
 &lt;p&gt;In 2019, &lt;a href=&#34;https://twitter.com/VerSprite&#34;&gt;VeraSprite&lt;/a&gt; researchers released CVE-2019-8917. This vulnerability affected SolarWinds Orion 12.3 and the WCF protocol it incorporated for communications. &lt;a href=&#34;https://versprite.com/blog/security-research/exploitation-of-remote-services/&#34;&gt;There was a blog post&lt;/a&gt;, and a short video demonstrating the vulnerability. This vulnerability resulted in remote code execution as SYSTEM on the SolarWinds machine but does require valid credentials for the SolarWinds Orion interface.&lt;/p&gt;
 &lt;iframe width=&#34;560&#34; height=&#34;315&#34; src=&#34;https://www.youtube.com/embed/IE8LBmwZBgE&#34; frameborder=&#34;0&#34; allow=&#34;accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture&#34; allowfullscreen&gt;&lt;/iframe&gt;

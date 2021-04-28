@@ -5,10 +5,85 @@
     <description>Recent content in Posts on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Dec 2020 00:30:44 -0500</lastBuildDate>
+    <lastBuildDate>Tue, 27 Apr 2021 09:30:44 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>User Empowerment: Password Security</title>
+      <link>https://malicious.link/post/2021/user-empowerment-password-security/</link>
+      <pubDate>Tue, 27 Apr 2021 09:30:44 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2021/user-empowerment-password-security/</guid>
+      <description>&lt;p&gt;World Password Day (who knew that was a thing?) is upon us. It is the first Thursday of May every year, and that falls on May 6th this year.&lt;/p&gt;
+&lt;p&gt;I&amp;rsquo;m not sure how to start this blog post, but the meat of what I want to get into is password security and the evolution over the years.&lt;/p&gt;
+&lt;p&gt;In the 1900s (&amp;hellip; yes people are saying that now&amp;hellip; feel old yet?), password security was pretty simple. The mainframe only accepted eight characters max for a password anyways, and it was case insensitive (many mainframes still operate this way). They also stored your password in plain text, where anyone with administrative rights (SysAdmin or criminal) could read them.&lt;/p&gt;
+&lt;p&gt;Different hashing algorithms started to become more widely used, like MD5, LM, NTLM, and SHA1. These hashes increased that maximum length ceiling and provided a fast and more secure method of storing the passwords. However, the speed of these hashing algorithms also meant that criminals could crack them quickly too. Researchers put in the time and found that by increasing the type of characters used (from just alphanumeric [a-z 0-9], to include special characters [a-z 0-9 ;!@#$%^&amp;amp;*()] ), they could make cracking these hashes exponentially more difficult. So, &amp;ldquo;Password Complexity&amp;rdquo; made it into every policy and standard. &amp;ldquo;You must require password complexity to be compliant&amp;rdquo; - PCI-DSS.&lt;/p&gt;
+&lt;p&gt;What went wrong is that computers and human psychology don&amp;rsquo;t always fit into the same mold. Asking human people to select a special character means not that they will select from the 100+ that are readily available on any given keyboard; no, they will choose the ones that are most common to their normal typing, such as exclamation marks, periods, question marks, and hashtags. The other bit of psychology that goes into here, and the reason why spaces aren&amp;rsquo;t on that list; is that many websites have their own list of &amp;ldquo;acceptable&amp;rdquo; special characters. This meant your personal list of &amp;ldquo;acceptable&amp;rdquo; special characters resulted from which ones caused the least amount of problems on the least amount of sites. For example, if you tried to use a space in your password on Facebook which worked, but then you tried it on your bank, and it didn&amp;rsquo;t work, the following account you tried to create probably wouldn&amp;rsquo;t have a space in it just because you didn&amp;rsquo;t want to go through the hassle of selecting a new password yet again.&lt;/p&gt;
+&lt;p&gt;Then along came password rotations. This was a bad idea from the get-go. Password rotations came about because people would select simple passwords that would be dictionary-based and fit into their world of acceptable characters that we talked about a second ago. This would result in passwords like &lt;code&gt;Password1!&lt;/code&gt;. So, the idea went that if we force people to change their passwords regularly, this will make it so they have to pick a different password and which will reduce the window of opportunity for criminals to take advantage of weak passwords. This did not end well, and many companies are still in this phase. The result was passwords like &lt;code&gt;Winter2020&lt;/code&gt;, then 90 days later, &lt;code&gt;Summer2021&lt;/code&gt;. This is infinitely worse because instead of just a limited set of special characters being used, the majority of users would now be using a limited set of numbers (year) and words (season/month). These were actually guidelines detailed by NIST in NIST Special Publication 800-63B in 2017.&lt;/p&gt;
+&lt;p&gt;Then, in 2020, an update to NIST Special Publication 800-63B came in the form of more sensible standards that took human psychology into account. The update included focusing on length over complexity, spaces as special characters, regular password auditing, and a host of other things. But even in 2021, we as a security industry are having a tough time getting people to select &amp;ldquo;good&amp;rdquo; passwords.&lt;/p&gt;
+&lt;p&gt;So how do we do that?&lt;/p&gt;
+&lt;p&gt;By incentivizing security through user empowerment. We can do that through a tiered approach to password policies. This can work today in any organization with Active Directory but will probably take some heavy engineering to incorporate into platforms like Facebook and Twitter. I think we can get there.&lt;/p&gt;
+&lt;p&gt;Tiered password policies would work with both carrot and stick. For example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Tier 1: 8 character password minimum length
+&lt;ul&gt;
+&lt;li&gt;Benefits: easier password to remember&lt;/li&gt;
+&lt;li&gt;Downsides:
+&lt;ul&gt;
+&lt;li&gt;No VPN access&lt;/li&gt;
+&lt;li&gt;SSO session timeout set to 4 hours&lt;/li&gt;
+&lt;li&gt;Password rotation every 90&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Tier 2: 12 character password minimum length
+&lt;ul&gt;
+&lt;li&gt;Benefits:
+&lt;ul&gt;
+&lt;li&gt;VPN access - 8 hour session timeout&lt;/li&gt;
+&lt;li&gt;SSO session - 48 hour timeout&lt;/li&gt;
+&lt;li&gt;Password rotation every 6 months&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Tier 3: 15 character password minimum length
+&lt;ul&gt;
+&lt;li&gt;Benefits:
+&lt;ul&gt;
+&lt;li&gt;VPN access - 24 hour session timeout&lt;/li&gt;
+&lt;li&gt;SSO session - 1 week timeout&lt;/li&gt;
+&lt;li&gt;Password rotation every year&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Tier 4: 24 character password minimum length
+&lt;ul&gt;
+&lt;li&gt;Benefits:
+&lt;ul&gt;
+&lt;li&gt;VPN access - 48 hour session timeout&lt;/li&gt;
+&lt;li&gt;SSO session 2 week timeout&lt;/li&gt;
+&lt;li&gt;Password rotation only on change of status (exit, breach/incident, or team change)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Downsides:
+&lt;ul&gt;
+&lt;li&gt;ALL admin accounts, service accounts, and standard user accounts for admins would automatically fall in this category.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is just an example. You can do this GPOs in active directory and simple integrations with your VPN profiles and SSO groups with most major vendors.&lt;/p&gt;
+&lt;p&gt;The only thing left is to give users the power to choose, either through trouble tickets or a custom form/site.&lt;/p&gt;
+&lt;p&gt;In 3 months, you&amp;rsquo;ll be surprised how many users have self-selected up to Tier 3 or 4. You also have a fantastic list (Tier 1) of people that need training or provided better solutions for selecting stronger passwords.&lt;/p&gt;
+&lt;p&gt;With all of that, this is my submission for #WorldPasswordDay.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>SolarFlare Release: Password Dumper for SolarWinds Orion</title>
@@ -1010,18 +1085,6 @@ yiZ5FRNWWUCpWaM1++59qF5naU2AmqojIHxnvZlgiiclctShT6DAZ5RBbhCFHe6c
 &lt;/blockquote&gt;
 &lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/17rIF_3dcqhPU1Ybck5lRhqT3vo4EOiXN0NHmuJHShGY/&#34;&gt;https://docs.google.com/spreadsheets/d/17rIF_3dcqhPU1Ybck5lRhqT3vo4EOiXN0NHmuJHShGY/&lt;/a&gt;&lt;/p&gt;
 &lt;iframe height=&#34;2900&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vT4qxnZbhsiVpIINaURbKxk_dlKnALoGmTFjh3ikIbQCs5KHvGoksF2E2WKAVnnGf5Svz4LxwmK-2zW/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;</description>
-    </item>
-    
-    <item>
-      <title>2019 BH/DC/BSidesLV Hiring List</title>
-      <link>https://malicious.link/post/2019/2019-bhdcbslv-hiring-list/</link>
-      <pubDate>Sat, 20 Jul 2019 09:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2019/2019-bhdcbslv-hiring-list/</guid>
-      <description>&lt;p&gt;Created the 2019 UNOFFICIAL &lt;a href=&#34;https://www.blackhat.com/us-19/&#34;&gt;BlackHat&lt;/a&gt;, &lt;a href=&#34;https://defcon.org/&#34;&gt;DEF CON&lt;/a&gt;, &lt;a href=&#34;https://www.bsideslv.org/&#34;&gt;BSidesLV&lt;/a&gt; Hiring List. To get on the list is even easier now! Just complete the following form: &lt;a href=&#34;https://forms.gle/skaksvub8ijTELub8&#34;&gt;https://forms.gle/skaksvub8ijTELub8&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
-&lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1Sxk5qAKH54Yg_wo5XHygHZYiIJhlLFzVfc0MBbdQg2I/&#34;&gt;https://docs.google.com/spreadsheets/d/1Sxk5qAKH54Yg_wo5XHygHZYiIJhlLFzVfc0MBbdQg2I/&lt;/a&gt;&lt;/p&gt;
-&lt;iframe height=&#34;3900&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vSpfQvv-3grZNuTn0nGT0O3h6gXAaH7IvgBVPy7FKpfFRE2JZljQopc-YomgQTIdeFfiJC4FfiuQITJ/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;</description>
     </item>
     
   </channel>

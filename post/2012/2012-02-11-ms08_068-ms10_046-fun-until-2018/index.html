@@ -38,8 +38,8 @@ In 2008, Microsoft released MS08_068 which patched the &amp;ldquo;SMB Relay&amp;
 <meta itemprop="description" content="TL;DR: SMB Relay &#43; LNK UNC icons = internal pentest pwnage
 I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.
 MS08_068: http://www.cvedetails.com/cve/CVE-2008-4037/
-In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack."><meta itemprop="datePublished" content="2012-02-11T08:29:37&#43;00:00" />
-<meta itemprop="dateModified" content="2012-02-11T08:29:37&#43;00:00" />
+In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack."><meta itemprop="datePublished" content="2012-02-11T08:29:37+00:00" />
+<meta itemprop="dateModified" content="2012-02-11T08:29:37+00:00" />
 <meta itemprop="wordCount" content="921">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -61,7 +61,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 
 
 
-    <meta property="article:published_time" content="2012-02-11 08:29:37 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2012-02-11 08:29:37 &#43;0000 UTC" />
 
 
 
@@ -152,13 +152,13 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 <p><strong>The Video:</strong></p>
 <center><iframe align=center width="560" height="315" src="//www.youtube.com/embed/FxekUPY5ojU" frameborder="0" allowfullscreen></iframe></center>
 <p>I have created a post module to automate the process of creating and uploading the LNK file (so you don&rsquo;t have to have a Windows box lying around). Here it is in action:</p>
-<pre><code>Module options (post/windows/escalate/droplnk):
+<pre tabindex="0"><code>Module options (post/windows/escalate/droplnk):
 
    Name          Current Setting  Required  Description
    ----          ---------------  --------  -----------
-   ICONFILENAME  icon.png         yes       File name on LHOST's share
+   ICONFILENAME  icon.png         yes       File name on LHOST&#39;s share
    LHOST         192.168.2.16     yes       Host listening for incoming SMB/WebDAV traffic
-   LNKFILENAME   Words.lnk        yes       Shortcut's filename
+   LNKFILENAME   Words.lnk        yes       Shortcut&#39;s filename
    SESSION       1                yes       The session to run this module on.
    SHARENAME     share1           yes       Share name on LHOST
 
@@ -187,7 +187,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 </ul>
 <p>These steps can get you noticed in almost every way, so it&rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)</p>
 <p>The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.</p>
-<p>just saying'…. /me nudges the Metasploit devs…</p>
+<p>just saying&rsquo;…. /me nudges the Metasploit devs…</p>
 <h3 id="references">References:</h3>
 <h4 id="smb_relay-references">SMB_Relay References:</h4>
 <ul>
@@ -232,7 +232,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -240,7 +240,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -253,7 +253,7 @@ In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; a
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

@@ -35,7 +35,7 @@
 &lt;/ul&gt;
 &lt;p&gt;Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)&lt;/p&gt;
 &lt;p&gt;with an output something list this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
 Raising ulimit -n or /etc/security/limits.conf may help.
 parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
 mail.microsoft.com.	2369	IN	A	131.107.125.5
@@ -151,7 +151,7 @@ autodiscover.microsoft.com. 2358 IN	A	131.107.125.5
 im.microsoft.com.	3600	IN	A	131.107.1.75
 sip.microsoft.com.	2228	IN	A	65.55.30.130
 me.microsoft.com.	0	IN	CNAME	edm.cloudapp.net.
-dig: &#39;m..microsoft.com&#39; is not a legal name (empty label)
+dig: &amp;#39;m..microsoft.com&amp;#39; is not a legal name (empty label)
 billing.microsoft.com.	0	IN	CNAME	paymenthubprod.trafficmanager.net.
 paymenthubprod.trafficmanager.net. 0 IN	CNAME	paymenthubuxprod1.cloudapp.net.
 paymenthubuxprod1.cloudapp.net.	10 IN	A	168.62.198.20
@@ -270,7 +270,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
 &lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
 &lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
 &lt;p&gt;To do that is very simple:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;awk &amp;#39;{print length, $0}&amp;#39; rockyou.txt | sort -n | cut -d &amp;#34; &amp;#34; -f2- &amp;gt; rockyou_ls.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
 </description>
     </item>
@@ -306,7 +306,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       
       <guid>https://malicious.link/post/2012/2012-11-13-smash-and-grab-windows-dir-lists/</guid>
       <description>&lt;p&gt;Looking through network shares can be slow, and waiting for individual searches to finish looking through the whole &amp;ldquo;drive&amp;rdquo; is redundant. Easier to just use some Windows voodoo to get a good list to look through offline:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;start /b cmd /c dir /b /s \\nas\users_home_share$ ^&amp;gt; shareinfo.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Breaking that down:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;start /b&lt;/code&gt; - starts a process that won&amp;rsquo;t hang up our current one, with the &amp;ldquo;b&amp;rdquo; flag meaning &amp;ldquo;background&amp;rdquo;, yay not visible to the user! (unless your process forces it back)&lt;/li&gt;
@@ -327,7 +327,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
       
       <guid>https://malicious.link/post/2011/2011-09-15-disconnect-stalled-ssh-session/</guid>
       <description>&lt;p&gt;This doesn&amp;rsquo;t really apply to Windows users as you can just close puTTy. But for everyone else, stalled SSH Sessions suck. You are either slamming enter to get it to realize it&amp;rsquo;s been disconnected or just waiting for it to. Well, for those of us who are impatient just hit:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;~.
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;~.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats right, SHIFT + the key above TAB, release, and hit the period. You may have to hit ENTER first to clear the buffer or whatever it does, but do that and it will disconnect the SSH session right away.&lt;/p&gt;
 &lt;p&gt;Stupid trick, but I use it all the time (especially on shotty MiFi connections).&lt;/p&gt;
 </description>
@@ -370,7 +370,7 @@ HKLM\System\CurrentControlSet\Contol\Lsa &amp;quot;EveryoneIncludesAnonymous&amp
 &lt;li&gt;win hide class progman&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Just to name a few&amp;hellip;&lt;/p&gt;
-&lt;p&gt;another fun batch script to have running is &amp;lsquo;echo knock knock | clip&amp;rsquo; in an endless and delayless loop. (I makes &amp;lsquo;knock knock&amp;rsquo; the only thing that will ever be pasted ;-)&lt;/p&gt;
+&lt;p&gt;another fun batch script to have running is &amp;rsquo;echo knock knock | clip&amp;rsquo; in an endless and delayless loop. (I makes &amp;lsquo;knock knock&amp;rsquo; the only thing that will ever be pasted ;-)&lt;/p&gt;
 </description>
     </item>
     

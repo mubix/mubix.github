@@ -132,14 +132,14 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
                 <p>Mostly just writing this so I can keep notes.</p>
 <p>Today I came up with the idea to forcibly put the WPAD entry into a Windows Domain&rsquo;s DNS. For those who don&rsquo;t know what this would do there is an entire Wikipedia article on the subject: <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol</a></p>
 <p>I did this via PowerShell pretty easily on one of the domain controllers like so:</p>
-<pre><code>PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
+<pre tabindex="0"><code>PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -IPv4Address 107.170.50.74
 </code></pre><p>Where 107.170.50.74 is the Digital Ocean box I stood up external to my test domain. I installed a basic web server and went to test my brilliant idea, but I wasn&rsquo;t getting any requests for <code>wpad.dat</code></p>
 <p>As they say &ldquo;there are no more original ideas&rdquo; it looks like the awesome people at Microsoft not only had this idea but fixed it way back in 2008.</p>
 <p>but.. they also made a way to disable it - <a href="https://technet.microsoft.com/en-us/library/cc995158.aspx">Removing WPAD from DNS block list</a></p>
 <p>Running the DNS entry update will propagate throughout the domain so you only have to set that once, however the block list is per domain controller (or DNS server if they are separated, which is rare these days as it&rsquo;s a required service in later Windows server versions).</p>
 <p>I went in search of a registry key to make the modification because it&rsquo;s much easier to hit the <code>RemoteRegistry</code> service on all the DCs than it is to run that command. I quickly found this blog post - <a href="http://dns-info.blogspot.com/2009/01/enableglobalqueryblocklist-registry-key.html">EnableGlobalQueryBlockLisst registry key</a>.</p>
 <p>A quick batch script to loop through each DomainController in the domain and I started getting a bunch of requests.</p>
-<pre><code>[22/May/2016:21:56:28 EDT] &quot;GET /wpad.dat HTTP/1.1&quot; 200 58
+<pre tabindex="0"><code>[22/May/2016:21:56:28 EDT] &#34;GET /wpad.dat HTTP/1.1&#34; 200 58
 - -&gt; /wpad.dat
 </code></pre><p>Now, you may be asking, &ldquo;How is setting their proxy server any kind of real persistence?&rdquo;, I implore you to go check out projects like <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://github.com/byt3bl33d3r/MITMf">mitmf</a> and <a href="https://github.com/secretsquirrel/BDFProxy">BDFProxy</a></p>
 <p>Pentesters have been recommending for years to put a WPAD entry into DNS to protect against LAN based attackers with Responder. Who knew it actually didn&rsquo;t do anything because Microsoft was blocking those lookups anyways. So, if you have better solutions for WPAD on an Enterprise domain please leave a comment below. (Turning off the setting is a per-user per-system setting and doesn&rsquo;t disable it for the SYSTEM or other local accounts, so it&rsquo;s harder than just &ldquo;flip on this registry setting via GPO&rdquo;)</p>
@@ -180,7 +180,7 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -188,7 +188,7 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -201,7 +201,7 @@ PS C:\&gt; Add-DnsServerResourceRecordA -Name wpad -ZoneName sittingduck.info -I
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

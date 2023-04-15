@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Update: 10/15/2022
+One of the hard parts of implementing a block like this is the concern that it will &amp;ldquo;break something&amp;rdquo;. The DFIR Report&amp;rsquo;s post on Bumblebee Round 2 has a great suggestion on how to detect legitimate (and illegitimate) use of ISO mounting using Event ID 12 of the Microsoft-Windows-VHDMP-Operational logs. It&amp;rsquo;s not one of the main Application/System/Security logs so you may have to configure your forwarders to start capturing it, but it will give you a good idea of how common it is for your organization to mount ISOs." />
+<meta name="keywords" content=", defense, iso, prevention" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://malicious.link/post/2022/blocking-iso-mounting/" />
+
+
+    <title>
+        
+            Blocking ISO mounting :: malicious.link  — welcome
+        
+    </title>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.a6537515292628f292bc89dc1bb6a3480b72f307b458bdd65364ae5b8b20399d.css">
+
+
+
+
+
+
+<meta itemprop="name" content="Blocking ISO mounting">
+<meta itemprop="description" content="Update: 10/15/2022
+One of the hard parts of implementing a block like this is the concern that it will &ldquo;break something&rdquo;. The DFIR Report&rsquo;s post on Bumblebee Round 2 has a great suggestion on how to detect legitimate (and illegitimate) use of ISO mounting using Event ID 12 of the Microsoft-Windows-VHDMP-Operational logs. It&rsquo;s not one of the main Application/System/Security logs so you may have to configure your forwarders to start capturing it, but it will give you a good idea of how common it is for your organization to mount ISOs."><meta itemprop="datePublished" content="2022-05-27T03:00:00-05:00" />
+<meta itemprop="dateModified" content="2022-05-27T03:00:00-05:00" />
+<meta itemprop="wordCount" content="740">
+<meta itemprop="keywords" content="defense,iso,prevention," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Blocking ISO mounting"/>
+<meta name="twitter:description" content="Update: 10/15/2022
+One of the hard parts of implementing a block like this is the concern that it will &ldquo;break something&rdquo;. The DFIR Report&rsquo;s post on Bumblebee Round 2 has a great suggestion on how to detect legitimate (and illegitimate) use of ISO mounting using Event ID 12 of the Microsoft-Windows-VHDMP-Operational logs. It&rsquo;s not one of the main Application/System/Security logs so you may have to configure your forwarders to start capturing it, but it will give you a good idea of how common it is for your organization to mount ISOs."/>
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-05-27 03:00:00 -0500 -0500" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/post/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">boot mubix.kernel</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://malicious.link/about">About</a></li><li><a href="https://malicious.link/brandon">Brandon</a></li><li><a href="https://malicious.link/post">Posts</a></li><li><a href="https://malicious.link/start">Start</a></li><li><a href="https://malicious.link/tags">Tags</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://malicious.link/post/2022/blocking-iso-mounting/">Blocking ISO mounting</a></h2>
+            <p>Published: 27 May 2022 - 03:00 -0500</p>
+
+            
+
+            
+
+            <div class="post-content">
+                <p><strong>Update: 10/15/2022</strong></p>
+<p>One of the hard parts of implementing a block like this is the concern that it will &ldquo;break something&rdquo;. <a href="https://thedfirreport.com/2022/09/26/bumblebee-round-two/">The DFIR Report&rsquo;s post on Bumblebee Round 2</a> has a great suggestion on how to detect legitimate (and illegitimate) use of ISO mounting using Event ID 12 of the Microsoft-Windows-VHDMP-Operational logs. It&rsquo;s not one of the main Application/System/Security logs so you may have to configure your forwarders to start capturing it, but it will give you a good idea of how common it is for your organization to mount ISOs. The following image is an example that I stole from the DFIR Report&rsquo;s blog post.</p>
+<p><img src="/images/2022/14373-001.png" alt=""></p>
+<p><strong>Update: 9/6/2022</strong></p>
+<p>First, I corrected the misspelling of <code>ProgrammaticAccessOnly</code> - thanks <a href="https://twitter.com/0x6A6F7368">Josh</a>!</p>
+<p>Second, I added <code>SCSI\CdRomMsft____Virtual_DVD-ROM_</code> into the blog post to make it easier to copy/paste</p>
+<p>Finally, if you are following the below process of blocking ISOs using the <code>SCSI\CdRomMsft____Virtual_DVD-ROM_</code> method, before you block you may want to double check how wide spread use of virtual ISO mounting is. You can do so via <a href="https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventid=6422">Event ID 6422</a>. You can see if you have it enabled on a specific host using the following command:</p>
+<p><img src="/images/2022/isoblocking_detect.png" alt=""></p>
+<p>Using this GPO setting:</p>
+<p><img src="/images/2022/isoblocking_detectgpo.png" alt=""></p>
+<hr>
+<p>Recently I&rsquo;ve been hearing about malware mounting ISOs as a method of bypassing AV and EDR. For example this article from <a href="https://www.bleepingcomputer.com/news/security/uptick-seen-in-iso-email-attachments-delivering-malware/">Bleeping Computer - &ldquo;Uptick Seen in ISO Email Attachments Delivering Malware&rdquo;</a> posted December 23rd, 2019, or <a href="https://www.darkreading.com/application-security/chromeloader-malware-hijacks-browsers-iso-files">DARK Reading - &ldquo;ChromeLoader Malware Hijacks Browsers with ISO Files&rdquo;</a> posted May 27th, 2022.</p>
+<p>The problem I found with these articles and many like it didn&rsquo;t really offer any sort of method to protect yourself or you company from ISO mounted malware, so I went to try to find a solution myself (couldn&rsquo;t be that hard right?). Turns out that if you google for &ldquo;Stop Windows from Mounting ISOs&rdquo; or something similar you get a bunch of MSDN articles for people trying to solve the same issue for one reason or another.</p>
+<p>After a lot of googling I found this article on <a href="https://winaero.com/remove-mount-context-menu-windows-10/">Winaero - &ldquo;Remove Mount Context Menu in Windows 10&rdquo;</a> posted April 5th 2018. This article shows how to add a simple registry key under <code>HKEY_CLASSES_ROOT\Windows.IsoFile\shell\mount</code> called <code>ProgrammaticAccessOnly</code> which would remove the context menu item when you right clicked an ISO. It also removed the functionality of double clicking to auto-mount ISOs. Here is the tweet from May 4th, 2022 when I figured this out:</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">For those that are dealing with ISO based malware downloads, might I suggest the following solution: <a href="https://t.co/2SHxqQFCTG">https://t.co/2SHxqQFCTG</a><br><br>Basically add &quot;ProgrammaticAccessOnly&quot; to HKEY_CLASSES_ROOT\Windows.IsoFile\shell\mount as a REG_SZ<br><br>This can be done at a GPO level :)</p>&mdash; Rob Fuller (@mubix) <a href="https://twitter.com/mubix/status/1521898616914423809?ref_src=twsrc%5Etfw">May 4, 2022</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>This was great because you could put this into a Group Policy and make it so everyone was protected but administrators could still mount drives with PowerShell and the <code>Mount-DiskImage</code> command.</p>
+<p>I haven&rsquo;t seen malware that downloads ISOs and executes whats in them programmatically after mounting them, but I have heard that this type of malware does exist, and the above protection won&rsquo;t stop that type of malware use case. So I went digging again for a more holistic approach.</p>
+<p>After a lot of googling again, I found this post from <a href="https://www.neighborgeek.net/2017/10/error-mounting-iso-file-sorry-there-was.html">NeighborGeek - &ldquo;Error mounting ISO file - &lsquo;Sorry, there was a problem mounting the file&rsquo;&rdquo;</a> posted October 31st, 2017. In this post it described &ldquo;Device Installation Restrictions&rdquo; in Group Policy that were blocking ISOs from being mounted. I didn&rsquo;t know how to make those settings but I found a great article on <a href="https://docs.microsoft.com/en-us/windows/client-management/manage-device-installation-with-group-policy">MSDN - &ldquo;Manage Device installation with Group Policy&rdquo;</a> that showed me how.</p>
+<p>After playing around with it a bit I was able to block ISOs from being mounted by double click, by context menu, and programmatically through powershell with one simple GPO:</p>
+<p><img src="/images/2022/isoblocking_gpo.png" alt=""></p>
+<p>For ease of copy paste: <code>SCSI\CdRomMsft____Virtual_DVD-ROM_</code></p>
+<p><strong>KEY TAKEAWAY</strong>: I would highly recommend this GPO on all of your workstations / laptops. Obviously servers need ISOs a lot more (not sure it&rsquo;s all that common to mount an ISO directly in the OS directly anymore instead of through virtualization software, but I definitely haven&rsquo;t been a sysadmin in a while).</p>
+<p>Here is the tweet from May 21st, 2022 once I figured it out:
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">After some conversations about this fix, I wanted to look for something more wholistic. Something that would stop both double click, right click mount, and scripted mounting from powershell, etc. So I found this:<a href="https://t.co/5ABmw1acIK">https://t.co/5ABmw1acIK</a><br>which led me here:<a href="https://t.co/2at7IhOhTt">https://t.co/2at7IhOhTt</a> <a href="https://t.co/xP5IZhwcNK">https://t.co/xP5IZhwcNK</a></p>&mdash; Rob Fuller (@mubix) <a href="https://twitter.com/mubix/status/1528043344051548160?ref_src=twsrc%5Etfw">May 21, 2022</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://malicious.link/tags/defense/">defense</a></span>
+        <span class="tag"><a href="https://malicious.link/tags/iso/">iso</a></span>
+        <span class="tag"><a href="https://malicious.link/tags/prevention/">prevention</a></span>
+        
+    </p>
+
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
+          </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
+
+
+
+    </body>
+</html>

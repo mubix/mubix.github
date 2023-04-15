@@ -32,15 +32,15 @@
 &lt;/ul&gt;
 &lt;p&gt;The following is a script to test a range of ports with HTTP, HTTPS, and SSH and confirm the response&amp;quot;&lt;/p&gt;
 &lt;p&gt;Just beginning with libraries. Paramiko is a SSH library for Python, and Concurrent.Futures is a method for creating concurrency/threading to speed up the script.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; socket
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; concurrent.futures
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; paramiko.client &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SSHClient
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; paramiko
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here are the variable to configure the script:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; socket
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; concurrent.futures
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; paramiko.client &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SSHClient
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; paramiko
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here are the variable to configure the script:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Ports: Two examples for specifying a list of ports, or doing a range is available.&lt;/li&gt;
 &lt;li&gt;Domain: Anyone can set up their own LMO server
@@ -50,143 +50,143 @@ using this Ansible script: &lt;a href=&#34;https://gitlab.com/mubix/letmeoutofyo
 &lt;li&gt;ThreadCount: How many threads to spin up to get through your list.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Finally it randomizes the list so that you aren&amp;rsquo;t hitting everything in order.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# VARIABLES&lt;/span&gt;
-ports &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;445&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3389&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;]
-&lt;span style=&#34;color:#75715e&#34;&gt;#ports = list(range(1,65536))&lt;/span&gt;
-
-domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;letmeoutofyour.net&amp;#34;&lt;/span&gt;
-verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
-printOpen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
-printClosed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
-
-threadcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
-
-random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;These functions are just checking if the different verbosity levels are set and printing if they are.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Verbosity - set to False above if you don&amp;#39;t want output&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vprint&lt;/span&gt;(status):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(status)
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# Print open ports&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_open&lt;/span&gt;(status):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printOpen &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# Print closed ports&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_closed&lt;/span&gt;(status):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printClosed &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[-] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is the function to test the HTTP/HTTPS connections:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_web&lt;/span&gt;(base, domain, port):
-  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Testing: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
-    r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port), timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;w00tw00t&amp;#34;&lt;/span&gt;:
-      print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exceptions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectionError:
-    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is the function to test SSH. It actually is pretty interesting because using Paramiko there isn&amp;rsquo;t a direct way just ask for remote host key that I&amp;rsquo;ve found, but you can attempt to connect, catch that it fails because either the host key isn&amp;rsquo;t in known_hosts or because no user name or password is supplied. Both errors still result in the &lt;code&gt;client&lt;/code&gt; object being populated with the remote host&amp;rsquo;s host key and this is what we use to compare against.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_ssh&lt;/span&gt;(domain, port):
-  client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SSHClient()
-  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Trying SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
-    client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(domain, port, timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; paramiko&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ssh_exception&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SSHException:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; socket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;timeout:
-    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;
-  key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_transport()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_remote_server_key()
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; key&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_base64() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&amp;#34;&lt;/span&gt;:
-    print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the &amp;ldquo;main&amp;rdquo; portion of the script (yes, I need to actually make a main function&amp;hellip;)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; concurrent&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;futures&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ThreadPoolExecutor(threadcount) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; executor:
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; port &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ports:
-    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTP&lt;/span&gt;
-    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://&amp;#34;&lt;/span&gt;
-    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
-    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTPS&lt;/span&gt;
-    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt;
-    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
-    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
-    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the script all put together:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; socket
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; concurrent.futures
-&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; paramiko.client &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SSHClient
-&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; paramiko
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# VARIABLES&lt;/span&gt;
-ports &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;445&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3389&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;]
-&lt;span style=&#34;color:#75715e&#34;&gt;#ports = list(range(1,65536))&lt;/span&gt;
-
-domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;letmeoutofyour.net&amp;#34;&lt;/span&gt;
-verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; False
-printOpen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
-printClosed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; True
-
-threadcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
-
-random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
-
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# Verbosity - set to False above if you don&amp;#39;t want output&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vprint&lt;/span&gt;(status):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(status)
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# Print open ports&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_open&lt;/span&gt;(status):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printOpen &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
-
-&lt;span style=&#34;color:#75715e&#34;&gt;# Print closed ports&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_closed&lt;/span&gt;(status):
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printClosed &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; True:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[-] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
-
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_web&lt;/span&gt;(base, domain, port):
-  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Testing: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
-    r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port), timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;w00tw00t&amp;#34;&lt;/span&gt;:
-      print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exceptions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectionError:
-    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_ssh&lt;/span&gt;(domain, port):
-  client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SSHClient()
-  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Trying SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
-    client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(domain, port, timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; paramiko&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ssh_exception&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SSHException:
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; socket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;timeout:
-    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;
-  key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_transport()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_remote_server_key()
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; key&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_base64() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&amp;#34;&lt;/span&gt;:
-    print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; concurrent&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;futures&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ThreadPoolExecutor(threadcount) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; executor:
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; port &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ports:
-    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTP&lt;/span&gt;
-    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://&amp;#34;&lt;/span&gt;
-    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
-    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTPS&lt;/span&gt;
-    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt;
-    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
-    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
-    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# VARIABLES&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ports &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;445&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3389&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#ports = list(range(1,65536))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;letmeoutofyour.net&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;printOpen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;printClosed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;threadcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;These functions are just checking if the different verbosity levels are set and printing if they are.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Verbosity - set to False above if you don&amp;#39;t want output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vprint&lt;/span&gt;(status):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(status)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Print open ports&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_open&lt;/span&gt;(status):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printOpen &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Print closed ports&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_closed&lt;/span&gt;(status):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printClosed &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[-] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is the function to test the HTTP/HTTPS connections:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_web&lt;/span&gt;(base, domain, port):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Testing: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port), timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;w00tw00t&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exceptions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectionError:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is the function to test SSH. It actually is pretty interesting because using Paramiko there isn&amp;rsquo;t a direct way just ask for remote host key that I&amp;rsquo;ve found, but you can attempt to connect, catch that it fails because either the host key isn&amp;rsquo;t in known_hosts or because no user name or password is supplied. Both errors still result in the &lt;code&gt;client&lt;/code&gt; object being populated with the remote host&amp;rsquo;s host key and this is what we use to compare against.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_ssh&lt;/span&gt;(domain, port):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SSHClient()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Trying SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(domain, port, timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; paramiko&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ssh_exception&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SSHException:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; socket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;timeout:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_transport()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_remote_server_key()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; key&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_base64() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the &amp;ldquo;main&amp;rdquo; portion of the script (yes, I need to actually make a main function&amp;hellip;)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; concurrent&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;futures&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ThreadPoolExecutor(threadcount) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; executor:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; port &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ports:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTP&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTPS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the script all put together:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; socket
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; random
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; string
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; concurrent.futures
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; paramiko.client &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; SSHClient
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; paramiko
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# VARIABLES&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ports &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;443&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;445&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;8080&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;3389&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;22&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;21&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#ports = list(range(1,65536))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;domain &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;letmeoutofyour.net&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;verbose &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;printOpen &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;printClosed &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;threadcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Verbosity - set to False above if you don&amp;#39;t want output&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;vprint&lt;/span&gt;(status):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; verbose &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(status)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Print open ports&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_open&lt;/span&gt;(status):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printOpen &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[+] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Print closed ports&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_closed&lt;/span&gt;(status):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; printClosed &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;[-] &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; status)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_web&lt;/span&gt;(base, domain, port):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Testing: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port), timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; r&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;w00tw00t&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; requests&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exceptions&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectionError:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; base &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;check_ssh&lt;/span&gt;(domain, port):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  client &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SSHClient()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  vprint(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Trying SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(domain, port, timeout&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; paramiko&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ssh_exception&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;SSHException:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;pass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; socket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;timeout:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_closed(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  key &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_transport()&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_remote_server_key()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; key&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_base64() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&amp;#34;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_open(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success! SSH to &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; domain &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; Port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; str(port))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; concurrent&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;futures&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ThreadPoolExecutor(threadcount) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; executor:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; port &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; ports:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTP&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test HTTPS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    base &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;https://&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_web, base, domain, port)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -196,13 +196,13 @@ random&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shuffle(ports)
       
       <guid>https://malicious.link/post/2016/blocking-countries-via-iptables/</guid>
       <description>&lt;p&gt;With all of the scanning / noise on the Internet, it&amp;rsquo;s nice to get rid of a large chunk of it simply by blocking an entire country&amp;rsquo;s worth of IP space. To do that you can simply use a kernel module for iptables called &amp;ldquo;xtables-addons&amp;rdquo;. On Debian/Ubuntu it&amp;rsquo;s pretty easy to get going, just &lt;code&gt;apt-get&lt;/code&gt; install the needed perl library and the addons themselves:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;apt-get install libtext-csv-xs-perl xtables-addons-common
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;apt-get install libtext-csv-xs-perl xtables-addons-common
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;!Warning: This does require proper linux headers to be available to compile the kernel module. In the case of where these aren&amp;rsquo;t availabe (like Linode&amp;rsquo;s special kernel), you will need to find another way to get the correct headers installed.&lt;/p&gt;
 &lt;p&gt;Then download the Maxmind geo database, the location of the &lt;code&gt;xt_geoip_dl&lt;/code&gt; tool that does this is dependent on the installed version of xtables-addons. For my testing I have found it in &lt;code&gt;/usr/src/xtables-addons-2.6/geoip/&lt;/code&gt; as well as &lt;code&gt;/usr/lib/xtables-addons/&lt;/code&gt; YMMV.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cd /usr/src/xtables-addons-2.6/geoip/
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cd /usr/src/xtables-addons-2.6/geoip/
 ./xt_geoip_dl
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You should see it downloading the IP databases:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;--2016-10-28 13:55:24--  http://geolite.maxmind.com/download/geoip/database/GeoIPv6.csv.gz
 Length: 1303811 (1.2M) [application/octet-stream]
 Saving to: ‘GeoIPv6.csv.gz’
 
@@ -222,20 +222,19 @@ Total wall clock time: 0.1s
 Downloaded: 2 files, 3.3M in 0.01s (324 MB/s)
 Archive:  GeoIPCountryCSV.zip
   inflating: GeoIPCountryWhois.csv
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that, you need to &amp;ldquo;build&amp;rdquo; the lists by performing the following command in that same directory (one install didn&amp;rsquo;t automatically make the directory so ensure it&amp;rsquo;s there with the mkdir command):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;mkdir -p /usr/share/xt_geoip
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mkdir -p /usr/share/xt_geoip
 ./xt_geoip_build -D /usr/share/xt_geoip *.csv
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After that you are off the the races and you can simply use the geoip module as so now:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc CN -j DROP
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc CN -j DROP
 iptables -A INPUT -m geoip --src-cc HK -j DROP
 iptables -A INPUT -m geoip --src-cc RU -j DROP
 iptables -A INPUT -m geoip --src-cc KR -j DROP
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Or you can go the other route and just allow from your country:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc PL -m tcp -p tcp --dport 22 -j ACCEPT
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;iptables -A INPUT -m geoip --src-cc PL -m tcp -p tcp --dport 22 -j ACCEPT
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;When looking up how to do this many people recommended updating the GeoIP database once a month. To do this I made a really simple bash script that just repeats all the things I did and added it to a monthly cron job:&lt;/p&gt;
 &lt;p&gt;File: 0update_maxmind&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#!/bin/bash
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#!/bin/bash
 
 rm -f /usr/src/xtables-addons-2.6/geoip/*.csv
 rm -rf /usr/share/xt_geoip/*
@@ -243,7 +242,7 @@ cd /usr/src/xtables-addons-2.6/geoip/
 ./xt_geoip_dl
 ./xt_geoip_build -D /usr/share/xt_geoip *.csv
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Setting the cronjob:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;chmod +x 0update_maxmind
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;chmod +x 0update_maxmind
 mv 0update_maxmind /etc/cront.monthly/
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;References I found useful:&lt;/p&gt;
 &lt;ul&gt;

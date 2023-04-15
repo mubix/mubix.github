@@ -17,8 +17,8 @@
       
       <guid>https://malicious.link/post/2020/run-all-rules-hashcat/</guid>
       <description>&lt;p&gt;This is just a quick script to demonstrate using PowerShell to run all the rules against a specific hash (or hash file), starting from the smallest file (usually the simplest rules)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Set-Location -Path &#39;C:\Program Files\hashcat\&#39;
-Get-ChildItem .\rules\ | where { $_.extension -eq &amp;quot;.rule&amp;quot; } |
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Set-Location -Path &amp;#39;C:\Program Files\hashcat\&amp;#39;
+Get-ChildItem .\rules\ | where { $_.extension -eq &amp;#34;.rule&amp;#34; } |
 Sort-Object -Property Length | 
 % { 
 	.\hashcat64.exe -m1000 20F91778B033F841702E014D3B79148C .\rockyou.txt --loopback --rules $_.FullName
@@ -51,7 +51,7 @@ Sort-Object -Property Length |
 &lt;/blockquote&gt;
 &lt;p&gt;who&amp;rsquo;s NTLM hash is &lt;code&gt;E478B144E719CFF85A5F2028F0DF1808&lt;/code&gt; you wouldn&amp;rsquo;t be able to crack it, even if it was in your dictionary, because it&amp;rsquo;s 28 characters. This limitation extends to any UTF16 based hash (which almost all Windows based hashing is)&lt;/p&gt;
 &lt;p&gt;How do you know what the limits are? Well John the Ripper has a handy dandy argument that tells you specifics of each format:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/jtr/run# ./john --list=format-details --format=nt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@crackingbox:/opt/jtr/run# ./john --list=format-details --format=nt
 NT      81      24      24      0002000f        43      MD4 256/256 AVX2 8x3  
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As you can see in the second column it says &amp;ldquo;81&amp;rdquo;. This is the maximum number of UTF8 characters that it can fit for that format type, but because John the Ripper supports up to the full standard of 3 bytes in UTF16, the maximum again, is 27 characters.&lt;/p&gt;
 &lt;p&gt;You can read more here:&lt;/p&gt;
@@ -62,19 +62,19 @@ NT      81      24      24      0002000f        43      MD4 256/256 AVX2 8x3
 &lt;/ul&gt;
 &lt;p&gt;If you read through the openwall posts then you saw there is a way to compile &lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper&#34;&gt;John (jumbo)&lt;/a&gt; to squeeze out a few more characters:&lt;/p&gt;
 &lt;p&gt;(&lt;strong&gt;This will slow down cracking considerably&lt;/strong&gt;)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/src/#./configure --disable-native-tests CFLAGS=&#39;-O2 -mno-sse2 -mno-mmx -U__SSE__&#39;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/src/#./configure --disable-native-tests CFLAGS=&amp;#39;-O2 -mno-sse2 -mno-mmx -U__SSE__&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Lets see what this gets us:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/run/# ./john --list=format-details --format=nt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/run/# ./john --list=format-details --format=nt
 NT      125     1       1       0002000f        43      MD4 32/64
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We now have 125 total characters total (not just 41 - &lt;a href=&#34;https://twitter.com/solardiz/status/861182438818684929&#34;&gt;thanks Solar Designer for the update&lt;/a&gt;). And as you can probably guess, it cracks the password just fine now:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/run/# ./john /tmp/hashtest.txt --format=nt --wordlist=/tmp/list.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@crackingbox:/opt/bigjohn/run/# ./john /tmp/hashtest.txt --format=nt --wordlist=/tmp/list.txt
 Using default input encoding: UTF-8
 Loaded 2 password hashes with no different salts (NT [MD4 32/64])
 Remaining 1 password hash
-Press &#39;q&#39; or Ctrl-C to abort, almost any other key for status
-You can&#39;t handle the truth! (Martha)
-1g 0:00:00:00 DONE (2017-05-07 00:58) 33.33g/s 133.3p/s 133.3c/s 133.3C/s You can&#39;t handle the truth!
-Use the &amp;quot;--show&amp;quot; option to display all of the cracked passwords reliably
+Press &amp;#39;q&amp;#39; or Ctrl-C to abort, almost any other key for status
+You can&amp;#39;t handle the truth! (Martha)
+1g 0:00:00:00 DONE (2017-05-07 00:58) 33.33g/s 133.3p/s 133.3c/s 133.3C/s You can&amp;#39;t handle the truth!
+Use the &amp;#34;--show&amp;#34; option to display all of the cracked passwords reliably
 Session completed
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hashcat also has a branch that supports longer passwords, but currently doesn&amp;rsquo;t support NTLM:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/hashcat/hashcat/tree/longer_passwords&#34;&gt;https://github.com/hashcat/hashcat/tree/longer_passwords&lt;/a&gt;&lt;/p&gt;

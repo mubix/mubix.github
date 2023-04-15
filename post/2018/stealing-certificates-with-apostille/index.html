@@ -38,7 +38,7 @@ To be more accurate, Apostille generates a clone of the certificate chain, ident
 During that talk, they quickly touched on a tool written by Rogan Dawes another @Sensepost-er&rsquo;s tool called &ldquo;Apostille&rdquo;. It is esentially a certificate stealing (cloning? faking? doppelganger-ing?) tool. However, that over simplifies what it does.
 To be more accurate, Apostille generates a clone of the certificate chain, identical in as many details as possible, apart from the actual key values."><meta itemprop="datePublished" content="2018-08-26T08:30:44-05:00" />
 <meta itemprop="dateModified" content="2018-08-26T08:30:44-05:00" />
-<meta itemprop="wordCount" content="699">
+<meta itemprop="wordCount" content="698">
 <meta itemprop="keywords" content="certificates,mitm," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Stealing Certificates with Apostille"/>
@@ -128,22 +128,22 @@ To be more accurate, Apostille generates a clone of the certificate chain, ident
             <div class="post-content">
                 <p>At Def Con 26, <a href="https://twitter.com/singe">@singe</a> and <a href="https://twitter.com/_cablethief">@_cablethief</a> gave a talk on enterprise wireless attacks. When it&rsquo;s video is released you should check it out.</p>
 <p>During that talk, they quickly touched on a tool written by <a href="https://twitter.com/rogandawes">Rogan Dawes</a> another <a href="https://twitter.com/sensepost">@Sensepost</a>-er&rsquo;s tool called &ldquo;<a href="https://github.com/sensepost/apostille">Apostille</a>&rdquo;. It is esentially a certificate stealing (cloning? faking? doppelganger-ing?) tool. However, that over simplifies what it does.</p>
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">To be more accurate, Apostille generates a clone of the certificate chain, identical in as many details as possible, apart from the actual key values. One thing this could be useful for is bypassing naive cert pinning if the validation is based on details of the signing certs.</p>&mdash; Rogan Dawes (@RoganDawes) <a href="https://twitter.com/RoganDawes/status/1033769690609463297?ref_src=twsrc%5Etfw">August 26, 2018</a></blockquote>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">To be more accurate, Apostille generates a clone of the certificate chain, identical in as many details as possible, apart from the actual key values. One thing this could be useful for is bypassing naive cert pinning if the validation is based on details of the signing certs.</p>&mdash; @RoganDawes@infosec.exchange (@RoganDawes) <a href="https://twitter.com/RoganDawes/status/1033769690609463297?ref_src=twsrc%5Etfw">August 26, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>Copying a certificate&rsquo;s common name, email, or other fields that are inputted during creation is a relatively easy way to copy certificates, and they can look relatively good at first glance. However, this simple copy leads to many tell-tail signs that it&rsquo;s fake. For instance lets say I create a certificate like so:</p>
-<pre><code>root@apostille-post:~# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
+<pre tabindex="0"><code>root@apostille-post:~# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
 Generating a 2048 bit RSA private key
 .................................................................................................................+++
 ...+++
-writing new private key to 'mycert.pem'
+writing new private key to &#39;mycert.pem&#39;
 -----
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
 There are quite a few fields but you can leave some blank
 For some fields there will be a default value,
-If you enter '.', the field will be left blank.
+If you enter &#39;.&#39;, the field will be left blank.
 -----
 Country Name (2 letter code) [AU]:US
 State or Province Name (full name) [Some-State]:California
@@ -157,11 +157,11 @@ Email Address []:
 <p>The <code>Vaild From</code>, the <code>Issued By</code>, and most of the other certificate information helps this certificate to stand out as fraudulent. Also, doing this by hand is a PITA.</p>
 <p>Enter <strong>Apostille</strong>.</p>
 <p>It&rsquo;s pretty straight forward to get it going, but you do need both Java&rsquo;s JDK and Maven to compile it first:</p>
-<pre><code>root@apostille-post:~# apt install -y maven default-jdk git
+<pre tabindex="0"><code>root@apostille-post:~# apt install -y maven default-jdk git
 </code></pre><p>(I&rsquo;m doing this on a fresh box so it needed git as well)</p>
 <p>Step 2, <code>git clone</code> the repo, and compile with Maven:</p>
-<pre><code>root@apostille-post:~# git clone https://github.com/sensepost/apostille
-Cloning into 'apostille'...
+<pre tabindex="0"><code>root@apostille-post:~# git clone https://github.com/sensepost/apostille
+Cloning into &#39;apostille&#39;...
 remote: Counting objects: 48, done.
 remote: Total 48 (delta 0), reused 0 (delta 0), pack-reused 48
 Unpacking objects: 100% (48/48), done.
@@ -176,18 +176,18 @@ root@apostille-post:~/apostille# mvn package
 </ul>
 <p>In order to get the certificates out of the keystore and into a PEM format that I can use for testing, I used the following:</p>
 <p>Source: <a href="https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/">https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/</a></p>
-<pre><code>root@apostille-post:~/apostille# keytool -importkeystore -srckeystore tempkeystore.jks -destkeystore myapp.p12 -srcalias *.google.com -srcstoretype jks -deststoretype pkcs12
+<pre tabindex="0"><code>root@apostille-post:~/apostille# keytool -importkeystore -srckeystore tempkeystore.jks -destkeystore myapp.p12 -srcalias *.google.com -srcstoretype jks -deststoretype pkcs12
 Importing keystore tempkeystore.jks to myapp.p12...Enter destination keystore password: ASDqwe123
 Re-enter new password: ASDqwe123
 Enter source keystore password: ASDqwe123
 </code></pre><p>(The passwords will not show up, but I put them in there so you can see what I&rsquo;m inputting. Again I chose a simple password because I&rsquo;m converting it one more time)</p>
 <p>Then finally to a PEM like so:</p>
-<pre><code>root@apostille-post:~/apostille# openssl pkcs12 -in myapp.p12 -out myapp.pem
+<pre tabindex="0"><code>root@apostille-post:~/apostille# openssl pkcs12 -in myapp.p12 -out myapp.pem
 Enter Import Password: ASDqwe123
 Enter PEM pass phrase: WugWZ3!F3hD#8P!f
 Verifying - Enter PEM pass phrase: WugWZ3!F3hD#8P!f
 </code></pre><p>To test out how it looks I&rsquo;ll reference <a href="http://attackerkb.com/Web/Quick%20Web%20Servers">AKB&rsquo;s Quick Web Servers list</a></p>
-<pre><code>root@apostille-post:~/apostille# openssl s_server -cert myapp.pem -accept 443 -WWW
+<pre tabindex="0"><code>root@apostille-post:~/apostille# openssl s_server -cert myapp.pem -accept 443 -WWW
 Enter pass phrase for myapp.pem: WugWZ3!F3hD#8P!f
 Using default temp DH parameters
 ACCEPT
@@ -223,7 +223,7 @@ ACCEPT
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -231,7 +231,7 @@ ACCEPT
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -244,7 +244,7 @@ ACCEPT
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

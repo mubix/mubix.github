@@ -128,22 +128,22 @@
 <p>I&rsquo;m sure you already know where I&rsquo;m going with this, I wanted to brute force all possible hostnames up to 4 characters. For a long time I struggled with coding this, but couldn&rsquo;t wrap my head around it. I would come back to it every so often, finally a few days ago I happened upon a script on gist: <a href="https://gist.github.com/petehamilton/4755855">https://gist.github.com/petehamilton/4755855</a> that suited my needs perfectly.</p>
 <p>I modified it to suite my needs (just use the yield method) and here is what I ended up with (remember DNS is case insensitive):</p>
 <p><strong>Notice:</strong> This script doesn&rsquo;t end, it will keep doing lookups on longer and longer hostnames until you hit CTRL-C</p>
-<pre><code>#!/usr/bin/env ruby
+<pre tabindex="0"><code>#!/usr/bin/env ruby
 
 #
 ## Brute code stolen form: https://gist.github.com/petehamilton/4755855
 #
 
-@domain = 'microsoft.com'
+@domain = &#39;microsoft.com&#39;
 
 def result?(sub)
 	results = %x(dig +noall #{sub}.#{@domain} +answer)
-	if results != &quot;&quot;
-		puts &quot;============================&quot;
-		puts &quot;FOUND: \t#{sub}&quot;
-		puts &quot;============================&quot;
-		puts &quot;#{results}&quot;
-		puts &quot;============================&quot;
+	if results != &#34;&#34;
+		puts &#34;============================&#34;
+		puts &#34;FOUND: \t#{sub}&#34;
+		puts &#34;============================&#34;
+		puts &#34;#{results}&#34;
+		puts &#34;============================&#34;
 	end
 	1 == 2
 end
@@ -165,14 +165,13 @@ def crack_yield(chars)
 	}
 end
 
-chars = ('a'..'z').to_a
+chars = (&#39;a&#39;..&#39;z&#39;).to_a
 (0..9).each {|x| chars &lt;&lt; x.to_s} 
 
 crack_yielding(chars)
-
 </code></pre><p>This worked but it was slow, so I sped it up using methods that I talked about in my last post and a quick modification:</p>
 <p>I used this:</p>
-<pre><code>#!/usr/bin/env ruby
+<pre tabindex="0"><code>#!/usr/bin/env ruby
 
 #
 ## Brute code stolen form: https://gist.github.com/petehamilton/4755855
@@ -200,13 +199,12 @@ def crack_yield(chars)
 	}
 end
 
-chars = ('a'..'z').to_a
+chars = (&#39;a&#39;..&#39;z&#39;).to_a
 (0..9).each {|x| chars &lt;&lt; x.to_s} 
 
 crack_yielding(chars)
-
 </code></pre><p>which just prints all the possibilities:</p>
-<pre><code>a
+<pre tabindex="0"><code>a
 b
 c
 d
@@ -214,9 +212,9 @@ e
 f
 ...
 </code></pre><p>and piped it into parallel + dig:</p>
-<pre><code>ruby brutelist.rb | parallel -j100 dig +noall {}.microsoft.com +answer
+<pre tabindex="0"><code>ruby brutelist.rb | parallel -j100 dig +noall {}.microsoft.com +answer
 </code></pre><p>and got the following:</p>
-<pre><code>c.microsoft.com.	2	IN	CNAME	c.microsoft.akadns.net.
+<pre tabindex="0"><code>c.microsoft.com.	2	IN	CNAME	c.microsoft.akadns.net.
 c.microsoft.akadns.net.	499	IN	A	65.55.58.184
 e.microsoft.com.	3599	IN	A	191.234.1.50
 g.microsoft.com.	2798	IN	CNAME	g.msn.com.
@@ -268,7 +266,7 @@ wedcseus.cloudapp.net.	8	IN	A	137.116.48.250
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -276,7 +274,7 @@ wedcseus.cloudapp.net.	8	IN	A	137.116.48.250
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -289,7 +287,7 @@ wedcseus.cloudapp.net.	8	IN	A	137.116.48.250
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

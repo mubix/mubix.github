@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
 <meta name="description" content="Use-cases:
- IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2.  Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &amp;ldquo;Beyond Corp&amp;rdquo; model." />
+IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2. Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &amp;ldquo;Beyond Corp&amp;rdquo; model." />
 <meta name="keywords" content=", mubix, lmo, lmooydn, egress, firewall" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
@@ -34,14 +34,14 @@
 
 <meta itemprop="name" content="Let Me Out of Your Net - Egress Testing">
 <meta itemprop="description" content="Use-cases:
- IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2.  Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &ldquo;Beyond Corp&rdquo; model."><meta itemprop="datePublished" content="2020-07-04T09:14:33-04:00" />
+IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2. Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &ldquo;Beyond Corp&rdquo; model."><meta itemprop="datePublished" content="2020-07-04T09:14:33-04:00" />
 <meta itemprop="dateModified" content="2020-07-04T09:14:33-04:00" />
 <meta itemprop="wordCount" content="1027">
 <meta itemprop="keywords" content="mubix,lmo,lmooydn,egress,firewall," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Let Me Out of Your Net - Egress Testing"/>
 <meta name="twitter:description" content="Use-cases:
- IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2.  Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &ldquo;Beyond Corp&rdquo; model."/>
+IT Admin, Firewall Admin, or Security staff at a company and want to confirm what ports and protocols are allowed of your network. Pentester that intends to identify ports and protocols that can be used for a pentest to gain C2 outbound. Purple Team testing ports and protocol detection for C2. Egress testing is an exciting problem due to the uniqueness of most networks. You may find fully open networks like those found in many Silicon Valley companies or companies attempting to move to a &ldquo;Beyond Corp&rdquo; model."/>
 
 
 
@@ -139,15 +139,15 @@
 </ul>
 <p>The following is a script to test a range of ports with HTTP, HTTPS, and SSH and confirm the response&quot;</p>
 <p>Just beginning with libraries. Paramiko is a SSH library for Python, and Concurrent.Futures is a method for creating concurrency/threading to speed up the script.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python3</span>
-<span style="color:#f92672">import</span> requests
-<span style="color:#f92672">import</span> socket
-<span style="color:#f92672">import</span> random
-<span style="color:#f92672">import</span> string
-<span style="color:#f92672">import</span> concurrent.futures
-<span style="color:#f92672">from</span> paramiko.client <span style="color:#f92672">import</span> SSHClient
-<span style="color:#f92672">import</span> paramiko
-</code></pre></div><p>Here are the variable to configure the script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> socket
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> concurrent.futures
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> paramiko.client <span style="color:#f92672">import</span> SSHClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> paramiko
+</span></span></code></pre></div><p>Here are the variable to configure the script:</p>
 <ul>
 <li>Ports: Two examples for specifying a list of ports, or doing a range is available.</li>
 <li>Domain: Anyone can set up their own LMO server
@@ -157,143 +157,143 @@ using this Ansible script: <a href="https://gitlab.com/mubix/letmeoutofyour.net"
 <li>ThreadCount: How many threads to spin up to get through your list.</li>
 </ul>
 <p>Finally it randomizes the list so that you aren&rsquo;t hitting everything in order.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># VARIABLES</span>
-ports <span style="color:#f92672">=</span> [<span style="color:#ae81ff">80</span>,<span style="color:#ae81ff">443</span>,<span style="color:#ae81ff">445</span>,<span style="color:#ae81ff">8080</span>,<span style="color:#ae81ff">3389</span>,<span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">21</span>]
-<span style="color:#75715e">#ports = list(range(1,65536))</span>
-
-domain <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;letmeoutofyour.net&#34;</span>
-verbose <span style="color:#f92672">=</span> False
-printOpen <span style="color:#f92672">=</span> True
-printClosed <span style="color:#f92672">=</span> True
-
-threadcount <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
-
-random<span style="color:#f92672">.</span>shuffle(ports)
-</code></pre></div><p>These functions are just checking if the different verbosity levels are set and printing if they are.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Verbosity - set to False above if you don&#39;t want output</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">vprint</span>(status):
-  <span style="color:#66d9ef">if</span> verbose <span style="color:#f92672">==</span> True:
-    <span style="color:#66d9ef">print</span>(status)
-
-<span style="color:#75715e"># Print open ports</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_open</span>(status):
-  <span style="color:#66d9ef">if</span> printOpen <span style="color:#f92672">==</span> True:
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;[+] &#34;</span> <span style="color:#f92672">+</span> status)
-
-<span style="color:#75715e"># Print closed ports</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_closed</span>(status):
-  <span style="color:#66d9ef">if</span> printClosed <span style="color:#f92672">==</span> True:
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;[-] &#34;</span> <span style="color:#f92672">+</span> status)
-</code></pre></div><p>This is the function to test the HTTP/HTTPS connections:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_web</span>(base, domain, port):
-  vprint(<span style="color:#e6db74">&#34;Testing: &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-  <span style="color:#66d9ef">try</span>:
-    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port), timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-    result <span style="color:#f92672">=</span> r<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>strip()
-    <span style="color:#66d9ef">if</span> result <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;w00tw00t&#34;</span>:
-      print_open(<span style="color:#e6db74">&#34;Success! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-  <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>ConnectionError:
-    print_closed(<span style="color:#e6db74">&#34;Failed! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-</code></pre></div><p>This is the function to test SSH. It actually is pretty interesting because using Paramiko there isn&rsquo;t a direct way just ask for remote host key that I&rsquo;ve found, but you can attempt to connect, catch that it fails because either the host key isn&rsquo;t in known_hosts or because no user name or password is supplied. Both errors still result in the <code>client</code> object being populated with the remote host&rsquo;s host key and this is what we use to compare against.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_ssh</span>(domain, port):
-  client <span style="color:#f92672">=</span> SSHClient()
-  vprint(<span style="color:#e6db74">&#34;Trying SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
-  <span style="color:#66d9ef">try</span>:
-    client<span style="color:#f92672">.</span>connect(domain, port, timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-  <span style="color:#66d9ef">except</span> paramiko<span style="color:#f92672">.</span>ssh_exception<span style="color:#f92672">.</span>SSHException:
-    <span style="color:#66d9ef">pass</span>
-  <span style="color:#66d9ef">except</span> socket<span style="color:#f92672">.</span>timeout:
-    print_closed(<span style="color:#e6db74">&#34;Failed! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
-    <span style="color:#66d9ef">return</span>
-  key <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>get_transport()<span style="color:#f92672">.</span>get_remote_server_key()
-  <span style="color:#66d9ef">if</span> key<span style="color:#f92672">.</span>get_base64() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&#34;</span>:
-    print_open(<span style="color:#e6db74">&#34;Success! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
-</code></pre></div><p>Here is the &ldquo;main&rdquo; portion of the script (yes, I need to actually make a main function&hellip;)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">with</span> concurrent<span style="color:#f92672">.</span>futures<span style="color:#f92672">.</span>ThreadPoolExecutor(threadcount) <span style="color:#66d9ef">as</span> executor:
-  <span style="color:#66d9ef">for</span> port <span style="color:#f92672">in</span> ports:
-    <span style="color:#75715e"># Test HTTP</span>
-    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span>
-    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
-    <span style="color:#75715e"># Test HTTPS</span>
-    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://&#34;</span>
-    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
-    <span style="color:#75715e"># Test SSH</span>
-    executor<span style="color:#f92672">.</span>submit(check_ssh, domain, port)
-</code></pre></div><p>Here is the script all put together:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e">#!/usr/bin/env python3</span>
-<span style="color:#f92672">import</span> requests
-<span style="color:#f92672">import</span> socket
-<span style="color:#f92672">import</span> random
-<span style="color:#f92672">import</span> string
-<span style="color:#f92672">import</span> concurrent.futures
-<span style="color:#f92672">from</span> paramiko.client <span style="color:#f92672">import</span> SSHClient
-<span style="color:#f92672">import</span> paramiko
-
-<span style="color:#75715e"># VARIABLES</span>
-ports <span style="color:#f92672">=</span> [<span style="color:#ae81ff">80</span>,<span style="color:#ae81ff">443</span>,<span style="color:#ae81ff">445</span>,<span style="color:#ae81ff">8080</span>,<span style="color:#ae81ff">3389</span>,<span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">21</span>]
-<span style="color:#75715e">#ports = list(range(1,65536))</span>
-
-domain <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;letmeoutofyour.net&#34;</span>
-verbose <span style="color:#f92672">=</span> False
-printOpen <span style="color:#f92672">=</span> True
-printClosed <span style="color:#f92672">=</span> True
-
-threadcount <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
-
-random<span style="color:#f92672">.</span>shuffle(ports)
-
-
-<span style="color:#75715e"># Verbosity - set to False above if you don&#39;t want output</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">vprint</span>(status):
-  <span style="color:#66d9ef">if</span> verbose <span style="color:#f92672">==</span> True:
-    <span style="color:#66d9ef">print</span>(status)
-
-<span style="color:#75715e"># Print open ports</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_open</span>(status):
-  <span style="color:#66d9ef">if</span> printOpen <span style="color:#f92672">==</span> True:
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;[+] &#34;</span> <span style="color:#f92672">+</span> status)
-
-<span style="color:#75715e"># Print closed ports</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_closed</span>(status):
-  <span style="color:#66d9ef">if</span> printClosed <span style="color:#f92672">==</span> True:
-    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;[-] &#34;</span> <span style="color:#f92672">+</span> status)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_web</span>(base, domain, port):
-  vprint(<span style="color:#e6db74">&#34;Testing: &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-  <span style="color:#66d9ef">try</span>:
-    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port), timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-    result <span style="color:#f92672">=</span> r<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>strip()
-    <span style="color:#66d9ef">if</span> result <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;w00tw00t&#34;</span>:
-      print_open(<span style="color:#e6db74">&#34;Success! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-  <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>ConnectionError:
-    print_closed(<span style="color:#e6db74">&#34;Failed! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_ssh</span>(domain, port):
-  client <span style="color:#f92672">=</span> SSHClient()
-  vprint(<span style="color:#e6db74">&#34;Trying SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
-  <span style="color:#66d9ef">try</span>:
-    client<span style="color:#f92672">.</span>connect(domain, port, timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
-  <span style="color:#66d9ef">except</span> paramiko<span style="color:#f92672">.</span>ssh_exception<span style="color:#f92672">.</span>SSHException:
-    <span style="color:#66d9ef">pass</span>
-  <span style="color:#66d9ef">except</span> socket<span style="color:#f92672">.</span>timeout:
-    print_closed(<span style="color:#e6db74">&#34;Failed! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
-    <span style="color:#66d9ef">return</span>
-  key <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>get_transport()<span style="color:#f92672">.</span>get_remote_server_key()
-  <span style="color:#66d9ef">if</span> key<span style="color:#f92672">.</span>get_base64() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&#34;</span>:
-    print_open(<span style="color:#e6db74">&#34;Success! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
-
-<span style="color:#66d9ef">with</span> concurrent<span style="color:#f92672">.</span>futures<span style="color:#f92672">.</span>ThreadPoolExecutor(threadcount) <span style="color:#66d9ef">as</span> executor:
-  <span style="color:#66d9ef">for</span> port <span style="color:#f92672">in</span> ports:
-    <span style="color:#75715e"># Test HTTP</span>
-    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span>
-    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
-    <span style="color:#75715e"># Test HTTPS</span>
-    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://&#34;</span>
-    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
-    <span style="color:#75715e"># Test SSH</span>
-    executor<span style="color:#f92672">.</span>submit(check_ssh, domain, port)
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># VARIABLES</span>
+</span></span><span style="display:flex;"><span>ports <span style="color:#f92672">=</span> [<span style="color:#ae81ff">80</span>,<span style="color:#ae81ff">443</span>,<span style="color:#ae81ff">445</span>,<span style="color:#ae81ff">8080</span>,<span style="color:#ae81ff">3389</span>,<span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">21</span>]
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ports = list(range(1,65536))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>domain <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;letmeoutofyour.net&#34;</span>
+</span></span><span style="display:flex;"><span>verbose <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>printOpen <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>printClosed <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>threadcount <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>random<span style="color:#f92672">.</span>shuffle(ports)
+</span></span></code></pre></div><p>These functions are just checking if the different verbosity levels are set and printing if they are.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Verbosity - set to False above if you don&#39;t want output</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">vprint</span>(status):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> verbose <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    print(status)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Print open ports</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_open</span>(status):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> printOpen <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;[+] &#34;</span> <span style="color:#f92672">+</span> status)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Print closed ports</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_closed</span>(status):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> printClosed <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;[-] &#34;</span> <span style="color:#f92672">+</span> status)
+</span></span></code></pre></div><p>This is the function to test the HTTP/HTTPS connections:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_web</span>(base, domain, port):
+</span></span><span style="display:flex;"><span>  vprint(<span style="color:#e6db74">&#34;Testing: &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port), timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> r<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> result <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;w00tw00t&#34;</span>:
+</span></span><span style="display:flex;"><span>      print_open(<span style="color:#e6db74">&#34;Success! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>ConnectionError:
+</span></span><span style="display:flex;"><span>    print_closed(<span style="color:#e6db74">&#34;Failed! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span></code></pre></div><p>This is the function to test SSH. It actually is pretty interesting because using Paramiko there isn&rsquo;t a direct way just ask for remote host key that I&rsquo;ve found, but you can attempt to connect, catch that it fails because either the host key isn&rsquo;t in known_hosts or because no user name or password is supplied. Both errors still result in the <code>client</code> object being populated with the remote host&rsquo;s host key and this is what we use to compare against.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_ssh</span>(domain, port):
+</span></span><span style="display:flex;"><span>  client <span style="color:#f92672">=</span> SSHClient()
+</span></span><span style="display:flex;"><span>  vprint(<span style="color:#e6db74">&#34;Trying SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    client<span style="color:#f92672">.</span>connect(domain, port, timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">except</span> paramiko<span style="color:#f92672">.</span>ssh_exception<span style="color:#f92672">.</span>SSHException:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">except</span> socket<span style="color:#f92672">.</span>timeout:
+</span></span><span style="display:flex;"><span>    print_closed(<span style="color:#e6db74">&#34;Failed! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>  key <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>get_transport()<span style="color:#f92672">.</span>get_remote_server_key()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> key<span style="color:#f92672">.</span>get_base64() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&#34;</span>:
+</span></span><span style="display:flex;"><span>    print_open(<span style="color:#e6db74">&#34;Success! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span></code></pre></div><p>Here is the &ldquo;main&rdquo; portion of the script (yes, I need to actually make a main function&hellip;)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">with</span> concurrent<span style="color:#f92672">.</span>futures<span style="color:#f92672">.</span>ThreadPoolExecutor(threadcount) <span style="color:#66d9ef">as</span> executor:
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> port <span style="color:#f92672">in</span> ports:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Test HTTP</span>
+</span></span><span style="display:flex;"><span>    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span>
+</span></span><span style="display:flex;"><span>    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Test HTTPS</span>
+</span></span><span style="display:flex;"><span>    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://&#34;</span>
+</span></span><span style="display:flex;"><span>    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Test SSH</span>
+</span></span><span style="display:flex;"><span>    executor<span style="color:#f92672">.</span>submit(check_ssh, domain, port)
+</span></span></code></pre></div><p>Here is the script all put together:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> socket
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> concurrent.futures
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> paramiko.client <span style="color:#f92672">import</span> SSHClient
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> paramiko
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># VARIABLES</span>
+</span></span><span style="display:flex;"><span>ports <span style="color:#f92672">=</span> [<span style="color:#ae81ff">80</span>,<span style="color:#ae81ff">443</span>,<span style="color:#ae81ff">445</span>,<span style="color:#ae81ff">8080</span>,<span style="color:#ae81ff">3389</span>,<span style="color:#ae81ff">22</span>,<span style="color:#ae81ff">21</span>]
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ports = list(range(1,65536))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>domain <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;letmeoutofyour.net&#34;</span>
+</span></span><span style="display:flex;"><span>verbose <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>printOpen <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>printClosed <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>threadcount <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>random<span style="color:#f92672">.</span>shuffle(ports)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Verbosity - set to False above if you don&#39;t want output</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">vprint</span>(status):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> verbose <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    print(status)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Print open ports</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_open</span>(status):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> printOpen <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;[+] &#34;</span> <span style="color:#f92672">+</span> status)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Print closed ports</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_closed</span>(status):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> printClosed <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;[-] &#34;</span> <span style="color:#f92672">+</span> status)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_web</span>(base, domain, port):
+</span></span><span style="display:flex;"><span>  vprint(<span style="color:#e6db74">&#34;Testing: &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port), timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> r<span style="color:#f92672">.</span>text<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> result <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;w00tw00t&#34;</span>:
+</span></span><span style="display:flex;"><span>      print_open(<span style="color:#e6db74">&#34;Success! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">except</span> requests<span style="color:#f92672">.</span>exceptions<span style="color:#f92672">.</span>ConnectionError:
+</span></span><span style="display:flex;"><span>    print_closed(<span style="color:#e6db74">&#34;Failed! &#34;</span> <span style="color:#f92672">+</span> base <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;:&#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_ssh</span>(domain, port):
+</span></span><span style="display:flex;"><span>  client <span style="color:#f92672">=</span> SSHClient()
+</span></span><span style="display:flex;"><span>  vprint(<span style="color:#e6db74">&#34;Trying SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>    client<span style="color:#f92672">.</span>connect(domain, port, timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">except</span> paramiko<span style="color:#f92672">.</span>ssh_exception<span style="color:#f92672">.</span>SSHException:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">except</span> socket<span style="color:#f92672">.</span>timeout:
+</span></span><span style="display:flex;"><span>    print_closed(<span style="color:#e6db74">&#34;Failed! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>
+</span></span><span style="display:flex;"><span>  key <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>get_transport()<span style="color:#f92672">.</span>get_remote_server_key()
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> key<span style="color:#f92672">.</span>get_base64() <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;AAAAC3NzaC1lZDI1NTE5AAAAIIrfkWLMzwGKRliVsJOjm5OJRJo6AZt7NsqAH8bk9tYc&#34;</span>:
+</span></span><span style="display:flex;"><span>    print_open(<span style="color:#e6db74">&#34;Success! SSH to &#34;</span> <span style="color:#f92672">+</span> domain <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Port: &#34;</span> <span style="color:#f92672">+</span> str(port))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> concurrent<span style="color:#f92672">.</span>futures<span style="color:#f92672">.</span>ThreadPoolExecutor(threadcount) <span style="color:#66d9ef">as</span> executor:
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> port <span style="color:#f92672">in</span> ports:
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Test HTTP</span>
+</span></span><span style="display:flex;"><span>    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://&#34;</span>
+</span></span><span style="display:flex;"><span>    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Test HTTPS</span>
+</span></span><span style="display:flex;"><span>    base <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://&#34;</span>
+</span></span><span style="display:flex;"><span>    executor<span style="color:#f92672">.</span>submit(check_web, base, domain, port)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Test SSH</span>
+</span></span><span style="display:flex;"><span>    executor<span style="color:#f92672">.</span>submit(check_ssh, domain, port)
+</span></span></code></pre></div>
             </div>
         </article>
 
@@ -322,7 +322,7 @@ random<span style="color:#f92672">.</span>shuffle(ports)
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -330,7 +330,7 @@ random<span style="color:#f92672">.</span>shuffle(ports)
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -343,7 +343,7 @@ random<span style="color:#f92672">.</span>shuffle(ports)
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

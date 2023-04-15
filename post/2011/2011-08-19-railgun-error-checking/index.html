@@ -34,8 +34,8 @@ For my example I&amp;rsquo;m using &amp;lsquo;getaddrinfo&amp;rsquo; since it&am
 
 <meta itemprop="name" content="Railgun Error Checking">
 <meta itemprop="description" content="One important thing to note about Railgun is that you are querying the API and just as if you were using C&#43;&#43; the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:
-For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd."><meta itemprop="datePublished" content="2011-08-19T02:13:01&#43;00:00" />
-<meta itemprop="dateModified" content="2011-08-19T02:13:01&#43;00:00" />
+For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd."><meta itemprop="datePublished" content="2011-08-19T02:13:01+00:00" />
+<meta itemprop="dateModified" content="2011-08-19T02:13:01+00:00" />
 <meta itemprop="wordCount" content="339">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -51,7 +51,7 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
 
 
 
-    <meta property="article:published_time" content="2011-08-19 02:13:01 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2011-08-19 02:13:01 &#43;0000 UTC" />
 
 
 
@@ -129,12 +129,12 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
 <p>For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd. If a user has installed Windows 2000&rsquo;s IPv6 package it&rsquo;s there, if not, it&rsquo;s not. So if you run up on a WinNT box or a Win2k box that doesn&rsquo;t have an updater stack this function isn&rsquo;t going to work for you.</p>
 <p>(Just as a side note, this is not dependant on the fuction being defined in Railgun already)</p>
 <p>getaddrinfo is in ws2_32.dll (WinSock), so we get a handle from that DLL first:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">modhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetModuleHandleA(<span style="color:#e6db74">&#39;ws2_32.dll&#39;</span>)
-</code></pre></div><p>If that returns a error in the form of a Ruby hash with &ldquo;GetLastError&rdquo; being &lsquo;127&rsquo; that means that ws2_32.dll is either not there in the process. You will need to get it loaded into the process by calling client.railgun.ws2_32 or whatever DLL you are going for. (If it is not definied in Railgun this will fail and you&rsquo;ll have to add the dll like I&rsquo;ve talked about in previous posts)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>modhandle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetModuleHandleA(<span style="color:#e6db74">&#39;ws2_32.dll&#39;</span>)
+</span></span></code></pre></div><p>If that returns a error in the form of a Ruby hash with &ldquo;GetLastError&rdquo; being &lsquo;127&rsquo; that means that ws2_32.dll is either not there in the process. You will need to get it loaded into the process by calling client.railgun.ws2_32 or whatever DLL you are going for. (If it is not definied in Railgun this will fail and you&rsquo;ll have to add the dll like I&rsquo;ve talked about in previous posts)</p>
 <p>So it&rsquo;s pretty eash to handle that. If modhandle[&ldquo;return&rdquo;] == 0 something went wrong and we need to handle it, else we got a handle address and we can continue.</p>
 <p>Next up is GetProcAddress:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">procaddr <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetProcAddress(modhandle<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>, <span style="color:#e6db74">&#39;getaddrinfo&#39;</span>)
-</code></pre></div><p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt' exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>procaddr <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>GetProcAddress(modhandle<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>, <span style="color:#e6db74">&#39;getaddrinfo&#39;</span>)
+</span></span></code></pre></div><p>Same deal, if procaddr[&ldquo;return&rdquo;] == 0 then we have an issue (probably the function doesnt&rsquo; exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.</p>
 <p>Easy stuff, doing this on any of the Railgun scripts/post modules you have will greatly increase both the reliability and the user&rsquo;s ability to know why it didn&rsquo;t work.</p>
 
             </div>
@@ -161,7 +161,7 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -169,7 +169,7 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -182,7 +182,7 @@ For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life i
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

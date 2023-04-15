@@ -36,23 +36,23 @@
 &lt;ol&gt;
 &lt;li&gt;Go into Services -&amp;gt; DNS Forwarder and add a Host Override&lt;/li&gt;
 &lt;/ol&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;Host: www
-Domain: pfsense.org
-IP Address: 127.0.0.1
-Description: null routed record to enable offline repo
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then make sure you have the IP or hostname of your package repository web server in the &lt;code&gt;/pkg_mgr_settings.php&lt;/code&gt; (on 2.0, follow the guidelines on the doc above for older versions). After that you should be good to go. Of course this is barring any Firewall blockages you might have in place so be sure to test connectivity from the pfSense box to the web server.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Host: www
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Domain: pfsense.org
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;IP Address: 127.0.0.1
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Description: null routed record to enable offline repo
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then make sure you have the IP or hostname of your package repository web server in the &lt;code&gt;/pkg_mgr_settings.php&lt;/code&gt; (on 2.0, follow the guidelines on the doc above for older versions). After that you should be good to go. Of course this is barring any Firewall blockages you might have in place so be sure to test connectivity from the pfSense box to the web server.&lt;/p&gt;
 &lt;p&gt;So, that was just the beginning, it&amp;rsquo;s actually better to not null-route it but make the following entries:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;files.pfsense.org - 192.168.1.100
-files.pfsense.com - 192.168.1.100
-www.pfsense.org - 192.168.1.100
-www.pfsense.com - 192.168.1.100
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If your package web server is 192.168.1.100.
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;files.pfsense.org - 192.168.1.100
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;files.pfsense.com - 192.168.1.100
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;www.pfsense.org - 192.168.1.100
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;www.pfsense.com - 192.168.1.100
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If your package web server is 192.168.1.100.
 Next is the problem of not having the packages themselves. So &lt;code&gt;wget -mk -np http://files.pfsense.org/packages/&lt;/code&gt; gave me a directory that I plopped into my already existant packages directory (created from the git clone as described in the documentation) but the problem I ran into was the php files being rendered still (which made any packages that pulled php files get the rendered version instead of source).&lt;/p&gt;
 &lt;p&gt;So you need to add a &lt;code&gt;.htaccess&lt;/code&gt; file in the packages directory with the following:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;RemoveHandler .php .phtml .php3
-RemoveType .php .phtml .php3
-php_flag engine off
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Make sure that &lt;code&gt;AllowOverride all&lt;/code&gt; is enabled if you are running Apache to host the package site, if not, you&amp;rsquo;ll have to google how to allow &lt;code&gt;.htaccess&lt;/code&gt; files for your particular server. (or if you server doesn&amp;rsquo;t support htaccess files then how to enable source disclosure)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;RemoveHandler .php .phtml .php3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;RemoveType .php .phtml .php3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;php_flag engine off
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Make sure that &lt;code&gt;AllowOverride all&lt;/code&gt; is enabled if you are running Apache to host the package site, if not, you&amp;rsquo;ll have to google how to allow &lt;code&gt;.htaccess&lt;/code&gt; files for your particular server. (or if you server doesn&amp;rsquo;t support htaccess files then how to enable source disclosure)&lt;/p&gt;
 &lt;p&gt;After those alterations I seem to be off to the races for the most part. Some packages pull from other websites, but altering the &lt;code&gt;package_8.xml&lt;/code&gt; or just rerouting the dns seems to solve most of those issues.&lt;/p&gt;
 </description>
     </item>

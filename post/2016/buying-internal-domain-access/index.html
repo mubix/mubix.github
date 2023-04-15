@@ -157,59 +157,59 @@ Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers t
 <p><em>(To Microsoft, I&rsquo;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)</em></p>
 <p><strong>WE INTERRUPT THIS BLOG POST TO TALK ABOUT THE SERIOUS OSINT TREASURE THESE TYPES FILES AND ENVIRONMENTAL VARIABLES ARE</strong></p>
 <p>We will break down a few of the pieces that provide OSINT value:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">COMPUTERNAME <span style="color:#f92672">=</span> ANDARNO-X1
-USERDNSDOMAIN <span style="color:#f92672">=</span> REDMOND.CORP.MICROSOFT.COM
-USERDOMAIN <span style="color:#f92672">=</span> REDMOND
-USERDOMAIN_ROAMINGPROFILE <span style="color:#f92672">=</span> REDMOND
-USERNAME <span style="color:#f92672">=</span> andarno
-</code></pre></div><p>Full domain name, user and computer name help to identify what the naming schemes are internally.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ChocolateyInstall <span style="color:#f92672">=</span> C:<span style="color:#ae81ff">\P</span>rogramData<span style="color:#ae81ff">\c</span>hocolatey
-</code></pre></div><p><a href="https://chocolatey.org/">Chocolatey</a> is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SSH_AGENT_PID <span style="color:#f92672">=</span> <span style="color:#ae81ff">9316</span>
-SSH_AUTH_SOCK <span style="color:#f92672">=</span> /tmp/ssh-rbPyaDrkXVLz/agent.10020
-</code></pre></div><p>Honestly I&rsquo;ve never seen these options on a Windows box so I&rsquo;m going to assume they are the result of <a href="https://www.cygwin.com/">Cygwin</a> being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence <a href="http://www.hexacorn.com/blog/category/autostart-persistence/">beyond the standard Run keys</a>.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Path <span style="color:#f92672">=</span>
-C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\g</span>it<span style="color:#ae81ff">\V</span>SIXSuppression<span style="color:#ae81ff">\p</span>ackages<span style="color:#ae81ff">\N</span>erdbank.GitVersioning.1.1.2-rc<span style="color:#ae81ff">\b</span>uild<span style="color:#ae81ff">\N</span>ativeBinaries/amd64
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\I</span>DE<span style="color:#ae81ff">\C</span>ommonExtensions<span style="color:#ae81ff">\M</span>icrosoft<span style="color:#ae81ff">\T</span>estWindow
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft SDKs<span style="color:#ae81ff">\T</span>ypeScript<span style="color:#ae81ff">\1</span>.5
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>SBuild<span style="color:#ae81ff">\1</span>4.0<span style="color:#ae81ff">\b</span>in
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\I</span>DE<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\V</span>C<span style="color:#ae81ff">\B</span>IN
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\T</span>ools;C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\M</span>icrosoft.NET<span style="color:#ae81ff">\F</span>ramework<span style="color:#ae81ff">\v</span>4.0.30319
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\V</span>C<span style="color:#ae81ff">\V</span>CPackages
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\H</span>TML Help Workshop
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\T</span>eam Tools<span style="color:#ae81ff">\P</span>erformance Tools
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\W</span>indows Kits<span style="color:#ae81ff">\1</span>0<span style="color:#ae81ff">\b</span>in<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">86</span>
-C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft SDKs<span style="color:#ae81ff">\W</span>indows<span style="color:#ae81ff">\v</span>10.0A<span style="color:#ae81ff">\b</span>in<span style="color:#ae81ff">\N</span>ETFX 4.6 Tools<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\t</span>ools<span style="color:#ae81ff">\C</span>onEmuPack
-C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\t</span>ools<span style="color:#ae81ff">\C</span>onEmuPack<span style="color:#ae81ff">\C</span>onEmu
-C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32
-C:<span style="color:#ae81ff">\W</span>INDOWS
-C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\S</span>ystem32<span style="color:#ae81ff">\W</span>bem
-C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\S</span>ystem32<span style="color:#ae81ff">\W</span>indowsPowerShell<span style="color:#ae81ff">\v</span>1.0<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\G</span>it<span style="color:#ae81ff">\c</span>md
-C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32<span style="color:#ae81ff">\c</span>onfig<span style="color:#ae81ff">\s</span>ystemprofile<span style="color:#ae81ff">\.</span>dnx<span style="color:#ae81ff">\b</span>in
-C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\M</span>icrosoft DNX<span style="color:#ae81ff">\D</span>nvm<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\M</span>icrosoft SQL Server<span style="color:#ae81ff">\1</span>20<span style="color:#ae81ff">\T</span>ools<span style="color:#ae81ff">\B</span>inn<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\W</span>indows Kits<span style="color:#ae81ff">\1</span>0<span style="color:#ae81ff">\W</span>indows Performance Toolkit<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\n</span>odejs<span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\.</span>dnx<span style="color:#ae81ff">\r</span>untimes<span style="color:#ae81ff">\d</span>nx-clr-win-x86.1.0.0-beta7-12328<span style="color:#ae81ff">\b</span>in
-C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\.</span>dnx<span style="color:#ae81ff">\b</span>in
-c:<span style="color:#ae81ff">\u</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\t</span>ools
-C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\C</span>ode<span style="color:#ae81ff">\b</span>in
-C:<span style="color:#ae81ff">\P</span>rogramData<span style="color:#ae81ff">\c</span>hocolatey<span style="color:#ae81ff">\b</span>in
-C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\R</span>oaming<span style="color:#ae81ff">\n</span>pm
-</code></pre></div><p>Anyone who has ever done <a href="https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/">DLL hijacking / preloading</a> will see a lot of opportunities in a PATH variable this gigantic.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>COMPUTERNAME <span style="color:#f92672">=</span> ANDARNO-X1
+</span></span><span style="display:flex;"><span>USERDNSDOMAIN <span style="color:#f92672">=</span> REDMOND.CORP.MICROSOFT.COM
+</span></span><span style="display:flex;"><span>USERDOMAIN <span style="color:#f92672">=</span> REDMOND
+</span></span><span style="display:flex;"><span>USERDOMAIN_ROAMINGPROFILE <span style="color:#f92672">=</span> REDMOND
+</span></span><span style="display:flex;"><span>USERNAME <span style="color:#f92672">=</span> andarno
+</span></span></code></pre></div><p>Full domain name, user and computer name help to identify what the naming schemes are internally.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ChocolateyInstall <span style="color:#f92672">=</span> C:<span style="color:#ae81ff">\P</span>rogramData<span style="color:#ae81ff">\c</span>hocolatey
+</span></span></code></pre></div><p><a href="https://chocolatey.org/">Chocolatey</a> is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>SSH_AGENT_PID <span style="color:#f92672">=</span> <span style="color:#ae81ff">9316</span>
+</span></span><span style="display:flex;"><span>SSH_AUTH_SOCK <span style="color:#f92672">=</span> /tmp/ssh-rbPyaDrkXVLz/agent.10020
+</span></span></code></pre></div><p>Honestly I&rsquo;ve never seen these options on a Windows box so I&rsquo;m going to assume they are the result of <a href="https://www.cygwin.com/">Cygwin</a> being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence <a href="http://www.hexacorn.com/blog/category/autostart-persistence/">beyond the standard Run keys</a>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Path <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\g</span>it<span style="color:#ae81ff">\V</span>SIXSuppression<span style="color:#ae81ff">\p</span>ackages<span style="color:#ae81ff">\N</span>erdbank.GitVersioning.1.1.2-rc<span style="color:#ae81ff">\b</span>uild<span style="color:#ae81ff">\N</span>ativeBinaries/amd64
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\I</span>DE<span style="color:#ae81ff">\C</span>ommonExtensions<span style="color:#ae81ff">\M</span>icrosoft<span style="color:#ae81ff">\T</span>estWindow
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft SDKs<span style="color:#ae81ff">\T</span>ypeScript<span style="color:#ae81ff">\1</span>.5
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>SBuild<span style="color:#ae81ff">\1</span>4.0<span style="color:#ae81ff">\b</span>in
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\I</span>DE<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\V</span>C<span style="color:#ae81ff">\B</span>IN
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\C</span>ommon7<span style="color:#ae81ff">\T</span>ools;C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\M</span>icrosoft.NET<span style="color:#ae81ff">\F</span>ramework<span style="color:#ae81ff">\v</span>4.0.30319
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\V</span>C<span style="color:#ae81ff">\V</span>CPackages
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\H</span>TML Help Workshop
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft Visual Studio 14.0<span style="color:#ae81ff">\T</span>eam Tools<span style="color:#ae81ff">\P</span>erformance Tools
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\W</span>indows Kits<span style="color:#ae81ff">\1</span>0<span style="color:#ae81ff">\b</span>in<span style="color:#ae81ff">\x</span><span style="color:#ae81ff">86</span>
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\M</span>icrosoft SDKs<span style="color:#ae81ff">\W</span>indows<span style="color:#ae81ff">\v</span>10.0A<span style="color:#ae81ff">\b</span>in<span style="color:#ae81ff">\N</span>ETFX 4.6 Tools<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\t</span>ools<span style="color:#ae81ff">\C</span>onEmuPack
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\t</span>ools<span style="color:#ae81ff">\C</span>onEmuPack<span style="color:#ae81ff">\C</span>onEmu
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>INDOWS
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\S</span>ystem32<span style="color:#ae81ff">\W</span>bem
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\S</span>ystem32<span style="color:#ae81ff">\W</span>indowsPowerShell<span style="color:#ae81ff">\v</span>1.0<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\G</span>it<span style="color:#ae81ff">\c</span>md
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\W</span>INDOWS<span style="color:#ae81ff">\s</span>ystem32<span style="color:#ae81ff">\c</span>onfig<span style="color:#ae81ff">\s</span>ystemprofile<span style="color:#ae81ff">\.</span>dnx<span style="color:#ae81ff">\b</span>in
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\M</span>icrosoft DNX<span style="color:#ae81ff">\D</span>nvm<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files<span style="color:#ae81ff">\M</span>icrosoft SQL Server<span style="color:#ae81ff">\1</span>20<span style="color:#ae81ff">\T</span>ools<span style="color:#ae81ff">\B</span>inn<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\W</span>indows Kits<span style="color:#ae81ff">\1</span>0<span style="color:#ae81ff">\W</span>indows Performance Toolkit<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\P</span>rogram Files <span style="color:#f92672">(</span>x86<span style="color:#f92672">)</span><span style="color:#ae81ff">\n</span>odejs<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\.</span>dnx<span style="color:#ae81ff">\r</span>untimes<span style="color:#ae81ff">\d</span>nx-clr-win-x86.1.0.0-beta7-12328<span style="color:#ae81ff">\b</span>in
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\.</span>dnx<span style="color:#ae81ff">\b</span>in
+</span></span><span style="display:flex;"><span>c:<span style="color:#ae81ff">\u</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\t</span>ools
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\L</span>ocal<span style="color:#ae81ff">\C</span>ode<span style="color:#ae81ff">\b</span>in
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\P</span>rogramData<span style="color:#ae81ff">\c</span>hocolatey<span style="color:#ae81ff">\b</span>in
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\a</span>ndarno<span style="color:#ae81ff">\A</span>ppData<span style="color:#ae81ff">\R</span>oaming<span style="color:#ae81ff">\n</span>pm
+</span></span></code></pre></div><p>Anyone who has ever done <a href="https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/">DLL hijacking / preloading</a> will see a lot of opportunities in a PATH variable this gigantic.</p>
 <p>There is a lot more fun to be had in similar output pasted across the Internet but lets get back to our regularly scheduled blog post. Here is the juice:</p>
-<pre><code>LOGONSERVER = \\CO1-RED-DC-11
+<pre tabindex="0"><code>LOGONSERVER = \\CO1-RED-DC-11
 </code></pre><p>This probably means that 01, 02, and so on exist as well, but I decided just to go with a simple PoC and use the DC that I knew existed. After registering <code>c01-red-dc-11.com</code>, almost immediately I started to get DNS requests:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ns1.co1-red-dc-11.com
-wap.co1-red-dc-11.com
-www.co1-red-dc-11.com
-mail.co1-red-dc-11.com
-m.co1-red-dc-11.com
-co1-red-dc-11.com
-</code></pre></div><p>The <code>ns1</code> and <code>www</code> were mostly just Internet scanners, but I did see a bunch of interesting requests</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ns1.co1-red-dc-11.com
+</span></span><span style="display:flex;"><span>wap.co1-red-dc-11.com
+</span></span><span style="display:flex;"><span>www.co1-red-dc-11.com
+</span></span><span style="display:flex;"><span>mail.co1-red-dc-11.com
+</span></span><span style="display:flex;"><span>m.co1-red-dc-11.com
+</span></span><span style="display:flex;"><span>co1-red-dc-11.com
+</span></span></code></pre></div><p>The <code>ns1</code> and <code>www</code> were mostly just Internet scanners, but I did see a bunch of interesting requests</p>
 <h4 id="mailco1-red-dc-11com">mail.co1-red-dc-11.com</h4>
 <ul>
 <li>101 total queries in the first 24 hours</li>
@@ -264,7 +264,7 @@ co1-red-dc-11.com
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -272,7 +272,7 @@ co1-red-dc-11.com
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -285,7 +285,7 @@ co1-red-dc-11.com
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

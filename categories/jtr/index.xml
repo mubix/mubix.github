@@ -27,14 +27,14 @@
 &lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/2&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/2&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;The result is as follows:&lt;/p&gt;
 &lt;p&gt;Given this hash:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&amp;rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;cracked the LM side in 16 seconds. Now you don&amp;rsquo;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
 &lt;p&gt;Solar Designer (JtR&amp;rsquo;s main dev) suggested the following path:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;A bit hard to read but here are the commands:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
 ./john -w=cracked -rules:nt -format=nt pwdump.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As you can see (if you squint) that works well. Rich Rumble suggested:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/3&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/3&lt;/a&gt;&lt;/p&gt;

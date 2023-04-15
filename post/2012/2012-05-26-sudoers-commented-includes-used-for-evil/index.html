@@ -36,8 +36,8 @@ Too bad that nmap&amp;rsquo;s interactive mode was taken out, but there are a gr
 <meta itemprop="name" content="SUDOERS Commented Includes used for Evil">
 <meta itemprop="description" content="I found a number of things interesting when reading the following post:
 http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/
-Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:"><meta itemprop="datePublished" content="2012-05-26T05:33:00&#43;00:00" />
-<meta itemprop="dateModified" content="2012-05-26T05:33:00&#43;00:00" />
+Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. But when I started looking into appending or inserting lines into /etc/sudoers for CCDC, I happened upon an interesting function of that file. Near the end of the file there are two lines:"><meta itemprop="datePublished" content="2012-05-26T05:33:00+00:00" />
+<meta itemprop="dateModified" content="2012-05-26T05:33:00+00:00" />
 <meta itemprop="wordCount" content="179">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -58,7 +58,7 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
 
 
 
-    <meta property="article:published_time" content="2012-05-26 05:33:00 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2012-05-26 05:33:00 &#43;0000 UTC" />
 
 
 
@@ -136,14 +136,14 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
 <p><a href="http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/">http://www.offensive-security.com/vulndev/freepbx-exploit-phone-home/</a></p>
 <p>Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great number of other such methods, most notably VI&rsquo;s shell mode. </p>
 <p>But when I started looking into appending or inserting lines into /etc/sudoers for <a href="http://www.nationalccdc.org/">CCDC</a>, I happened upon an interesting function of that file. Near the end of the file there are two lines:</p>
-<pre><code># See sudoers(5) for more information on &quot;#include&quot; directives:  
+<pre tabindex="0"><code># See sudoers(5) for more information on &#34;#include&#34; directives:  
 #includedir /etc/sudoers.d
 </code></pre><p>Both look commented out, but in actuality, exactly as-is the #includedir line is interpreted and acted upon. So any file that you put in the /etc/sudoers.d directory counts as an extension of the /etc/sudoers file. Make a small edit to the default README file with a bunch of added # commented out lines copied directly from the sudo man page, with a</p>
 <p><strong>nobody ALL = NOPASSWD: ALL</strong></p>
-<p>or www-data plus a webshell makes for easy re-exploitation. Just an evil way to stay hidden on a &lsquo;nix box… </p>
+<p>or www-data plus a webshell makes for easy re-exploitation. Just an evil way to stay hidden on a &rsquo;nix box… </p>
 <p>**Update: **</p>
 <p><code>nmap --script &lt;(echo &quot;os.execute('/bin/sh')&quot;)</code></p>
-<p>&lsquo;nuf said…  (thanks <a href="https://twitter.com/bonsaiviking">@bonsaiviking</a> )</p>
+<p>&rsquo;nuf said…  (thanks <a href="https://twitter.com/bonsaiviking">@bonsaiviking</a> )</p>
 
             </div>
         </article>
@@ -171,7 +171,7 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -179,7 +179,7 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -192,7 +192,7 @@ Too bad that nmap&rsquo;s interactive mode was taken out, but there are a great 
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

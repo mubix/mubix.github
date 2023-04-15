@@ -26,12 +26,12 @@
 &lt;p&gt;No specifics are being posted on these vulnerabilities as I assume the site on the net (company&amp;rsquo;s site), where a registered user would log in are the same as the ones locally hosted (at least the app looks the same and has similar page structure)&lt;/p&gt;
 &lt;h2 id=&#34;issue-2&#34;&gt;ISSUE #2&lt;/h2&gt;
 &lt;p&gt;MySQL&amp;rsquo;s root password is blank and there are two other default accounts as well allowing easy privilege escalation to SYSTEM (via the SCC local account - see ISSUE #5):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dsl *7E1CA3417E3A159A9188657F44C7034A8E9FDFF2
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;dsl *7E1CA3417E3A159A9188657F44C7034A8E9FDFF2
 tera *B2744A6BC5E8B1667BE5AED0111A2B941356E4A4
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;^ uncracked at this point. For all I know they could be randomized at install&lt;/p&gt;
 &lt;h2 id=&#34;issue-3&#34;&gt;ISSUE #3&lt;/h2&gt;
 &lt;p&gt;Another service listens on 0.0.0.0 via port 17667 that I haven&amp;rsquo;t been able to identify, however when you connect to the socket, it starts listing users, services, printers and interfaces (and that is without sending any data to it).&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ncat 172.16.102.149 17667
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ ncat 172.16.102.149 17667
 8�TXPBASELINEXP_BASEP�RAdministratorGuestHelpAssistantSingleClick
 AdminSUPPORT_388945a0!aCACAMD PCNET Family PCI Ethernet Adapter -
 Packet Scheduler Miniport{47F69AAC-AE9A-40A9-88F5-A246A169CE92}�f�
@@ -46,7 +46,7 @@ Sound Blaster PCI
 password and added to the Administrators group. 3 services are also
 installed with the SingleClick Admin account as the user it runs
 under:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Package d&#39;authentification  : NTLM
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Package d&amp;#39;authentification  : NTLM
 Utilisateur principal       : SingleClick Admin
      msv1_0 :     lm{ 7a9793d3082ba83b790ce07b3bdf85ea }, ntlm{ 2c292724d67fcf310d1c4dd153467be8 }
      kerberos :     ~!3no1972!~
@@ -70,15 +70,15 @@ Utilisateur principal       : SingleClick Admin
 &lt;p&gt;As far as I can tell the software continuously scans you local network for other computers and file system for changes and reports these back to the central server so that when you login to their service you can see your files and connect to other systems in the LAN of the machine SingleClickConnect is installed on.&lt;/p&gt;
 &lt;h2 id=&#34;concern-2&#34;&gt;CONCERN #2&lt;/h2&gt;
 &lt;p&gt;The user account password that you use to register and connect remotely is stored in the database. This actually looks decently done, or I just haven&amp;rsquo;t been able to identify the storage&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Database: p2p
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Database: p2p
 Table:    config_info
 Value:    “user_hash”
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;concern-3&#34;&gt;CONCERN #3&lt;/h2&gt;
 &lt;p&gt;Not sure what this registry key contains other than being named Cred4RA and assuming it&amp;rsquo;s credentials for the remote administration. Hopefully encrypted some how.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[HKEY_LOCAL_MACHINE\SOFTWARE\SingleClick Systems\Advanced Networking
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[HKEY_LOCAL_MACHINE\SOFTWARE\SingleClick Systems\Advanced Networking
 Service\Settings\Remote Access]
-&amp;quot;ConfigState&amp;quot;=dword:00000001
-&amp;quot;Cred4RA&amp;quot;=hex:01,00,00 (snip snip)
+&amp;#34;ConfigState&amp;#34;=dword:00000001
+&amp;#34;Cred4RA&amp;#34;=hex:01,00,00 (snip snip)
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;additional-information&#34;&gt;Additional Information&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Software original site: &lt;a href=&#34;http://www.singleclickconnect.com/&#34;&gt;http://www.singleclickconnect.com/&lt;/a&gt;&lt;/li&gt;

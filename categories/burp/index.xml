@@ -19,13 +19,13 @@
       <description>&lt;p&gt;First of all, get Robert @RSnake Hansen&amp;rsquo;s RFI list here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/&#34;&gt;http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;it&amp;rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cat rfi-locations.dat | grep -v &amp;quot;^#&amp;quot; | awk -F &#39;?&#39; &#39;{print $1}&#39; | sort -u &amp;gt; rsnake_list.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cat rfi-locations.dat | grep -v &amp;#34;^#&amp;#34; | awk -F &amp;#39;?&amp;#39; &amp;#39;{print $1}&amp;#39; | sort -u &amp;gt; rsnake_list.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder. If it pops any of them, not only have you better identified what is running on the site, but you might have just found RFI.&lt;/p&gt;
 &lt;p&gt;But I wanted to take this a step further:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201001_rsnake_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;The OSVDB archive allows you to download their entire database of vulnerabilities (after signing up for an account). I downloaded the CSV version so that I could parse it similar to how I did RSnakes. However, it definitely wasn&amp;rsquo;t that easy.&lt;/p&gt;
 &lt;p&gt;I downloaded osvd-csv.latest.tar.gz, extracted it and ran the following:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cat * | grep -i &amp;quot;remote file inclusion&amp;quot; | grep -v &amp;quot;,0$&amp;quot; | awk -F &amp;quot;,&amp;quot; &#39;{print $13}&#39; | sed &#39;s/^&amp;quot;//&#39; | set &#39;s/&amp;quot;$//&#39; | sort -u &amp;gt; osvdb_rfi.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cat * | grep -i &amp;#34;remote file inclusion&amp;#34; | grep -v &amp;#34;,0$&amp;#34; | awk -F &amp;#34;,&amp;#34; &amp;#39;{print $13}&amp;#39; | sed &amp;#39;s/^&amp;#34;//&amp;#39; | set &amp;#39;s/&amp;#34;$//&amp;#39; | sort -u &amp;gt; osvdb_rfi.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Which got me close. About 3 hours of manual editing after that and I had another list of ~1750 possible remote file inclusions. Is this a full proof way of getting every possibility from the database? Definitely not, but it&amp;rsquo;s close, and I&amp;rsquo;d love to see some one modify and tweak my bash line to get it even closer. (Or find a completely different way)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-02-01 14:17 by Rob Fuller&lt;/p&gt;
 &lt;p&gt;RSnake has updated his list, same link, same file name with about 2300 RFIs now.&lt;/p&gt;
@@ -44,8 +44,8 @@
 &lt;p&gt;From: &lt;a href=&#34;http://www1.qainsight.net:8080/2007/05/18/Four+Links+To+UserAgent+List+And+An+Update+To+The+Useragent+Import.aspx&#34;&gt;Qainsight&amp;rsquo;s UA Lists&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;I downloaded: &lt;a href=&#34;http://qainsight.net/content/binary/AgentStrings20070517.xml&#34;&gt;http://qainsight.net/content/binary/AgentStrings20070517.xml&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;There are plenty of ways to parse XML in your scripting language of choice but here is some dirty bash script that worked for me:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;cat AgentStrings20070517.xml | grep &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;useragent=&amp;#34;&lt;/span&gt; | grep -v &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*&amp;#34;&lt;/span&gt; | awk -F &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;{print $4}&amp;#39;&lt;/span&gt; &amp;gt; useragents.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next, we set up our Intruder instance:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cat AgentStrings20070517.xml | grep &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;useragent=&amp;#34;&lt;/span&gt; | grep -v &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*&amp;#34;&lt;/span&gt; | awk -F &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;{print $4}&amp;#39;&lt;/span&gt; &amp;gt; useragents.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next, we set up our Intruder instance:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200911_useragent_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;And import useragents.txt into Intruder and kick it off.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200911_useragent_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;

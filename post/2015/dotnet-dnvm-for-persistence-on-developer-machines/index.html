@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
 <meta name="description" content="One of the best resources for persistence mechanisms is Hexacorn&amp;rsquo;s blog. http://www.hexacorn.com/blog/category/autostart-persistence/
-If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&#39; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:
+If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&amp;rsquo; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:
 DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&amp;rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version." />
 <meta name="keywords" content=", persistence, windows, dotnet, dnvm" />
 <meta name="robots" content="noodp" />
@@ -35,7 +35,7 @@ DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&amp;r
 
 <meta itemprop="name" content="DotNet&#39;s DNVM For Persistence On Developer Machines">
 <meta itemprop="description" content="One of the best resources for persistence mechanisms is Hexacorn&rsquo;s blog. http://www.hexacorn.com/blog/category/autostart-persistence/
-If you haven&rsquo;t checked out his &ldquo;Beyond good ol&#39; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:
+If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:
 DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version."><meta itemprop="datePublished" content="2015-10-05T07:35:28-05:00" />
 <meta itemprop="dateModified" content="2015-10-05T07:35:28-05:00" />
 <meta itemprop="wordCount" content="432">
@@ -43,7 +43,7 @@ DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&rsquo
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="DotNet&#39;s DNVM For Persistence On Developer Machines"/>
 <meta name="twitter:description" content="One of the best resources for persistence mechanisms is Hexacorn&rsquo;s blog. http://www.hexacorn.com/blog/category/autostart-persistence/
-If you haven&rsquo;t checked out his &ldquo;Beyond good ol&#39; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:
+If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:
 DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version."/>
 
 
@@ -128,14 +128,14 @@ DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&rsquo
             <div class="post-content">
                 <p>One of the best resources for persistence mechanisms is <a href="https://twitter.com/Hexacorn">Hexacorn&rsquo;s</a> blog.
 <a href="http://www.hexacorn.com/blog/category/autostart-persistence/">http://www.hexacorn.com/blog/category/autostart-persistence/</a></p>
-<p>If you haven&rsquo;t checked out his &ldquo;Beyond good ol' Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:</p>
+<p>If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:</p>
 <p>DNVM (<a href="https://github.com/aspnet/dnvm">https://github.com/aspnet/dnvm</a>) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&rsquo;s there to help to specify which runtime to use for applications, much like <a href="https://rvm.io/">RVM (Ruby Version Manager)</a> is for Ruby. With their goal being that you can install .Net and <a href="http://docs.asp.net/en/latest/getting-started/index.html">run .Net applications on Linux and Mac</a> as well using DNVM.</p>
 <p>Once installed it adds a &ldquo;DNX_HOME&rdquo; environmental variable:</p>
 <p><img src="/images/2015/dnx_reg.png" alt=""></p>
 <p>Inside the folder specified are 3 directories:</p>
 <p><img src="/images/2015/dnx_folder.png" alt=""></p>
 <p>There are plenty of things to play with in here, but I wanted to specifically point out that the <strong>BIN</strong> directory is put into the $PATH variable (as well as two others)</p>
-<pre><code>C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
+<pre tabindex="0"><code>C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
 C:\Program Files\Microsoft DNX\Dnvm\
 C:\Users\mubix\.dnx\bin
 </code></pre><p>Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&rsquo;ll come back to that in another post)</p>
@@ -146,7 +146,7 @@ C:\Users\mubix\.dnx\bin
 <p>Seriously&hellip; I probably don&rsquo;t even have to continue at this point&hellip;</p>
 <p>But, if I run dnvm from the command prompt (as a developer would) it runs it from inside that protected directory in Program Files right?&hellip; RIGHT?! Nope..</p>
 <p>Edit the dnvm.cmd with a bit of <a href="http://www.powershellempire.com/">PowerShell Empire</a> stager (minus the <strong>-W Hidden</strong>, because we need the user to actually get the output of the dnvm command) and&hellip;.</p>
-<pre><code>[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
+<pre tabindex="0"><code>[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
 </code></pre><p>Boom!</p>
 <p>Lets look a bit into how DNVM works to see if there is something juicier there (way to much for a single blog post)</p>
 <p><img src="/images/2015/dnvm_list.png" alt=""></p>
@@ -186,7 +186,7 @@ C:\Users\mubix\.dnx\bin
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -194,7 +194,7 @@ C:\Users\mubix\.dnx\bin
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -207,7 +207,7 @@ C:\Users\mubix\.dnx\bin
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

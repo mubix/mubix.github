@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="ldapsearch is a extremely powerful tool, especially for Windows Active Directory enumeration. It&amp;rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&amp;rsquo;s easy to forget that Active Directory isn&amp;rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy." />
+<meta name="keywords" content=", ldap, ldapsearch, notes" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://malicious.link/post/2022/ldapsearch-reference/" />
+
+
+    <title>
+        
+            LDAPSearch Reference :: malicious.link  — welcome
+        
+    </title>
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.a6537515292628f292bc89dc1bb6a3480b72f307b458bdd65364ae5b8b20399d.css">
+
+
+
+
+
+
+<meta itemprop="name" content="LDAPSearch Reference">
+<meta itemprop="description" content="ldapsearch is a extremely powerful tool, especially for Windows Active Directory enumeration. It&rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&rsquo;s easy to forget that Active Directory isn&rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy."><meta itemprop="datePublished" content="2022-05-14T11:00:00-05:00" />
+<meta itemprop="dateModified" content="2022-05-14T11:00:00-05:00" />
+<meta itemprop="wordCount" content="2459">
+<meta itemprop="keywords" content="ldap,ldapsearch,notes," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="LDAPSearch Reference"/>
+<meta name="twitter:description" content="ldapsearch is a extremely powerful tool, especially for Windows Active Directory enumeration. It&rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&rsquo;s easy to forget that Active Directory isn&rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy."/>
+
+
+
+
+
+
+
+    <meta property="article:published_time" content="2022-05-14 11:00:00 -0500 -0500" />
+
+
+
+
+
+
+
+
+    </head>
+
+    <body class="dark-theme">
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/post/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text">boot mubix.kernel</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="https://malicious.link/about">About</a></li><li><a href="https://malicious.link/brandon">Brandon</a></li><li><a href="https://malicious.link/post">Posts</a></li><li><a href="https://malicious.link/start">Start</a></li><li><a href="https://malicious.link/tags">Tags</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+
+            <span class="theme-toggle unselectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+</span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://malicious.link/post/2022/ldapsearch-reference/">LDAPSearch Reference</a></h2>
+            <p>Published: 14 May 2022 - 11:00 -0500</p>
+
+            
+
+            
+
+            <div class="post-content">
+                <p><code>ldapsearch</code> is a extremely powerful tool, especially for Windows Active Directory enumeration. It&rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&rsquo;s easy to forget that Active Directory isn&rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy.</p>
+<p>If you want to find Active Directory LDAP servers, use the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ dig -t SRV _ldap._tcp.dc._msdcs.sittingduck.info
+</span></span></code></pre></div><h3 id="basic-usage">Basic Usage</h3>
+<ul>
+<li><code>-x</code> Basic Authentication, you usually use this if you are going to include a username and password (instead of something like a kerberos ticket)</li>
+<li><code>-h</code> IP address or hostname</li>
+<li><code>-H</code> URL to force protocol and/or add port number <code>-H ldaps://dc1.b.com</code> or <code>-H ldaps://dc1.b.com:6636</code> (636 is the default port for LDAPS, but can be connected to on 389 and is sometimes found with an additional 6 in the front as shown). <code>3269</code> is the Global Catalog port and can also accept LDAPS queries sometimes (you may have to ignore cert errors for this to work, depending on your setup).</li>
+<li><code>-b</code> Base, generally this is Distinguished Name format for example <code>dc=google,dc=com</code></li>
+<li><code>-D</code> Username and Domain (not FQDN) <code>&quot;sittingduck\uberuser&quot;</code>. For maximum Kerberos based authentication you can also specify your user in <code>uberuser@SITTINGDUCK.INFO</code> form, but ldapsearch will auto user the current user in Kerberos tickets available, so this can be omitted</li>
+<li><code>-LLL</code> This removes all of the extra log output of the search</li>
+<li><code>-Y GSSAPI</code> Used for Kerberos based authentication, however this is on by default and not needed (if installed), but you can specify it just to test to see if SASL is installed. <code>apt install libsasl2-modules-gssapi-mit</code> if it isn&rsquo;t. Once installed, you do not need to keep this on the command line.</li>
+<li><code>-E</code> is for <a href="https://ldapwiki.com/wiki/LDAPControlsList">extended controls</a> which are generally OIDs, but can also be:</li>
+<li><code>-E pr=1000/noprompt</code> By default <code>ldapsearch</code> will pull 1000 records maximum. Adding this it will pull 1000 records at a time until it has printed all results to the screen.</li>
+<li><code>-O minssf=0,maxssf=0</code> This option will fix some errors during SASL (Kerberos) authentication. Technically this shouldn&rsquo;t do anything based on the RFC, but it&rsquo;s essentially telling the LDAP protocol that there isn&rsquo;t a min or a max size for the authentication packets.</li>
+<li><code>-o ldif-wrap=no</code> This options makes the output non-wrapped, which is the best format to pull out things like certificates and other very long strings.</li>
+<li><code>-W</code> and <code>-w</code> - <code>-W</code> will prompt for the password, with <code>-w</code> you can specify the password on the command line. If you do not specify one of these <code>ldapsearch</code> will assume no password for the account. You can lock accounts out this way.</li>
+<li><code>LDAPTLS_REQCERT=never ldapsearch {arguments}</code> This is used when you are connecting to a self signed, or SSL enabled LDAP that your system cannot verify the certificate for.</li>
+<li><code>-N</code> Do not try to have the host name of your target DC attempted to perform a reverse DNS on the IP to match them. This is needed when the Domain Controller doesn&rsquo;t have a valid reverse DNS record from your standpoint on the network and you are using Kerberos.</li>
+</ul>
+<h3 id="ldap-search-filters">LDAP Search Filters</h3>
+<p>After the arguments comes the filter, then the attributes. Filters are like search terms. For example <code>&quot;(ms-Mcs-AdmPwdExpirationTtime=*)&quot;</code> is a search that says if the LDAP object has the <code>ms-Mcs-AdmPwdExpirationTtime</code> attribute and it&rsquo;s not empty. LDAP filters are a bit odd, as they need to be within parentheses completely. In order to do a search for <code>x</code> AND <code>y</code> you have to do something like this <code>(&amp;(x=*)(y=*))</code>. This search says only return results that have <code>x</code> and <code>y</code> and both are not empty. Here is a real world example:</p>
+<pre tabindex="0"><code>&#34;(&amp;(&amp;(servicePrincipalName=*)(UserAccountControl:1.2.840.113556.1.4.803:=512))(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))&#34;
+</code></pre><p>This says all objects that have <code>servicesPrincipalName</code> attributes, it is a normal account (512) <a href="https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties">see more here</a> AND is NOT <code>!</code>  disabled (2).</p>
+<p>Note: <code>1.2.840.113556.1.4.803</code> is an LDAP feature that says <code>LDAP_MATCHING_RULE_BIT_AND</code> which is basically a bitwise <code>AND</code>. For example, a standard user account is <code>512</code> but would be <code>514</code> if disabled, but a computer account is <code>4096</code> and <code>4098</code> if disabled. Used the bitwise function you can account for both scenarios since it&rsquo;s looking in the <code>2</code> binary location.</p>
+<p>Everything after the filter is selection of attributes. (also known as &ldquo;parameters&rdquo; if you are used to Powershell and AD Objects)</p>
+<h3 id="interesting-attributes">Interesting Attributes</h3>
+<ul>
+<li><code>msDS-Approx-Immed-Subordinates</code> - Gives you a count of objects directly below the specified &ldquo;Base&rdquo; <code>-b</code></li>
+<li><code>NTSecurityDescriptor</code> - This is the SDSF in binary and base64 format, and will only be displayed if you request it specifically for the object.</li>
+<li><code>msDS-ManagedPassword</code> - This is a at-runtime built attribute that is the current NT hash of the Group Managed Service Account GMSA. <strong>!WARNING!</strong> See below before querying.</li>
+<li><code>msFVE-RecoveryPassword</code> - This is also an at-runtine built attribute that is the current BitLocker secret key for the computer account you query. <strong>!WARNING!</strong> See below before querying.</li>
+</ul>
+<h3 id="null-session-starting">Null Session Starting</h3>
+<p>This can be done without any authentication and will give you a ton of information about the LDAP server in question (usually Active Directory):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -h 192.168.80.100 -x -b <span style="color:#e6db74">&#34;&#34;</span> -s base <span style="color:#ae81ff">\*</span> +
+</span></span></code></pre></div><h4 id="example-output">Example Output</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># extended LDIF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAPv3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># base &lt;&gt; with scope baseObject</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># filter: (objectclass=*)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># requesting: * + </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>dn:
+</span></span><span style="display:flex;"><span>currentTime: 20220513212748.0Z
+</span></span><span style="display:flex;"><span>subschemaSubentry: CN<span style="color:#f92672">=</span>Aggregate,CN<span style="color:#f92672">=</span>Schema,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>i
+</span></span><span style="display:flex;"><span> nfo
+</span></span><span style="display:flex;"><span>dsServiceName: CN<span style="color:#f92672">=</span>NTDS Settings,CN<span style="color:#f92672">=</span>DC2,CN<span style="color:#f92672">=</span>Servers,CN<span style="color:#f92672">=</span>Default-First-Site-Name,C
+</span></span><span style="display:flex;"><span> N<span style="color:#f92672">=</span>Sites,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>namingContexts: DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>namingContexts: CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>namingContexts: CN<span style="color:#f92672">=</span>Schema,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>namingContexts: DC<span style="color:#f92672">=</span>DomainDnsZones,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>namingContexts: DC<span style="color:#f92672">=</span>ForestDnsZones,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>defaultNamingContext: DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>schemaNamingContext: CN<span style="color:#f92672">=</span>Schema,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>configurationNamingContext: CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>rootDomainNamingContext: DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.319
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.801
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.473
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.528
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.417
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.619
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.841
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.529
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.805
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.521
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.970
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1338
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.474
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1339
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1340
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1413
+</span></span><span style="display:flex;"><span>supportedControl: 2.16.840.1.113730.3.4.9
+</span></span><span style="display:flex;"><span>supportedControl: 2.16.840.1.113730.3.4.10
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1504
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1852
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.802
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1907
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1948
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1974
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.1341
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2026
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2064
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2065
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2066
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2090
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2205
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2204
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2206
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2211
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2239
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2255
+</span></span><span style="display:flex;"><span>supportedControl: 1.2.840.113556.1.4.2256
+</span></span><span style="display:flex;"><span>supportedLDAPVersion: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>supportedLDAPVersion: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxPoolThreads
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxPercentDirSyncRequests
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxDatagramRecv
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxReceiveBuffer
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: InitRecvTimeout
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxConnections
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxConnIdleTime
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxPageSize
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxBatchReturnMessages
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxQueryDuration
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxTempTableSize
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxResultSetSize
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MinResultSets
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxResultSetsPerConn
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxNotificationPerConn
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxValRange
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: MaxValRangeTransitive
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: ThreadMemoryLimit
+</span></span><span style="display:flex;"><span>supportedLDAPPolicies: SystemMemoryLimitPercent
+</span></span><span style="display:flex;"><span>highestCommittedUSN: <span style="color:#ae81ff">2830648</span>
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: GSSAPI
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: GSS-SPNEGO
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: EXTERNAL
+</span></span><span style="display:flex;"><span>supportedSASLMechanisms: DIGEST-MD5
+</span></span><span style="display:flex;"><span>dnsHostName: dc2.sittingduck.info
+</span></span><span style="display:flex;"><span>ldapServiceName: sittingduck.info:dc2$@SITTINGDUCK.INFO
+</span></span><span style="display:flex;"><span>serverName: CN<span style="color:#f92672">=</span>DC2,CN<span style="color:#f92672">=</span>Servers,CN<span style="color:#f92672">=</span>Default-First-Site-Name,CN<span style="color:#f92672">=</span>Sites,CN<span style="color:#f92672">=</span>Configura
+</span></span><span style="display:flex;"><span> tion,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.800
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.1670
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.1791
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.1935
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.2080
+</span></span><span style="display:flex;"><span>supportedCapabilities: 1.2.840.113556.1.4.2237
+</span></span><span style="display:flex;"><span>isSynchronized: TRUE
+</span></span><span style="display:flex;"><span>isGlobalCatalogReady: TRUE
+</span></span><span style="display:flex;"><span>domainFunctionality: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>forestFunctionality: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>domainControllerFunctionality: <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># search result</span>
+</span></span><span style="display:flex;"><span>search: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>result: <span style="color:#ae81ff">0</span> Success
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numResponses: 2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># numEntries: 1</span>
+</span></span></code></pre></div><p>You can learn the <code>dnsHostName</code> of the LDAP server you pinged, the <code>dn</code> which is useful for picking your base search if you don&rsquo;t know it, the <code>domainFunctionality</code> level (aka the <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6dd88965-8feb-4369-ae7e-075985da8071">Domain Functional Level</a>) will give you a sense of what capabilities and GPOs can be set. The <code>supportedControl</code> and <code>supportedCapabilities</code> are more advanced topics, but these basically say what you can and can&rsquo;t do on the server.</p>
+<h2 id="interesting-searches">Interesting Searches</h2>
+<p>The following are searches that I&rsquo;ve found interesting or impactful in my experience.</p>
+<h3 id="laps-passwords">LAPs Passwords</h3>
+<p>This search will only show computers with LAPs enabled, and if you can read any passwords, what the password currently is.</p>
+<p>Notice that this user can read every password except <code>SDLEGACY2K3</code> and <code>SDEXCHANGE</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -LLL -h 192.168.80.10 -b <span style="color:#e6db74">&#34;dc=sittingduck,dc=info&#34;</span> -x -D <span style="color:#e6db74">&#34;sittingduck\uberuser&#34;</span> -w <span style="color:#e6db74">&#34;ASDqwe123&#34;</span> <span style="color:#e6db74">&#39;(ms-Mcs-AdmPwdExpirationtime=*)&#39;</span> ms-Mcs-AdmPwd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>DC1,OU<span style="color:#f92672">=</span>Domain Controllers,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>ms-Mcs-AdmPwd: f/0HG3<span style="color:#f92672">)</span>7d5P+e;/IE5wW8I/o//5<span style="color:#f92672">)}</span>W
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>SDCLIENT_DAWIN7,OU<span style="color:#f92672">=</span>LabComputers,OU<span style="color:#f92672">=</span>Lab,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>ms-Mcs-AdmPwd: /B+%R26cVSA1c0zOi<span style="color:#f92672">[</span>-Z/#n1Q2sA,,
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>SDLEGACY2K3,OU<span style="color:#f92672">=</span>LabComputers,OU<span style="color:#f92672">=</span>Lab,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>SD_WSUS_2012,OU<span style="color:#f92672">=</span>LabComputers,OU<span style="color:#f92672">=</span>Lab,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>ms-Mcs-AdmPwd: <span style="color:#f92672">}</span>b+BC@p,7<span style="color:#f92672">))</span>6pqxj3y<span style="color:#f92672">]</span>MxBm9@h9Hy-
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>SDEXCHANGE,OU<span style="color:#f92672">=</span>LabComputers,OU<span style="color:#f92672">=</span>Lab,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>WIN-PM0ID6F0AHN,OU<span style="color:#f92672">=</span>LabComputers,OU<span style="color:#f92672">=</span>Lab,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>ms-Mcs-AdmPwd: <span style="color:#f92672">]]</span>3-%AN574#<span style="color:#f92672">{</span>/%t55!S+0!/10OJC;V
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>DC2,OU<span style="color:#f92672">=</span>Domain Controllers,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>ms-Mcs-AdmPwd: kMo,85<span style="color:#f92672">{</span>N<span style="color:#f92672">(</span>uhUmWj183,3#T&amp;d<span style="color:#f92672">[</span>Aeddv
+</span></span></code></pre></div><h3 id="bitlocker-recovery-passwords">BitLocker Recovery Passwords</h3>
+<ul>
+<li>src: <a href="https://stackoverflow.com/a/50833203">https://stackoverflow.com/a/50833203</a></li>
+</ul>
+<p>The key on this one is narrowing down the search base to a small list or a single computer. The reason this is important is that the Domain Controller you are asking the password from has to do a bunch of decryption to calculate this attribute on the fly, if you ask for too many (like every machine in the Domain) the connection will be closed out due to timeout.  Don&rsquo;t be greedy, just get the one you need.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -h dc1.sittingduck.info -b <span style="color:#e6db74">&#34;CN=WIN10COMP1,OU=Workstations,DC=sittingduck,DC=info&#34;</span> msfve-recoverypassword
+</span></span></code></pre></div><h3 id="gmsa-nt-hash">GMSA NT Hash</h3>
+<ul>
+<li>src: <a href="https://stealthbits.com/blog/securing-gmsa-passwords/">https://stealthbits.com/blog/securing-gmsa-passwords/</a></li>
+<li>src: <a href="https://github.com/SecureAuthCorp/impacket/pull/770">https://github.com/SecureAuthCorp/impacket/pull/770</a></li>
+</ul>
+<p>Group Managed Service Accounts (GMSA) have randomly generated passwords that are default/generally pretty long. The <code>msDS-ManagedPassword</code> in an at-runtime decrypted value that the Domain Controller has to construct in order to return, much like the BitLocker keys. However, unlike with BitLocker, generally there aren&rsquo;t very many GMSAs so it&rsquo;s less of a chance to knock over the DC if you get greedy and query them all.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ LDAPTLS_REQCERT<span style="color:#f92672">=</span>never ldapsearch -LLL -H ldaps://192.168.80.10 -x -D uberuser -w ASDqwe123 -o ldif-wrap<span style="color:#f92672">=</span>no -b <span style="color:#e6db74">&#39;dc=sittingduck,dc=info&#39;</span> <span style="color:#e6db74">&#39;(&amp;(ObjectClass=msDS-GroupManagedServiceAccount))&#39;</span> msDS-ManagedPassword
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>TestGMSA,CN<span style="color:#f92672">=</span>Managed Service Accounts,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>msDS-ManagedPassword:: AQAAACQCAAAQABIBFAIcAq/tlcA3PziSdtjxwKwcpM9VAteZa9No6et8yDWzgEYj5yFDhzT0OMFtTA4qAI4M+sWjiUVqYhDwFItW+5FlhaJp8tm/fcAfIDc5MAsYOXgq3AIc6ofCpeJga6Jw4SX/EKmnQdsS7lGmXd/yh27qJGj6SS0vwk//D8cr1+6s43YB0TxUxyLrruupZmd4Ndx2PZ4L4zkWa/vlRlDzadyeGwji70q9sfjH5x7+l7V+w5JK7/hKfG48swD8koEK/bHyLxZa8eDMEoscAmnuC/CA/pTvdF6jfIYmAYMGZujOVkbXJjaCEPGA1+nBDqkOQ1NlLZu4Y6Es1bB3YVIv6agDICYAAJ3USvAd5t267x9PfdetWSfLGRt4qxMCmOwXO0nVWMJTSYfjC+Phc0QX/rrTimPptYvx2NnuAclbgj0Fvg0iZfOvHW0SwdKTyKCvGeL+UPz4Jwr2VAd+PX43GoUPD8uBhDrtzVSwUhtScDIvzGJYgvHrREnTUqaf9pENqkVpbdXHtpE/buIphVrPEg84e9fgNB2a/r6sZaPX+1C8e/5pbNO7qoQ4fqXSDPM3qh6ymlh2ouNRoP0kN4sLVUvW+cNX+YQk7UJDSnG3fANPtgquhi6B4OVqU2fpypUbFtd91Ju/9xZeuod508FqYHPT1aX86tBdLj4yq2/65ROupERLVhAAADPE7gxzEgAAM2YeWnISAAA<span style="color:#f92672">=</span>
+</span></span></code></pre></div><p>Once you have this blob of text, you need to convert it into the NT hash using this tool:</p>
+<p>(this is a slightly modified version of the script that <a href="https://twitter.com/agsolino">agsolino</a> posted)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> impacket.structure <span style="color:#f92672">import</span> hexdump, Structure
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> base64
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sys<span style="color:#f92672">,</span> getopt
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Source from: https://github.com/SecureAuthCorp/impacket/pull/770#issuecomment-589243865</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MSDS_MANAGEDPASSWORD_BLOB</span>(Structure):
+</span></span><span style="display:flex;"><span>    structure <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;Version&#39;</span>,<span style="color:#e6db74">&#39;&lt;H&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;Reserved&#39;</span>,<span style="color:#e6db74">&#39;&lt;H&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;Length&#39;</span>,<span style="color:#e6db74">&#39;&lt;L&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;CurrentPasswordOffset&#39;</span>,<span style="color:#e6db74">&#39;&lt;H&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;PreviousPasswordOffset&#39;</span>,<span style="color:#e6db74">&#39;&lt;H&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;QueryPasswordIntervalOffset&#39;</span>,<span style="color:#e6db74">&#39;&lt;H&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;UnchangedPasswordIntervalOffset&#39;</span>,<span style="color:#e6db74">&#39;&lt;H&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;CurrentPassword&#39;</span>,<span style="color:#e6db74">&#39;:&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;PreviousPassword&#39;</span>,<span style="color:#e6db74">&#39;:&#39;</span>),
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#(&#39;AlignmentPadding&#39;,&#39;:&#39;),</span>
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;QueryPasswordInterval&#39;</span>,<span style="color:#e6db74">&#39;:&#39;</span>),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;UnchangedPasswordInterval&#39;</span>,<span style="color:#e6db74">&#39;:&#39;</span>),
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, data <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>        Structure<span style="color:#f92672">.</span>__init__(self, data <span style="color:#f92672">=</span> data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fromString</span>(self, data):
+</span></span><span style="display:flex;"><span>        Structure<span style="color:#f92672">.</span>fromString(self,data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self[<span style="color:#e6db74">&#39;PreviousPasswordOffset&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            endData <span style="color:#f92672">=</span> self[<span style="color:#e6db74">&#39;QueryPasswordIntervalOffset&#39;</span>]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            endData <span style="color:#f92672">=</span> self[<span style="color:#e6db74">&#39;PreviousPasswordOffset&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self[<span style="color:#e6db74">&#39;CurrentPassword&#39;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rawData[self[<span style="color:#e6db74">&#39;CurrentPasswordOffset&#39;</span>]:][:endData <span style="color:#f92672">-</span> self[<span style="color:#e6db74">&#39;CurrentPasswordOffset&#39;</span>]]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self[<span style="color:#e6db74">&#39;PreviousPasswordOffset&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>            self[<span style="color:#e6db74">&#39;PreviousPassword&#39;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rawData[self[<span style="color:#e6db74">&#39;PreviousPasswordOffset&#39;</span>]:][:self[<span style="color:#e6db74">&#39;QueryPasswordIntervalOffset&#39;</span>]<span style="color:#f92672">-</span>self[<span style="color:#e6db74">&#39;PreviousPasswordOffset&#39;</span>]]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self[<span style="color:#e6db74">&#39;QueryPasswordInterval&#39;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rawData[self[<span style="color:#e6db74">&#39;QueryPasswordIntervalOffset&#39;</span>]:][:self[<span style="color:#e6db74">&#39;UnchangedPasswordIntervalOffset&#39;</span>]<span style="color:#f92672">-</span>self[<span style="color:#e6db74">&#39;QueryPasswordIntervalOffset&#39;</span>]]
+</span></span><span style="display:flex;"><span>        self[<span style="color:#e6db74">&#39;UnchangedPasswordInterval&#39;</span>] <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rawData[self[<span style="color:#e6db74">&#39;UnchangedPasswordIntervalOffset&#39;</span>]:]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>(argv):
+</span></span><span style="display:flex;"><span>    b64 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    verbose <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        opts, args <span style="color:#f92672">=</span> getopt<span style="color:#f92672">.</span>getopt(argv,<span style="color:#e6db74">&#34;hvb:&#34;</span>,[<span style="color:#e6db74">&#34;base64=&#34;</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> getopt<span style="color:#f92672">.</span>GetoptError:
+</span></span><span style="display:flex;"><span>        print (<span style="color:#e6db74">&#39;gmsa.py -b &lt;msDS-ManagedPassword base64&gt; -v (optional verbose)&#39;</span>)
+</span></span><span style="display:flex;"><span>        sys<span style="color:#f92672">.</span>exit(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> opt, arg <span style="color:#f92672">in</span> opts:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> opt <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;-h&#39;</span>:
+</span></span><span style="display:flex;"><span>            print (<span style="color:#e6db74">&#39;gmsa.py -b &lt;msDS-ManagedPassword base64&gt; -v (optional verbose)&#39;</span>)
+</span></span><span style="display:flex;"><span>            sys<span style="color:#f92672">.</span>exit()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> opt <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#34;-v&#34;</span>):
+</span></span><span style="display:flex;"><span>            verbose <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> opt <span style="color:#f92672">in</span> (<span style="color:#e6db74">&#34;-b&#34;</span>, <span style="color:#e6db74">&#34;--base64&#34;</span>):
+</span></span><span style="display:flex;"><span>            b64 <span style="color:#f92672">=</span> arg
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> b64 <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>:
+</span></span><span style="display:flex;"><span>        print (<span style="color:#e6db74">&#39;gmsa.py -b &lt;msDS-ManagedPassword base64&gt; -v (optional verbose)&#39;</span>)
+</span></span><span style="display:flex;"><span>        sys<span style="color:#f92672">.</span>exit()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    test <span style="color:#f92672">=</span> base64<span style="color:#f92672">.</span>b64decode(b64)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    blob <span style="color:#f92672">=</span> MSDS_MANAGEDPASSWORD_BLOB()
+</span></span><span style="display:flex;"><span>    blob<span style="color:#f92672">.</span>fromString(test)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> verbose <span style="color:#f92672">==</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        blob<span style="color:#f92672">.</span>dump()
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;=&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">80</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Cleartext Password&#34;</span>)
+</span></span><span style="display:flex;"><span>        hexdump(blob[<span style="color:#e6db74">&#39;CurrentPassword&#39;</span>][:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">from</span> Cryptodome.Hash <span style="color:#f92672">import</span> MD4
+</span></span><span style="display:flex;"><span>    hash <span style="color:#f92672">=</span> MD4<span style="color:#f92672">.</span>new ()
+</span></span><span style="display:flex;"><span>    hash<span style="color:#f92672">.</span>update (blob[<span style="color:#e6db74">&#39;CurrentPassword&#39;</span>][:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>])
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;=&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">80</span>)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;NTHash: </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(hash<span style="color:#f92672">.</span>hexdigest()))
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;=&#34;</span><span style="color:#f92672">*</span><span style="color:#ae81ff">80</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>   main(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>:])
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ python3 ./gmsa.py -b AQAAACQCAAAQABIBFAIcAq/tlcA3PziSdtjxwKwcpM9VAteZa9No6et8yDWzgEYj5yFDhzT0OMFtTA4qAI4M+sWjiUVqYhDwFItW+5FlhaJp8tm/fcAfIDc5MAsYOXgq3AIc6ofCpeJga6Jw4SX/EKmnQdsS7lGmXd/yh27qJGj6SS0vwk//D8cr1+6s43YB0TxUxyLrruupZmd4Ndx2PZ4L4zkWa/vlRlDzadyeGwji70q9sfjH5x7+l7V+w5JK7/hKfG48swD8koEK/bHyLxZa8eDMEoscAmnuC/CA/pTvdF6jfIYmAYMGZujOVkbXJjaCEPGA1+nBDqkOQ1NlLZu4Y6Es1bB3YVIv6agDICYAAJ3USvAd5t267x9PfdetWSfLGRt4qxMCmOwXO0nVWMJTSYfjC+Phc0QX/rrTimPptYvx2NnuAclbgj0Fvg0iZfOvHW0SwdKTyKCvGeL+UPz4Jwr2VAd+PX43GoUPD8uBhDrtzVSwUhtScDIvzGJYgvHrREnTUqaf9pENqkVpbdXHtpE/buIphVrPEg84e9fgNB2a/r6sZaPX+1C8e/5pbNO7qoQ4fqXSDPM3qh6ymlh2ouNRoP0kN4sLVUvW+cNX+YQk7UJDSnG3fANPtgquhi6B4OVqU2fpypUbFtd91Ju/9xZeuod508FqYHPT1aX86tBdLj4yq2/65ROupERLVhAAADPE7gxzEgAAM2YeWnISAAA<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">================================================================================</span>
+</span></span><span style="display:flex;"><span>NTHash: 78450c9611e6c9515e2a489f9b31cc3e
+</span></span><span style="display:flex;"><span><span style="color:#f92672">================================================================================</span>
+</span></span></code></pre></div><p>If you want to learn more about GMSAs and a newer attack called the &ldquo;Golden GMSA&rdquo; check out the Sempris blog here: <a href="https://www.semperis.com/blog/golden-gmsa-attack/">https://www.semperis.com/blog/golden-gmsa-attack/</a></p>
+<h3 id="certificate-authorities-and-templates">Certificate Authorities and Templates</h3>
+<p>This is a list of certificate templates that are enabled on each certificate authority in the domain.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -LLL -b <span style="color:#e6db74">&#34;CN=Enrollment Services,CN=Public Key Services,CN=Services,CN=Configuration,DC=sittingduck,DC=info&#34;</span> -h 192.168.80.10 -w <span style="color:#e6db74">&#34;ASDqwe123&#34;</span> -D <span style="color:#e6db74">&#34;uberuser&#34;</span>  certificateTemplates
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Enrollment Services,CN<span style="color:#f92672">=</span>Public Key Services,CN<span style="color:#f92672">=</span>Services,CN<span style="color:#f92672">=</span>Configuration
+</span></span><span style="display:flex;"><span> ,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>sittingduck-W2KCA-CA,CN<span style="color:#f92672">=</span>Enrollment Services,CN<span style="color:#f92672">=</span>Public Key Services,CN<span style="color:#f92672">=</span>S
+</span></span><span style="display:flex;"><span> ervices,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>certificateTemplates: ExchangeUser
+</span></span><span style="display:flex;"><span>certificateTemplates: ExchangeUserSignature
+</span></span><span style="display:flex;"><span>certificateTemplates: EnrollmentAgentOffline
+</span></span><span style="display:flex;"><span>certificateTemplates: MachineEnrollmentAgent
+</span></span><span style="display:flex;"><span>certificateTemplates: EnrollmentAgent
+</span></span><span style="display:flex;"><span>certificateTemplates: CrossCA
+</span></span><span style="display:flex;"><span>certificateTemplates: CodeSigning
+</span></span><span style="display:flex;"><span>certificateTemplates: CEPEncryption
+</span></span><span style="display:flex;"><span>certificateTemplates: CAExchange
+</span></span><span style="display:flex;"><span>certificateTemplates: ClientAuth
+</span></span><span style="display:flex;"><span>certificateTemplates: Workstation
+</span></span><span style="display:flex;"><span>certificateTemplates: UserSignature
+</span></span><span style="display:flex;"><span>certificateTemplates: CTLSigning
+</span></span><span style="display:flex;"><span>certificateTemplates: SmartcardUser
+</span></span><span style="display:flex;"><span>certificateTemplates: SmartcardLogon
+</span></span><span style="display:flex;"><span>certificateTemplates: OfflineRouter
+</span></span><span style="display:flex;"><span>certificateTemplates: RASAndIASServer
+</span></span><span style="display:flex;"><span>certificateTemplates: OCSPResponseSigning
+</span></span><span style="display:flex;"><span>certificateTemplates: KeyRecoveryAgent
+</span></span><span style="display:flex;"><span>certificateTemplates: IPSECIntermediateOffline
+</span></span><span style="display:flex;"><span>certificateTemplates: IPSECIntermediateOnline
+</span></span><span style="display:flex;"><span>certificateTemplates: DirectoryEmailReplication
+</span></span><span style="display:flex;"><span>certificateTemplates: DomainControllerAuthentication
+</span></span><span style="display:flex;"><span>certificateTemplates: KerberosAuthentication
+</span></span><span style="display:flex;"><span>certificateTemplates: EFSRecovery
+</span></span><span style="display:flex;"><span>certificateTemplates: EFS
+</span></span><span style="display:flex;"><span>certificateTemplates: DomainController
+</span></span><span style="display:flex;"><span>certificateTemplates: WebServer
+</span></span><span style="display:flex;"><span>certificateTemplates: Machine
+</span></span><span style="display:flex;"><span>certificateTemplates: User
+</span></span><span style="display:flex;"><span>certificateTemplates: SubCA
+</span></span><span style="display:flex;"><span>certificateTemplates: Administrator
+</span></span></code></pre></div><h3 id="nested-group-membership">Nested Group Membership</h3>
+<p>A query like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -x -LLL -h dc1.sittingduck.info -w ASDqwe123 -D uberuser -b <span style="color:#e6db74">&#34;dc=sittingduck,dc=info&#34;</span> <span style="color:#e6db74">&#39;(memberOf=cn=Domain Admins,cn=Users,dc=SittingDuck,dc=info)&#39;</span> cn
+</span></span></code></pre></div><p>will result in all of the accounts that have a <code>memberOf</code> attribute of Domain Admins. This will show you the first level of membership, but LDAP/AD actually has a way to identify nested membership using the <a href="https://ldapwiki.com/wiki/1.2.840.113556.1.4.1941">1.2.840.113556.1.4.1941</a> <a href="https://ldapwiki.com/wiki/OID">OID</a>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -x -LLL -h dc1.sittingduck.info -w ASDqwe123 -D uberuser -b <span style="color:#e6db74">&#34;dc=sittingduck,dc=info&#34;</span> <span style="color:#e6db74">&#39;(memberOf:1.2.840.113556.1.4.1941:=cn=Domain Admins,cn=Users,dc=sittingduck,dc=info)&#39;</span> cn
+</span></span></code></pre></div><p>This will show you all Domain Admins even if they are in a group in a group in a group in a group.</p>
+<h3 id="find-exchange-servers">Find Exchange Servers</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -LLL -h 192.168.80.10 -o ldif-wrap<span style="color:#f92672">=</span>no -x -D uberuser -w ASDqwe123 -b <span style="color:#e6db74">&#34;cn=Configuration,dc=sittingduck,dc=info&#34;</span> <span style="color:#e6db74">&#34;(objectCategory=msExchExchangeServer)&#34;</span> dn
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>SDEXCHANGE,CN<span style="color:#f92672">=</span>Servers,CN<span style="color:#f92672">=</span>Exchange Administrative Group <span style="color:#f92672">(</span>FYDIBOHF23SPDLT<span style="color:#f92672">)</span>,CN<span style="color:#f92672">=</span>Administrative Groups,CN<span style="color:#f92672">=</span>First Organization,CN<span style="color:#f92672">=</span>Microsoft Exchange,CN<span style="color:#f92672">=</span>Services,CN<span style="color:#f92672">=</span>Configuration,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span></code></pre></div><h3 id="deleted--tombstoned-objects">Deleted / Tombstoned objects</h3>
+<p>Looking at deleted and tombstoned objects won&rsquo;t always get you much information you can directly use, but sometimes there are passwords or other sensitive data stored in objects. (I don&rsquo;t believe deleting objects changes their permissions but I could be wrong here)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -h 192.168.80.10 -x -w ASDqwe123 -D uberuser -b <span style="color:#e6db74">&#34;CN=Deleted Objects,DC=sittingduck,DC=info&#34;</span> -E <span style="color:#e6db74">&#39;!1.2.840.113556.1.4.417&#39;</span>
+</span></span></code></pre></div><p>For example here is a Computer account that was deleted:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># blah1</span>
+</span></span><span style="display:flex;"><span>DEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef, Deleted Objects, sittingduck.
+</span></span><span style="display:flex;"><span> info
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>blah1<span style="color:#ae81ff">\0</span>ADEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef,CN<span style="color:#f92672">=</span>Deleted Objects,DC<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span> sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>objectClass: top
+</span></span><span style="display:flex;"><span>objectClass: person
+</span></span><span style="display:flex;"><span>objectClass: organizationalPerson
+</span></span><span style="display:flex;"><span>objectClass: user
+</span></span><span style="display:flex;"><span>objectClass: computer
+</span></span><span style="display:flex;"><span>cn:: YmxhaDEKREVMOjJmN2IxOWIxLTlkZWUtNGE0OC04YmIwLWFkNjJlNmEyODdlZg<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>distinguishedName: CN<span style="color:#f92672">=</span>blah1<span style="color:#ae81ff">\0</span>ADEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef,CN<span style="color:#f92672">=</span>Dele
+</span></span><span style="display:flex;"><span> ted Objects,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>instanceType: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>whenCreated: 20220512041425.0Z
+</span></span><span style="display:flex;"><span>whenChanged: 20220512045921.0Z
+</span></span><span style="display:flex;"><span>uSNCreated: <span style="color:#ae81ff">2663983</span>
+</span></span><span style="display:flex;"><span>isDeleted: TRUE
+</span></span><span style="display:flex;"><span>uSNChanged: <span style="color:#ae81ff">2664044</span>
+</span></span><span style="display:flex;"><span>name:: YmxhaDEKREVMOjJmN2IxOWIxLTlkZWUtNGE0OC04YmIwLWFkNjJlNmEyODdlZg<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>objectGUID:: sRl7L+6dSEqLsK1i5qKH7w<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>userAccountControl: <span style="color:#ae81ff">4128</span>
+</span></span><span style="display:flex;"><span>objectSid:: AQUAAAAAAAUVAAAAfS9vpuKLWG5ZpW7N9RUAAA<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>sAMAccountName: BLAH1$
+</span></span><span style="display:flex;"><span>lastKnownParent: CN<span style="color:#f92672">=</span>Computers,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>isRecycled: TRUE
+</span></span></code></pre></div><h3 id="replication-metadata">Replication Metadata</h3>
+<ul>
+<li>src: <a href="https://posts.specterops.io/hunting-with-active-directory-replication-metadata-1dab2f681b19">https://posts.specterops.io/hunting-with-active-directory-replication-metadata-1dab2f681b19</a></li>
+<li>src: <a href="https://stackoverflow.com/a/38710484">https://stackoverflow.com/a/38710484</a></li>
+</ul>
+<p>This is one place where ldapsearch isn&rsquo;t quite as cool as other tools, all of the base64 output. I did <a href="https://stackoverflow.com/a/38710484">find a great way to decode most of it</a> on StackOverflow:</p>
+<ul>
+<li><code>| perl -MMIME::Base64 -n -00 -e 's/\n +//g;s/(?&lt;=:: )(\S+)/decode_base64($1)/eg;print'</code></li>
+</ul>
+<p>Basically you are pipeing the output of <code>ldapsearch</code> into a bit of perl that Base64 decodes anything that looks like Base64.</p>
+<p>Back on track, there is a ton of great info in Replication metadata but the blog post from SpecterOps above.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -h 192.168.80.10 -o ldif-wrap<span style="color:#f92672">=</span>no -x -w ASDqwe123 -D sittingduck<span style="color:#ae81ff">\\</span>uberuser -b <span style="color:#e6db74">&#34;CN=Administrator,CN=Users,DC=sittingduck,DC=info&#34;</span> msDS-ReplAttributeMetaData                       <span style="color:#75715e"># extended LDIF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAPv3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># base &lt;CN=Administrator,CN=Users,DC=sittingduck,DC=info&gt; with scope subtree</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># filter: (objectclass=*)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># requesting: msDS-ReplAttributeMetaData</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Administrator, Users, sittingduck.info</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Administrator,CN<span style="color:#f92672">=</span>Users,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>msDS-ReplAttributeMetaData:: PERTX1JFUExfQVRUUl9NRVRBX0RBVEE+Cgk8cHN6QXR0cmlidXRlTmFtZT5tc0RTLVN1cHBvcnRlZEVuY3J5cHRpb25UeXBlczwvcHN6QXR0cmlidXRlTmFtZT4KCTxkd1ZlcnNpb24+MTwvZHdWZXJzaW9uPgoJPGZ0aW1lTGFzdE9y
+</span></span><span style="display:flex;"><span>aWdpbmF0aW5nQ2hhbmdlPjIwMTUtMTAtMTRUMDM6Mjg6MTRaPC9mdGltZUxhc3RPcmlnaW5hdGluZ0NoYW5nZT4KCTx1dWlkTGFzdE9yaWdpbmF0aW5nRHNhSW52b2NhdGlvbklEPjhkMmExZjVjLTU4ZDQtNGVmYS1iY2QyLWY3ZDg1ZWY1MzAxMzwvdXVpZExhc3RPcmlna
+</span></span><span style="display:flex;"><span>W5hdGluZ0RzYUludm9jYXRpb25JRD4KCTx1c25PcmlnaW5hdGluZ0NoYW5nZT4xMjc3NjwvdXNuT3JpZ2luYXRpbmdDaGFuZ2U+Cgk8dXNuTG9jYWxDaGFuZ2U+MTI3NzY8L3VzbkxvY2FsQ2hhbmdlPgoJPHBzekxhc3RPcmlnaW5hdGluZ0RzYUROPjwvcHN6TGFzdE9yaW
+</span></span><span style="display:flex;"><span>dpbmF0aW5nRHNhRE4+CjwvRFNfUkVQTF9BVFRSX01FVEFfREFUQT4KAA<span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>msDS-ReplAttributeMetaData:: PERTX1JFUExfQVRUUl9NRVRBX0RBVEE+Cgk8cHN6QXR0cmlidXRlTmFtZT5sYXN0TG9nb25UaW1lc3RhbXA8L3BzekF0dHJpYnV0ZU5hbWU+Cgk8ZHdWZXJzaW9uPjI8L2R3VmVyc2lvbj4KCTxmdGltZUxhc3RPcmlnaW5hdGluZ0No
+</span></span><span style="display:flex;"><span>YW5nZT4yMDE3LTA2LTIwVDAwOjE3OjIyWjwvZnRpbWVMYXN0T3JpZ2luYXRpbmdDaGFuZ2U+Cgk8dXVpZExhc3RPcmlnaW5hdGluZ0RzYUludm9jYXRpb25JRD4yOWJkZWQ4MS0xMGRmLTQ0YTMtOGVkNi0xOWY1ODJjYjhiNGU8L3V1aWRMYXN0T3JpZ2luYXRpbmdEc2FJb
+</span></span><span style="display:flex;"><span>nZvY2F0aW9uSUQ+Cgk8dXNuT3JpZ2luYXRpbmdDaGFuZ2U+MzQzOTQ2PC91c25PcmlnaW5hdGluZ0NoYW5nZT4KCTx1c25Mb2NhbENoYW5nZT4zNDM5NDY8L3VzbkxvY2FsQ2hhbmdlPgoJPHBzekxhc3RPcmlnaW5hdGluZ0RzYUROPjwvcHN6TGFzdE9yaWdpbmF0aW5nRH
+</span></span><span style="display:flex;"><span>NhRE4+CjwvRFNfUkVQTF9BVFRSX01FVEFfREFUQT4KAA<span style="color:#f92672">==</span>
+</span></span></code></pre></div><p>With the Perl trick:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ ldapsearch -h 192.168.80.10 -o ldif-wrap<span style="color:#f92672">=</span>no -x -w ASDqwe123 -D sittingduck<span style="color:#ae81ff">\\</span>uberuser -b <span style="color:#e6db74">&#34;CN=Administrator,CN=Users,DC=sittingduck,DC=info&#34;</span> msDS-ReplAttributeMetaData | perl -MMIME::Base64
+</span></span><span style="display:flex;"><span>-n -00 -e <span style="color:#e6db74">&#39;s/\n +//g;s/(?&lt;=:: )(\S+)/decode_base64($1)/eg;print&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># extended LDIF</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># LDAPv3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># base &lt;CN=Administrator,CN=Users,DC=sittingduck,DC=info&gt; with scope subtree</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># filter: (objectclass=*)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># requesting: msDS-ReplAttributeMetaData</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Administrator, Users, sittingduck.info</span>
+</span></span><span style="display:flex;"><span>dn: CN<span style="color:#f92672">=</span>Administrator,CN<span style="color:#f92672">=</span>Users,DC<span style="color:#f92672">=</span>sittingduck,DC<span style="color:#f92672">=</span>info
+</span></span><span style="display:flex;"><span>msDS-ReplAttributeMetaData:: &lt;DS_REPL_ATTR_META_DATA&gt;
+</span></span><span style="display:flex;"><span>        &lt;pszAttributeName&gt;msDS-SupportedEncryptionTypes&lt;/pszAttributeName&gt;
+</span></span><span style="display:flex;"><span>        &lt;dwVersion&gt;1&lt;/dwVersion&gt;
+</span></span><span style="display:flex;"><span>        &lt;ftimeLastOriginatingChange&gt;2015-10-14T03:28:14Z&lt;/ftimeLastOriginatingChange&gt;
+</span></span><span style="display:flex;"><span>        &lt;uuidLastOriginatingDsaInvocationID&gt;8d2a1f5c-58d4-4efa-bcd2-f7d85ef53013&lt;/uuidLastOriginatingDsaInvocationID&gt;
+</span></span><span style="display:flex;"><span>        &lt;usnOriginatingChange&gt;12776&lt;/usnOriginatingChange&gt;
+</span></span><span style="display:flex;"><span>        &lt;usnLocalChange&gt;12776&lt;/usnLocalChange&gt;
+</span></span><span style="display:flex;"><span>        &lt;pszLastOriginatingDsaDN&gt;&lt;/pszLastOriginatingDsaDN&gt;
+</span></span><span style="display:flex;"><span>&lt;/DS_REPL_ATTR_META_DATA&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>msDS-ReplAttributeMetaData:: &lt;DS_REPL_ATTR_META_DATA&gt;
+</span></span><span style="display:flex;"><span>        &lt;pszAttributeName&gt;lastLogonTimestamp&lt;/pszAttributeName&gt;
+</span></span><span style="display:flex;"><span>        &lt;dwVersion&gt;2&lt;/dwVersion&gt;
+</span></span><span style="display:flex;"><span>        &lt;ftimeLastOriginatingChange&gt;2017-06-20T00:17:22Z&lt;/ftimeLastOriginatingChange&gt;
+</span></span><span style="display:flex;"><span>        &lt;uuidLastOriginatingDsaInvocationID&gt;29bded81-10df-44a3-8ed6-19f582cb8b4e&lt;/uuidLastOriginatingDsaInvocationID&gt;
+</span></span><span style="display:flex;"><span>        &lt;usnOriginatingChange&gt;343946&lt;/usnOriginatingChange&gt;
+</span></span><span style="display:flex;"><span>        &lt;usnLocalChange&gt;343946&lt;/usnLocalChange&gt;
+</span></span><span style="display:flex;"><span>        &lt;pszLastOriginatingDsaDN&gt;&lt;/pszLastOriginatingDsaDN&gt;
+</span></span><span style="display:flex;"><span>&lt;/DS_REPL_ATTR_META_DATA&gt;
+</span></span></code></pre></div><h3 id="ntsecuritydescriptor">NTSecurityDescriptor</h3>
+<p>While I personally don&rsquo;t recall ever running into an instance where I wasn&rsquo;t able to read the security descriptor via ldapsearch, it&rsquo;s just because I&rsquo;ve only went after very specific objects and not that it never happens. Lee Christensen (<a href="https://twitter.com/tifkin_">@tifkin_</a>) figured out a way to read security descriptors as low privileged users. Honestly I don&rsquo;t know how it works, but here it is:</p>
+<p><a href="https://twitter.com/tifkin_/status/1372628611677753344">https://twitter.com/tifkin_/status/1372628611677753344</a></p>
+<blockquote>
+<p>Ever want to dump AD security descriptors from an OS X or Linux machine using ldapsearch as a low priv&rsquo;ed user? Add the following argument:</p>
+</blockquote>
+<p><code>-E '!1.2.840.113556.1.4.801=::MAMCAQc='</code></p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Ever want to dump AD security descriptors from an OS X or Linux machine using ldapsearch as a low priv&#39;ed user? Add the following argument: <br><br>-E &#39;!1.2.840.113556.1.4.801=::MAMCAQc=&#39; <a href="https://t.co/vMi7RPsYPB">pic.twitter.com/vMi7RPsYPB</a></p>&mdash; Lee Christensen (@tifkin_) <a href="https://twitter.com/tifkin_/status/1372628611677753344?ref_src=twsrc%5Etfw">March 18, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h3 id="ad-password-dumping-via-ldap">AD Password Dumping via LDAP</h3>
+<ul>
+<li>src: <a href="https://stackoverflow.com/questions/59406408/is-there-any-way-to-retrieve-password-hashes-from-an-active-directory-via-ldap">https://stackoverflow.com/questions/59406408/is-there-any-way-to-retrieve-password-hashes-from-an-active-directory-via-ldap</a></li>
+<li>src: <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2">https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2</a></li>
+</ul>
+<p>Every so often I forget it&rsquo;s <strong>not possible</strong> to sync passwords from the <code>unicodePwd</code> attribute. I&rsquo;m saving this here mostly so I don&rsquo;t waste my time trying again.</p>
+<p>From MSDN:</p>
+<blockquote>
+<p>The unicodePwd attribute is never returned by an LDAP search.</p>
+</blockquote>
+<h2 id="references">References</h2>
+<p>For futher info, the <a href="https://ldapwiki.com/wiki/">LDAP Wiki</a> is an amazing resource.</p>
+<h3 id="ropnops-talk-at-troopers-2019">Ropnop&rsquo;s Talk at Troopers 2019</h3>
+<p>You should absolutely check out <a href="https://twitter.com/ropnop">Ropnop</a> (and follow him on Twitter) if you want to learn more.</p>
+<script async class="speakerdeck-embed" data-id="af116568615748f79ab794a862d2ef1d" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="https://malicious.link/tags/ldap/">ldap</a></span>
+        <span class="tag"><a href="https://malicious.link/tags/ldapsearch/">ldapsearch</a></span>
+        <span class="tag"><a href="https://malicious.link/tags/notes/">notes</a></span>
+        
+    </p>
+
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>&copy; 2023</span>
+            
+            <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
+        </div>
+    </div>
+    <div class="footer__inner">
+        <div class="footer__content">
+            <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
+          </div>
+    </div>
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
+
+
+
+    </body>
+</html>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="_cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_
+<meta name="description" content="cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
 The tired and true method for Zone Transfers are using either nslookup:
 nslookup ls -d domain.com.local Or dig:
 dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:
@@ -36,7 +36,7 @@ dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can p
 
 
 <meta itemprop="name" content="AD Zone Transfers as a user">
-<meta itemprop="description" content="_cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_
+<meta itemprop="description" content="cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
 The tired and true method for Zone Transfers are using either nslookup:
 nslookup ls -d domain.com.local Or dig:
 dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:
@@ -46,7 +46,7 @@ dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can p
 <meta itemprop="keywords" content="windows,dns,activedirectory,dig,nslookup,dnscmd,adfind,powershell," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="AD Zone Transfers as a user"/>
-<meta name="twitter:description" content="_cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_
+<meta name="twitter:description" content="cross posted from: http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html
 The tired and true method for Zone Transfers are using either nslookup:
 nslookup ls -d domain.com.local Or dig:
 dig -t AXFR domain.com.local @ns1.domain.com.local In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:
@@ -132,21 +132,21 @@ dnscmd /EnumZones dnscmd /ZonePrint domain.com.local Which is handy if you can p
             
 
             <div class="post-content">
-                <p>_cross posted from: <a href="http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_">http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_</a></p>
+                <p><em>cross posted from: <a href="http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html">http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html</a></em></p>
 <p>The tired and true method for Zone Transfers are using either nslookup:</p>
-<pre><code>nslookup
+<pre tabindex="0"><code>nslookup
 ls -d domain.com.local
 </code></pre><p>Or dig:</p>
-<pre><code>dig -t AXFR domain.com.local @ns1.domain.com.local
+<pre tabindex="0"><code>dig -t AXFR domain.com.local @ns1.domain.com.local
 </code></pre><p>In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &lsquo;dnscmd&rsquo; command like so:</p>
-<pre><code>dnscmd /EnumZones
+<pre tabindex="0"><code>dnscmd /EnumZones
 dnscmd /ZonePrint domain.com.local
 </code></pre><p>Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).</p>
 <p>You can also use PowerShell:</p>
 <p><code>PS C:\Users\jdoe&gt; get-wmiobject -ComputerName dc1 -Namespace root\microsoftDNS -Class MicrosoftDNS_ResourceRecord -Filter &quot;domainname='projectmentor.net'&quot; | select textrepresentation</code></p>
 <p>Again, this requires you to be a very high privileged account, which is no fun. I need these computer lists as part of my internal / post-exploitation recon, not an end step.</p>
 <p>For the longest time I relied on a very awesome tool called &ldquo;Adfind&rdquo;:</p>
-<pre><code>adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
+<pre tabindex="0"><code>adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
 </code></pre><p>This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &ldquo;this&quot;and no &ldquo;that&rdquo; flags)</p>
 <p>But that wasn&rsquo;t good enough, this image kept haunting me:</p>
 <p><img src="/images/2013/ad-dns-zone.png" alt=""></p>
@@ -192,7 +192,7 @@ dnscmd /ZonePrint domain.com.local
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -200,7 +200,7 @@ dnscmd /ZonePrint domain.com.local
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -213,7 +213,7 @@ dnscmd /ZonePrint domain.com.local
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

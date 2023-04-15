@@ -33,7 +33,7 @@
 &lt;p&gt;This is pretty easy, DNS has the concept of a wildcard hostname. You simply put an asterisk * in the place of where you would normally put a WWW however you manage your DNS and you’re good. You will also want to add a second record, an ‘@’ is used to reference the domain without a host or subdomain. So the first records makes it answer for things like &lt;a href=&#34;http://blah.letmeoutofyour.net&#34;&gt;http://blah.letmeoutofyour.net&lt;/a&gt; and the second for &lt;a href=&#34;http://letmeoutofyour.net/&#34;&gt;http://letmeoutofyour.net/&lt;/a&gt; – Pretty simple ya?&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;THREE: Answer for all HTTP verbs, file and folder requests&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This is pretty simple as well. Apache’s mod_rewrite to the rescue. Here are the rules:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;RewriteEngine on       
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;RewriteEngine on       
 RewriteCond %{REQUEST_METHOD} ^(.*)        
 RewriteRule .* index.html [QSA,L]        
 RewriteCond %{DOCUMENT_ROOT} !-f        
@@ -59,12 +59,12 @@ RewriteRule ^(.*)$ index.html [QSA,L]
 &lt;p&gt;Figured I should merge these ideas and add a few more capabilities (and show you how I did it so you can do so yourself), and so LetMeOutOfYour.net was born.&lt;/p&gt;
 &lt;p&gt;You can hit any subdomain or hostname of letmeoutofyour.net on any port with any HTTP Verb for any resource (web page or folder) and you will always receive a ‘w00tw00t’ back.&lt;/p&gt;
 &lt;p&gt;For example this request (removed the unimportant headers on the request to save space):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;POST /admin/login.php HTTP/1.1       
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;POST /admin/login.php HTTP/1.1       
 Host: development.letmeoutofyour.net:8081
      
 username=admin&amp;amp;password=password
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Will result in this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;HTTP/1.1 200 OK       
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;HTTP/1.1 200 OK       
 Date: Sat, 11 Aug 2012 02:21:54 GMT        
 Server: Apache        
 Last-Modified: Sat, 11 Aug 2012 02:16:55 GMT        

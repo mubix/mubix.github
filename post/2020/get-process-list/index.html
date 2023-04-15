@@ -124,11 +124,11 @@ user 281741 76190 2 14:18 pts/14 00:02:34 java -Xmx3733m -XX:&#43;UseG1GC -jar /
 
             <div class="post-content">
                 <p>One of the most useful things when doing post exploitation on Linux is grabbing a full process list. One of the reasons this is useful is because it includes the arguments passed to these processes. The arguments for a process can tell you where configs are, what passwords might have been used or just tell you the correct arguments to use when running the process yourself.</p>
-<pre><code>user      281741   76190  2 14:18 pts/14   00:02:34 java -Xmx3733m -XX:+UseG1GC -jar /usr/share/zaproxy/zap-2.8.1.jar
+<pre tabindex="0"><code>user      281741   76190  2 14:18 pts/14   00:02:34 java -Xmx3733m -XX:+UseG1GC -jar /usr/share/zaproxy/zap-2.8.1.jar
 user      283340  281741  0 14:25 pts/14   00:00:00 /home/user/.ZAP/webdriver/linux/64/geckodriver --port=10696 -b /usr/bin/firefox
 user      283358  283340  0 14:25 pts/14   00:00:08 [firefox-esr] &lt;defunct&gt;
 </code></pre><p>On Windows however, this is a lot harder to do. As such, nearly all offensive tools that pull a process list only tell you what process it is, the PID, and maybe (if you have the permissions to view it) what user is running that process.</p>
-<pre><code>C:\Users\uberuser&gt;tasklist /v
+<pre tabindex="0"><code>C:\Users\uberuser&gt;tasklist /v
 
 Image Name                     PID Session Name        Session#    Mem Usage Sta
 tus          User Name                                              CPU Time Win
@@ -148,28 +148,28 @@ nown         N/A                                                     0:00:00 N/A
 csrss.exe                      308 Services                   0      3,924 K Unk                    
 </code></pre><p>The only way that I can find to get the command line arguments on Windows is through WMI. (Or 1 of 100 agents that people love to install on end points if you have access to it)</p>
 <p>Here is how you do it from cmd: <code>WMIC path win32_process get Caption,Processid,Commandline</code></p>
-<pre><code>C:\Users\uberuser\Desktop&gt;WMIC path win32_process get Caption,Processid,Commandline
+<pre tabindex="0"><code>C:\Users\uberuser\Desktop&gt;WMIC path win32_process get Caption,Processid,Commandline
 
 Caption				CommandLine				ProcessId  
 rdpclip.exe			rdpclip					1896       
 taskhostex.exe 		taskhostex.exe			204        
 explorer.exe		C:\Windows\Explorer.EXE 3748       
 ServerManager.exe 							2304       
-vmtoolsd.exe	&quot;C:\Program Files\VMware\VMware Tools\vmtoolsd.exe&quot; -n vmusr	60         
+vmtoolsd.exe	&#34;C:\Program Files\VMware\VMware Tools\vmtoolsd.exe&#34; -n vmusr	60         
 
-firefox.exe		&quot;C:\Program Files\Mozilla Firefox\firefox.exe&quot; -contentproc --channel=&quot;3728.0.819826060\1553883004&quot; -parentBuildID 20200107212822 -prefsHandle 1132 -prefMapHandle 1124 -prefsLen 1 -prefMapSize 216481 -greomni &quot;C:\Program Files\Mozilla Firefox\omni.ja&quot; -appomni &quot;C:\Program Files\Mozilla Firefox\browser\omni.ja&quot; -appdir &quot;C:\Program Files\Mozilla Firefox\browser&quot; - 3728 &quot;\\.\pipe\gecko-crash-server-pipe.3728&quot; 1248 gpu 		2408       
+firefox.exe		&#34;C:\Program Files\Mozilla Firefox\firefox.exe&#34; -contentproc --channel=&#34;3728.0.819826060\1553883004&#34; -parentBuildID 20200107212822 -prefsHandle 1132 -prefMapHandle 1124 -prefsLen 1 -prefMapSize 216481 -greomni &#34;C:\Program Files\Mozilla Firefox\omni.ja&#34; -appomni &#34;C:\Program Files\Mozilla Firefox\browser\omni.ja&#34; -appdir &#34;C:\Program Files\Mozilla Firefox\browser&#34; - 3728 &#34;\\.\pipe\gecko-crash-server-pipe.3728&#34; 1248 gpu 		2408       
 
 WMIC.exe			WMIC  path win32_process get Caption,Processid,CommandLine 		4428
 </code></pre><p>And via PowerShell <code>Get-WmiObject Win32_Process -Filter &quot;name = 'firefox.exe'&quot; | Select-Object CommandLine</code></p>
-<pre><code>PS C:\Users\uberuser&gt; Get-WmiObject Win32_Process -Filter &quot;name = 'firefox.exe'&quot; | Select-Object CommandLine
+<pre tabindex="0"><code>PS C:\Users\uberuser&gt; Get-WmiObject Win32_Process -Filter &#34;name = &#39;firefox.exe&#39;&#34; | Select-Object CommandLine
 
 CommandLine
 -----------
-&quot;C:\Program Files\Mozilla Firefox\firefox.exe&quot; -os-restarted
-&quot;C:\Program Files\Mozilla Firefox\firefox.exe&quot; -contentproc --channel=&quot;3728.0.819826060\1553883004&quot; -parentBuildID 2...
-&quot;C:\Program Files\Mozilla Firefox\firefox.exe&quot; -contentproc --channel=&quot;3728.13.335070555\878171781&quot; -childID 2 -isFo...
-&quot;C:\Program Files\Mozilla Firefox\firefox.exe&quot; -contentproc --channel=&quot;3728.20.446400134\1597941165&quot; -childID 3 -isF...
-&quot;C:\Program Files\Mozilla Firefox\firefox.exe&quot; -contentproc --channel=&quot;3728.34.1773646251\252067495&quot; -childID 5 -isF...
+&#34;C:\Program Files\Mozilla Firefox\firefox.exe&#34; -os-restarted
+&#34;C:\Program Files\Mozilla Firefox\firefox.exe&#34; -contentproc --channel=&#34;3728.0.819826060\1553883004&#34; -parentBuildID 2...
+&#34;C:\Program Files\Mozilla Firefox\firefox.exe&#34; -contentproc --channel=&#34;3728.13.335070555\878171781&#34; -childID 2 -isFo...
+&#34;C:\Program Files\Mozilla Firefox\firefox.exe&#34; -contentproc --channel=&#34;3728.20.446400134\1597941165&#34; -childID 3 -isF...
+&#34;C:\Program Files\Mozilla Firefox\firefox.exe&#34; -contentproc --channel=&#34;3728.34.1773646251\252067495&#34; -childID 5 -isF...
 </code></pre><p>So, to add to my toolkit and so I don&rsquo;t have to remember the exact commands every time, I wrote a super simple C# snippet to do it for me (I&rsquo;m sure there at 100 projects on Github and elsewhere that already do this but I didn&rsquo;t see them when I looked)</p>
 <p><a href="https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8">https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8</a></p>
 <script src="https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8.js"></script>
@@ -199,7 +199,7 @@ CommandLine
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -207,7 +207,7 @@ CommandLine
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -220,7 +220,7 @@ CommandLine
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

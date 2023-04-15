@@ -36,8 +36,8 @@ pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targ
 <meta itemprop="name" content="Remotely Suspend All Threads with Meterpreter">
 <meta itemprop="description" content="Just a follow up to my previous post. One of the things that sets that method apart is the fact that the suspension (once the DLL injection occurs) comes from within the process, and it suspends all the child processes as well.
 Another way you can do this without the injection is just sending a suspend to all the threads in the process.
-pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targetprocess."><meta itemprop="datePublished" content="2011-05-30T21:52:59&#43;00:00" />
-<meta itemprop="dateModified" content="2011-05-30T21:52:59&#43;00:00" />
+pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targetprocess."><meta itemprop="datePublished" content="2011-05-30T21:52:59+00:00" />
+<meta itemprop="dateModified" content="2011-05-30T21:52:59+00:00" />
 <meta itemprop="wordCount" content="195">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -56,7 +56,7 @@ pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targ
 
 
 
-    <meta property="article:published_time" content="2011-05-30 21:52:59 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2011-05-30 21:52:59 &#43;0000 UTC" />
 
 
 
@@ -132,12 +132,12 @@ pid = 2980 targetprocess = client.sys.process.open(pid, PROCESS_ALL_ACCESS) targ
             <div class="post-content">
                 <p>Just a follow up to my previous post. One of the things that sets that method apart is the fact that the suspension (once the DLL injection occurs) comes from within the process, and it suspends all the child processes as well.</p>
 <p>Another way you can do this without the injection is just sending a suspend to all the threads in the process.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">pid <span style="color:#f92672">=</span> <span style="color:#ae81ff">2980</span>
-targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
-targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>each_thread <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span>
-	targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>open(x)<span style="color:#f92672">.</span>suspend
-<span style="color:#66d9ef">end</span>
-</code></pre></div><p>We open the process just like we did before, and make a very simple &lsquo;each_thread&rsquo; loop. There are a few AVs engines that detected this as tampering. But if you target isn&rsquo;t AV&hellip; Say it&rsquo;s Process Explorer during CCDC, this might just confuse them enough to buy you some time to do other things without their watchful eye on you.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>pid <span style="color:#f92672">=</span> <span style="color:#ae81ff">2980</span>
+</span></span><span style="display:flex;"><span>targetprocess <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>sys<span style="color:#f92672">.</span>process<span style="color:#f92672">.</span>open(pid, <span style="color:#66d9ef">PROCESS_ALL_ACCESS</span>)
+</span></span><span style="display:flex;"><span>targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>each_thread <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>x<span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span>	targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f92672">.</span>open(x)<span style="color:#f92672">.</span>suspend
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><p>We open the process just like we did before, and make a very simple &rsquo;each_thread&rsquo; loop. There are a few AVs engines that detected this as tampering. But if you target isn&rsquo;t AV&hellip; Say it&rsquo;s Process Explorer during CCDC, this might just confuse them enough to buy you some time to do other things without their watchful eye on you.</p>
 <p>The other cool thing that happened when I did this was Process Explorer didn&rsquo;t detect the process as suspended. If you looked under the thread list they were all suspended but not the process itself according to Process Explorer.</p>
 <p>Not rocket science at all, but that&rsquo;s because it&rsquo;s built into the framework. Just another thing that metasploit makes dead simple.</p>
 
@@ -166,7 +166,7 @@ targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f9267
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -174,7 +174,7 @@ targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f9267
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -187,7 +187,7 @@ targetprocess<span style="color:#f92672">.</span>thread<span style="color:#f9267
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

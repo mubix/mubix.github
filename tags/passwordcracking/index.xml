@@ -17,8 +17,8 @@
       
       <guid>https://malicious.link/post/2020/run-all-rules-hashcat/</guid>
       <description>&lt;p&gt;This is just a quick script to demonstrate using PowerShell to run all the rules against a specific hash (or hash file), starting from the smallest file (usually the simplest rules)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Set-Location -Path &#39;C:\Program Files\hashcat\&#39;
-Get-ChildItem .\rules\ | where { $_.extension -eq &amp;quot;.rule&amp;quot; } |
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Set-Location -Path &amp;#39;C:\Program Files\hashcat\&amp;#39;
+Get-ChildItem .\rules\ | where { $_.extension -eq &amp;#34;.rule&amp;#34; } |
 Sort-Object -Property Length | 
 % { 
 	.\hashcat64.exe -m1000 20F91778B033F841702E014D3B79148C .\rockyou.txt --loopback --rules $_.FullName

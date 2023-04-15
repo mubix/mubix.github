@@ -28,13 +28,13 @@
 &lt;p&gt;Next, make sure it says that the service doesn&amp;rsquo;t accept input from any application:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Paste in the following script:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;on run {input, parameters}
- set myAnswer to (do shell script &amp;quot;defaults read com.apple.finder CreateDesktop&amp;quot;) as boolean
- do shell script &amp;quot;defaults write com.apple.finder CreateDesktop &amp;quot; &amp;amp; ((not myAnswer) as string)
- do shell script &amp;quot;killall Finder&amp;quot;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;on run {input, parameters}
+ set myAnswer to (do shell script &amp;#34;defaults read com.apple.finder CreateDesktop&amp;#34;) as boolean
+ do shell script &amp;#34;defaults write com.apple.finder CreateDesktop &amp;#34; &amp;amp; ((not myAnswer) as string)
+ do shell script &amp;#34;killall Finder&amp;#34;
 end run
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;On the first run, you may get an error stating that the variable doesn&amp;rsquo;t exist or that it couldn&amp;rsquo;t convert it into a boolen. This is because by default this variable doesn&amp;rsquo;t exist for new users. All you have to do to correct this is open a terminal and type:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;defaults write com.apple.finder CreateDesktop true
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;defaults write com.apple.finder CreateDesktop true
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To set it for the first time:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/showicons5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Back in Automator, re-do the test run of the script:&lt;/p&gt;

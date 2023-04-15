@@ -20,22 +20,22 @@
 &lt;p&gt;I&amp;rsquo;m sure you already know where I&amp;rsquo;m going with this, I wanted to brute force all possible hostnames up to 4 characters. For a long time I struggled with coding this, but couldn&amp;rsquo;t wrap my head around it. I would come back to it every so often, finally a few days ago I happened upon a script on gist: &lt;a href=&#34;https://gist.github.com/petehamilton/4755855&#34;&gt;https://gist.github.com/petehamilton/4755855&lt;/a&gt; that suited my needs perfectly.&lt;/p&gt;
 &lt;p&gt;I modified it to suite my needs (just use the yield method) and here is what I ended up with (remember DNS is case insensitive):&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Notice:&lt;/strong&gt; This script doesn&amp;rsquo;t end, it will keep doing lookups on longer and longer hostnames until you hit CTRL-C&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#!/usr/bin/env ruby
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#!/usr/bin/env ruby
 
 #
 ## Brute code stolen form: https://gist.github.com/petehamilton/4755855
 #
 
-@domain = &#39;microsoft.com&#39;
+@domain = &amp;#39;microsoft.com&amp;#39;
 
 def result?(sub)
 	results = %x(dig +noall #{sub}.#{@domain} +answer)
-	if results != &amp;quot;&amp;quot;
-		puts &amp;quot;============================&amp;quot;
-		puts &amp;quot;FOUND: \t#{sub}&amp;quot;
-		puts &amp;quot;============================&amp;quot;
-		puts &amp;quot;#{results}&amp;quot;
-		puts &amp;quot;============================&amp;quot;
+	if results != &amp;#34;&amp;#34;
+		puts &amp;#34;============================&amp;#34;
+		puts &amp;#34;FOUND: \t#{sub}&amp;#34;
+		puts &amp;#34;============================&amp;#34;
+		puts &amp;#34;#{results}&amp;#34;
+		puts &amp;#34;============================&amp;#34;
 	end
 	1 == 2
 end
@@ -57,14 +57,13 @@ def crack_yield(chars)
 	}
 end
 
-chars = (&#39;a&#39;..&#39;z&#39;).to_a
+chars = (&amp;#39;a&amp;#39;..&amp;#39;z&amp;#39;).to_a
 (0..9).each {|x| chars &amp;lt;&amp;lt; x.to_s} 
 
 crack_yielding(chars)
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This worked but it was slow, so I sped it up using methods that I talked about in my last post and a quick modification:&lt;/p&gt;
 &lt;p&gt;I used this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#!/usr/bin/env ruby
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#!/usr/bin/env ruby
 
 #
 ## Brute code stolen form: https://gist.github.com/petehamilton/4755855
@@ -92,13 +91,12 @@ def crack_yield(chars)
 	}
 end
 
-chars = (&#39;a&#39;..&#39;z&#39;).to_a
+chars = (&amp;#39;a&amp;#39;..&amp;#39;z&amp;#39;).to_a
 (0..9).each {|x| chars &amp;lt;&amp;lt; x.to_s} 
 
 crack_yielding(chars)
-
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which just prints all the possibilities:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;a
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;a
 b
 c
 d
@@ -106,9 +104,9 @@ e
 f
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;and piped it into parallel + dig:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ruby brutelist.rb | parallel -j100 dig +noall {}.microsoft.com +answer
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ruby brutelist.rb | parallel -j100 dig +noall {}.microsoft.com +answer
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;and got the following:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;c.microsoft.com.	2	IN	CNAME	c.microsoft.akadns.net.
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;c.microsoft.com.	2	IN	CNAME	c.microsoft.akadns.net.
 c.microsoft.akadns.net.	499	IN	A	65.55.58.184
 e.microsoft.com.	3599	IN	A	191.234.1.50
 g.microsoft.com.	2798	IN	CNAME	g.msn.com.
@@ -162,7 +160,7 @@ wedcseus.cloudapp.net.	8	IN	A	137.116.48.250
 &lt;/ul&gt;
 &lt;p&gt;Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)&lt;/p&gt;
 &lt;p&gt;with an output something list this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;parallel: Warning: Only enough file handles to run 122 jobs in parallel.
 Raising ulimit -n or /etc/security/limits.conf may help.
 parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
 mail.microsoft.com.	2369	IN	A	131.107.125.5
@@ -278,7 +276,7 @@ autodiscover.microsoft.com. 2358 IN	A	131.107.125.5
 im.microsoft.com.	3600	IN	A	131.107.1.75
 sip.microsoft.com.	2228	IN	A	65.55.30.130
 me.microsoft.com.	0	IN	CNAME	edm.cloudapp.net.
-dig: &#39;m..microsoft.com&#39; is not a legal name (empty label)
+dig: &amp;#39;m..microsoft.com&amp;#39; is not a legal name (empty label)
 billing.microsoft.com.	0	IN	CNAME	paymenthubprod.trafficmanager.net.
 paymenthubprod.trafficmanager.net. 0 IN	CNAME	paymenthubuxprod1.cloudapp.net.
 paymenthubuxprod1.cloudapp.net.	10 IN	A	168.62.198.20
@@ -320,20 +318,20 @@ backoffice.microsoft.com. 3600	IN	A	65.55.58.201
       <description>&lt;p&gt;If you&amp;rsquo;ve ever used proxychains to push things through Meterpreter, one of the most annoying things is its &amp;ldquo;hardcoded&amp;rdquo; DNS setting for 4.2.2.2, if the org that you are going after doesn&amp;rsquo;t allow this out of their network, or if you are trying to resolve an internal asset, you&amp;rsquo;re SOL. After a ton of googling and annoyed head slams into walls every time I forget where this is I&amp;rsquo;ve finally decided to make a note of it.&lt;/p&gt;
 &lt;p&gt;There isn&amp;rsquo;t much magic here other than knowing that this file exists, but /bin/proxyresolv is a bash script that calls &amp;ldquo;dig&amp;rdquo; using TCP and the DNS server specified so it goes through the proxychains. Here is what it looks like:
 (on Kali linux its found here: /usr/lib/proxychains3/proxyresolv)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/sh
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# This script is called by proxychains to resolve DNS names&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;# DNS server used to resolve names&lt;/span&gt;
-DNS_SERVER&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;4.2.2.2
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; $# &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; ; &lt;span style=&#34;color:#66d9ef&#34;&gt;then&lt;/span&gt;
-echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; usage:&amp;#34;&lt;/span&gt;
-echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; proxyresolv &amp;lt;hostname&amp;gt; &amp;#34;&lt;/span&gt;
-exit
-&lt;span style=&#34;color:#66d9ef&#34;&gt;fi&lt;/span&gt;
-
-export LD_PRELOAD&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;libproxychains.so.3
-dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&amp;#39;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&amp;rsquo;s internal IP, up to you, but now its documented and I&amp;rsquo;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&amp;rsquo;s blog.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/sh
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# This script is called by proxychains to resolve DNS names&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# DNS server used to resolve names&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DNS_SERVER&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;4.2.2.2
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; $# &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; ; &lt;span style=&#34;color:#66d9ef&#34;&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; usage:&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; proxyresolv &amp;lt;hostname&amp;gt; &amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;exit
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;export LD_PRELOAD&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;libproxychains.so.3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/A.+[0-9]+\.[0-9]+\.[0-9]/{print $5;}&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you could just make the dig request yourself through proxychains then throw whatever you originally attended directly at an IP, or you can make the DNS_SERVER change and hardcode your engagement&amp;rsquo;s internal IP, up to you, but now its documented and I&amp;rsquo;ll never have to go searching like crazy again&amp;hellip; as long as I remember that its on someone else&amp;rsquo;s blog.&lt;/p&gt;
 </description>
     </item>
     
@@ -355,16 +353,16 @@ dig $1 @$DNS_SERVER +tcp | awk &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#3
 &lt;p&gt;&lt;strong&gt;cpan Net::DNS&lt;/strong&gt; (hit enter for defaults)    &lt;br&gt;
 &lt;strong&gt;cpan Net::DNS::SEC&lt;/strong&gt; (same deal)&lt;/p&gt;
 &lt;p&gt;Using the slide’s example of ripe.net (ARIN’s Euro brother) You simply point it at a domain:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;./walker ripe.net
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./walker ripe.net
 ;; Walker by Simon Josefsson
 ;; $Id: walker,v 1.31 2005/09/20 10:16:30 jas Exp $
 ;; Net::DNS 0.68
 ;; Net::DNS::SEC 0.16
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then it just starts going. Unlike the tool in the slides it’s a very verbose tool and doesn’t have any “write output to file” option so piping to a file is recommended.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ./walker ripe.net &amp;gt; output.txt &amp;amp;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ ./walker ripe.net &amp;gt; output.txt &amp;amp;
 [1] 32623
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then just run greps on it removing all of the DNS commenting with anything having a semicolon in it:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ cat output.txt | grep -v &#39;;&#39; | grep IN
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ cat output.txt | grep -v &amp;#39;;&amp;#39; | grep IN
 ripe.net.       273     IN      SOA     pri.authdns.ripe.net. dns.ripe.net. (
 ripe.net.       17146   IN      A       193.0.6.139
 ripe.net.       300     IN      AAAA    2001:67c:2e8:22:0:0:c100:68b
@@ -429,7 +427,7 @@ _xmpp-server._tcp.ripe.net.     2815    IN      RRSIG   NSEC  5
       <description>&lt;p&gt;The following are good adds to your DNS brute force list:&lt;/p&gt;
 &lt;p&gt;These are all &lt;strong&gt;SRV&lt;/strong&gt; records so make sure your type is set correctly. The great thing about SRV records is that it tells you the port in the answer. Isn&amp;rsquo;t that nice of them?&lt;/p&gt;
 &lt;p&gt;I don&amp;rsquo;t know of any DNS tools that utilize SRV as part of their process, but scripting dig to do so isn&amp;rsquo;t tough.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;_autodiscover._tcp
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;_autodiscover._tcp
 _caldav._tcp
 _client._smtp
 _gc._tcp
@@ -493,7 +491,7 @@ _xmpp-server._tcp
 &lt;p&gt;&lt;strong&gt;UPDATE 2&lt;/strong&gt;: Since Ozyman is no longer hosted on Dan&amp;rsquo;s site, I have posted it here:&lt;/p&gt;
 &lt;p&gt;Download: &lt;a href=&#34;https://github.com/mubix/stuff/blob/master/stolen/ozymandns_src_0.1.tgz?raw=true&#34;&gt;ozymandns_src_0.1.tgz&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;(Until of course/if he asks me to take it down)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;DNS Tunneling isn&amp;rsquo;t new. &lt;a href=&#34;http://www.doxpara.com/&#34;&gt;Dan Kaminsky&lt;/a&gt;&amp;rsquo;s post for &lt;a href=&#34;http://www.doxpara.com/?p=51&#34;&gt;OzymanDNS&#39; release&lt;/a&gt; was July 29th 2004 (There was DNS Tunneling linux packages dating back to the late 90s even). I will however comment that it&amp;rsquo;s still in it&amp;rsquo;s release version, but very functional. Also, DNS Tunnel isn&amp;rsquo;t &amp;ldquo;Big News&amp;rdquo; so it really hasn&amp;rsquo;t been &amp;lsquo;mitigated&amp;rsquo; anywhere yet. Everywhere I have tested it, it has worked, even behind a certain switch that rhymes with &amp;lsquo;Panera&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;DNS Tunneling isn&amp;rsquo;t new. &lt;a href=&#34;http://www.doxpara.com/&#34;&gt;Dan Kaminsky&lt;/a&gt;&amp;rsquo;s post for &lt;a href=&#34;http://www.doxpara.com/?p=51&#34;&gt;OzymanDNS&amp;rsquo; release&lt;/a&gt; was July 29th 2004 (There was DNS Tunneling linux packages dating back to the late 90s even). I will however comment that it&amp;rsquo;s still in it&amp;rsquo;s release version, but very functional. Also, DNS Tunnel isn&amp;rsquo;t &amp;ldquo;Big News&amp;rdquo; so it really hasn&amp;rsquo;t been &amp;lsquo;mitigated&amp;rsquo; anywhere yet. Everywhere I have tested it, it has worked, even behind a certain switch that rhymes with &amp;lsquo;Panera&amp;rsquo;&lt;/p&gt;
 &lt;p&gt;What does OzymanDNS do? It has two parts, server, and client. The server is a set and forget. It sits there waiting for a connection (caveat: from anywhere) But we are getting ahead of ourselves, lets setup up DNS first.&lt;/p&gt;
 &lt;p&gt;(I&amp;rsquo;m going to assume that you have a SSH server somewhere that you have already setup)&lt;/p&gt;
 &lt;h3 id=&#34;step-1---dns-setup&#34;&gt;Step 1 - DNS Setup:&lt;/h3&gt;

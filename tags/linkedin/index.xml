@@ -21,7 +21,7 @@
 &lt;p&gt;I let the resolution keep going and just parsed out all of the NXDOMAINs, but when I saw the list of NXDOMAINs go over 90,000 and I wasn&amp;rsquo;t even out of the &amp;lsquo;A&amp;rsquo;s yet, I took a different approach. I sorted the list by count to find the most used domains (using of course my favorite &lt;code&gt;sort | uniq -c | sort -n&lt;/code&gt; that I think everyone who&amp;rsquo;s ever done text parsing on Linux knows).&lt;/p&gt;
 &lt;p&gt;It lead to a few surprises, first, people still use AOL and earthlink?&lt;/p&gt;
 &lt;p&gt;Second&amp;hellip; well just look for yourself:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;32952409 gmail.com
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;32952409 gmail.com
 24071552 hotmail.com
 20421035 yahoo.com
 4283225 aol.com
@@ -52,17 +52,17 @@
 262010 yahoo.ca
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&amp;rsquo;ve never heard of rediffmail, you?&lt;/p&gt;
 &lt;p&gt;Anyways, I pushed the list in this order into a simple script:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;cat domains_count.txt | xargs -P &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; -n &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; sh -c &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;./findnx2.sh $1 $2&amp;#39;&lt;/span&gt; argv0 | tee nxdomains.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is what is in &lt;code&gt;findnx2.sh&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/bash
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;lines&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;nslookup &lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;2&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt; | grep NXDOMAIN | wc -l&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; $lines -eq &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;then&lt;/span&gt;
-	echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$2&lt;span style=&#34;color:#e6db74&#34;&gt; is open with count &lt;/span&gt;$1&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;fi&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And out popped a pretty interesting list (top 50):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cat domains_count.txt | xargs -P &lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt; -n &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; sh -c &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;./findnx2.sh $1 $2&amp;#39;&lt;/span&gt; argv0 | tee nxdomains.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is what is in &lt;code&gt;findnx2.sh&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;lines&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;nslookup &lt;span style=&#34;color:#e6db74&#34;&gt;${&lt;/span&gt;2&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt; | grep NXDOMAIN | wc -l&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; $lines -eq &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;1&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$2&lt;span style=&#34;color:#e6db74&#34;&gt; is open with count &lt;/span&gt;$1&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And out popped a pretty interesting list (top 50):&lt;/p&gt;
 &lt;p&gt;domain -&amp;gt; number of email accounts registered under that domain (based on number of occurrences of the domain in the unfiltered list):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;XXXXXXXXXXX is open with count 7606
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;XXXXXXXXXXX is open with count 7606
 hotmail.con is open with count 4367
 c2i.net is open with count 3966
 yahoo.con is open with count 3487

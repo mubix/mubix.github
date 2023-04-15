@@ -140,30 +140,30 @@ There are a great many things you can do with rpcclient for examples outside of 
 <p>I was unable to find any documentation on how to do this from a Linux host, or at the very least to do it without Active Directory Users and Computers (ADUC), which would require a Windows machine. And figuring out how to run ADUC through a meterpreter sessions wasn&rsquo;t an hurdle I ever had time for in engagements. :)</p>
 <p>Due to me being dumb and resetting a password of my own in my lab to something I couldn&rsquo;t remember, I finally had the time to figure it out.</p>
 <p>If you have Samba client tools (<code>smbclient</code>) installed, you can use <code>rpcclient</code>.  Out of the gate, you can auth with password or kerberos (this is especially useful in situations where you have dropped into a user that has an active kerberos token or you can make one):</p>
-<pre><code>root@kali:~# rpcclient -U helpdesk //192.168.80.10
-Enter helpdesk's password:
+<pre tabindex="0"><code>root@kali:~# rpcclient -U helpdesk //192.168.80.10
+Enter helpdesk&#39;s password:
 rpcclient $&gt;
 </code></pre><p>If you have the package <code>passing-the-hash</code>, you can even do this with just a NTLM hash.</p>
 <p>In order to change a password you neet to use the <code>setuserinfo2</code> command:</p>
-<pre><code>rpcclient $&gt; setuserinfo2
+<pre tabindex="0"><code>rpcclient $&gt; setuserinfo2
 Usage: setuserinfo2 username level password [password_expired]
 result was NT_STATUS_INVALID_PARAMETER
 </code></pre><p>You will not be able to change the password of anyone with <code>AdminCount = 1</code> (aka Domain Admins and other high priv accounts):</p>
-<pre><code>rpcclient $&gt; setuserinfo2 ima-domainadmin 23 'ASDqwe123'
+<pre tabindex="0"><code>rpcclient $&gt; setuserinfo2 ima-domainadmin 23 &#39;ASDqwe123&#39;
 result: NT_STATUS_ACCESS_DENIED
 result was NT_STATUS_ACCESS_DENIED
 rpcclient $&gt;
 </code></pre><p>But you can very easily target users who have alternate admin accounts:</p>
-<pre><code>rpcclient $&gt; setuserinfo2 adminuser 23 'ASDqwe123'
+<pre tabindex="0"><code>rpcclient $&gt; setuserinfo2 adminuser 23 &#39;ASDqwe123&#39;
 rpcclient $&gt;
 </code></pre><p>Yes it would be nice if there was any sort of confirmation&hellip;</p>
 <blockquote>
 <p>The <code>23</code> came from <a href="https://msdn.microsoft.com/en-us/library/cc245617.aspx">this MSDN article</a></p>
 </blockquote>
 <p>If you have the package <code>samba-common-bin</code> you can also do this with the <code>net</code> command:</p>
-<pre><code>root@kali:~# net rpc password adminuser -U helpdesk -S 192.168.80.10
+<pre tabindex="0"><code>root@kali:~# net rpc password adminuser -U helpdesk -S 192.168.80.10
 Enter new password for adminuser:
-Enter helpdesk's password:
+Enter helpdesk&#39;s password:
 root@kali:~#
 </code></pre><p>Huge thanks for <a href="https://twitter.com/agsolino">Beto Solino</a> of <a href="https://github.com/CoreSecurity/impacket">Impacket</a> fame for his help figuring this out.</p>
 
@@ -193,7 +193,7 @@ root@kali:~#
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -201,7 +201,7 @@ root@kali:~#
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -214,7 +214,7 @@ root@kali:~#
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

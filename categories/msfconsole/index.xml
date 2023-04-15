@@ -30,14 +30,14 @@
 &lt;/li&gt;
 &lt;li&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;msf&amp;gt; set ConsoleLogging true  
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf&amp;gt; set ConsoleLogging true  
 msf&amp;gt; set LogLevel 5  
 msf&amp;gt; set SessionLogging true  
 msf&amp;gt; set TimestampOutput true
 &lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
 &lt;li&gt;These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Plenty of logging right? But none of them really &amp;lsquo;log everything&amp;rsquo; and time stamps are not a regular occurrence in them. Cool, but we need both. We&amp;rsquo;ve got the &amp;lsquo;log everything&amp;rsquo; with the Linux &amp;lsquo;script&amp;rsquo; command, we just need a way to inject time stamps into our log.&lt;/p&gt;
+&lt;p&gt;Plenty of logging right? But none of them really &amp;rsquo;log everything&amp;rsquo; and time stamps are not a regular occurrence in them. Cool, but we need both. We&amp;rsquo;ve got the &amp;rsquo;log everything&amp;rsquo; with the Linux &amp;lsquo;script&amp;rsquo; command, we just need a way to inject time stamps into our log.&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;strong&gt;Enter the ever mutable &amp;lsquo;msf&amp;gt;&amp;rsquo; prompt:&lt;/strong&gt;&lt;/p&gt;
 &lt;hr&gt;
@@ -60,9 +60,9 @@ msf&amp;gt; set TimestampOutput true
 &lt;/ul&gt;
 &lt;p&gt;Now if you wanted to add colors to that, all you would do is use something like %grn%T to make the time stamp green. You&amp;rsquo;ll have to play around with the color&amp;rsquo;s names as I don&amp;rsquo;t know them all. %red %blu %blk etc&amp;hellip;&lt;/p&gt;
 &lt;p&gt;Combine all of that with script and you&amp;rsquo;ve got something awesome. I set my PROMPT to:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;msf&amp;gt; set PROMPT %T S:%S J:%J
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf&amp;gt; set PROMPT %T S:%S J:%J
 1970-01-01 00:00:00 +0000 S:0 J:0&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This gives me the number of jobs and sessions and has the time stamp every time I throw a command, so in my logs I can very easily narrow down the exact time when I did or didnt&#39; do something. The number of sessions and jobs are just good to know items.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This gives me the number of jobs and sessions and has the time stamp every time I throw a command, so in my logs I can very easily narrow down the exact time when I did or didnt&amp;rsquo; do something. The number of sessions and jobs are just good to know items.&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;strong&gt;Throw in one more trick to make the whole thing a cake walk:&lt;/strong&gt;&lt;/p&gt;
 &lt;hr&gt;

@@ -32,9 +32,9 @@
 &lt;p&gt;There is already a Metasploit module thanks to &lt;a href=&#34;https://github.com/Meatballs1&#34;&gt;Meatballs&lt;/a&gt;:
 &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb&lt;/a&gt;. But, unfortunately I don&amp;rsquo;t always have access to a Meterpreter session to run the module.&lt;/p&gt;
 &lt;p&gt;Using &lt;code&gt;ldapsearch&lt;/code&gt; (which is included in the package &lt;code&gt;ldapscripts&lt;/code&gt; on Debian/Ubuntu) can be used to make the same query that the module does. Here is an example run:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ldapsearch -x -h 192.168.80.10 -D \
-&amp;quot;helpdesk&amp;quot; -w ASDqwe123 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; \
-&amp;quot;(ms-MCS-AdmPwd=*)&amp;quot; ms-MCS-AdmPwd
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ldapsearch -x -h 192.168.80.10 -D \
+&amp;#34;helpdesk&amp;#34; -w ASDqwe123 -b &amp;#34;dc=sittingduck,dc=info&amp;#34; \
+&amp;#34;(ms-MCS-AdmPwd=*)&amp;#34; ms-MCS-AdmPwd
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Lets break this down:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;-x&lt;/code&gt; - Use basic authentication&lt;/li&gt;
@@ -45,7 +45,7 @@
 &lt;li&gt;&lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; - Only show me the &lt;code&gt;ms-MCS-AdmPwd&lt;/code&gt; object (which by default includes the object name and DN so you will still know what host it belongs to)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;What does that look like?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ ldapsearch -x -h 192.168.80.10 -D &amp;quot;helpdesk&amp;quot; -w ASDqwe123 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; &amp;quot;(ms-MCS-AdmPwd=*)&amp;quot; ms-MCS-AdmPwd
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$ ldapsearch -x -h 192.168.80.10 -D &amp;#34;helpdesk&amp;#34; -w ASDqwe123 -b &amp;#34;dc=sittingduck,dc=info&amp;#34; &amp;#34;(ms-MCS-AdmPwd=*)&amp;#34; ms-MCS-AdmPwd
 # extended LDIF
 #
 # LDAPv3

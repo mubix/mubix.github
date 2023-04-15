@@ -37,14 +37,14 @@
       
       <guid>https://malicious.link/post/2011/2011-12-26-hak5-segment-sneak-peak/</guid>
       <description>&lt;p&gt;Since it&amp;rsquo;s Christmas and all, I thought I&amp;rsquo;d post the code snippet from my Hak5 segment a bit early:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;Clipboard.au3&amp;gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#include &amp;lt;Clipboard.au3&amp;gt;
 #include &amp;lt;File.au3&amp;gt;
-$oldclip = &amp;quot;&amp;quot;
+$oldclip = &amp;#34;&amp;#34;
 While 1
     $clip = _ClipBoard_GetData()
-    If $clip &amp;lt;&amp;gt; &amp;quot;0&amp;quot; Then
+    If $clip &amp;lt;&amp;gt; &amp;#34;0&amp;#34; Then
         If $clip &amp;lt;&amp;gt; $oldclip Then
-            _FileWriteLog(@UserProfileDir &amp;amp; &amp;quot;clip.log&amp;quot;, $clip)
+            _FileWriteLog(@UserProfileDir &amp;amp; &amp;#34;clip.log&amp;#34;, $clip)
             $oldclip = $clip
         EndIf
     EndIf
@@ -68,7 +68,7 @@ WEnd
 &lt;p&gt;&lt;strong&gt;UPDATE 2&lt;/strong&gt;: Since Ozyman is no longer hosted on Dan&amp;rsquo;s site, I have posted it here:&lt;/p&gt;
 &lt;p&gt;Download: &lt;a href=&#34;https://github.com/mubix/stuff/blob/master/stolen/ozymandns_src_0.1.tgz?raw=true&#34;&gt;ozymandns_src_0.1.tgz&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;(Until of course/if he asks me to take it down)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;DNS Tunneling isn&amp;rsquo;t new. &lt;a href=&#34;http://www.doxpara.com/&#34;&gt;Dan Kaminsky&lt;/a&gt;&amp;rsquo;s post for &lt;a href=&#34;http://www.doxpara.com/?p=51&#34;&gt;OzymanDNS&#39; release&lt;/a&gt; was July 29th 2004 (There was DNS Tunneling linux packages dating back to the late 90s even). I will however comment that it&amp;rsquo;s still in it&amp;rsquo;s release version, but very functional. Also, DNS Tunnel isn&amp;rsquo;t &amp;ldquo;Big News&amp;rdquo; so it really hasn&amp;rsquo;t been &amp;lsquo;mitigated&amp;rsquo; anywhere yet. Everywhere I have tested it, it has worked, even behind a certain switch that rhymes with &amp;lsquo;Panera&amp;rsquo;&lt;/p&gt;
+&lt;p&gt;DNS Tunneling isn&amp;rsquo;t new. &lt;a href=&#34;http://www.doxpara.com/&#34;&gt;Dan Kaminsky&lt;/a&gt;&amp;rsquo;s post for &lt;a href=&#34;http://www.doxpara.com/?p=51&#34;&gt;OzymanDNS&amp;rsquo; release&lt;/a&gt; was July 29th 2004 (There was DNS Tunneling linux packages dating back to the late 90s even). I will however comment that it&amp;rsquo;s still in it&amp;rsquo;s release version, but very functional. Also, DNS Tunnel isn&amp;rsquo;t &amp;ldquo;Big News&amp;rdquo; so it really hasn&amp;rsquo;t been &amp;lsquo;mitigated&amp;rsquo; anywhere yet. Everywhere I have tested it, it has worked, even behind a certain switch that rhymes with &amp;lsquo;Panera&amp;rsquo;&lt;/p&gt;
 &lt;p&gt;What does OzymanDNS do? It has two parts, server, and client. The server is a set and forget. It sits there waiting for a connection (caveat: from anywhere) But we are getting ahead of ourselves, lets setup up DNS first.&lt;/p&gt;
 &lt;p&gt;(I&amp;rsquo;m going to assume that you have a SSH server somewhere that you have already setup)&lt;/p&gt;
 &lt;h3 id=&#34;step-1---dns-setup&#34;&gt;Step 1 - DNS Setup:&lt;/h3&gt;
@@ -144,7 +144,7 @@ WEnd
 &lt;p&gt;Part 5 - Hacks, Tips, and Tricks&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;**EDIT: This and the following posts are also show notes for the **&lt;em&gt;&lt;/em&gt;&lt;strong&gt;Season 4 premiere&lt;/strong&gt;&lt;/em&gt;&lt;a href=&#34;http://www.hak5.org/episodes/episode-401-wi-fi-pineapples&#34;&gt;&lt;/a&gt;&lt;em&gt;** of **&lt;em&gt;&lt;/em&gt;&lt;strong&gt;Hak5&lt;/strong&gt;&lt;/em&gt;&lt;a href=&#34;http://www.hak5.org/&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;**EDIT: This and the following posts are also show notes for the **&lt;/em&gt;&lt;a href=&#34;http://www.hak5.org/episodes/episode-401-wi-fi-pineapples&#34;&gt;&lt;em&gt;&lt;strong&gt;Season 4 premiere&lt;/strong&gt;&lt;/em&gt;&lt;/a&gt;&lt;em&gt;** of **&lt;/em&gt;&lt;a href=&#34;http://www.hak5.org/&#34;&gt;&lt;em&gt;&lt;strong&gt;Hak5&lt;/strong&gt;&lt;/em&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;So Maltego 2 has been released and all I have to show for it are these images stolen from &lt;a href=&#34;http://www.paterva.com/maltego/screenshots/&#34;&gt;paterva.com&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_ss1.serendipityThumb.png)&lt;/code&gt; &lt;img src=&#34;https://malicious.link/images/postimages/404.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;![](http://s3.media.squarespace.com/production/438411/4879756/uploads/maltego_ss2.serendipityThumb.png)&lt;/code&gt; &lt;img src=&#34;https://malicious.link/images/postimages/404.gif&#34; alt=&#34;&#34;&gt;&lt;/p&gt;

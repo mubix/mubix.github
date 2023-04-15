@@ -38,8 +38,8 @@ TL:DR; You can download the post module here: ipresolver." />
 <meta itemprop="description" content="I saw a post back in June and it just recently came up again:
 http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/
 It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun.
-TL:DR; You can download the post module here: ipresolver."><meta itemprop="datePublished" content="2011-08-19T19:26:55&#43;00:00" />
-<meta itemprop="dateModified" content="2011-08-19T19:26:55&#43;00:00" />
+TL:DR; You can download the post module here: ipresolver."><meta itemprop="datePublished" content="2011-08-19T19:26:55+00:00" />
+<meta itemprop="dateModified" content="2011-08-19T19:26:55+00:00" />
 <meta itemprop="wordCount" content="464">
 <meta itemprop="keywords" content="" />
 <meta name="twitter:card" content="summary"/>
@@ -59,7 +59,7 @@ TL:DR; You can download the post module here: ipresolver."/>
 
 
 
-    <meta property="article:published_time" content="2011-08-19 19:26:55 &#43;0000 &#43;0000" />
+    <meta property="article:published_time" content="2011-08-19 19:26:55 &#43;0000 UTC" />
 
 
 
@@ -138,39 +138,39 @@ TL:DR; You can download the post module here: ipresolver."/>
 <p>It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun.</p>
 <p><strong>TL:DR;</strong> You can download the post module here: <a href="https://gist.github.com/mubix/8215137">ipresolver.rb</a></p>
 <p>The function &lsquo;gethostbyaddr&rsquo; (<a href="%22http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx">http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx</a>&quot;) is pretty simple at first glance:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hostent</span><span style="color:#f92672">*</span> FAR <span style="color:#a6e22e">gethostbyaddr</span>(
-  __in  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>addr,
-  __in  <span style="color:#66d9ef">int</span> len,
-  __in  <span style="color:#66d9ef">int</span> type
-);
-</code></pre></div><p>Give it an address, length and type and it gives you a hostname back… easy right?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">hostent</span><span style="color:#f92672">*</span> FAR <span style="color:#a6e22e">gethostbyaddr</span>(
+</span></span><span style="display:flex;"><span>  __in  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>addr,
+</span></span><span style="display:flex;"><span>  __in  <span style="color:#66d9ef">int</span> len,
+</span></span><span style="display:flex;"><span>  __in  <span style="color:#66d9ef">int</span> type
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>Give it an address, length and type and it gives you a hostname back… easy right?</p>
 <p>Defining it, since it isn&rsquo;t in the Railgun definitions is pretty simple:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ws2_32&#39;</span>, <span style="color:#e6db74">&#39;gethostbyaddr&#39;</span>, <span style="color:#e6db74">&#39;DWORD&#39;</span>, <span style="color:#f92672">[</span>        
-	<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;PCHAR&#39;</span>, <span style="color:#e6db74">&#39;addr&#39;</span>, <span style="color:#e6db74">&#39;in&#39;</span><span style="color:#f92672">]</span>,         
-	<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#e6db74">&#39;len&#39;</span>,<span style="color:#e6db74">&#39;in&#39;</span><span style="color:#f92672">]</span>,         
-	<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#e6db74">&#39;type&#39;</span>,<span style="color:#e6db74">&#39;in&#39;</span><span style="color:#f92672">]</span>
-<span style="color:#f92672">]</span>)
-</code></pre></div><p>First hurdle is to get your IP into &lsquo;network byte order&rsquo;. Rex (Metasploit&rsquo;s API/Library) to the rescue.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>add_function(<span style="color:#e6db74">&#39;ws2_32&#39;</span>, <span style="color:#e6db74">&#39;gethostbyaddr&#39;</span>, <span style="color:#e6db74">&#39;DWORD&#39;</span>, <span style="color:#f92672">[</span>        
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;PCHAR&#39;</span>, <span style="color:#e6db74">&#39;addr&#39;</span>, <span style="color:#e6db74">&#39;in&#39;</span><span style="color:#f92672">]</span>,         
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#e6db74">&#39;len&#39;</span>,<span style="color:#e6db74">&#39;in&#39;</span><span style="color:#f92672">]</span>,         
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;DWORD&#39;</span>,<span style="color:#e6db74">&#39;type&#39;</span>,<span style="color:#e6db74">&#39;in&#39;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">]</span>)
+</span></span></code></pre></div><p>First hurdle is to get your IP into &rsquo;network byte order&rsquo;. Rex (Metasploit&rsquo;s API/Library) to the rescue.</p>
 <p><a href="http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073">http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073</a></p>
 <p>The &lsquo;addr_aton&rsquo; method does just that:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">nbi <span style="color:#f92672">=</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Socket</span><span style="color:#f92672">.</span>addr_aton(<span style="color:#e6db74">&#39;192.168.1.100&#39;</span>)
-<span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#34;xC0xA8x01d&#34;</span>
-</code></pre></div><p>Make the call to the API and done right?</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ws2_32<span style="color:#f92672">.</span>gethostbyaddr(nbi<span style="color:#f92672">.</span>to_s, nbi<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">2</span>)
-</code></pre></div><p>Wrong, what you get back is a pointer to a mess, well lets get the mess (using a google IP for this example):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">struct <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(result<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>,<span style="color:#ae81ff">100</span>)
-<span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#34;xA0x03fx00x88x0Efx00x02x00x04x00x8Cx0Efx00x00x00x00x00x94x0Efx00x00x00x00x00J}]cqw-in-f99.1e100.netx00@efx00x06x00bx00x13x01bx00xE0vvx00xvvx00xE8x0Efx00xEEx96x03x00x00bx00x00 x01x00x00x01x00x00x00x01x00x00x00x01x00x00x00&#34;</span>
-</code></pre></div><p>Ya.. that…</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>nbi <span style="color:#f92672">=</span> <span style="color:#66d9ef">Rex</span><span style="color:#f92672">::</span><span style="color:#66d9ef">Socket</span><span style="color:#f92672">.</span>addr_aton(<span style="color:#e6db74">&#39;192.168.1.100&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#34;xC0xA8x01d&#34;</span>
+</span></span></code></pre></div><p>Make the call to the API and done right?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>result <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>ws2_32<span style="color:#f92672">.</span>gethostbyaddr(nbi<span style="color:#f92672">.</span>to_s, nbi<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><p>Wrong, what you get back is a pointer to a mess, well lets get the mess (using a google IP for this example):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>struct <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(result<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>,<span style="color:#ae81ff">100</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">=&gt;</span> <span style="color:#e6db74">&#34;xA0x03fx00x88x0Efx00x02x00x04x00x8Cx0Efx00x00x00x00x00x94x0Efx00x00x00x00x00J}]cqw-in-f99.1e100.netx00@efx00x06x00bx00x13x01bx00xE0vvx00xvvx00xE8x0Efx00xEEx96x03x00x00bx00x00 x01x00x00x01x00x00x00x01x00x00x00x01x00x00x00&#34;</span>
+</span></span></code></pre></div><p>Ya.. that…</p>
 <p>I tried using the pointer at the 12th byte location and that worked most of the time, but failed bad on others:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">ptrptr <span style="color:#f92672">=</span> struct<span style="color:#f92672">[</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">4</span><span style="color:#f92672">].</span>unpack(<span style="color:#e6db74">&#34;V*&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>        
-hostnameptr <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(ptrptr,<span style="color:#ae81ff">4</span>)<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;V*&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>         
-hostname <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(hostnameptr<span style="color:#f92672">+</span>nbi<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">59</span>)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
-</code></pre></div><p>(there were a bunch more lines of error correcting but I&rsquo;ll just wanted to show these as the actual methods used on a successful run)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>ptrptr <span style="color:#f92672">=</span> struct<span style="color:#f92672">[</span><span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">4</span><span style="color:#f92672">].</span>unpack(<span style="color:#e6db74">&#34;V*&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>        
+</span></span><span style="display:flex;"><span>hostnameptr <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(ptrptr,<span style="color:#ae81ff">4</span>)<span style="color:#f92672">.</span>unpack(<span style="color:#e6db74">&#34;V*&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>         
+</span></span><span style="display:flex;"><span>hostname <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(hostnameptr<span style="color:#f92672">+</span>nbi<span style="color:#f92672">.</span>size,<span style="color:#ae81ff">59</span>)<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>(there were a bunch more lines of error correcting but I&rsquo;ll just wanted to show these as the actual methods used on a successful run)</p>
 <p>But on other hosts the 12th byte came back with a pointer to all 0s, so there was no way to jump again (hostnameptr) to the actual hostname.</p>
 <p>What I missed while trying to do things the &ldquo;C&rdquo; way was that the hostname was always pretexted with the IP address in network byte order… Hold up, I know it begins with something I already know, and ends in the standard &ldquo;C&rdquo; string terminator of a null byte. So all of that plus the crazy error correction became:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">struct <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(result<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>,<span style="color:#ae81ff">100</span>)        
-hostname <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>split(nbi)<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">].</span>split(<span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
-</code></pre></div><p>2 lines… work 100% of the time in my test cases.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>struct <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>railgun<span style="color:#f92672">.</span>memread(result<span style="color:#f92672">[</span><span style="color:#e6db74">&#39;return&#39;</span><span style="color:#f92672">]</span>,<span style="color:#ae81ff">100</span>)        
+</span></span><span style="display:flex;"><span>hostname <span style="color:#f92672">=</span> struct<span style="color:#f92672">.</span>split(nbi)<span style="color:#f92672">[</span><span style="color:#ae81ff">1</span><span style="color:#f92672">].</span>split(<span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>2 lines… work 100% of the time in my test cases.</p>
 <p>That&rsquo;s it, you can check out the download for the post module above.</p>
 <p>I do however have 1 disadvantage over how the guys at SecurityArtWork did things. You can&rsquo;t thread it. For whatever reason the API call that I am using uses the exact same memory space for each lookup. I tried putting threading in and what I got was a bunch of systems that resolved to the exact same thing.</p>
 <p>If anyone knows a way to fix this I am all ears because right now the module is slow.</p>
@@ -200,7 +200,7 @@ hostname <span style="color:#f92672">=</span> struct<span style="color:#f92672">
                 <footer class="footer">
     <div class="footer__inner">
         <div class="footer__content">
-            <span>&copy; 2021</span>
+            <span>&copy; 2023</span>
             
             <span><a href="https://malicious.link/post/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>
         </div>
@@ -208,7 +208,7 @@ hostname <span style="color:#f92672">=</span> struct<span style="color:#f92672">
     <div class="footer__inner">
         <div class="footer__content">
             <span>Powered by <a href="http://gohugo.io">Hugo</a></span>
-            <span>Made with &#10084; by <a href="https://github.com/rhazdon">Djordje Atlialp</a></span>
+            <span>Made with &#10084; by <a href="https://github.com/mubix">mubix</a> - Theme by <a href="https://github.com/rhazdon/">Djordje Atlialp</a></span>
           </div>
     </div>
 </footer>
@@ -221,7 +221,7 @@ hostname <span style="color:#f92672">=</span> struct<span style="color:#f92672">
 
 
 
-<script type="text/javascript" src="/bundle.min.a0f363fdf81cdc5cfacc447a79c33189eb000d090336cd04aac8ee256f423b3133b836c281944c19c75e38d0b0b449f01ce5807e37798b7ac94ac1db51983fc4.js" integrity="sha512-oPNj/fgc3Fz6zER6ecMxiesADQkDNs0EqsjuJW9COzEzuDbCgZRMGcdeONCwtEnwHOWAfjd5i3rJSsHbUZg/xA=="></script>
+<script type="text/javascript" src="/bundle.min.8cc3758efe48ef82e2eb9a5f317b44c0805353a43762207be6fe8ffb05815cce7a19d37f6bf387c378a3bdfc3029981668d645374a33db4ee3480e15a4bfdc7c.js" integrity="sha512-jMN1jv5I74Li65pfMXtEwIBTU6Q3YiB75v6P&#43;wWBXM56GdN/a/OHw3ijvfwwKZgWaNZFN0oz207jSA4VpL/cfA=="></script>
 
 
 

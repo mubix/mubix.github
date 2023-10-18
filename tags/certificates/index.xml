@@ -1,94 +1,18 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>certificates on malicious.link</title>
-    <link>https://malicious.link/tags/certificates/</link>
-    <description>Recent content in certificates on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 26 Aug 2018 08:30:44 -0500</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/tags/certificates/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Stealing Certificates with Apostille</title>
-      <link>https://malicious.link/post/2018/stealing-certificates-with-apostille/</link>
-      <pubDate>Sun, 26 Aug 2018 08:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2018/stealing-certificates-with-apostille/</guid>
-      <description>&lt;p&gt;At Def Con 26, &lt;a href=&#34;https://twitter.com/singe&#34;&gt;@singe&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/_cablethief&#34;&gt;@_cablethief&lt;/a&gt; gave a talk on enterprise wireless attacks. When it&amp;rsquo;s video is released you should check it out.&lt;/p&gt;
-&lt;p&gt;During that talk, they quickly touched on a tool written by &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;Rogan Dawes&lt;/a&gt; another &lt;a href=&#34;https://twitter.com/sensepost&#34;&gt;@Sensepost&lt;/a&gt;-er&amp;rsquo;s tool called &amp;ldquo;&lt;a href=&#34;https://github.com/sensepost/apostille&#34;&gt;Apostille&lt;/a&gt;&amp;rdquo;. It is esentially a certificate stealing (cloning? faking? doppelganger-ing?) tool. However, that over simplifies what it does.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;To be more accurate, Apostille generates a clone of the certificate chain, identical in as many details as possible, apart from the actual key values. One thing this could be useful for is bypassing naive cert pinning if the validation is based on details of the signing certs.&lt;/p&gt;&amp;mdash; @RoganDawes@infosec.exchange (@RoganDawes) &lt;a href=&#34;https://twitter.com/RoganDawes/status/1033769690609463297?ref_src=twsrc%5Etfw&#34;&gt;August 26, 2018&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;Copying a certificate&amp;rsquo;s common name, email, or other fields that are inputted during creation is a relatively easy way to copy certificates, and they can look relatively good at first glance. However, this simple copy leads to many tell-tail signs that it&amp;rsquo;s fake. For instance lets say I create a certificate like so:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@apostille-post:~# openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
-Generating a 2048 bit RSA private key
-.................................................................................................................+++
-...+++
-writing new private key to &amp;#39;mycert.pem&amp;#39;
------
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter &amp;#39;.&amp;#39;, the field will be left blank.
------
-Country Name (2 letter code) [AU]:US
-State or Province Name (full name) [Some-State]:California
-Locality Name (eg, city) []:Mountain View
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:Google LLC
-Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:*.google.com
-Email Address []:
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If I host it out, here are the results side by side with Google.com:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-01.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;The &lt;code&gt;Vaild From&lt;/code&gt;, the &lt;code&gt;Issued By&lt;/code&gt;, and most of the other certificate information helps this certificate to stand out as fraudulent. Also, doing this by hand is a PITA.&lt;/p&gt;
-&lt;p&gt;Enter &lt;strong&gt;Apostille&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;It&amp;rsquo;s pretty straight forward to get it going, but you do need both Java&amp;rsquo;s JDK and Maven to compile it first:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@apostille-post:~# apt install -y maven default-jdk git
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(I&amp;rsquo;m doing this on a fresh box so it needed git as well)&lt;/p&gt;
-&lt;p&gt;Step 2, &lt;code&gt;git clone&lt;/code&gt; the repo, and compile with Maven:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@apostille-post:~# git clone https://github.com/sensepost/apostille
-Cloning into &amp;#39;apostille&amp;#39;...
-remote: Counting objects: 48, done.
-remote: Total 48 (delta 0), reused 0 (delta 0), pack-reused 48
-Unpacking objects: 100% (48/48), done.
-root@apostille-post:~# cd apostille/
-root@apostille-post:~/apostille# mvn package
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Step 3, Clone your first certificate:
-&lt;code&gt;java -jar target/apostille-1.0-SNAPSHOT.jar google.com:443 tempkeystore.jks ASDqwe123 ASDqwe123&lt;/code&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;google.com:443&lt;/code&gt; is the endpoint that will serve a certificate chain back, this isn&amp;rsquo;t regulated to only HTTPS, but any TLS endpoint.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;tempkeystore.jks&lt;/code&gt; is the Java Keystore file that we will putting the certificate chain into.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;ASDqwe123&lt;/code&gt; is the &lt;code&gt;kspassword&lt;/code&gt; and then the &lt;code&gt;keypassword&lt;/code&gt; (Keystore and certificate password) - I just made them the same as this is an example and I won&amp;rsquo;t be using the keystore for anything but to export the certificates later.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;In order to get the certificates out of the keystore and into a PEM format that I can use for testing, I used the following:&lt;/p&gt;
-&lt;p&gt;Source: &lt;a href=&#34;https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/&#34;&gt;https://www.calazan.com/how-to-convert-a-java-keystore-jks-to-pem-format/&lt;/a&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@apostille-post:~/apostille# keytool -importkeystore -srckeystore tempkeystore.jks -destkeystore myapp.p12 -srcalias *.google.com -srcstoretype jks -deststoretype pkcs12
-Importing keystore tempkeystore.jks to myapp.p12...Enter destination keystore password: ASDqwe123
-Re-enter new password: ASDqwe123
-Enter source keystore password: ASDqwe123
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;(The passwords will not show up, but I put them in there so you can see what I&amp;rsquo;m inputting. Again I chose a simple password because I&amp;rsquo;m converting it one more time)&lt;/p&gt;
-&lt;p&gt;Then finally to a PEM like so:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@apostille-post:~/apostille# openssl pkcs12 -in myapp.p12 -out myapp.pem
-Enter Import Password: ASDqwe123
-Enter PEM pass phrase: WugWZ3!F3hD#8P!f
-Verifying - Enter PEM pass phrase: WugWZ3!F3hD#8P!f
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;To test out how it looks I&amp;rsquo;ll reference &lt;a href=&#34;http://attackerkb.com/Web/Quick%20Web%20Servers&#34;&gt;AKB&amp;rsquo;s Quick Web Servers list&lt;/a&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;root@apostille-post:~/apostille# openssl s_server -cert myapp.pem -accept 443 -WWW
-Enter pass phrase for myapp.pem: WugWZ3!F3hD#8P!f
-Using default temp DH parameters
-ACCEPT
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the result is:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-02.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-03.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2018/stealing-certs-04.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;A much more believable certificate, even to the discerning eye.&lt;/p&gt;
-&lt;p&gt;Again, thanks to &lt;a href=&#34;https://twitter.com/rogandawes&#34;&gt;@RoganDawes&lt;/a&gt; for this amazing tool.&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>certificates - Tag - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/tags/certificates/</link>
+        <description>certificates - Tag - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Sun, 26 Aug 2018 08:30:44 -0500</lastBuildDate><atom:link href="https://malicious.link/tags/certificates/" rel="self" type="application/rss+xml" /><item>
+    <title>Stealing Certificates with Apostille</title>
+    <link>https://malicious.link/posts/2018/stealing-certificates-with-apostille/</link>
+    <pubDate>Sun, 26 Aug 2018 08:30:44 -0500</pubDate>
+    <author>Rob Fuller</author>
+    <guid>https://malicious.link/posts/2018/stealing-certificates-with-apostille/</guid>
+    <description><![CDATA[At Def Con 26, @singe and @_cablethief gave a talk on enterprise wireless attacks. When it&rsquo;s video is released you should check it out.
+During that talk, they quickly touched on a tool written by Rogan Dawes another @Sensepost-er&rsquo;s tool called &ldquo;Apostille&rdquo;. It is esentially a certificate stealing (cloning? faking? doppelganger-ing?) tool. However, that over simplifies what it does.
+To be more accurate, Apostille generates a clone of the certificate chain, identical in as many details as possible, apart from the actual key values.]]></description>
+</item>
+</channel>
 </rss>

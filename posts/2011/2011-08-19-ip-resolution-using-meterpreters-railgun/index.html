@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>IP Resolution Using Meterpreter’s Railgun - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="IP Resolution Using Meterpreter’s Railgun" />
+<meta property="og:description" content="I saw a post back in June and it just recently came up again:
+http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/
+It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun.
+TL:DR; You can download the post module here: ipresolver." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-08-19T19:26:55+00:00" />
+<meta property="article:modified_time" content="2011-08-19T19:26:55+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IP Resolution Using Meterpreter’s Railgun"/>
+<meta name="twitter:description" content="I saw a post back in June and it just recently came up again:
+http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/
+It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun.
+TL:DR; You can download the post module here: ipresolver."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" /><link rel="prev" href="https://malicious.link/posts/2011/2011-08-19-railgun-error-checking/" /><link rel="next" href="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "IP Resolution Using Meterpreter’s Railgun",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2011\/2011-08-19-ip-resolution-using-meterpreters-railgun\/"
+        },"genre": "posts","wordcount":  484 ,
+        "url": "https:\/\/malicious.link\/posts\/2011\/2011-08-19-ip-resolution-using-meterpreters-railgun\/","datePublished": "2011-08-19T19:26:55+00:00","dateModified": "2011-08-19T19:26:55+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">IP Resolution Using Meterpreter’s Railgun</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/meterpreter/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>meterpreter</a>&nbsp;<a href="/categories/railgun/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>railgun</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2011-08-19">2011-08-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;484 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>I saw a post back in June and it just recently came up again:</p>
+<p><a href="http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/" target="_blank" rel="noopener noreffer ">http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/</a></p>
+<p>It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun.</p>
+<p><strong>TL:DR;</strong> You can download the post module here: <a href="https://gist.github.com/mubix/8215137" target="_blank" rel="noopener noreffer ">ipresolver.rb</a></p>
+<p>The function &lsquo;gethostbyaddr&rsquo; (<a href="http://msdn.microsoft.com/en-us/library/ms738521%28v=VS.85%29.aspx" target="_blank" rel="noopener noreffer ">http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx</a>) is pretty simple at first glance:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">hostent</span><span class="o">*</span> <span class="n">FAR</span> <span class="nf">gethostbyaddr</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__in</span>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__in</span>  <span class="kt">int</span> <span class="n">len</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__in</span>  <span class="kt">int</span> <span class="n">type</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Give it an address, length and type and it gives you a hostname back… easy right?</p>
+<p>Defining it, since it isn&rsquo;t in the Railgun definitions is pretty simple:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">client</span><span class="o">.</span><span class="n">railgun</span><span class="o">.</span><span class="n">add_function</span><span class="p">(</span><span class="s1">&#39;ws2_32&#39;</span><span class="p">,</span> <span class="s1">&#39;gethostbyaddr&#39;</span><span class="p">,</span> <span class="s1">&#39;DWORD&#39;</span><span class="p">,</span> <span class="o">[</span>        
+</span></span><span class="line"><span class="cl">	<span class="o">[</span><span class="s1">&#39;PCHAR&#39;</span><span class="p">,</span> <span class="s1">&#39;addr&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="o">]</span><span class="p">,</span>         
+</span></span><span class="line"><span class="cl">	<span class="o">[</span><span class="s1">&#39;DWORD&#39;</span><span class="p">,</span><span class="s1">&#39;len&#39;</span><span class="p">,</span><span class="s1">&#39;in&#39;</span><span class="o">]</span><span class="p">,</span>         
+</span></span><span class="line"><span class="cl">	<span class="o">[</span><span class="s1">&#39;DWORD&#39;</span><span class="p">,</span><span class="s1">&#39;type&#39;</span><span class="p">,</span><span class="s1">&#39;in&#39;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">]</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>First hurdle is to get your IP into &rsquo;network byte order&rsquo;. Rex (Metasploit&rsquo;s API/Library) to the rescue.</p>
+<p><a href="http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073" target="_blank" rel="noopener noreffer ">http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073</a></p>
+<p>The &lsquo;addr_aton&rsquo; method does just that:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">nbi</span> <span class="o">=</span> <span class="no">Rex</span><span class="o">::</span><span class="no">Socket</span><span class="o">.</span><span class="n">addr_aton</span><span class="p">(</span><span class="s1">&#39;192.168.1.100&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">=&gt;</span> <span class="s2">&#34;xC0xA8x01d&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Make the call to the API and done right?</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">railgun</span><span class="o">.</span><span class="n">ws2_32</span><span class="o">.</span><span class="n">gethostbyaddr</span><span class="p">(</span><span class="n">nbi</span><span class="o">.</span><span class="n">to_s</span><span class="p">,</span> <span class="n">nbi</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Wrong, what you get back is a pointer to a mess, well lets get the mess (using a google IP for this example):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">struct</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">railgun</span><span class="o">.</span><span class="n">memread</span><span class="p">(</span><span class="n">result</span><span class="o">[</span><span class="s1">&#39;return&#39;</span><span class="o">]</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">=&gt;</span> <span class="s2">&#34;xA0x03fx00x88x0Efx00x02x00x04x00x8Cx0Efx00x00x00x00x00x94x0Efx00x00x00x00x00J}]cqw-in-f99.1e100.netx00@efx00x06x00bx00x13x01bx00xE0vvx00xvvx00xE8x0Efx00xEEx96x03x00x00bx00x00 x01x00x00x01x00x00x00x01x00x00x00x01x00x00x00&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Ya.. that…</p>
+<p>I tried using the pointer at the 12th byte location and that worked most of the time, but failed bad on others:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">ptrptr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">[</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="o">].</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&#34;V*&#34;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>        
+</span></span><span class="line"><span class="cl"><span class="n">hostnameptr</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">railgun</span><span class="o">.</span><span class="n">memread</span><span class="p">(</span><span class="n">ptrptr</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&#34;V*&#34;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>         
+</span></span><span class="line"><span class="cl"><span class="n">hostname</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">railgun</span><span class="o">.</span><span class="n">memread</span><span class="p">(</span><span class="n">hostnameptr</span><span class="o">+</span><span class="n">nbi</span><span class="o">.</span><span class="n">size</span><span class="p">,</span><span class="mi">59</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>(there were a bunch more lines of error correcting but I&rsquo;ll just wanted to show these as the actual methods used on a successful run)</p>
+<p>But on other hosts the 12th byte came back with a pointer to all 0s, so there was no way to jump again (hostnameptr) to the actual hostname.</p>
+<p>What I missed while trying to do things the &ldquo;C&rdquo; way was that the hostname was always pretexted with the IP address in network byte order… Hold up, I know it begins with something I already know, and ends in the standard &ldquo;C&rdquo; string terminator of a null byte. So all of that plus the crazy error correction became:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">struct</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">railgun</span><span class="o">.</span><span class="n">memread</span><span class="p">(</span><span class="n">result</span><span class="o">[</span><span class="s1">&#39;return&#39;</span><span class="o">]</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>        
+</span></span><span class="line"><span class="cl"><span class="n">hostname</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">nbi</span><span class="p">)</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>2 lines… work 100% of the time in my test cases.</p>
+<p>That&rsquo;s it, you can check out the download for the post module above.</p>
+<p>I do however have 1 disadvantage over how the guys at SecurityArtWork did things. You can&rsquo;t thread it. For whatever reason the API call that I am using uses the exact same memory space for each lookup. I tried putting threading in and what I got was a bunch of systems that resolved to the exact same thing.</p>
+<p>If anyone knows a way to fix this I am all ears because right now the module is slow.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2011-08-19</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" data-title="IP Resolution Using Meterpreter’s Railgun" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" data-title="IP Resolution Using Meterpreter’s Railgun"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" data-title="IP Resolution Using Meterpreter’s Railgun"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" data-title="IP Resolution Using Meterpreter’s Railgun"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" data-title="IP Resolution Using Meterpreter’s Railgun"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2011/2011-08-19-railgun-error-checking/" class="prev" rel="prev" title="Railgun Error Checking"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Railgun Error Checking</a>
+            <a href="/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" class="next" rel="next" title="Populating Your Virtual Victim Domain">Populating Your Virtual Victim Domain<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

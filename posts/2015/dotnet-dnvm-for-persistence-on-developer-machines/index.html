@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>DotNet&#39;s DNVM For Persistence On Developer Machines - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="DotNet&#39;s DNVM For Persistence On Developer Machines" />
+<meta property="og:description" content="One of the best resources for persistence mechanisms is Hexacorn&rsquo;s blog. http://www.hexacorn.com/blog/category/autostart-persistence/
+If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:
+DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2015-10-05T07:35:28-05:00" />
+<meta property="article:modified_time" content="2015-10-05T07:35:28-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="DotNet&#39;s DNVM For Persistence On Developer Machines"/>
+<meta name="twitter:description" content="One of the best resources for persistence mechanisms is Hexacorn&rsquo;s blog. http://www.hexacorn.com/blog/category/autostart-persistence/
+If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:
+DNVM (https://github.com/aspnet/dnvm) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" /><link rel="prev" href="https://malicious.link/posts/2015/hiding-desktop-icons-for-presentations-on-osx/" /><link rel="next" href="https://malicious.link/posts/2015/r5-industries/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "DotNet's DNVM For Persistence On Developer Machines",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2015\/dotnet-dnvm-for-persistence-on-developer-machines\/"
+        },"genre": "posts","keywords": "persistence, windows, dotnet, dnvm","wordcount":  436 ,
+        "url": "https:\/\/malicious.link\/posts\/2015\/dotnet-dnvm-for-persistence-on-developer-machines\/","datePublished": "2015-10-05T07:35:28-05:00","dateModified": "2015-10-05T07:35:28-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">DotNet's DNVM For Persistence On Developer Machines</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2015-10-05">2015-10-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;436 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>One of the best resources for persistence mechanisms is <a href="https://twitter.com/Hexacorn" target="_blank" rel="noopener noreffer ">Hexacorn&rsquo;s</a> blog.
+<a href="http://www.hexacorn.com/blog/category/autostart-persistence/" target="_blank" rel="noopener noreffer ">http://www.hexacorn.com/blog/category/autostart-persistence/</a></p>
+<p>If you haven&rsquo;t checked out his &ldquo;Beyond good ol&rsquo; Run key&rdquo; (linked above) 32 post series, you really should. But today I wanted to talk about one that I didn&rsquo;t see up there:</p>
+<p>DNVM (<a href="https://github.com/aspnet/dnvm" target="_blank" rel="noopener noreffer ">https://github.com/aspnet/dnvm</a>) is the DotNet Version Manager and it&rsquo;s a part of ASP.NET 5, which I believe has been inside of Visual Studio since the 2013 version. It&rsquo;s there to help to specify which runtime to use for applications, much like <a href="https://rvm.io/" target="_blank" rel="noopener noreffer ">RVM (Ruby Version Manager)</a> is for Ruby. With their goal being that you can install .Net and <a href="http://docs.asp.net/en/latest/getting-started/index.html" target="_blank" rel="noopener noreffer ">run .Net applications on Linux and Mac</a> as well using DNVM.</p>
+<p>Once installed it adds a &ldquo;DNX_HOME&rdquo; environmental variable:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnx_reg.png"
+        data-srcset="/images/2015/dnx_reg.png, /images/2015/dnx_reg.png 1.5x, /images/2015/dnx_reg.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnx_reg.png"
+        title="/images/2015/dnx_reg.png" /></p>
+<p>Inside the folder specified are 3 directories:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnx_folder.png"
+        data-srcset="/images/2015/dnx_folder.png, /images/2015/dnx_folder.png 1.5x, /images/2015/dnx_folder.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnx_folder.png"
+        title="/images/2015/dnx_folder.png" /></p>
+<p>There are plenty of things to play with in here, but I wanted to specifically point out that the <strong>BIN</strong> directory is put into the $PATH variable (as well as two others)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\WINDOWS\system32\config\systemprofile\.dnx\bin (DOES NOT EXIST BY DEFAULT)
+</span></span><span class="line"><span class="cl">C:\Program Files\Microsoft DNX\Dnvm\
+</span></span><span class="line"><span class="cl">C:\Users\mubix\.dnx\bin
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Ok, not a big deal right? Even a user under UAC can edit their own $PATH variable (we&rsquo;ll come back to that in another post)</p>
+<p>Lets take a look at what is in those folders:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnvm_folders.png"
+        data-srcset="/images/2015/dnvm_folders.png, /images/2015/dnvm_folders.png 1.5x, /images/2015/dnvm_folders.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnvm_folders.png"
+        title="/images/2015/dnvm_folders.png" /></p>
+<p>Interesting, why don&rsquo;t we see what the command dnvm does:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnvm_cmd.png"
+        data-srcset="/images/2015/dnvm_cmd.png, /images/2015/dnvm_cmd.png 1.5x, /images/2015/dnvm_cmd.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnvm_cmd.png"
+        title="/images/2015/dnvm_cmd.png" /></p>
+<p>Seriously&hellip; I probably don&rsquo;t even have to continue at this point&hellip;</p>
+<p>But, if I run dnvm from the command prompt (as a developer would) it runs it from inside that protected directory in Program Files right?&hellip; RIGHT?! Nope..</p>
+<p>Edit the dnvm.cmd with a bit of <a href="http://www.powershellempire.com/" target="_blank" rel="noopener noreffer ">PowerShell Empire</a> stager (minus the <strong>-W Hidden</strong>, because we need the user to actually get the output of the dnvm command) and&hellip;.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[+] Initial agent UU2YKZ3VDG2AUKFY from 192.168.1.109 now active
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Boom!</p>
+<p>Lets look a bit into how DNVM works to see if there is something juicier there (way to much for a single blog post)</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnvm_list.png"
+        data-srcset="/images/2015/dnvm_list.png, /images/2015/dnvm_list.png 1.5x, /images/2015/dnvm_list.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnvm_list.png"
+        title="/images/2015/dnvm_list.png" /></p>
+<p>Awesome! So I can modify things in the runtime directory, lets look in there:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnvm_runtime.png"
+        data-srcset="/images/2015/dnvm_runtime.png, /images/2015/dnvm_runtime.png 1.5x, /images/2015/dnvm_runtime.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnvm_runtime.png"
+        title="/images/2015/dnvm_runtime.png" /></p>
+<p>Lots, of fun, but we still have to wait until they run some C# code with that run time and guess which one they will use (or backdoor all of them). I would rather just make a modification to the dnvm.cmd and be done with it. Simple and clean.</p>
+<p>Oh did I mention that this is used to cross compile binaries? Ya, oh ok, so you can infect the built binaries, or web apps for Windows, Linux and OSX&hellip;</p>
+<p>Oh and one other thing caught my eye while I was looking into the DNVM.ps1 script:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/dnvm_azure.png"
+        data-srcset="/images/2015/dnvm_azure.png, /images/2015/dnvm_azure.png 1.5x, /images/2015/dnvm_azure.png 2x"
+        data-sizes="auto"
+        alt="/images/2015/dnvm_azure.png"
+        title="/images/2015/dnvm_azure.png" /></p>
+<p>Have fun!</p>
+<p>P.S. Unquoted paths FTW: <a href="https://github.com/aspnet/dnvm/pull/357" target="_blank" rel="noopener noreffer ">https://github.com/aspnet/dnvm/pull/357</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2015-10-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" data-title="DotNet&#39;s DNVM For Persistence On Developer Machines" data-via="mubix" data-hashtags="persistence,windows,dotnet,dnvm"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" data-hashtag="persistence"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" data-title="DotNet&#39;s DNVM For Persistence On Developer Machines"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" data-title="DotNet&#39;s DNVM For Persistence On Developer Machines"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" data-title="DotNet&#39;s DNVM For Persistence On Developer Machines"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2015/dotnet-dnvm-for-persistence-on-developer-machines/" data-title="DotNet&#39;s DNVM For Persistence On Developer Machines"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/persistence/">persistence</a>,&nbsp;<a href="/tags/windows/">windows</a>,&nbsp;<a href="/tags/dotnet/">dotnet</a>,&nbsp;<a href="/tags/dnvm/">dnvm</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2015/hiding-desktop-icons-for-presentations-on-osx/" class="prev" rel="prev" title="Hiding Desktop Icons For Presentations On OSX"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Hiding Desktop Icons For Presentations On OSX</a>
+            <a href="/posts/2015/r5-industries/" class="next" rel="next" title="R5 Industries">R5 Industries<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

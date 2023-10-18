@@ -1,66 +1,18 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>competition on malicious.link</title>
-    <link>https://malicious.link/categories/competition/</link>
-    <description>Recent content in competition on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 20 Feb 2009 16:43:44 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/competition/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Winning Hacker Competitions as Defenders</title>
-      <link>https://malicious.link/post/2009/2009-02-20-winning-hacker-competitions-as-defenders/</link>
-      <pubDate>Fri, 20 Feb 2009 16:43:44 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-02-20-winning-hacker-competitions-as-defenders/</guid>
-      <description>&lt;p&gt;Let me start off this post by saying that the main focus of any of these competitions is not to win, but to learn. Learning is usually accompanied by tears on the defenders side, but the best way to learn is to fail.&lt;/p&gt;
-&lt;p&gt;That said though, the title of this post is about how to win:&lt;/p&gt;
-&lt;h2 id=&#34;planning-phase&#34;&gt;Planning Phase:&lt;/h2&gt;
-&lt;p&gt;This is where you win or lose. If you don&amp;rsquo;t have a good plan and a good team layout ahead of time, you are screwed. We (the &amp;lsquo;red cell&amp;rsquo;) will walk all over the fact that you can&amp;rsquo;t get your team organized and execute.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Know your infrastructure&lt;/strong&gt;: Assign people not only to the different parts, but to also learn those parts BEFORE go time. &lt;strong&gt;Practice&lt;/strong&gt;.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Team Organization&lt;/strong&gt;: This means that you are going need assigned team leads. For instance this is how you can have it laid out for a 5 person team and what their roles would do.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;1. **Team Lead**: This person needs to lead. Duh right? Well there is more to it; they need to know each of the other roles on a generic technical level. They also have to be to go-to person, any calls that come in as &#39;business injects&#39;, emails, whatever, they need to be the one to deal with it. They also need to be up to date with what each person is doing and keeping them on task. They should not be on a keyboard unless they are really needed to be (i.e. supporting lunch switch outs, or responding via email to a biz inject)
-
-2. **Patch / Software Retrieval / Software Installation**: This is the gopher. He / She needs to know the best and fastest ways to download patches and software that will be needed. And how to get them to install quicker or in the background. Generating a list of links and posting them somewhere online so that you can just go to that page and click down the list will help extremely, especially if you aren&#39;t allowed to take anything into the competition (i.e. USB drives). (google: ctupdate4). The list should include direct links to patches, av, known good software that each team member will need, etc other. And possibly bundle it up so that it is just that much faster to pull down. Use a download manager to pull it down (DownThemAll w/ FireFox). Every second you waste on waiting for software is more time for a &#39;red cell&#39; member to entrench themselves.
-
-3. **Incident Responder**: At first this person may not be busy, but needs to know incident response inside and out. How to check for network connections, and rouge processes. Needs to have a list of services that run on a Windows 2000, XP and 2003 box. This would also be the keeper of the password list and the person to make the call when passwords need to be changed. But more on that later. Know TCPView, Autoruns, and Procexp like the back of your hand, and rename the executables so that when the red cell looks for you running monitoring tools they won&#39;t be able to differentiate.
-
-4. **Infrastructure / Linux Guru**: This person needs to know Cisco and Linux. Know how to set passwords for the interfaces, vty, console, aux and so on. Know how to encrypt those passwords. Know how to turn off unneeded ports (nudge nudge). Have a print out of commands to do all these things as well as ACL manipulation (deny any/any is a great place to start, then build upon what you **need** to allow **out** and **in**). Know how to manually reset passwords in Cisco switches, routers, pix, and Linux machines (single user mode).
-
-5. **Monitoring**: General administration and monitoring is the main focus for this one. As soon as there is any sign of compromise, they inform the Incident Responder and continue to monitor the other systems. This person needs as much visual real-estate as possible they need to have all kinds of monitoring (process, network and services) tools up and running. Also, they need to be scanning the network constantly (AutoScan&#39;s Intrusion Alert is your friend) for any &#39;new&#39; IP addresses that show up. Watch for ARP spoofing (google: DecaffeinatID)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ol start=&#34;3&#34;&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Have a password policy&lt;/strong&gt;: Do not use the same password on all of your systems. A lot of teams do this for speed and team dynamics but you can keep both if you circulate that password policy around your team and it is well known. For example. Your active directory domain controllers could have an admin password of &amp;ldquo;$tupid Active Directory Pa$$word&amp;rdquo;, changing only the middle part of the pass phrase for whatever system you are dealing with. Then when you encounter something that is a bit more constrained, like a router, switch or firewall, you can easily concatenate it to be something like &amp;ldquo;$tupidrtrPa$$word&amp;rdquo;. This is where knowing your infrastructure helps. Have a password sheet on a printed (not digital). Keep it in a folder, and keep it closed unless you have someone forget the password for some reason. Have at least 3 iterations of this sheet with a different password structure for each one. Make scheduled changes of all the passwords. If there is 3 days to the competition, have it change twice a day, once in the morning and once in the afternoon. Doing this will not only keep those system passwords from being static targets, it will also give you an idea of what is compromised that you might not have seen (i.e. you can&amp;rsquo;t change the password because it was already changed for you)&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Firewalls&lt;/strong&gt;: Almost all systems these days have host based firewalls (Windows Firewall / Linux IPTABLES). Learn them, find out how to turn them on and configure them with a default deny rule set.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Have a plan&lt;/strong&gt;: Generate a generic plan of attack and each night discuss and plan the next day&amp;rsquo;s defense.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;execution-phase&#34;&gt;Execution Phase:&lt;/h2&gt;
-&lt;p&gt;Do what you planned, and stick to it. Plan for Armageddon and hope for cake. Once you have done all of the basics that you can plan for, then all you have to worry about are your public facing services (Web, FTP etc.)&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Web Applications&lt;/strong&gt;: These are on the for-front of today&amp;rsquo;s security watch list. The reason? Because they HAVE to be accessible. How do you fight / protect it? Log review. Now in an actual live site, it would be difficult to impossible to really watch logs effectively. However in the dynamic sites these days where files on the server don&amp;rsquo;t change, just the database, it would behoove you to put something like &lt;strong&gt;tripwire&lt;/strong&gt; (linux or windows) to watch the files in the web directory for changes. If a file gets added to that directory you know that it needs to be investigated. Don&amp;rsquo;t stop the investigation at deleting the file either, look through the logs, find out how it got there and close up the hole.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;FTP&lt;/strong&gt;: Set up your FTP server to log attempts to login. Open the logs with tail -f (linux) or BareTail (windows) and watch it. If you see someone trying to brute-force login or someone logging in that shouldn&amp;rsquo;t be, start investigating.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Other&lt;/strong&gt;: It basically falls back to the basics with all services. Watch the logs for anomalies.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;That&amp;rsquo;s really it folks. Have you been on either side? Comment and let others know how they can better prepare.&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>competition - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/competition/</link>
+        <description>competition - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Fri, 20 Feb 2009 16:43:44 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/competition/" rel="self" type="application/rss+xml" /><item>
+    <title>Winning Hacker Competitions as Defenders</title>
+    <link>https://malicious.link/posts/2009/2009-02-20-winning-hacker-competitions-as-defenders/</link>
+    <pubDate>Fri, 20 Feb 2009 16:43:44 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-02-20-winning-hacker-competitions-as-defenders/</guid>
+    <description><![CDATA[Let me start off this post by saying that the main focus of any of these competitions is not to win, but to learn. Learning is usually accompanied by tears on the defenders side, but the best way to learn is to fail.
+That said though, the title of this post is about how to win:
+Planning Phase: This is where you win or lose. If you don&rsquo;t have a good plan and a good team layout ahead of time, you are screwed.]]></description>
+</item>
+</channel>
 </rss>

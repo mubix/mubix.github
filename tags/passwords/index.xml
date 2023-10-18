@@ -1,170 +1,48 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>passwords on malicious.link</title>
-    <link>https://malicious.link/tags/passwords/</link>
-    <description>Recent content in passwords on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 27 Apr 2021 09:30:44 -0500</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/tags/passwords/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>User Empowerment: Password Security</title>
-      <link>https://malicious.link/post/2021/user-empowerment-password-security/</link>
-      <pubDate>Tue, 27 Apr 2021 09:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2021/user-empowerment-password-security/</guid>
-      <description>&lt;p&gt;World Password Day (who knew that was a thing?) is upon us. It is the first Thursday of May every year, and that falls on May 6th this year.&lt;/p&gt;
-&lt;p&gt;I&amp;rsquo;m not sure how to start this blog post, but the meat of what I want to get into is password security and the evolution over the years.&lt;/p&gt;
-&lt;p&gt;In the 1900s (&amp;hellip; yes people are saying that now&amp;hellip; feel old yet?), password security was pretty simple. The mainframe only accepted eight characters max for a password anyways, and it was case insensitive (many mainframes still operate this way). They also stored your password in plain text, where anyone with administrative rights (SysAdmin or criminal) could read them.&lt;/p&gt;
-&lt;p&gt;Different hashing algorithms started to become more widely used, like MD5, LM, NTLM, and SHA1. These hashes increased that maximum length ceiling and provided a fast and more secure method of storing the passwords. However, the speed of these hashing algorithms also meant that criminals could crack them quickly too. Researchers put in the time and found that by increasing the type of characters used (from just alphanumeric [a-z 0-9], to include special characters [a-z 0-9 ;!@#$%^&amp;amp;*()] ), they could make cracking these hashes exponentially more difficult. So, &amp;ldquo;Password Complexity&amp;rdquo; made it into every policy and standard. &amp;ldquo;You must require password complexity to be compliant&amp;rdquo; - PCI-DSS.&lt;/p&gt;
-&lt;p&gt;What went wrong is that computers and human psychology don&amp;rsquo;t always fit into the same mold. Asking human people to select a special character means not that they will select from the 100+ that are readily available on any given keyboard; no, they will choose the ones that are most common to their normal typing, such as exclamation marks, periods, question marks, and hashtags. The other bit of psychology that goes into here, and the reason why spaces aren&amp;rsquo;t on that list; is that many websites have their own list of &amp;ldquo;acceptable&amp;rdquo; special characters. This meant your personal list of &amp;ldquo;acceptable&amp;rdquo; special characters resulted from which ones caused the least amount of problems on the least amount of sites. For example, if you tried to use a space in your password on Facebook which worked, but then you tried it on your bank, and it didn&amp;rsquo;t work, the following account you tried to create probably wouldn&amp;rsquo;t have a space in it just because you didn&amp;rsquo;t want to go through the hassle of selecting a new password yet again.&lt;/p&gt;
-&lt;p&gt;Then along came password rotations. This was a bad idea from the get-go. Password rotations came about because people would select simple passwords that would be dictionary-based and fit into their world of acceptable characters that we talked about a second ago. This would result in passwords like &lt;code&gt;Password1!&lt;/code&gt;. So, the idea went that if we force people to change their passwords regularly, this will make it so they have to pick a different password and which will reduce the window of opportunity for criminals to take advantage of weak passwords. This did not end well, and many companies are still in this phase. The result was passwords like &lt;code&gt;Winter2020&lt;/code&gt;, then 90 days later, &lt;code&gt;Summer2021&lt;/code&gt;. This is infinitely worse because instead of just a limited set of special characters being used, the majority of users would now be using a limited set of numbers (year) and words (season/month). These were actually guidelines detailed by NIST in NIST Special Publication 800-63B in 2017.&lt;/p&gt;
-&lt;p&gt;Then, in 2020, an update to NIST Special Publication 800-63B came in the form of more sensible standards that took human psychology into account. The update included focusing on length over complexity, spaces as special characters, regular password auditing, and a host of other things. But even in 2021, we as a security industry are having a tough time getting people to select &amp;ldquo;good&amp;rdquo; passwords.&lt;/p&gt;
-&lt;p&gt;So how do we do that?&lt;/p&gt;
-&lt;p&gt;By incentivizing security through user empowerment. We can do that through a tiered approach to password policies. This can work today in any organization with Active Directory but will probably take some heavy engineering to incorporate into platforms like Facebook and Twitter. I think we can get there.&lt;/p&gt;
-&lt;p&gt;Tiered password policies would work with both carrot and stick. For example:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Tier 1: 8 character password minimum length
-&lt;ul&gt;
-&lt;li&gt;Benefits: easier password to remember&lt;/li&gt;
-&lt;li&gt;Downsides:
-&lt;ul&gt;
-&lt;li&gt;No VPN access&lt;/li&gt;
-&lt;li&gt;SSO session timeout set to 4 hours&lt;/li&gt;
-&lt;li&gt;Password rotation every 90&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Tier 2: 12 character password minimum length
-&lt;ul&gt;
-&lt;li&gt;Benefits:
-&lt;ul&gt;
-&lt;li&gt;VPN access - 8 hour session timeout&lt;/li&gt;
-&lt;li&gt;SSO session - 48 hour timeout&lt;/li&gt;
-&lt;li&gt;Password rotation every 6 months&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Tier 3: 15 character password minimum length
-&lt;ul&gt;
-&lt;li&gt;Benefits:
-&lt;ul&gt;
-&lt;li&gt;VPN access - 24 hour session timeout&lt;/li&gt;
-&lt;li&gt;SSO session - 1 week timeout&lt;/li&gt;
-&lt;li&gt;Password rotation every year&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Tier 4: 24 character password minimum length
-&lt;ul&gt;
-&lt;li&gt;Benefits:
-&lt;ul&gt;
-&lt;li&gt;VPN access - 48 hour session timeout&lt;/li&gt;
-&lt;li&gt;SSO session 2 week timeout&lt;/li&gt;
-&lt;li&gt;Password rotation only on change of status (exit, breach/incident, or team change)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Downsides:
-&lt;ul&gt;
-&lt;li&gt;ALL admin accounts, service accounts, and standard user accounts for admins would automatically fall in this category.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;This is just an example. You can do this GPOs in active directory and simple integrations with your VPN profiles and SSO groups with most major vendors.&lt;/p&gt;
-&lt;p&gt;The only thing left is to give users the power to choose, either through trouble tickets or a custom form/site.&lt;/p&gt;
-&lt;p&gt;In 3 months, you&amp;rsquo;ll be surprised how many users have self-selected up to Tier 3 or 4. You also have a fantastic list (Tier 1) of people that need training or provided better solutions for selecting stronger passwords.&lt;/p&gt;
-&lt;p&gt;With all of that, this is my submission for #WorldPasswordDay.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Run All Rules for Hashcat</title>
-      <link>https://malicious.link/post/2020/run-all-rules-hashcat/</link>
-      <pubDate>Thu, 20 Feb 2020 09:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2020/run-all-rules-hashcat/</guid>
-      <description>&lt;p&gt;This is just a quick script to demonstrate using PowerShell to run all the rules against a specific hash (or hash file), starting from the smallest file (usually the simplest rules)&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Set-Location -Path &amp;#39;C:\Program Files\hashcat\&amp;#39;
-Get-ChildItem .\rules\ | where { $_.extension -eq &amp;#34;.rule&amp;#34; } |
-Sort-Object -Property Length | 
-% { 
-	.\hashcat64.exe -m1000 20F91778B033F841702E014D3B79148C .\rockyou.txt --loopback --rules $_.FullName
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I&amp;rsquo;m sure there is a better way to do this. If you know of one please hit me up on Twitter, or other social media. DMs are open.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Get PasswordLastSet Time For Domain Controller Accounts</title>
-      <link>https://malicious.link/post/2015/get-passwordlastset-time-for-domain-controller-accounts/</link>
-      <pubDate>Wed, 16 Sep 2015 07:35:28 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2015/get-passwordlastset-time-for-domain-controller-accounts/</guid>
-      <description>&lt;p&gt;AKA - ROB WRITES POWERSHELL!!&lt;/p&gt;
-&lt;p&gt;Yesterday I posted a way to dump hashes using a Domain Controller account. But how do you know which account to use? And when was it&amp;rsquo;s password last set? net user unfortunately won&amp;rsquo;t do computer accounts.&lt;/p&gt;
-&lt;p&gt;So I decided to write a PowerShell script to find out. Unfortunately Windows 7 doesn&amp;rsquo;t come with the ActiveDirectory PowerShell module (I&amp;rsquo;m sure there is another way to do this but here is how I did it.&lt;/p&gt;
-&lt;p&gt;Installed the Remote Server Administration Tools - &lt;a href=&#34;http://blogs.msdn.com/b/rkramesh/archive/2012/01/17/how-to-add-active-directory-module-in-powershell-in-windows-7.aspx&#34;&gt;http://blogs.msdn.com/b/rkramesh/archive/2012/01/17/how-to-add-active-directory-module-in-powershell-in-windows-7.aspx&lt;/a&gt; (Not stealthy)&lt;/p&gt;
-&lt;p&gt;Then I was able to use the follow janky script I wrote to find all of the PasswordLastSet values for all of the Domain Controllers&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Import-Module ActiveDirectory
-
-$dclist = Get-ADDomainController -Filter { isGlobalCatalog -eq $true } | Select-Object Name
-
-Foreach ($dc in $dclist)
-{
-    $lastset = Get-ADComputer $dc.Name -property PasswordLastSet
-    Write-Host &amp;#34;$($dc.Name) - $($lastset.PasswordLastSet)&amp;#34; 
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This would probably be an awesome recon / situational awareness module for Empire ( &lt;a href=&#34;https://github.com/PowerShellEmpire/Empire&#34;&gt;https://github.com/PowerShellEmpire/Empire&lt;/a&gt; ) but written better hopefully.&lt;/p&gt;
-&lt;p&gt;Output is pretty simple, it looks like this:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;DC1 - 09/15/2015 07:05:40
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now I know that I have about 29 days left of valid use of that hash.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Using Domain Controller Account Passwords To HashDump Domains</title>
-      <link>https://malicious.link/post/2015/using-domain-controller-account-passwords-to-hashdump-domains/</link>
-      <pubDate>Tue, 15 Sep 2015 07:35:28 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2015/using-domain-controller-account-passwords-to-hashdump-domains/</guid>
-      <description>&lt;p&gt;Since I follow both &lt;a href=&#34;https://twitter.com/carlos_perez&#34;&gt;Carlos Perez&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;Benjamin Delpy&lt;/a&gt; on Twitter, something caught my eye on August 2nd, soon after &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;Benjamin Delpy&lt;/a&gt; drops &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627977943923490816&#34;&gt;DCSync&lt;/a&gt;:&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/Carlos_Perez?ref_src=twsrc%5Etfw&#34;&gt;@Carlos_Perez&lt;/a&gt; haha, if yes, it will be a 0d ;)&lt;br&gt;No, like always it needs some rights ;) DA is cool, maybe DC$ is enough&lt;/p&gt;&amp;mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/627980725074153473?ref_src=twsrc%5Etfw&#34;&gt;August 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;And then later on August 28th, again about the DC$ account (Domain Controller computer account):&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/mimikatz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#mimikatz&lt;/a&gt; DCSync make logs with &amp;#39;Directory Service Access&amp;#39; DS-Replication-Get-Changes*&lt;br&gt;Except if you use a DC account &lt;a href=&#34;http://t.co/QAChOGU3z7&#34;&gt;pic.twitter.com/QAChOGU3z7&lt;/a&gt;&lt;/p&gt;&amp;mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) &lt;a href=&#34;https://twitter.com/gentilkiwi/status/637402457740562432?ref_src=twsrc%5Etfw&#34;&gt;August 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;Because DCSync is calling on &amp;ldquo;sync&amp;rdquo; based APIs of Active Directory, that are, by default, used only by Domain Controllers, all Domain Controller computer accounts would have the ability to do this as well as the Domain/Enterprise Admins.&lt;/p&gt;
-&lt;p&gt;Anyone who&amp;rsquo;s ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://support.microsoft.com/en-us/kb/154501&#34;&gt;https://support.microsoft.com/en-us/kb/154501&lt;/a&gt;:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&amp;ldquo;Machine account passwords are regularly changed for security purposes. By default, on Windows NT-based computers, the machine account password automatically changes every &lt;strong&gt;seven days&lt;/strong&gt;. Starting with Windows 2000-based computers, the machine account password automatically changes every &lt;strong&gt;30 days&lt;/strong&gt;.&amp;rdquo;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;PSSSST!! That article is about how to &lt;strong&gt;DISABLE&lt;/strong&gt; automatic password changing&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2015/activedirectory_muhaha.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Alright. So, I&amp;rsquo;m not going to go into &amp;ldquo;how&amp;rdquo; to get the hashes for a computer account, but if you&amp;rsquo;ve ever dumped passwords before, the computer accounts are the ones with the &amp;ldquo;$&amp;rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use &lt;a href=&#34;https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py&#34;&gt;Impacket&amp;rsquo;s secretsdump.py&lt;/a&gt; to your heart&amp;rsquo;s content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don&amp;rsquo;t change their passwords all at the same time in that 30 day window?)&lt;/p&gt;
-&lt;p&gt;Remember, Domain Controller&amp;rsquo;s don&amp;rsquo;t have a lot of other permissions, so you need to use the &amp;ldquo;&lt;code&gt;-just-dc&lt;/code&gt;&amp;rdquo; option in SecretsDump in order for it to just do the domain dump:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
-
-Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies
-
-[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
-[*] Using the DRSUAPI method to get NTDS.DIT secrets
-Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-krbtgt:502:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Happy #HackersDay&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>passwords - Tag - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/tags/passwords/</link>
+        <description>passwords - Tag - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Tue, 27 Apr 2021 09:30:44 -0500</lastBuildDate><atom:link href="https://malicious.link/tags/passwords/" rel="self" type="application/rss+xml" /><item>
+    <title>User Empowerment: Password Security</title>
+    <link>https://malicious.link/posts/2021/user-empowerment-password-security/</link>
+    <pubDate>Tue, 27 Apr 2021 09:30:44 -0500</pubDate>
+    <author>Rob Fuller</author>
+    <guid>https://malicious.link/posts/2021/user-empowerment-password-security/</guid>
+    <description><![CDATA[World Password Day (who knew that was a thing?) is upon us. It is the first Thursday of May every year, and that falls on May 6th this year.
+I&rsquo;m not sure how to start this blog post, but the meat of what I want to get into is password security and the evolution over the years.
+In the 1900s (&hellip; yes people are saying that now&hellip; feel old yet?), password security was pretty simple.]]></description>
+</item>
+<item>
+    <title>Run All Rules for Hashcat</title>
+    <link>https://malicious.link/posts/2020/run-all-rules-hashcat/</link>
+    <pubDate>Thu, 20 Feb 2020 09:30:44 -0500</pubDate>
+    <author>Rob Fuller</author>
+    <guid>https://malicious.link/posts/2020/run-all-rules-hashcat/</guid>
+    <description><![CDATA[This is just a quick script to demonstrate using PowerShell to run all the rules against a specific hash (or hash file), starting from the smallest file (usually the simplest rules)
+1 2 3 4 5 6 Set-Location -Path &#39;C:\Program Files\hashcat\&#39; Get-ChildItem .\rules\ | where { $_.extension -eq &#34;.rule&#34; } | Sort-Object -Property Length | % { .\hashcat64.exe -m1000 20F91778B033F841702E014D3B79148C .\rockyou.txt --loopback --rules $_.FullName } I&rsquo;m sure there is a better way to do this.]]></description>
+</item>
+<item>
+    <title>Get PasswordLastSet Time For Domain Controller Accounts</title>
+    <link>https://malicious.link/posts/2015/get-passwordlastset-time-for-domain-controller-accounts/</link>
+    <pubDate>Wed, 16 Sep 2015 07:35:28 -0500</pubDate>
+    <author>Rob Fuller</author>
+    <guid>https://malicious.link/posts/2015/get-passwordlastset-time-for-domain-controller-accounts/</guid>
+    <description><![CDATA[AKA - ROB WRITES POWERSHELL!!
+Yesterday I posted a way to dump hashes using a Domain Controller account. But how do you know which account to use? And when was it&rsquo;s password last set? net user unfortunately won&rsquo;t do computer accounts.
+So I decided to write a PowerShell script to find out. Unfortunately Windows 7 doesn&rsquo;t come with the ActiveDirectory PowerShell module (I&rsquo;m sure there is another way to do this but here is how I did it.]]></description>
+</item>
+<item>
+    <title>Using Domain Controller Account Passwords To HashDump Domains</title>
+    <link>https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/</link>
+    <pubDate>Tue, 15 Sep 2015 07:35:28 -0500</pubDate>
+    <author>Rob Fuller</author>
+    <guid>https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/</guid>
+    <description><![CDATA[Since I follow both Carlos Perez and Benjamin Delpy on Twitter, something caught my eye on August 2nd, soon after Benjamin Delpy drops DCSync:
+@Carlos_Perez haha, if yes, it will be a 0d ;)
+No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
+&mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) August 2, 2015 And then later on August 28th, again about the DC$ account (Domain Controller computer account):]]></description>
+</item>
+</channel>
 </rss>

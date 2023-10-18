@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Iterative DNS Brute Forcing - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Iterative DNS Brute Forcing" />
+<meta property="og:description" content="Everyone has their list of hostnames they brute force domains with. In my last post I even mentioned a few ways to use one with XARGS or PARALLEL. But one fact about wordlist brute forcing is that there is no &ldquo;one list to rule them all&rdquo;. But over the years of doing DNS record collection I have noticed one thing, most domains have a large number of short hostnames that are easy to remember, usually 4 characters or less." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2014-02-19T23:33:50-05:00" />
+<meta property="article:modified_time" content="2014-02-19T23:33:50-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Iterative DNS Brute Forcing"/>
+<meta name="twitter:description" content="Everyone has their list of hostnames they brute force domains with. In my last post I even mentioned a few ways to use one with XARGS or PARALLEL. But one fact about wordlist brute forcing is that there is no &ldquo;one list to rule them all&rdquo;. But over the years of doing DNS record collection I have noticed one thing, most domains have a large number of short hostnames that are easy to remember, usually 4 characters or less."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" /><link rel="prev" href="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" /><link rel="next" href="https://malicious.link/posts/2014/2014-04-19-executing-code-via-smb-without-psexec/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Iterative DNS Brute Forcing",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2014\/2014-02-19-iterative-dns-brute-forcing\/"
+        },"genre": "posts","wordcount":  608 ,
+        "url": "https:\/\/malicious.link\/posts\/2014\/2014-02-19-iterative-dns-brute-forcing\/","datePublished": "2014-02-19T23:33:50-05:00","dateModified": "2014-02-19T23:33:50-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Iterative DNS Brute Forcing</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span>&nbsp;<span class="post-category">included in <a href="/categories/scripting/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>scripting</a>&nbsp;<a href="/categories/dns/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>dns</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2014-02-19">2014-02-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;608 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Everyone has their list of hostnames they brute force domains with. In my last post I even mentioned a few ways to use one with XARGS or PARALLEL. But one fact about wordlist brute forcing is that there is no &ldquo;one list to rule them all&rdquo;.  But over the years of doing DNS record collection I have noticed one thing, most domains have a large number of short hostnames that are easy to remember, usually 4 characters or less.</p>
+<p>I&rsquo;m sure you already know where I&rsquo;m going with this, I wanted to brute force all possible hostnames up to 4 characters. For a long time I struggled with coding this, but couldn&rsquo;t wrap my head around it. I would come back to it every so often, finally a few days ago I happened upon a script on gist: <a href="https://gist.github.com/petehamilton/4755855" target="_blank" rel="noopener noreffer ">https://gist.github.com/petehamilton/4755855</a> that suited my needs perfectly.</p>
+<p>I modified it to suite my needs (just use the yield method) and here is what I ended up with (remember DNS is case insensitive):</p>
+<p><strong>Notice:</strong> This script doesn&rsquo;t end, it will keep doing lookups on longer and longer hostnames until you hit CTRL-C</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#!/usr/bin/env ruby
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl">## Brute code stolen form: https://gist.github.com/petehamilton/4755855
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">@domain = &#39;microsoft.com&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def result?(sub)
+</span></span><span class="line"><span class="cl">	results = %x(dig +noall #{sub}.#{@domain} +answer)
+</span></span><span class="line"><span class="cl">	if results != &#34;&#34;
+</span></span><span class="line"><span class="cl">		puts &#34;============================&#34;
+</span></span><span class="line"><span class="cl">		puts &#34;FOUND: \t#{sub}&#34;
+</span></span><span class="line"><span class="cl">		puts &#34;============================&#34;
+</span></span><span class="line"><span class="cl">		puts &#34;#{results}&#34;
+</span></span><span class="line"><span class="cl">		puts &#34;============================&#34;
+</span></span><span class="line"><span class="cl">	end
+</span></span><span class="line"><span class="cl">	1 == 2
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def crack_yielding(chars)
+</span></span><span class="line"><span class="cl">	crack_yield(chars){ |p|
+</span></span><span class="line"><span class="cl">		return p if result?(p)
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def crack_yield(chars)
+</span></span><span class="line"><span class="cl">	chars.each { |c| yield c }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	crack_yield(chars) { |c|
+</span></span><span class="line"><span class="cl">		chars.each do |x|
+</span></span><span class="line"><span class="cl">			yield c + x
+</span></span><span class="line"><span class="cl">		end
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">chars = (&#39;a&#39;..&#39;z&#39;).to_a
+</span></span><span class="line"><span class="cl">(0..9).each {|x| chars &lt;&lt; x.to_s} 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">crack_yielding(chars)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This worked but it was slow, so I sped it up using methods that I talked about in my last post and a quick modification:</p>
+<p>I used this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#!/usr/bin/env ruby
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl">## Brute code stolen form: https://gist.github.com/petehamilton/4755855
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def result?(sub)
+</span></span><span class="line"><span class="cl">	puts sub	
+</span></span><span class="line"><span class="cl">	1 == 2
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def crack_yielding(chars)
+</span></span><span class="line"><span class="cl">	crack_yield(chars){ |p|
+</span></span><span class="line"><span class="cl">		return p if result?(p)
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">def crack_yield(chars)
+</span></span><span class="line"><span class="cl">	chars.each { |c| yield c }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	crack_yield(chars) { |c|
+</span></span><span class="line"><span class="cl">		chars.each do |x|
+</span></span><span class="line"><span class="cl">			yield c + x
+</span></span><span class="line"><span class="cl">		end
+</span></span><span class="line"><span class="cl">	}
+</span></span><span class="line"><span class="cl">end
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">chars = (&#39;a&#39;..&#39;z&#39;).to_a
+</span></span><span class="line"><span class="cl">(0..9).each {|x| chars &lt;&lt; x.to_s} 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">crack_yielding(chars)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>which just prints all the possibilities:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">a
+</span></span><span class="line"><span class="cl">b
+</span></span><span class="line"><span class="cl">c
+</span></span><span class="line"><span class="cl">d
+</span></span><span class="line"><span class="cl">e
+</span></span><span class="line"><span class="cl">f
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>and piped it into parallel + dig:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ruby brutelist.rb | parallel -j100 dig +noall {}.microsoft.com +answer
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>and got the following:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">c.microsoft.com.	2	IN	CNAME	c.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">c.microsoft.akadns.net.	499	IN	A	65.55.58.184
+</span></span><span class="line"><span class="cl">e.microsoft.com.	3599	IN	A	191.234.1.50
+</span></span><span class="line"><span class="cl">g.microsoft.com.	2798	IN	CNAME	g.msn.com.
+</span></span><span class="line"><span class="cl">g.msn.com.		99	IN	CNAME	g.msn.com.nsatc.net.
+</span></span><span class="line"><span class="cl">g.msn.com.nsatc.net.	148	IN	A	131.253.34.154
+</span></span><span class="line"><span class="cl">i.microsoft.com.	779	IN	CNAME	i.toggle.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">i.toggle.www.ms.akadns.net. 44	IN	CNAME	i.g.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">i.g.www.ms.akadns.net.	225	IN	CNAME	i.microsoft.com.edgesuite.net.
+</span></span><span class="line"><span class="cl">i.microsoft.com.edgesuite.net. 116 IN	CNAME	a1475.g.akamai.net.
+</span></span><span class="line"><span class="cl">a1475.g.akamai.net.	16	IN	A	23.45.65.26
+</span></span><span class="line"><span class="cl">a1475.g.akamai.net.	16	IN	A	23.45.65.33
+</span></span><span class="line"><span class="cl">m.microsoft.com.	3599	IN	CNAME	origin.mobile.ms.akadns.net.
+</span></span><span class="line"><span class="cl">origin.mobile.ms.akadns.net. 299 IN	A	65.55.186.235
+</span></span><span class="line"><span class="cl">s.microsoft.com.	3599	IN	CNAME	reroute.microsoft.com.
+</span></span><span class="line"><span class="cl">reroute.microsoft.com.	3599	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">reroute.microsoft.com.	3599	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">cs.microsoft.com.	81	IN	CNAME	wedcs.trafficmanager.net.
+</span></span><span class="line"><span class="cl">wedcs.trafficmanager.net. 7	IN	CNAME	wedcseus.cloudapp.net.
+</span></span><span class="line"><span class="cl">wedcseus.cloudapp.net.	8	IN	A	137.116.48.250
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Happy bruting. Both scripts can be found on my gists page:</p>
+<ul>
+<li>Domain version: <a href="https://gist.github.com/mubix/9107284" target="_blank" rel="noopener noreffer ">https://gist.github.com/mubix/9107284</a></li>
+<li>Parallel version: <a href="https://gist.github.com/mubix/9107276" target="_blank" rel="noopener noreffer ">https://gist.github.com/mubix/9107276</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2014-02-19</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" data-title="Iterative DNS Brute Forcing" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" data-title="Iterative DNS Brute Forcing"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" data-title="Iterative DNS Brute Forcing"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" data-title="Iterative DNS Brute Forcing"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" data-title="Iterative DNS Brute Forcing"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" class="prev" rel="prev" title="Hostname bruteforcing on the cheap"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Hostname bruteforcing on the cheap</a>
+            <a href="/posts/2014/2014-04-19-executing-code-via-smb-without-psexec/" class="next" rel="next" title="Executing code via SMB / DCOM without PSEXEC">Executing code via SMB / DCOM without PSEXEC<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

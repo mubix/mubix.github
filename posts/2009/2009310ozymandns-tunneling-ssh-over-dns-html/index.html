@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>OzymanDNS - Tunneling SSH over DNS - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="OzymanDNS - Tunneling SSH over DNS" />
+<meta property="og:description" content="Hak5 Episode 504 Shownotes (In the episode I say that it&rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)
+DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK. UPDATE:Thanks to Chris Gates and Robin Wood for pointing me towards a fixed up version of OzymanDNS and a great tutorial: HERE" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2009-03-10T22:30:24+00:00" />
+<meta property="article:modified_time" content="2009-03-10T22:30:24+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="OzymanDNS - Tunneling SSH over DNS"/>
+<meta name="twitter:description" content="Hak5 Episode 504 Shownotes (In the episode I say that it&rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)
+DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK. UPDATE:Thanks to Chris Gates and Robin Wood for pointing me towards a fixed up version of OzymanDNS and a great tutorial: HERE"/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" /><link rel="prev" href="https://malicious.link/posts/2009/2009-03-09-metasploit-3s-microsoft/" /><link rel="next" href="https://malicious.link/posts/2009/2009-03-11-the-ethics-of-teaching-hacking/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "OzymanDNS - Tunneling SSH over DNS",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2009\/2009310ozymandns-tunneling-ssh-over-dns-html\/"
+        },"genre": "posts","wordcount":  800 ,
+        "url": "https:\/\/malicious.link\/posts\/2009\/2009310ozymandns-tunneling-ssh-over-dns-html\/","datePublished": "2009-03-10T22:30:24+00:00","dateModified": "2009-03-10T22:30:24+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">OzymanDNS - Tunneling SSH over DNS</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/hak5/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>hak5</a>&nbsp;<a href="/categories/dan-kaminskey/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>dan kaminskey</a>&nbsp;<a href="/categories/dns/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>dns</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2009-03-10">2009-03-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;800 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#hak5-episode-504-shownoteshttpwwwhak5orgepisodesepisode-504"><a href="http://www.hak5.org/episodes/episode-504">Hak5 Episode 504 Shownotes</a></a></li>
+        <li><a href="#disclaimer---i-in-no-way-endorse-illegal-activities---use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk">DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.</a></li>
+        <li><a href="#step-1---dns-setup">Step 1 - DNS Setup:</a></li>
+        <li><a href="#step-2---server-setup">Step 2 - Server Setup:</a></li>
+        <li><a href="#step-3---client-connection">Step 3 - Client Connection:</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="hak5-episode-504-shownoteshttpwwwhak5orgepisodesepisode-504"><a href="http://www.hak5.org/episodes/episode-504" target="_blank" rel="noopener noreffer ">Hak5 Episode 504 Shownotes</a></h3>
+<p><em>(In the episode I say that it&rsquo;s cross platform, use the release links for the Windows binaries to get it working on windows or use cygwin)</em></p>
+<h3 id="disclaimer---i-in-no-way-endorse-illegal-activities---use-the-following-guide-in-a-test-environment-or-at-your-own-legal-risk">DISCLAIMER - I IN NO WAY ENDORSE ILLEGAL ACTIVITIES - USE THE FOLLOWING GUIDE IN A TEST ENVIRONMENT OR AT YOUR OWN LEGAL RISK.</h3>
+<p><strong>UPDATE</strong>:Thanks to <a href="http://carnal0wnage.blogspot.com/" target="_blank" rel="noopener noreffer ">Chris Gates</a> and <a href="http://www.digininja.org/index.php" target="_blank" rel="noopener noreffer ">Robin Wood</a> for pointing me towards a fixed up version of OzymanDNS and a great tutorial: <a href="http://www.splitbrain.org/blog/2008-11/02-dns_tunneling_made_simple" target="_blank" rel="noopener noreffer ">HERE</a></p>
+<p><strong>UPDATE 2</strong>: Since Ozyman is no longer hosted on Dan&rsquo;s site, I have posted it here:</p>
+<p>Download: <a href="https://github.com/mubix/stuff/blob/master/stolen/ozymandns_src_0.1.tgz?raw=true" target="_blank" rel="noopener noreffer ">ozymandns_src_0.1.tgz</a></p>
+<p><strong>(Until of course/if he asks me to take it down)</strong></p>
+<p>DNS Tunneling isn&rsquo;t new. <a href="http://www.doxpara.com/" target="_blank" rel="noopener noreffer ">Dan Kaminsky</a>&rsquo;s post for <a href="http://www.doxpara.com/?p=51" target="_blank" rel="noopener noreffer ">OzymanDNS&rsquo; release</a> was July 29th 2004 (There was DNS Tunneling linux packages dating back to the late 90s even). I will however comment that it&rsquo;s still in it&rsquo;s release version, but very functional. Also, DNS Tunnel isn&rsquo;t &ldquo;Big News&rdquo; so it really hasn&rsquo;t been &lsquo;mitigated&rsquo; anywhere yet. Everywhere I have tested it, it has worked, even behind a certain switch that rhymes with &lsquo;Panera&rsquo;</p>
+<p>What does OzymanDNS do? It has two parts, server, and client. The server is a set and forget. It sits there waiting for a connection (caveat: from anywhere) But we are getting ahead of ourselves, lets setup up DNS first.</p>
+<p>(I&rsquo;m going to assume that you have a SSH server somewhere that you have already setup)</p>
+<h3 id="step-1---dns-setup">Step 1 - DNS Setup:</h3>
+<p>Each &ldquo;Domain Manager&rdquo; or DNS Server has a different set up,  So I&rsquo;m not going to go into the details. The jist of the change you need to make is either make a domain or a subdomain that points it&rsquo;s nameserver records towards the host that you are running your server on.</p>
+<ul>
+<li><code>ihaztunnel.room362.com IN NS mubixpwnsyour.homedns.org</code></li>
+</ul>
+<p>In this example we have setup a subdomain called &ldquo;ihaztunnel&rdquo; and set it&rsquo;s Name Server Record pointing to a dynamic dns host that points at the location of my OzymanDNS server.</p>
+<h3 id="step-2---server-setup">Step 2 - Server Setup:</h3>
+<p>You need <a href="http://www.perl.org/" target="_blank" rel="noopener noreffer ">Perl</a>, the <a href="http://search.cpan.org/~danpeder/MIME-Base32-1.01/Base32.pm" target="_blank" rel="noopener noreffer ">MIME::Base32</a>, and <a href="http://search.cpan.org/~olaf/Net-DNS-0.65/lib/Net/DNS.pm" target="_blank" rel="noopener noreffer ">Net::DNS</a> modules. After that you just run nomde.pl from whatever directory that you extracted the OzymanDNS scripts with the following context:</p>
+<ul>
+<li><code>./nomed.pl -i 0.0.0.0 ihaztunnel.room362.com</code></li>
+</ul>
+<p>This tells it to listen on any IP the host has (you can specifiy one if you wish), and tells it the DNS name that it&rsquo;s supporting. Don&rsquo;t forget to do port forwarding on your router or whatever may be in the way of port 53 UDP and TCP coming inbound. Also keep in mind that your ISP may be blocking, so field test the connection before you try to use it in the wild.</p>
+<h3 id="step-3---client-connection">Step 3 - Client Connection:</h3>
+<p>For the client, the setup is the same, get perl, the modules and OzymanDNS. Then you run the following command:</p>
+<ul>
+<li><code>ssh -D 8080 -C -o ProxyCommand=&quot;/home/mubix/ozymandns/droute.pl whatever.ihaztunnel.room362.com&quot; room362.com</code></li>
+</ul>
+<p>Breaking this command down:</p>
+<ol>
+<li>
+<p>&ldquo;-D 8080&rdquo; starts SSH tunneling (Socks Proxy) on port 8080 once a connection is made.</p>
+</li>
+<li>
+<p>&ldquo;-C&rdquo; requests compression so that we can get the best speeds possible.</p>
+</li>
+<li>
+<p>&ldquo;-o ProxyCommand&rdquo; sets the SSH option to the location of the droute.pl script and&hellip;</p>
+</li>
+<li>
+<p>&ldquo;whatever.ihaztunnel.room362.com&rdquo; the &lsquo;whatever&rsquo; portion of this is the important part. It can be whatever you want it to be but the &ldquo;magic&rdquo; happens by adding this subdomain of the one you already set up.</p>
+</li>
+<li>
+<p>&ldquo;room362.com&rdquo; the hostname or IP of the SSH server that you will be tunneling through.</p>
+</li>
+</ol>
+<p>If all worked out, you will get prompted to enter your password. That&rsquo;s it folks. Now you can use FoxyProxy or just your standard proxy settings to use the tunnel. Or, you can use product that, IMHO, is well worth the 30 bucks for the PORTABLE EDITION: <a href="http://www.proxifier.com/" target="_blank" rel="noopener noreffer ">Proxifier</a>. It hooks the OS and makes every connection go through the proxy (games, IM, Java, Flash).</p>
+<p>Notes:</p>
+<p><strong>Before you go the DNS route</strong>, it might pay off to try the ?.jpg trick first. Check out the <a href="http://debuggable.com/posts/hacking-a-commercial-airport-wlan:480f4dd5-50a0-40c6-aa60-4afccbdd56cb" target="_blank" rel="noopener noreffer ">debuggable.com post</a> for more details. - Thanks Xanfantasy for the memory jog.</p>
+<p><a href="http://www.dnstunnel.de/" target="_blank" rel="noopener noreffer ">http://www.dnstunnel.de/</a> - A site that has an in-depth walk-through of setting up OzymanDNS if I didn&rsquo;t answer all of your questions. They even have a script that will make OzymanDNS a service on Linux boxes</p>
+<p><a href="http://thomer.com/howtos/nstx.html" target="_blank" rel="noopener noreffer ">http://thomer.com/howtos/nstx.html</a> - A write up on NSTX which doesn&rsquo;t require SSH but doesn&rsquo;t look like it&rsquo;s still  in production. It is however in the Ubuntu and Gentoo repositories so feel free to mess with it there, and since <a href="http://backtrack4.blogspot.com/" target="_blank" rel="noopener noreffer ">Back|Track 4</a> is now Ubuntu based you may be able to get it set up on BT4 as well.</p>
+<p>Iodine:<br>
+<a href="http://code.kryo.se/iodine/" target="_blank" rel="noopener noreffer ">http://code.kryo.se/iodine/</a> - Another DNS Tunneling project that looks to be the most up to date. I haven&rsquo;t tested it out to make sure it functions.</p>
+<p>Dns2tcp:<br>
+<a href="http://www.hsc.fr/ressources/outils/dns2tcp/index.html.en" target="_blank" rel="noopener noreffer ">http://www.hsc.fr/ressources/outils/dns2tcp/index.html.en</a> - Another DNS Tunneling Project</p>
+<p>And if DNS isn&rsquo;t your thing and you want to tunnel over HTTP, check out Corkscrew:  <a href="http://www.agroman.net/corkscrew/" target="_blank" rel="noopener noreffer ">http://www.agroman.net/corkscrew/</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2009-03-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" data-title="OzymanDNS - Tunneling SSH over DNS" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" data-title="OzymanDNS - Tunneling SSH over DNS"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" data-title="OzymanDNS - Tunneling SSH over DNS"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" data-title="OzymanDNS - Tunneling SSH over DNS"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2009/2009310ozymandns-tunneling-ssh-over-dns-html/" data-title="OzymanDNS - Tunneling SSH over DNS"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2009/2009-03-09-metasploit-3s-microsoft/" class="prev" rel="prev" title="Metasploit &lt;3s Microsoft"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Metasploit <3s Microsoft</a>
+            <a href="/posts/2009/2009-03-11-the-ethics-of-teaching-hacking/" class="next" rel="next" title="The Ethics of Teaching Hacking">The Ethics of Teaching Hacking<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

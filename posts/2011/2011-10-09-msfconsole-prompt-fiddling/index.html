@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>MSFConsole Prompt Fiddling - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="MSFConsole Prompt Fiddling" />
+<meta property="og:description" content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
+cat ~/.msf4/logs/framework.log This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole msf&gt; spool ~/myclient." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-10-09T06:20:22+00:00" />
+<meta property="article:modified_time" content="2011-10-09T06:20:22+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MSFConsole Prompt Fiddling"/>
+<meta name="twitter:description" content="In @carnal0wnage and my presentation at DerbyCon 2011 we talked about using SCREEN and SCRIPT to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:
+cat ~/.msf4/logs/framework.log This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole msf&gt; spool ~/myclient."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" /><link rel="prev" href="https://malicious.link/posts/2011/2011-10-06-the-dirty-little-secrets-they-didnt-teach-you-in-pentesting/" /><link rel="next" href="https://malicious.link/posts/2011/2011-11-02-run-post-modules-on-all-sessions/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "MSFConsole Prompt Fiddling",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2011\/2011-10-09-msfconsole-prompt-fiddling\/"
+        },"genre": "posts","wordcount":  622 ,
+        "url": "https:\/\/malicious.link\/posts\/2011\/2011-10-09-msfconsole-prompt-fiddling\/","datePublished": "2011-10-09T06:20:22+00:00","dateModified": "2011-10-09T06:20:22+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">MSFConsole Prompt Fiddling</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/msfconsole/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>msfconsole</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2011-10-09">2011-10-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;622 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>In @<a href="http://twitter.com/carnal0wnage" target="_blank" rel="noopener noreffer ">carnal0wnage</a> and my presentation at <a href="http://www.derbycon.com/" target="_blank" rel="noopener noreffer ">DerbyCon</a> 2011 we talked about using <a href="http://linux.die.net/man/1/screen" target="_blank" rel="noopener noreffer ">SCREEN</a> and <a href="http://linux.die.net/man/1/script" target="_blank" rel="noopener noreffer ">SCRIPT</a> to keep connections live / use them across SSH sessions, and log everything that happens. What we didn&rsquo;t cover is the fact that there isn&rsquo;t a time stamp for those logs. Now, Metasploit has multiple ways of creating logs:</p>
+<ul>
+<li><code>cat ~/.msf4/logs/framework.log</code>
+<ul>
+<li>This log automatically logs all of the error data that is great for trouble shooting when something is working, but doesn&rsquo;t record what you are doing inside of msfconsole</li>
+</ul>
+</li>
+<li><code>msf&gt; spool ~/myclient.log</code>
+<ul>
+<li>The spool command is great for logging output from anything you do in either consoles or sessions, even when you drop to a shell. My one gripe about this one is that it doesn&rsquo;t log the actual command you issued.</li>
+</ul>
+</li>
+<li></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">msf&gt; set ConsoleLogging true  
+</span></span><span class="line"><span class="cl">msf&gt; set LogLevel 5  
+</span></span><span class="line"><span class="cl">msf&gt; set SessionLogging true  
+</span></span><span class="line"><span class="cl">msf&gt; set TimestampOutput true
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>These combined essentially do the same thing as spool except that they go into different logs, but do actually log the command you issued</li>
+</ul>
+<p>Plenty of logging right? But none of them really &rsquo;log everything&rsquo; and time stamps are not a regular occurrence in them. Cool, but we need both. We&rsquo;ve got the &rsquo;log everything&rsquo; with the Linux &lsquo;script&rsquo; command, we just need a way to inject time stamps into our log.</p>
+<hr>
+<p><strong>Enter the ever mutable &lsquo;msf&gt;&rsquo; prompt:</strong></p>
+<hr>
+<p>A lesser known variable in MSFConsole is &lsquo;PROMPT&rsquo;. You can set this pretty much like any other OS can, however there are some metasploit specific things you can add. Using a three letter abbreviation you can even add color to it.</p>
+<p>For example lets add our hostname to our prompt:</p>
+<p><code>msf&gt; set PROMPT %H</code></p>
+<p>changes msf&gt; to myhostname&gt;</p>
+<p>And you can combine and add things that you wish:</p>
+<p><code>set PROMPT %H Just more text %U</code></p>
+<p>changes the prompt to:  myattackmachine Just more text mubix&gt; (%U is username)</p>
+<p>For reference here are the other working % variables that I know of:</p>
+<ul>
+<li><strong>%D</strong> = Current local directory (not sure if this changes when in meterpreter or not for the victims dir, that would be cool)</li>
+<li><strong>%H</strong> = Host name (again, would be cool if this changed when in meterpreter)</li>
+<li><strong>%J</strong> = Current number of jobs running</li>
+<li><strong>%L</strong> = Local IP (makes it easy to remember what to put in LHOST)</li>
+<li><strong>%S</strong> = Currently number of sessions open</li>
+<li><strong>%T</strong> = Time stamp</li>
+<li><strong>%U</strong> = Username (yes, would be awesome if this changed in meterpreter too)</li>
+</ul>
+<p>Now if you wanted to add colors to that, all you would do is use something like %grn%T to make the time stamp green. You&rsquo;ll have to play around with the color&rsquo;s names as I don&rsquo;t know them all. %red %blu %blk etc&hellip;</p>
+<p>Combine all of that with script and you&rsquo;ve got something awesome. I set my PROMPT to:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">msf&gt; set PROMPT %T S:%S J:%J
+</span></span><span class="line"><span class="cl">1970-01-01 00:00:00 +0000 S:0 J:0&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This gives me the number of jobs and sessions and has the time stamp every time I throw a command, so in my logs I can very easily narrow down the exact time when I did or didnt&rsquo; do something. The number of sessions and jobs are just good to know items.</p>
+<hr>
+<p><strong>Throw in one more trick to make the whole thing a cake walk:</strong></p>
+<hr>
+<p>In your ~/.msf4 directory, if you haven&rsquo;t already, create a file called &lsquo;msfconsole.rc&rsquo;. This magical file will run every time you start msfconsole (<em>with the express exception of when you specify a resource file to run from the command line using the -r argument</em>). Throw your &lsquo;set PROMPT %blah %blah %blah&rsquo; in there formatted however you like, and now whenever you start msfconsole you&rsquo;ll have your handy dandy timestamp.</p>
+<p>Shout out to @<a href="http://twitter.com/egyp7" target="_blank" rel="noopener noreffer ">egyp7</a> for showing me this.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2011-10-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" data-title="MSFConsole Prompt Fiddling" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" data-title="MSFConsole Prompt Fiddling"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" data-title="MSFConsole Prompt Fiddling"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" data-title="MSFConsole Prompt Fiddling"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2011/2011-10-09-msfconsole-prompt-fiddling/" data-title="MSFConsole Prompt Fiddling"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2011/2011-10-06-the-dirty-little-secrets-they-didnt-teach-you-in-pentesting/" class="prev" rel="prev" title="The Dirty Little Secrets They Didn&#39;t Teach You In Pentesting Class"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>The Dirty Little Secrets They Didn't Teach You In Pentesting Class</a>
+            <a href="/posts/2011/2011-11-02-run-post-modules-on-all-sessions/" class="next" rel="next" title="Run POST Modules On All Sessions">Run POST Modules On All Sessions<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

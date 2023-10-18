@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Finding Admin Access - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Finding Admin Access" />
+<meta property="og:description" content="You&rsquo;ve got shell, and a set of credentials but you&rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
+(I&rsquo;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2012-10-31T01:28:22+00:00" />
+<meta property="article:modified_time" content="2012-10-31T01:28:22+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Finding Admin Access"/>
+<meta name="twitter:description" content="You&rsquo;ve got shell, and a set of credentials but you&rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.
+(I&rsquo;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)"/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" /><link rel="prev" href="https://malicious.link/posts/2012/2012-10-30-bypassuac-got-a-facelift/" /><link rel="next" href="https://malicious.link/posts/2012/2012-11-13-smash-and-grab-windows-dir-lists/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Finding Admin Access",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2012\/2012-10-31-finding-admin-access\/"
+        },"genre": "posts","wordcount":  686 ,
+        "url": "https:\/\/malicious.link\/posts\/2012\/2012-10-31-finding-admin-access\/","datePublished": "2012-10-31T01:28:22+00:00","dateModified": "2012-10-31T01:28:22+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Finding Admin Access</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/meterpreter/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>meterpreter</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2012-10-31">2012-10-31</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;686 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>You&rsquo;ve got shell, and a set of credentials but you&rsquo;re coming up empty on what you can do with those credentials. This is especially problematic when you can&rsquo;t get past UAC as you are either in a AlwaysNotify situation or not a local admin.</p>
+<p>(I&rsquo;m not trying to pull some some &ldquo;insert magic here&rdquo; on the assumption of credentials just at the time of this writing I have only just started working (created a blank file) on a post module to do this as your current user, so until then, you need credentials)</p>
+<p>Enter the auxiliary module: <code>auxiliary/admin/smb/check_dir_file</code></p>
+<p>First we set up a route as aux modules don&rsquo;t have a &ldquo;SESSION&rdquo; parameter:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_1.png"
+        data-srcset="/images/postimages/201210_adminaccess_1.png, /images/postimages/201210_adminaccess_1.png 1.5x, /images/postimages/201210_adminaccess_1.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_1.png"
+        title="/images/postimages/201210_adminaccess_1.png" /></p>
+<p>Use the module and set our credentials:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_2.png"
+        data-srcset="/images/postimages/201210_adminaccess_2.png, /images/postimages/201210_adminaccess_2.png 1.5x, /images/postimages/201210_adminaccess_2.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_2.png"
+        title="/images/postimages/201210_adminaccess_2.png" /></p>
+<p>Next, set ADMIN$ as we can&rsquo;t guarantee C$ is the primary drive, but ADMIN$ will definitely be the WINDOWS directory. Our RHOSTS is our target range</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_3.png"
+        data-srcset="/images/postimages/201210_adminaccess_3.png, /images/postimages/201210_adminaccess_3.png 1.5x, /images/postimages/201210_adminaccess_3.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_3.png"
+        title="/images/postimages/201210_adminaccess_3.png" /></p>
+<p>A simple &lsquo;run&rsquo; and away it goes:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_4.png"
+        data-srcset="/images/postimages/201210_adminaccess_4.png, /images/postimages/201210_adminaccess_4.png 1.5x, /images/postimages/201210_adminaccess_4.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_4.png"
+        title="/images/postimages/201210_adminaccess_4.png" /></p>
+<p>So we can see that our lowly user that doesn&rsquo;t have any chance of bypassing the UAC on his current system can pivot to these other systems (172.16.10.10, and 172.16.10.150) quite easily.</p>
+<p>=============================================================================</p>
+<p>The rest of this has nothing to do about admin access, just some tricks to do it better</p>
+<p>=============================================================================</p>
+<p>As many of you know I&rsquo;m not a huge fan of sending packets I don&rsquo;t need to so instead of just spraying a range (which I doubt would be seen, but why take the chance?)</p>
+<p>[<strong>Update</strong>: While computer_browser_discovery does lookup all the hosts and sends -more- packets than check_dir_file would, those extra packets are sent at DNS resolvers not into empty space that can be detected by network sensors]</p>
+<p>Enter computer_browser_discovery:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_5.png"
+        data-srcset="/images/postimages/201210_adminaccess_5.png, /images/postimages/201210_adminaccess_5.png 1.5x, /images/postimages/201210_adminaccess_5.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_5.png"
+        title="/images/postimages/201210_adminaccess_5.png" /></p>
+<p>This module does the equivalent of &rsquo;net view&rsquo; to get a list of computers on the domain. You can change the LTYPE to &ldquo;SQL&rdquo; to just get MSSQL boxes but we&rsquo;re going for everything:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_6.png"
+        data-srcset="/images/postimages/201210_adminaccess_6.png, /images/postimages/201210_adminaccess_6.png 1.5x, /images/postimages/201210_adminaccess_6.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_6.png"
+        title="/images/postimages/201210_adminaccess_6.png" /></p>
+<p>As you can see WIN7X86 (the box we are on came up with 0.0.0.0) expected. and the .150 address didn&rsquo;t show up at all as it&rsquo;s not on the domain. So the benefits is that it&rsquo;s quieter on the wire and you probably will find hosts that aren&rsquo;t in your immediate IP range. (Not the case here simply because I don&rsquo;t have a big enough test network). The disadvantages are as with the .150 address you may miss hosts.</p>
+<p>Next we add the found host&rsquo;s IP addresses to a text file (targethosts.txt)</p>
+<p>[because at the time of this writing the computer_browser_discovery module doesn&rsquo;t add the hosts to the MSF database]</p>
+<p>Then use the smb_version module which does a couple things, it verifies that the hosts are there and alive, adds them to the MSF database, and what version of Windows (or samba) they are running:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_7.png"
+        data-srcset="/images/postimages/201210_adminaccess_7.png, /images/postimages/201210_adminaccess_7.png 1.5x, /images/postimages/201210_adminaccess_7.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_7.png"
+        title="/images/postimages/201210_adminaccess_7.png" /></p>
+<p>(We still have our route set up so this is module is going through our low privilege user still)</p>
+<p>And now we have info in the DB for better targeting:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_8.png"
+        data-srcset="/images/postimages/201210_adminaccess_8.png, /images/postimages/201210_adminaccess_8.png 1.5x, /images/postimages/201210_adminaccess_8.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_8.png"
+        title="/images/postimages/201210_adminaccess_8.png" /></p>
+<p>Then back in our check_dir_file module we just use the hosts -R to have the database automatically set RHOSTS to the hosts in the database that match your search or alternatively use services -p 445 -R to add all the hosts that you&rsquo;ve found port 445 open (everything smb_version finds will be shown in services)</p>
+<p>One more way you can get hosts is doing reverse lookups of ranges. You can just hit a range you know of, or guess ranges based on the computer_browser_discovery results. You can do this with resolve_ip module (this can be pretty slow on ranges that don&rsquo;t have many hosts):</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/201210_adminaccess_9.png"
+        data-srcset="/images/postimages/201210_adminaccess_9.png, /images/postimages/201210_adminaccess_9.png 1.5x, /images/postimages/201210_adminaccess_9.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/201210_adminaccess_9.png"
+        title="/images/postimages/201210_adminaccess_9.png" /></p>
+<p>I used the range this blog is hosted on 1) because for some reason my stupid VM wasn&rsquo;t resolving internal stuff 2) To demonstrate that you can use the module to resolve anything, not just internal ranges.</p>
+<p>So to wrap up, we have a ton of ways to find hosts that don&rsquo;t involve traditional scanning (smb_version is the only thing that comes close). And we&rsquo;ve located two hosts that we have the ability to administer. One oddly enough being the domain controller, so don&rsquo;t ever discount the access you already have. Tunnel vision is the pentesters worst enemy.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2012-10-31</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" data-title="Finding Admin Access" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" data-title="Finding Admin Access"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" data-title="Finding Admin Access"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" data-title="Finding Admin Access"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2012/2012-10-31-finding-admin-access/" data-title="Finding Admin Access"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2012/2012-10-30-bypassuac-got-a-facelift/" class="prev" rel="prev" title="BypassUAC got a facelift"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>BypassUAC got a facelift</a>
+            <a href="/posts/2012/2012-11-13-smash-and-grab-windows-dir-lists/" class="next" rel="next" title="Smash and Grab: Windows Dir Lists">Smash and Grab: Windows Dir Lists<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

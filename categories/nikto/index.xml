@@ -1,34 +1,16 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>nikto on malicious.link</title>
-    <link>https://malicious.link/categories/nikto/</link>
-    <description>Recent content in nikto on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 10 Oct 2009 12:31:10 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/nikto/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Burp Tip of the Day - Nikto db import</title>
-      <link>https://malicious.link/post/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</link>
-      <pubDate>Sat, 10 Oct 2009 12:31:10 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</guid>
-      <description>&lt;p&gt;CKTricky over at &lt;a href=&#34;http://cktricky.blogspot.com&#34;&gt;http://cktricky.blogspot.com&lt;/a&gt; has been running an awesome Burp Tip of the Day series on his blog. After seeing him use &lt;a href=&#34;http://cktricky.blogspot.com/2009/09/btod-nikto-thru-burp-masking-nikto.html&#34;&gt;Nikto through Burp&lt;/a&gt;. I decided to see if I could just export the list of checks to a text file so that I could use them over and over in Intruder. After a bit of awk and sed hell I figured it out, and submited it to him for acceptance to his BTotD series. Yesterday it was posted ;-)&lt;/p&gt;
-&lt;p&gt;Here: &lt;a href=&#34;http://cktricky.blogspot.com/2009/10/btod-importing-nikto-db-to-intruder.html&#34;&gt;http://cktricky.blogspot.com/2009/10/btod-importing-nikto-db-to-intruder.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Here is the ugly command I came up with:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat /pentest/web/nikto/plugins/db_tests | awk -F &amp;quot;,&amp;quot; &#39;{print $4}&#39; | sed &#39;s/^&amp;quot;*//;s/&amp;quot;$//&#39; | sed &#39;s/^@CGIDIRS//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN//&#39; | sed &#39;s/^///&#39; &amp;gt; ~/nikto_burp.txt1&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;What you are sacrificing here are the checks for the CGIDIRS, ADMIN, NUKE, POSTNUKE, and PHPMYADMIN interfaces. Personally, I&amp;rsquo;ve modified this script a bit, but you can modify it how best fits your tests:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat /pentest/web/nikto/plugins/db_tests | awk -F &amp;quot;,&amp;quot; &#39;{print $4}&#39; | sed &#39;s/^&amp;quot;*//;s/&amp;quot;$//&#39; | sed &#39;s/^@CGIDIRS/cgi-bin//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN/phpMyAdmin//&#39; | sed &#39;s/^///&#39; &amp;gt; ~/nikto_burp.txt&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;So that I could cover at least the most common cgi and phpmyadmin directories&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>nikto - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/nikto/</link>
+        <description>nikto - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Sat, 10 Oct 2009 12:31:10 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/nikto/" rel="self" type="application/rss+xml" /><item>
+    <title>Burp Tip of the Day - Nikto db import</title>
+    <link>https://malicious.link/posts/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</link>
+    <pubDate>Sat, 10 Oct 2009 12:31:10 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</guid>
+    <description><![CDATA[CKTricky over at http://cktricky.blogspot.com has been running an awesome Burp Tip of the Day series on his blog. After seeing him use Nikto through Burp. I decided to see if I could just export the list of checks to a text file so that I could use them over and over in Intruder. After a bit of awk and sed hell I figured it out, and submited it to him for acceptance to his BTotD series.]]></description>
+</item>
+</channel>
 </rss>

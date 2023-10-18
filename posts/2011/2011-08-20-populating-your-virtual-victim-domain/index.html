@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Populating Your Virtual Victim Domain - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Populating Your Virtual Victim Domain" />
+<meta property="og:description" content="Update 1: No this doesn&rsquo;t need to be in memory since you control the system but it was a fun challenge
+Update 2: The info from the &lsquo;adduser&rsquo; payload says &lsquo;Create a new user and add them to local administration group&rsquo; - I&rsquo;m guessing since I ran this on a DC is why I didn&rsquo;t notice this but it is something to keep in mind when running this script.
+Update 3: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2011-08-20T19:14:53+00:00" />
+<meta property="article:modified_time" content="2011-08-20T19:14:53+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Populating Your Virtual Victim Domain"/>
+<meta name="twitter:description" content="Update 1: No this doesn&rsquo;t need to be in memory since you control the system but it was a fun challenge
+Update 2: The info from the &lsquo;adduser&rsquo; payload says &lsquo;Create a new user and add them to local administration group&rsquo; - I&rsquo;m guessing since I ran this on a DC is why I didn&rsquo;t notice this but it is something to keep in mind when running this script.
+Update 3: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" /><link rel="prev" href="https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" /><link rel="next" href="https://malicious.link/posts/2011/2011-08-26-iis-search-verb-directory-listing/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Populating Your Virtual Victim Domain",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2011\/2011-08-20-populating-your-virtual-victim-domain\/"
+        },"genre": "posts","wordcount":  731 ,
+        "url": "https:\/\/malicious.link\/posts\/2011\/2011-08-20-populating-your-virtual-victim-domain\/","datePublished": "2011-08-20T19:14:53+00:00","dateModified": "2011-08-20T19:14:53+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Populating Your Virtual Victim Domain</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/lab/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>lab</a>&nbsp;<a href="/categories/ruby/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>ruby</a>&nbsp;<a href="/categories/scripting/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>scripting</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2011-08-20">2011-08-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;731 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p><strong>Update 1</strong>: No this doesn&rsquo;t need to be in memory since you control the system but it was a fun challenge</p>
+<p><strong>Update 2</strong>: The info from the &lsquo;adduser&rsquo; payload says &lsquo;<em>Create a new user and add them to local administration group</em>&rsquo; - I&rsquo;m guessing since I ran this on a DC is why I didn&rsquo;t notice this but it is something to keep in mind when running this script.</p>
+<p><strong>Update 3</strong>: Here is a powershell way of doing things from a CSV, you can do some passwords in the CSV and keep it for reference too. I think this is the best solution I&rsquo;ve found to inlude mine: <a href="http://unlockpowershell.wordpress.com/2010/10/12/creating-random-users-for-a-domain/" target="_blank" rel="noopener noreffer ">http://unlockpowershell.wordpress.com/2010/10/12/creating-random-users-for-a-domain/</a></p>
+<p>Adding users to a domain that you create for learning, training, or just for testing things out on can be quite tedious. Most of the time I just put a few users to simulate the different &rsquo;levels&rsquo; I need for my testing. However that doesn&rsquo;t really give someone you&rsquo;re training much to think about, i.e. It&rsquo;s really easy to identify the &lsquo;interesting&rsquo; users when there are only a couple to pick from.</p>
+<p>I am certainly not the first one to solve this problem:</p>
+<ul>
+<li><a href="http://www.petri.co.il/create_users_for_testing_purposes.htm" target="_blank" rel="noopener noreffer ">http://www.petri.co.il/create_users_for_testing_purposes.htm</a></li>
+<li><a href="http://blog.commandlinekungfu.com/2010/07/episode-104-fricken-users.html" target="_blank" rel="noopener noreffer ">http://blog.commandlinekungfu.com/2010/07/episode-104-fricken-users.html</a></li>
+<li><a href="https://twitter.com/#!/Carlos_Perez/status/71373112494661632" target="_blank" rel="noopener noreffer ">https://twitter.com/#!/Carlos_Perez/status/71373112494661632</a></li>
+</ul>
+<p>These work perfectly and are all really easy. The problem for me is that with some the username is too similar and/or the passwords are the same/similar.</p>
+<p>Well, of course I had to do it in Metasploit. (No, not everything has to be in Metasploit, but in this instance it actually helps a lot and you&rsquo;ll see why in a sec)</p>
+<p>Easiest way to get a bunch of random users is to download a list of names, I used this one:</p>
+<p><a href="http://packetstormsecurity.org/files/32083/other-names.gz.html" target="_blank" rel="noopener noreffer ">http://packetstormsecurity.org/files/32083/other-names.gz.html</a></p>
+<p>And of course you need passwords too, and there isn&rsquo;t a better list than the RockYou list. Skull Security has it over here:</p>
+<p><a href="http://www.skullsecurity.org/wiki/index.php/Passwords" target="_blank" rel="noopener noreffer ">http://www.skullsecurity.org/wiki/index.php/Passwords</a></p>
+<p><strong>TL:DR;</strong> You can download the Meterpreter script here: <a href="https://gist.github.com/mubix/8215113" target="_blank" rel="noopener noreffer ">addusers.rb</a></p>
+<p>Start off by importing all the names and passwords into arrays we can manipulate easier:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">namefile</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;other-names.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">passwordfile</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;rockyou.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">usercount</span> <span class="o">=</span> <span class="mi">5000</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">names</span> <span class="o">=</span> <span class="o">[]</span>
+</span></span><span class="line"><span class="cl"><span class="n">namefile</span><span class="o">.</span><span class="n">each_line</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">	<span class="n">names</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">chomp</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">passwords</span> <span class="o">=</span> <span class="o">[]</span>
+</span></span><span class="line"><span class="cl"><span class="n">passwordfile</span><span class="o">.</span><span class="n">each_line</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">	<span class="n">passwords</span> <span class="o">&lt;&lt;</span> <span class="n">line</span><span class="o">.</span><span class="n">chomp</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The &lsquo;usercount&rsquo; variable will be used for out loop on how many users to create. Next, just to shake things up we create another array of common suffixes:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="n">datesnum</span> <span class="o">=</span> <span class="o">[]</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">	<span class="n">datesnum</span> <span class="o">&lt;&lt;</span> <span class="n">x</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">40</span><span class="o">..</span><span class="mi">99</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">	<span class="n">datesnum</span> <span class="o">&lt;&lt;</span> <span class="n">x</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="mi">2000</span><span class="o">..</span><span class="mi">2013</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+</span></span><span class="line"><span class="cl">	<span class="n">datesnum</span> <span class="o">&lt;&lt;</span> <span class="n">x</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now to loop through the account creation, and since I&rsquo;m not a big fan of running cmd.exe (staying in memory is one of the staples of Meterpreter) we&rsquo;ll do it by injecting $usercount amount of the windows/adduser payload into our current process.</p>
+<p>For usernames I take a random name and use it&rsquo;s first letter, and then another random selection for the rest. This makes it look like a first initial + last name username scheme.</p>
+<p>For passwords I throw a bit of twist in there I randomly select to have a &lsquo;bad/ok/good&rsquo; password and use just a random selection, random selection + a date or number we generated earlier, or a double random selection put together, respectively.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-ruby" data-lang="ruby"><span class="line"><span class="cl"><span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="n">usercount</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span>
+</span></span><span class="line"><span class="cl">	<span class="n">fname</span> <span class="o">=</span> <span class="n">names</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">	<span class="n">lname</span> <span class="o">=</span> <span class="n">names</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">	<span class="n">goodpass</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">password</span> <span class="o">=</span> <span class="k">case</span> <span class="n">goodpass</span>
+</span></span><span class="line"><span class="cl">	<span class="k">when</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="n">passwords</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">passwords</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">	<span class="k">when</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">		<span class="s2">&#34;</span><span class="si">#{</span><span class="n">passwords</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">passwords</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span><span class="si">}#{</span><span class="n">datesnum</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">datesnum</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">when</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">		<span class="s2">&#34;</span><span class="si">#{</span><span class="n">passwords</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">passwords</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span><span class="si">}#{</span><span class="n">passwords</span><span class="o">[</span><span class="nb">rand</span><span class="p">(</span><span class="n">passwords</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">]</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">end</span>
+</span></span><span class="line"><span class="cl">	<span class="n">username</span> <span class="o">=</span> <span class="s2">&#34;</span><span class="si">#{</span><span class="n">fname</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">chr</span><span class="si">}#{</span><span class="n">lname</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="n">goodpass</span>
+</span></span><span class="line"><span class="cl">	<span class="k">when</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">puts</span> <span class="s2">&#34;</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2"> has a bad password of </span><span class="si">#{</span><span class="n">password</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">when</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">puts</span> <span class="s2">&#34;</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2"> has an ok password of </span><span class="si">#{</span><span class="n">password</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">when</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">puts</span> <span class="s2">&#34;</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2"> has a good password of </span><span class="si">#{</span><span class="n">password</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">end</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="n">payload</span> <span class="o">=</span> <span class="s1">&#39;windows/adduser&#39;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">pay</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">framework</span><span class="o">.</span><span class="n">payloads</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">pay</span><span class="o">.</span><span class="n">datastore</span><span class="o">[</span><span class="s1">&#39;USER&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">username</span>
+</span></span><span class="line"><span class="cl">	<span class="n">pay</span><span class="o">.</span><span class="n">datastore</span><span class="o">[</span><span class="s1">&#39;PASS&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="n">password</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">raw</span> <span class="o">=</span> <span class="n">pay</span><span class="o">.</span><span class="n">generate</span>
+</span></span><span class="line"><span class="cl">	<span class="n">host_process</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">getpid</span><span class="p">,</span> <span class="no">PROCESS_ALL_ACCESS</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">mem</span> <span class="o">=</span> <span class="n">host_process</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">length</span> <span class="o">+</span> <span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">length</span> <span class="o">%</span> <span class="mi">1024</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="n">host_process</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">host_process</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">mem</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">print_status</span><span class="p">(</span><span class="s2">&#34;</span><span class="si">#{</span><span class="n">username</span><span class="si">}</span><span class="s2"> created with password: </span><span class="si">#{</span><span class="n">password</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Know what&rsquo;s great about this? With just a few changed lines you can slam all of the user creation payloads into one binary and have a binary you can run any time you want to gen a bunch of users quickly. (Good to mess with CCDC blue teams too!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2011-08-20</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" data-title="Populating Your Virtual Victim Domain" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" data-title="Populating Your Virtual Victim Domain"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" data-title="Populating Your Virtual Victim Domain"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" data-title="Populating Your Virtual Victim Domain"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2011/2011-08-20-populating-your-virtual-victim-domain/" data-title="Populating Your Virtual Victim Domain"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/" class="prev" rel="prev" title="IP Resolution Using Meterpreter’s Railgun"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>IP Resolution Using Meterpreter’s Railgun</a>
+            <a href="/posts/2011/2011-08-26-iis-search-verb-directory-listing/" class="next" rel="next" title="IIS Search Verb Directory Listing">IIS Search Verb Directory Listing<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

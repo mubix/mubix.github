@@ -1,26 +1,18 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>john the ripper on malicious.link</title>
-    <link>https://malicious.link/categories/john-the-ripper/</link>
-    <description>Recent content in john the ripper on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Mon, 12 Sep 2011 08:09:46 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/john-the-ripper/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Multiple Dictionaries or Wordlists Using John the Ripper</title>
-      <link>https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</link>
-      <pubDate>Mon, 12 Sep 2011 08:09:46 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
-      <description>&lt;p&gt;John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&amp;rsquo;s stdin function but I like to run rules against my lists and I didn&amp;rsquo;t see any how-tos on doing this. Here is my way:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This command will ls the &amp;lsquo;dicts&amp;rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I). Then it&amp;rsquo;s just your standard john arguments.&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>john the ripper - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/john-the-ripper/</link>
+        <description>john the ripper - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Mon, 12 Sep 2011 08:09:46 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/john-the-ripper/" rel="self" type="application/rss+xml" /><item>
+    <title>Multiple Dictionaries or Wordlists Using John the Ripper</title>
+    <link>https://malicious.link/posts/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</link>
+    <pubDate>Mon, 12 Sep 2011 08:09:46 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-09-12-multiple-dictionaries-or-wordlists-using-john-the-ripper/</guid>
+    <description><![CDATA[John the ripper only takes one word list at a time. There are plenty of docs out there that show you how to cat all of your dictionaries into John&rsquo;s stdin function but I like to run rules against my lists and I didn&rsquo;t see any how-tos on doing this. Here is my way:
+ls dicts | xargs -t -I file ./john --pot=victim.pot --format=mscash --wordlist=dicts/file --rules victim_cachedump.txt
+This command will ls the &lsquo;dicts&rsquo; directory, pipe it to xargs, which will spit out the command it uses for each itteration (-t) and replace every time it see the word file with the line/itteration its on (-I).]]></description>
+</item>
+</channel>
 </rss>

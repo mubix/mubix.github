@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Runtime Packers - hold the cheese - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Runtime Packers - hold the cheese" />
+<meta property="og:description" content="So we are taking a short break from my 4 part series on Maltego to bring you a guest post on runtime packers done by your friendly neighborhood Security Shoggoth. Packers are one of those mystical tech items out there that for most people sound too complicated to even look into. What SecShoggoth and I aimed for with this post is to have understandable yet technical and I think he did an awesome job:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2008-09-11T03:30:00+00:00" />
+<meta property="article:modified_time" content="2008-09-11T03:30:00+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Runtime Packers - hold the cheese"/>
+<meta name="twitter:description" content="So we are taking a short break from my 4 part series on Maltego to bring you a guest post on runtime packers done by your friendly neighborhood Security Shoggoth. Packers are one of those mystical tech items out there that for most people sound too complicated to even look into. What SecShoggoth and I aimed for with this post is to have understandable yet technical and I think he did an awesome job:"/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" /><link rel="prev" href="https://malicious.link/posts/2008/2008-09-08-maltego-2-and-beyond-part-1/" /><link rel="next" href="https://malicious.link/posts/2008/2008-09-17-confusion-and-delay-/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Runtime Packers - hold the cheese",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2008\/2008-09-11-runtime-packers-hold-the-cheese\/"
+        },"genre": "posts","wordcount":  1096 ,
+        "url": "https:\/\/malicious.link\/posts\/2008\/2008-09-11-runtime-packers-hold-the-cheese\/","datePublished": "2008-09-11T03:30:00+00:00","dateModified": "2008-09-11T03:30:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "secshoggoth"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Runtime Packers - hold the cheese</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>secshoggoth</a></span>&nbsp;<span class="post-category">included in <a href="/categories/packers/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>packers</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2008-09-11">2008-09-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1096 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-a-packer">What is a packer?</a>
+      <ul>
+        <li><a href="#what-do-they-do">What do they do?</a></li>
+        <li><a href="#why-do-virusmalware-developers-use-them">Why do virus/malware developers use them?</a></li>
+        <li><a href="#how-do-they-work">How do they work?</a></li>
+        <li><a href="#will-av-detect-packed-programs">Will AV detect packed programs?</a></li>
+        <li><a href="#what-are-some-resources-that-i-can-learn-more-about-packing">What are some resources that I can learn more about packing?</a></li>
+      </ul>
+    </li>
+    <li><a href="#where-can-people-find-out-more-about-me">Where can people find out more about me?</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/brett-favre-playoff-28.jpg"
+        data-srcset="/images/postimages/brett-favre-playoff-28.jpg, /images/postimages/brett-favre-playoff-28.jpg 1.5x, /images/postimages/brett-favre-playoff-28.jpg 2x"
+        data-sizes="auto"
+        alt="/images/postimages/brett-favre-playoff-28.jpg"
+        title="/images/postimages/brett-favre-playoff-28.jpg" /></p>
+<p>So we are taking a short break from my 4 part series on Maltego to bring you a guest post on runtime packers done by your friendly neighborhood <a href="http://www.twitter.com/secshoggoth/" target="_blank" rel="noopener noreffer ">Security Shoggoth</a>. Packers are one of those mystical tech items out there that for most people sound too complicated to even look into. What SecShoggoth and I aimed for with this post is to have understandable yet technical and I think he did an awesome job:</p>
+<h2 id="what-is-a-packer">What is a packer?</h2>
+<h3 id="what-do-they-do">What do they do?</h3>
+<p>A packer, also known as a run time packer, is a program which compresses another executable to a smaller size on disk.  When executed, the packed executable is uncompressed in memory and executes.  The time to uncompress the executable in memory is usually not noticeable, making it very advantageous to use one.</p>
+<p>There are hundreds of packing programs available.  One of the most commonly used is UPX (<a href="http://upx.sourceforge.net/" target="_blank" rel="noopener noreffer ">http://upx.sourceforge.net</a>) which will pack a number of executable formats.  Unlike most packers, UPX can unpack a program to its original, uncompressed state.  Many packers do not have this functionality and analysts who wish to unpack a program have to find a separate unpacker or manually unpack the program in a debugger.</p>
+<h3 id="why-do-virusmalware-developers-use-them">Why do virus/malware developers use them?</h3>
+<p>There is one side effect of packers that malware developers have found useful.  Not only does the packer make the malware smaller and easier to transfer, but they also obfuscate or encrypt the internal components of the malware making static analysis virtually impossible. </p>
+<p>For example, normally an analyst would be able to look at the internal strings of a malware sample and determine some of its functionality - such as what registry keys it adds, what URLs it contacts, what functions it loads, etc.  However, by using a packer on the malware, the internal strings would be compressed and obfuscated, hiding them from view.  The only way to view to internal strings would be to unpack the malware - something which is not always an easy thing to do.</p>
+<p>Some packers also contain anti-virtual machine, anti-sandboxing and anti-debugging “features” which prevent the packed executable from running if it detects any software analysts typically use to analyze malware.  This makes it much harder for the malware to be analyzed and will extend the amount of time before it can be reliably detected by AV software.</p>
+<h3 id="how-do-they-work">How do they work?</h3>
+<p>When an executable is packed, the packer compresses the original program and places some wrapper code around it.  When the packed program is executed, this wrapper code runs and uncompresses the original program in memory, loads any dynamic libraries needed by the import table and jumps to the original entry point (OEP) of the now uncompressed program where it begins execution.</p>
+<h3 id="will-av-detect-packed-programs">Will AV detect packed programs?</h3>
+<p>It depends.  Not being in the AV industry I can’t comment on every anti-virus program but from my experience with anti-virus and bypassing them, I can make some educated guesses.</p>
+<p>From my experience, most AV programs handle packers in two ways.  First, if they can detect the packer being used they may try to unpack it - provided they have an unpacking routine for that packer.  For example, UPX is a common packer (with it’s source available). I would bet that most AV have a UPX unpacking routine which, when it detects a UPX-packed executable, unpacks and scans it.  Therefore, if you packed pwdump with a known or common packer, the AV will still detect it.</p>
+<p>However, if you used a packer the AV did not know how to unpack (such as a custom packer or one the AV does not have a routine for), then the AV would most likely not be able to detect the malicious program on disk and would have to wait until it was launched into memory to detect it.  Malware authors already know this so some are starting to use custom packers.  The Race To Zero contest at this year’s Defcon was about just this - trying various methods to hide an executable from AV on disk.</p>
+<p>There are still ways AV can determine if a program has been packed even if it doesn’t know what packer was used.  When a program is packed various things happen to the header and the internal structures of the program.  AV can detect these signs and make an educated guess that the program is packed by a custom packer and, if it meets some internal AV criteria, the AV may flag the program as malicious.</p>
+<p>If the AV is able to detect the packer but does not have a routine to unpack it, the AV may still flag the executable as malicious based on the packer it detects.  As you blogged about a few days ago, Alex Eckelberry at SunBelt Software did an experiment by packing Windows notepad with various packers and submitting it to VirusTotal.  Based on his results, some AV programs are flagging programs as malicious based only on the packer that was used on it.  (<a href="http://sunbeltblog.blogspot.com/2008/09/how-to-make-notepadexe-malicious-file.html" target="_blank" rel="noopener noreffer ">http://sunbeltblog.blogspot.com/2008/09/how-to-make-notepadexe-malicious-file.html</a>)</p>
+<h3 id="what-are-some-resources-that-i-can-learn-more-about-packing">What are some resources that I can learn more about packing?</h3>
+<p>If you want to learn the basics on packers, I would recommend Paul Craig’s 2006 Ruxcon presentation &ldquo;Unpacking Malware, Trojans and Worms.  (<a href="http://www.security-assessment.com/files/presentations/Ruxcon_2006_-%3cu%3eUnpacking_Virus,_Trojans_and_Worms.pdf" target="_blank" rel="noopener noreffer ">http://www.security-assessment.com/files/presentations/Ruxcon_2006-_Unpacking_Virus,_Trojans_and_Worms.pdf</a>)  Its contains alot of excellent information on packers, how they work and how to unpack them manually.</p>
+<p>If you want more information on unpacking programs, many reverse engineering sites and blogs have numerous resources on the subject.  I would start with OpenRCE (<a href="http://www.openrce.com/" target="_blank" rel="noopener noreffer ">www.openrce.com</a>) and the forums at <a href="http://www.reverse-engineering.net/" target="_blank" rel="noopener noreffer ">http://www.reverse-engineering.net</a>.  I also like the Websense Security Labs blog (<a href="http://securitylabs.websense.com/" target="_blank" rel="noopener noreffer ">http://securitylabs.websense.com/</a>) as they have posted in the past about their experiences with unpacking malware.</p>
+<p>There really are way too many resources out there for me to list.  In the end, Google is your friend.</p>
+<h2 id="where-can-people-find-out-more-about-me">Where can people find out more about me?</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/postimages/200809_packers_1.png"
+        data-srcset="/images/postimages/200809_packers_1.png, /images/postimages/200809_packers_1.png 1.5x, /images/postimages/200809_packers_1.png 2x"
+        data-sizes="auto"
+        alt="/images/postimages/200809_packers_1.png"
+        title="/images/postimages/200809_packers_1.png" /></p>
+<p>They can always check out my blog at <a href="http://secshoggoth.blogspot.com/" target="_blank" rel="noopener noreffer ">http://secshoggoth.blogspot.com</a>, follow me on Twitter (<a href="https://twitter.com/secshoggoth" target="_blank" rel="noopener noreffer ">secshoggoth</a>) or listen to me on the Security Justice webcast (<a href="http://www.securityjustice.com/" target="_blank" rel="noopener noreffer ">www.securityjustice.com</a>).  :P</p>
+<p>A commenter who was unable to post their comment for some reason had this to say:</p>
+<blockquote>
+<p>PeID is a nice little tool for looking at an exe and finding what it is packed with, what encryption it may be using, and also to look at the strings. It also lets you unpack a lot of exe’s, but can be dangerous as it can let the programs run to do this. It’s nice to use it if you do not want to trace through a debugger and just want a quick way to look at the dll’s it hooks to and the strings in the program.</p>
+<p>&ndash; digip</p>
+</blockquote>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2008-09-11</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" data-title="Runtime Packers - hold the cheese" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" data-title="Runtime Packers - hold the cheese"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" data-title="Runtime Packers - hold the cheese"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" data-title="Runtime Packers - hold the cheese"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2008/2008-09-11-runtime-packers-hold-the-cheese/" data-title="Runtime Packers - hold the cheese"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2008/2008-09-08-maltego-2-and-beyond-part-1/" class="prev" rel="prev" title="Maltego 2 and beyond - Part 1"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Maltego 2 and beyond - Part 1</a>
+            <a href="/posts/2008/2008-09-17-confusion-and-delay-/" class="next" rel="next" title="Confusion and Delay">Confusion and Delay<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,42 +1,18 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>phantomjs on malicious.link</title>
-    <link>https://malicious.link/categories/phantomjs/</link>
-    <description>Recent content in phantomjs on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 25 May 2012 05:36:27 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/phantomjs/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Post Exploitation with PhantomJS</title>
-      <link>https://malicious.link/post/2012/2012-05-25-post-exploitation-with-phantomjs/</link>
-      <pubDate>Fri, 25 May 2012 05:36:27 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-05-25-post-exploitation-with-phantomjs/</guid>
-      <description>&lt;p&gt;If you have never heard of PhantomJS ( &lt;a href=&#34;http://phantomjs.org/&#34;&gt;http://phantomjs.org/&lt;/a&gt; ) before, it&amp;rsquo;s a &amp;ldquo;Full Web Stack with No Browser Required&amp;rdquo;, basically it a GUI-less browser. One of the magical &amp;ldquo;example&amp;rdquo; files that it has is called &amp;ldquo;rasterize.js&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;Rasterize.JS essentially renders a URL, screen shots it and give it to you in a number of different formats, here&amp;rsquo;s it&amp;rsquo;s usage:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Usage: rasterize.js URL filename [paperwidth*paperheight|paperformat]
- paper (pdf output) examples: &amp;#34;5in*7.5in&amp;#34;, &amp;#34;10cm*20cm&amp;#34;, &amp;#34;A4&amp;#34;, &amp;#34;Letter&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;PhantomJS is sweet for sweeping a ton of IPs and suspected HTTP/S sites, and look through a gallery of them to start figuring out which looks the most interesting… and we are going to essentially just that, except from a Victim machine.&lt;/p&gt;
-&lt;p&gt;First, download the Win32 static bins for PhantomJS from: &lt;a href=&#34;http://code.google.com/p/phantomjs/downloads/list&#34;&gt;http://code.google.com/p/phantomjs/downloads/list&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Pull out phantomJS.exe and rasterize.js from the zip, and upload it to your victim.&lt;/p&gt;
-&lt;p&gt;Make a special directory for your renderings (I use imgs), this also makes it easy for meterpreter to download it since meterpreter supports directories and download targets.&lt;/p&gt;
-&lt;p&gt;Now make a BAT file with the following in it:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;FOR /F &amp;#34;skip=3 delims= &amp;#34; %%A IN (&amp;#39;NET VIEW&amp;#39;) DO start /b phantomjs.exe examplesrasterize.js http://%%A imgshttp_%%A.png
-FOR /F &amp;#34;skip=3 delims= &amp;#34; %%A IN (&amp;#39;NET VIEW&amp;#39;) DO start /b phantomjs.exe --ignore-ssl-errors=yes examplesrasterize.js https://%%A imgshttps_%%A.png
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;There are some cool tricks in here. First we are using &amp;rsquo;net view&amp;rsquo; as our target list, we are using the &amp;lsquo;start /b&amp;rsquo; command to throw everything into the background to run so we don&amp;rsquo;t have to wait for each to finish (a crude way to thread actions in BAT files). And finally we are checking for both HTTP and HTTPS. We we are not doing however is doing any logging, so if you want to catch errors it&amp;rsquo;s all you, just remember that when trying to pipe output from a command started with &amp;lsquo;start&amp;rsquo; you have to prefix the &amp;gt; with a ^ so it looks like:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;start echo blah ^&amp;gt; blah.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;You are ALMOST ready to rock. There is a slight bug in Rasterize.js, if it can&amp;rsquo;t resolve the address or otherwise can&amp;rsquo;t contact the web server (which is going to be the majority of the case for us) it hangs in an open state. This is bad, we don&amp;rsquo;t want to have a thousand phantomjs.exe processes running hanged. Simply make a new line after LINE 20, and add &amp;lsquo;phantom.exit();&amp;rsquo; so it knows to exit if it encounters a failed connection.&lt;/p&gt;
-&lt;p&gt;Thats it, happy hunting from both inside and outside.&lt;/p&gt;
-&lt;p&gt;P.S. PhantomJS supports SOCKS and HTTP proxies, so if you use them (Tor) or run into them internally, support is there. A quick mod to your batch file and you&amp;rsquo;re golden:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;--proxy=address:port Sets the network proxy (e.g. &amp;#34;--proxy=192.168.1.42:8080&amp;#34;)  
---proxy-auth=username:password Sets authentication details for the proxy (basic auth)  
---proxy-type=[http|socks5] Sets the proxy type, either &amp;#34;http&amp;#34; (default) or &amp;#34;socks5&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>phantomjs - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/phantomjs/</link>
+        <description>phantomjs - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Fri, 25 May 2012 05:36:27 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/phantomjs/" rel="self" type="application/rss+xml" /><item>
+    <title>Post Exploitation with PhantomJS</title>
+    <link>https://malicious.link/posts/2012/2012-05-25-post-exploitation-with-phantomjs/</link>
+    <pubDate>Fri, 25 May 2012 05:36:27 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-05-25-post-exploitation-with-phantomjs/</guid>
+    <description><![CDATA[If you have never heard of PhantomJS ( http://phantomjs.org/ ) before, it&rsquo;s a &ldquo;Full Web Stack with No Browser Required&rdquo;, basically it a GUI-less browser. One of the magical &ldquo;example&rdquo; files that it has is called &ldquo;rasterize.js&rdquo;
+Rasterize.JS essentially renders a URL, screen shots it and give it to you in a number of different formats, here&rsquo;s it&rsquo;s usage:
+1 2 Usage: rasterize.js URL filename [paperwidth*paperheight|paperformat] paper (pdf output) examples: &#34;5in*7.]]></description>
+</item>
+</channel>
 </rss>

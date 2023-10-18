@@ -1,40 +1,17 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>methodology on malicious.link</title>
-    <link>https://malicious.link/categories/methodology/</link>
-    <description>Recent content in methodology on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 29 Jun 2012 23:33:56 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/methodology/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Presence, Persistence, and Pivoting</title>
-      <link>https://malicious.link/post/2012/2012-06-29-presence-persistence-and-pivoting/</link>
-      <pubDate>Fri, 29 Jun 2012 23:33:56 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-06-29-presence-persistence-and-pivoting/</guid>
-      <description>&lt;p&gt;Everyone does things differently, and explaining what goes through an attackers head when they get a shell is virtually impossible and even more so to generalize into a methodology, but I’ve tried to do that with the “3 ‘P’s of Post Exploitation” and they are in a certain order for a reason but certainly up to circumstance to what order is best.&lt;/p&gt;
-&lt;p&gt;The first P is &lt;strong&gt;Presence&lt;/strong&gt;. It is first because the attacker needs to get a sense of what he/she has got before they move on. It plays a crucial part in the other two ‘P’s, making them much stealthier or easier. Many times I’ve seen people jump from box to box and totally miss that what they were looking for was on the first one. So “Presence” is all about discovering what you (the attacker) has already. This has many levels and the order of which the attacker checks them and how is arbitrary as well, but they should have at the very least a check list of categories to check on. Here are some to think about:&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;File System:&lt;/strong&gt;&lt;br&gt;
-Knowing “where” to look is tough but in each section below we’ll go into known good places to check and ways to search for files and folders with interesting names and extensions&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;OS:&lt;/strong&gt;&lt;br&gt;
-Proxy settings, Group Policy settings, login scripts, MOTD, User lists (net user and /etc/passwd). Knowing how the system and attacker has compromised is a crucial piece to understanding how it communicates and works as a piece to the network.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;RAM:&lt;/strong&gt;&lt;br&gt;
-Mostly known for pulling hashes and credentials out of it, there are a lot of other interesting things that reside solely in memory&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Media:&lt;/strong&gt;&lt;br&gt;
-CDs, DVDs, NFS mounts, SMB mounts, USB sticks. These are often bypassed and forgotten during an attack but can hold the keys to the kingdom&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Network:&lt;/strong&gt;&lt;br&gt;
-Routes, ARP entries, netstat are pretty common to check, but broadcast messages, listeners, and IPv6 are less so.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Permissions and Credentials:&lt;/strong&gt;&lt;br&gt;
-This is the obvious one but there is usually a mountain of data as even TinyCore linux has hundreds of files, each with their own permissions. This category extends past the borders of the others but important to single out as a separate step.&lt;br&gt;
-Persistence is achieved at varying levels depending on what the attacker is trying to survive and what the attacker is willing to give up on the stealth side. Staying in memory pretty much kills the attackers chance of surviving a reboot for instance. Tactics to survive a rebuild or revert are also very different. Persistence can also come in the form of simple authentication, if the attacker has a password and it nets him/her code execution or access to the data they are after then that’s all they need. Special focus should be applied to the information gathering section of penetration tests or red team engagements in regards to places that require authentication.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Pivoting&lt;/strong&gt; simple means extending the attackers current access, and can mean anything from connecting to a remote NFS mount to the attacker PSEXEC-ing their Meterpreter payload onto another box that they have administrative access to. This is the last stage because concentration on the previous two is hard to do in the adrenaline high of initial access.&lt;/p&gt;
-&lt;p&gt;Honorable Mention (the mysterious 4th “P”) &lt;strong&gt;Privilege Escalation&lt;/strong&gt; is not part of the Trio because ( then there would be 4 and I wouldn’t know what to call it) while it’s a regular step performed by attackers, it’s something that usually gets too much emphasis. &lt;em&gt;You do not always need Domain Admin access to access the “crown jewels”&lt;/em&gt; .These highly privileged accounts should be assumed to be extremely monitored and coveted. (a.k.a. adding a new user to the Domain Admins group is like lighting your hair on fire and running in the front door of the targets office building screeming “h4x!!”)&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>methodology - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/methodology/</link>
+        <description>methodology - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Fri, 29 Jun 2012 23:33:56 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/methodology/" rel="self" type="application/rss+xml" /><item>
+    <title>Presence, Persistence, and Pivoting</title>
+    <link>https://malicious.link/posts/2012/2012-06-29-presence-persistence-and-pivoting/</link>
+    <pubDate>Fri, 29 Jun 2012 23:33:56 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-06-29-presence-persistence-and-pivoting/</guid>
+    <description><![CDATA[Everyone does things differently, and explaining what goes through an attackers head when they get a shell is virtually impossible and even more so to generalize into a methodology, but I’ve tried to do that with the “3 ‘P’s of Post Exploitation” and they are in a certain order for a reason but certainly up to circumstance to what order is best.
+The first P is Presence. It is first because the attacker needs to get a sense of what he/she has got before they move on.]]></description>
+</item>
+</channel>
 </rss>

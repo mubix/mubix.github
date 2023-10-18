@@ -1,77 +1,17 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>wayback on malicious.link</title>
-    <link>https://malicious.link/categories/wayback/</link>
-    <description>Recent content in wayback on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 24 Dec 2010 19:32:56 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/wayback/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Wayback Webapp Hacking</title>
-      <link>https://malicious.link/post/2010/2010-12-24-wayback-webapp-hacking/</link>
-      <pubDate>Fri, 24 Dec 2010 19:32:56 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-12-24-wayback-webapp-hacking/</guid>
-      <description>&lt;p&gt;Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&amp;rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).&lt;/p&gt;
-&lt;p&gt;This module doesn&amp;rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.org.&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;msf auxiliary(enum_wayback) &amp;gt; info
-       Name: Pull Archive.org stored URLs for a domain
-    Version: 10394
-    License: Metasploit Framework License (BSD)
-       Rank: Normal
-
-Provided by:
-  Rob Fuller 
-
-Basic options:
-  Name     Current Setting  Required  Description
-  ----     ---------------  --------  -----------
-  DOMAIN   portswigger.net  yes       Domain to request URLS for
-  OUTFILE                   no        Where to output the list for use
-
-Description:
-  This module pulls and parses the URLs stored by Archive.org for the 
-  purpose of replaying during a web assessment. Finding unlinked and 
-  old pages.
-
-msf auxiliary(enum_wayback) &amp;gt; run
-
-[*] Pulling urls from Archive.org
-[*] Located 289 addresses for portswigger.net
-http://portswigger.net/
-http://portswigger.net/books/
-http://portswigger.net/burp/
-http://portswigger.net/burp/bullet.gif
-http://portswigger.net/burp/buy.html
-http://portswigger.net/burp/help.html
-http://portswigger.net/burp/ps.css
-http://portswigger.net/burp/screenshots.html
-http://portswigger.net/burp/tc.html
-http://portswigger.net/corner.gif
-
-**SNIPPED**
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You can set the OUTFILE so that you can parse it a bit and import it into Burp, or use a quick script to make the queries yourself. Here is one I wrote in python:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;# cat requestor.py&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#!/usr/bin/env python&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; urllib
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;proxies &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;http&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;http://127.0.0.1:8080&amp;#39;&lt;/span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;filename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/tmp/waybacklist.txt&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;fl &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; open(filename, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;r&amp;#39;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; lines &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; fl:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; str(lines)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; len(url) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		print &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Skipping blank line&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;:
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	    print &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Requesting &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; url
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	    temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; urllib&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;urlopen(url, proxies&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;proxies)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read()
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Enjoy!&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>wayback - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/wayback/</link>
+        <description>wayback - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Fri, 24 Dec 2010 19:32:56 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/wayback/" rel="self" type="application/rss+xml" /><item>
+    <title>Wayback Webapp Hacking</title>
+    <link>https://malicious.link/posts/2010/2010-12-24-wayback-webapp-hacking/</link>
+    <pubDate>Fri, 24 Dec 2010 19:32:56 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2010/2010-12-24-wayback-webapp-hacking/</guid>
+    <description><![CDATA[Archive.org allows you to check the history of sites and pages, but a service most are not aware of is one that allows you to get a list of every page that a Archive.org has for a given domain. This is great for enumerating a web applications, many times you&rsquo;ll find parts of web apps that have been long forgotten (and usually vulnerable).
+This module doesn&rsquo;t make any requests to the targeted domain, it simply outputs a list to the screen/or a file of all the pages it has found on Archive.]]></description>
+</item>
+</channel>
 </rss>

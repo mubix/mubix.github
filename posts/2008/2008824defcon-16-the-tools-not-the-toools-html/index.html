@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>DEFCON 16: The Tools not the Toools - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="DEFCON 16: The Tools not the Toools" />
+<meta property="og:description" content="Originally posted to the Zero Day blog on Ziff Davis: http://blogs.zdnet.com/security/?p=1735
+This article was also referenced in a Dark Reading blog post by John Sawyer: http://www.darkreading.com/blog.asp?blog_sectionid=447&amp;doc_id=162049
+All updates will reside here as I have no control over the article on Ziff Davis.
+DEFCON, the 9000&#43; attendee hacker conference in Vegas has become a sort of hydra conference. It has become more like a global fair than what most people think of conferences; even the badge is highly unique." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2008-08-24T22:12:00+00:00" />
+<meta property="article:modified_time" content="2008-08-24T22:12:00+00:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="DEFCON 16: The Tools not the Toools"/>
+<meta name="twitter:description" content="Originally posted to the Zero Day blog on Ziff Davis: http://blogs.zdnet.com/security/?p=1735
+This article was also referenced in a Dark Reading blog post by John Sawyer: http://www.darkreading.com/blog.asp?blog_sectionid=447&amp;doc_id=162049
+All updates will reside here as I have no control over the article on Ziff Davis.
+DEFCON, the 9000&#43; attendee hacker conference in Vegas has become a sort of hydra conference. It has become more like a global fair than what most people think of conferences; even the badge is highly unique."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" /><link rel="prev" href="https://malicious.link/posts/2008/200886defcon-presents-come-early-html/" /><link rel="next" href="https://malicious.link/posts/2008/2008827multi-boot-security-livecd-dvd-html/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "DEFCON 16: The Tools not the Toools",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2008\/2008824defcon-16-the-tools-not-the-toools-html\/"
+        },"genre": "posts","keywords": "Hacking","wordcount":  850 ,
+        "url": "https:\/\/malicious.link\/posts\/2008\/2008824defcon-16-the-tools-not-the-toools-html\/","datePublished": "2008-08-24T22:12:00+00:00","dateModified": "2008-08-24T22:12:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "mubix"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">DEFCON 16: The Tools not the Toools</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>mubix</a></span>&nbsp;<span class="post-category">included in <a href="/categories/hacking/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Hacking</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2008-08-24">2008-08-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;850 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Originally posted to the Zero Day blog on Ziff Davis: <a href="http://blogs.zdnet.com/security/?p=1735" target="_blank" rel="noopener noreffer ">http://blogs.zdnet.com/security/?p=1735</a></p>
+<p>This article was also referenced in a Dark Reading blog post by John Sawyer: <a href="http://www.darkreading.com/blog.asp?blog_sectionid=447&amp;doc_id=162049" target="_blank" rel="noopener noreffer ">http://www.darkreading.com/blog.asp?blog_sectionid=447&amp;doc_id=162049</a></p>
+<p><strong><em>All updates will reside here as I have no control over the article on Ziff Davis.</em></strong></p>
+<p>    DEFCON, the 9000+ attendee hacker conference in Vegas has become a sort of hydra conference. It has become more like a global fair than what most people think of conferences; even the badge is highly unique. I say this because there are so many things to do at DEFCON, other than going to talks, that you could spend your whole weekend looking at the “World’s Largest Boar!”, so to speak. One of the CTF (Capture the Flag) contest winners this year actually exclaimed that he only made it to 2 talks in 12 years! I am also one of those individuals who barely get a chance to go to talks and now that the speaker pool is so diverse it’s hard to find all of the “stuff” they release. Before anyone has a chance to post “It’s all on the DEFCON CD dummy” I want to challenge them to try. After a weekend of googling (which came back with few results) and making contact with some of the speakers, I provide you with a mostly accurate list of “stuff” that was released at DEFCON this year. If any of the information is inaccurate, or a tool is missing, please contact me and I will update this post.</p>
+<p>The DEFCON CD can be found here: <a href="http://edge.i-hacked.com/defcon16-cd-iso-posted" target="_blank" rel="noopener noreffer ">http://edge.i-hacked.com/defcon16-cd-iso-posted</a></p>
+<p>Think you are good enough? The binaries from Capture the Flag have been posted here: <a href="http://nopsr.us/ctf2008/" target="_blank" rel="noopener noreffer ">http://nopsr.us/ctf2008/</a></p>
+<p> <strong>PE-Scambler by Nick Harbour</strong></p>
+<ul>
+<li>
+<p>Description: (pending update)</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://www.rnicrosoft.net/" target="_blank" rel="noopener noreffer ">http://www.rnicrosoft.net/</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:nick.harbour@gmail.com" rel="">nick.harbour@gmail.com</a></p>
+</li>
+</ul>
+<p><strong>Packet-O-Matic by Guy Martin</strong></p>
+<ul>
+<li>
+<p>Description: “A real time packet processor” - It extracts and can reinject packets. This includes VoIP calls in real time, Cable Modem (DOCSIS) traffic, and a whole host of others.</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://www.packet-o-matic.org/" target="_blank" rel="noopener noreffer ">http://www.packet-o-matic.org/</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:gmsoft@tuxicoman.be" rel="">gmsoft@tuxicoman.be</a></p>
+</li>
+</ul>
+<p><strong>SA Exploiter by Securestate</strong></p>
+<ul>
+<li>
+<p>Description: A GUI SQL Injection tool that creates SQL injection queries and brakes the 64k barrier using MS Debugger.</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://securestate.com/pages/free-tools.aspx" target="_blank" rel="noopener noreffer ">http://securestate.com/pages/free-tools.aspx</a></p>
+</li>
+</ul>
+<p><strong>Fast-Track by Securestate</strong></p>
+<ul>
+<li>
+<p>Description: A python based tool that automates several different typs of attacks including Metasploit’s Autopwn and SQL Injection</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://securestate.com/pages/free-tools.aspx" target="_blank" rel="noopener noreffer ">http://securestate.com/pages/free-tools.aspx</a></p>
+</li>
+</ul>
+<p><strong>Beholder – by Nelson Murilo and Luis Eduardo</strong></p>
+<ul>
+<li>
+<p>Description: An open source wireless IDS program</p>
+</li>
+<li>
+<p>Homepage Link:  <a href="http://www.beholderwireless.org/" target="_blank" rel="noopener noreffer ">http://www.beholderwireless.org/</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:bh@beholderwireless.org" rel="">bh@beholderwireless.org</a></p>
+</li>
+</ul>
+<p>** The Middler – by Jay Beale**</p>
+<ul>
+<li>
+<p>Description: The end-all be-all of MITM tools</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://www.themiddler.com/" target="_blank" rel="noopener noreffer ">http://www.themiddler.com/</a> (Online?)</p>
+</li>
+<li>
+<p>Preface Link: <a href="http://www.intelguardians.com/themiddler.html" target="_blank" rel="noopener noreffer ">http://www.intelguardians.com/themiddler.html</a></p>
+</li>
+</ul>
+<p><strong>ClientIPS – by Jay Beale</strong></p>
+<ul>
+<li>
+<p>Description: An open source inline “transparent” client-side IPS</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://www.ClientIPS.org/" target="_blank" rel="noopener noreffer ">http://www.ClientIPS.org/</a>  (Online?)</p>
+</li>
+</ul>
+<p>** Marathon Tool – by Daniel Kachakill**</p>
+<ul>
+<li>
+<p>Description: A Blind SQL Injection tool based on heavy queries</p>
+</li>
+<li>
+<p>Download Link: <a href="http://www.codeplex.com/marathontool" target="_blank" rel="noopener noreffer ">http://www.codeplex.com/marathontool</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:dani@kachakil.com" rel="">dani@kachakil.com</a></p>
+</li>
+</ul>
+<p><strong>The Phantom Protocol – by Magnus Brading</strong></p>
+<ul>
+<li>
+<p>Description: A Tor-like protocol that fixes some of Tor’s major attack vectors</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://code.google.com/p/phantom" target="_blank" rel="noopener noreffer ">http://code.google.com/p/phantom</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:brading@fortego.se" rel="">brading@fortego.se</a></p>
+</li>
+</ul>
+<p><strong>ModScan – by Mark Bristow</strong></p>
+<ul>
+<li>
+<p>Description: A SCADA Modbus Network Scanner</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://modscan.googlecode.com/" target="_blank" rel="noopener noreffer ">http://modscan.googlecode.com/</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:mark.bristow@gmail.com" rel="">mark.bristow@gmail.com</a></p>
+</li>
+</ul>
+<p>** Grendel Scan – by David Byrne**</p>
+<ul>
+<li>
+<p>Description: Web Application scanner that searches for logic and design flaws as well as the standard flaw seen in the wild today (SQL Injection, XSS, CSRF)</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://grendel-scan.com/" target="_blank" rel="noopener noreffer ">http://grendel-scan.com/</a></p>
+</li>
+</ul>
+<p><strong>iKat – interactive Kiosk Attack Tool</strong>  (This site has an image as a banner that is definitely not safe for work! – You have been warned) <strong>by Paul Craig</strong></p>
+<ul>
+<li>
+<p>Description: A web site that is dedicated to helping you break out of Kiosk jails</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://ikat.ha.cked.net" target="_blank" rel="noopener noreffer ">http://ikat.ha.cked.net</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:paul.craig@security-assessment.com" rel="">paul.craig@security-assessment.com</a></p>
+</li>
+</ul>
+<p><strong>DAVIX – by Jan P. Monsch and Raffael Marty</strong></p>
+<ul>
+<li>
+<p>Description: A SLAX based Linux Distro that is geared toward data/log visualization</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://code.google.com/p/davix/" target="_blank" rel="noopener noreffer ">http://code.google.com/p/davix/</a></p>
+</li>
+<li>
+<p>Download Link: <a href="http://www.geekceo.com/davix/davix-0.5.0.iso.gz" target="_blank" rel="noopener noreffer ">http://www.geekceo.com/davix/davix-0.5.0.iso.gz</a></p>
+</li>
+<li>
+<p>Email Addresses: <a href="mailto:jan.monsch@iplosion.com" rel="">jan.monsch@iplosion.com</a> and <a href="mailto:raffy@secviz.org" rel="">raffy@secviz.org</a></p>
+</li>
+</ul>
+<p><strong>CollabREate – by Chris Eagle and Tim Vidas</strong></p>
+<ul>
+<li>
+<p>Description: An IDA Pro plugin with a server backend that allows multiple people to collaborate on a single RE (reverse engineering) project.</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://www.idabook.com/defcon" target="_blank" rel="noopener noreffer ">http://www.idabook.com/defcon</a></p>
+</li>
+<li>
+<p>Email Addresses: <a href="mailto:cseagle@gmail.com" rel="">cseagle@gmail.com</a> and <a href="mailto:tvidas@gmail.com" rel="">tvidas@gmail.com</a></p>
+</li>
+</ul>
+<p><strong>VMware Pen-Testing Framework – by John Fitzpatrick</strong></p>
+<ul>
+<li>
+<p>Description: A collection of tools created to pen-test VMware enviroments</p>
+</li>
+<li>
+<p>Homepage: <a href="http://www.tinternet.org.uk/vmware/" target="_blank" rel="noopener noreffer ">http://www.tinternet.org.uk/vmware/</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:john.fitzpatrick@mwrinfosecurity.com" rel="">john.fitzpatrick@mwrinfosecurity.com</a></p>
+</li>
+</ul>
+<p><strong>Dradis – by John Fitzpatrick</strong></p>
+<ul>
+<li>
+<p>Description: A tool for organizing and sharing information during a penetration test</p>
+</li>
+<li>
+<p>Homepage: <a href="http://dradis.sourceforge.net" target="_blank" rel="noopener noreffer ">http://dradis.sourceforge.net</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:john.fitzpatrick@mwrinfosecurity.com" rel="">john.fitzpatrick@mwrinfosecurity.com</a></p>
+</li>
+</ul>
+<p><strong>Squirtle – by Kurt Grutzmacher</strong></p>
+<ul>
+<li>
+<p>Description: A rogue server with controlling desires that steals NTLM hashes.</p>
+</li>
+<li>
+<p>Homepage: <a href="http://code.google.com/p/squirtle" target="_blank" rel="noopener noreffer ">http://code.google.com/p/squirtle</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:grutz@jingojango.net" rel="">grutz@jingojango.net</a></p>
+</li>
+</ul>
+<p><strong>WhiteSpace – by Kolisar</strong></p>
+<ul>
+<li>
+<p>Description: A script that can hide other scripts such as CSRF and iframes in spaces and tabs</p>
+</li>
+<li>
+<p>Download Link: DEFCON 16 CD</p>
+</li>
+</ul>
+<p><strong>VoIPer – by nnp</strong></p>
+<ul>
+<li>
+<p>Description: VoIP automated fuzzing tool with support for a large number of VoIP applications and protocols</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://voiper.sourceforge.net/" target="_blank" rel="noopener noreffer ">http://voiper.sourceforge.net/</a></p>
+</li>
+</ul>
+<p><strong>Barrier – by Errata Security</strong></p>
+<ul>
+<li>
+<p>Description: A browser plugin that pen-tests every site that you visit.</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://www.erratasec.com" target="_blank" rel="noopener noreffer ">http://www.erratasec.com</a></p>
+</li>
+<li>
+<p>Email Address: <a href="mailto:sales@erratasec.com" rel="">sales@erratasec.com</a></p>
+</li>
+</ul>
+<p><strong>Psyche – by Ponte Technologies</strong></p>
+<ul>
+<li>
+<p>Description: An advanced network flow visualization tool that is not soley based on time.</p>
+</li>
+<li>
+<p>Homepage Link: <a href="http://psyche.pontetec.com/" target="_blank" rel="noopener noreffer ">http://psyche.pontetec.com/</a></p>
+</li>
+</ul>
+<p> </p>
+<p>Other blogs that have linked this or my ZD Net post:</p>
+<ul>
+<li>
+<p><a href="http://infosecevents.net/2008/08/19/defcon-16-tools/" target="_blank" rel="noopener noreffer ">http://infosecevents.net/2008/08/19/defcon-16-tools/</a></p>
+</li>
+<li>
+<p><a href="http://midnightresearch.com/pages/new-tools-from-defcon/" target="_blank" rel="noopener noreffer ">http://midnightresearch.com/pages/new-tools-from-defcon/</a></p>
+</li>
+<li>
+<p><a href="http://www.terminal23.net/2008/08/tools_released_at_defcon_16.html" target="_blank" rel="noopener noreffer ">http://www.terminal23.net/2008/08/tools_released_at_defcon_16.html</a></p>
+</li>
+<li>
+<p><a href="http://nicholsonsecurity.com/2008/08/23/links-to-all-the-software-from-defcon-16/" target="_blank" rel="noopener noreffer ">http://nicholsonsecurity.com/2008/08/23/links-to-all-the-software-from-defcon-16/</a></p>
+</li>
+<li>
+<p><a href="http://datenterrorist.wordpress.com/2008/08/22/tools-released-at-defcon-16/" target="_blank" rel="noopener noreffer ">http://datenterrorist.wordpress.com/2008/08/22/tools-released-at-defcon-16/</a></p>
+</li>
+<li>
+<p><a href="http://securabit.com/2008/08/22/latest-tools-from-defcon-16/" target="_blank" rel="noopener noreffer ">http://securabit.com/2008/08/22/latest-tools-from-defcon-16/</a></p>
+</li>
+<li>
+<p><a href="http://buhera.blog.hu/2008/08/20/a_defcon_idei_termesei" target="_blank" rel="noopener noreffer ">http://buhera.blog.hu/2008/08/20/a_defcon_idei_termesei</a></p>
+</li>
+<li>
+<p><a href="http://blog.tiyun.de/index.php?/archives/1408-DEFCON-16-List-of-tools-and-stuff-released.html" target="_blank" rel="noopener noreffer ">http://blog.tiyun.de/index.php?/archives/1408-DEFCON-16-List-of-tools-and-stuff-released.html</a></p>
+</li>
+<li>
+<p><a href="http://wp.jarretthousenorth.com/2008/08/19/links-for-2008-08-19/" target="_blank" rel="noopener noreffer ">http://wp.jarretthousenorth.com/2008/08/19/links-for-2008-08-19/</a></p>
+</li>
+<li>
+<p><a href="http://community.livejournal.com/securityblogru/17570.html" target="_blank" rel="noopener noreffer ">http://community.livejournal.com/securityblogru/17570.html</a></p>
+</li>
+<li>
+<p><a href="http://alexav8.livejournal.com/68264.html" target="_blank" rel="noopener noreffer ">http://alexav8.livejournal.com/68264.html</a></p>
+</li>
+<li>
+<p><a href="http://carzel.wordpress.com/2008/08/19/lista-de-herramientas-de-seguridad-lanzadas-en-defcon16/" target="_blank" rel="noopener noreffer ">http://carzel.wordpress.com/2008/08/19/lista-de-herramientas-de-seguridad-lanzadas-en-defcon16/</a></p>
+</li>
+<li>
+<p><a href="http://www.security-alert.nl/forums/hacking-cracking/8755-defcon-16-list-tools-compiled.html" target="_blank" rel="noopener noreffer ">http://www.security-alert.nl/forums/hacking-cracking/8755-defcon-16-list-tools-compiled.html</a></p>
+</li>
+<li>
+<p><a href="http://www.nickbrawn.com/2008/08/security-roundup-august/" target="_blank" rel="noopener noreffer ">http://www.nickbrawn.com/2008/08/security-roundup-august/</a></p>
+</li>
+<li>
+<p><a href="http://boanchanggo.tistory.com/340" target="_blank" rel="noopener noreffer ">http://boanchanggo.tistory.com/340</a></p>
+</li>
+<li>
+<p><a href="http://databyss.com/2008/08/21/links-for-2008-08-20/" target="_blank" rel="noopener noreffer ">http://databyss.com/2008/08/21/links-for-2008-08-20/</a></p>
+</li>
+<li>
+<p><a href="http://julianrdz.wordpress.com/2008/08/20/defcon-16-released-tools/" target="_blank" rel="noopener noreffer ">http://julianrdz.wordpress.com/2008/08/20/defcon-16-released-tools/</a></p>
+</li>
+<li>
+<p><a href="http://dismalsci.wordpress.com/2008/08/20/links-for-2008-08-20/" target="_blank" rel="noopener noreffer ">http://dismalsci.wordpress.com/2008/08/20/links-for-2008-08-20/</a></p>
+</li>
+<li>
+<p><a href="http://security4all.blogspot.com/2008/08/list-of-tools-from-defcon-16-and-some.html" target="_blank" rel="noopener noreffer ">http://security4all.blogspot.com/2008/08/list-of-tools-from-defcon-16-and-some.html</a></p>
+</li>
+<li>
+<p><a href="http://blogs.sun.com/yglee/entry/defcon_16_august_8_10" target="_blank" rel="noopener noreffer ">http://blogs.sun.com/yglee/entry/defcon_16_august_8_10</a></p>
+</li>
+<li>
+<p><a href="http://kikuz0u.x0.com/td/?date=20080822#p05" target="_blank" rel="noopener noreffer ">http://kikuz0u.x0.com/td/?date=20080822#p05</a></p>
+</li>
+<li>
+<p><a href="http://twinturbo.org/security/defcon-16-%E2%80%93-the-tools/" target="_blank" rel="noopener noreffer ">http://twinturbo.org/security/defcon-16-%E2%80%93-the-tools/</a></p>
+</li>
+<li>
+<p><a href="http://lair.moria.org/blog/archives/94" target="_blank" rel="noopener noreffer ">http://lair.moria.org/blog/archives/94</a></p>
+</li>
+<li>
+<p><a href="http://bobmah.wordpress.com/2008/08/19/defcon-16-list-of-tools-and-stuff-released/" target="_blank" rel="noopener noreffer ">http://bobmah.wordpress.com/2008/08/19/defcon-16-list-of-tools-and-stuff-released/</a></p>
+</li>
+<li>
+<p><a href="http://www.portal4gamers.de/wordpress/index.php/2008/08/19/defcon-16-slides-and-tools/" target="_blank" rel="noopener noreffer ">http://www.portal4gamers.de/wordpress/index.php/2008/08/19/defcon-16-slides-and-tools/</a></p>
+</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2008-08-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" data-title="DEFCON 16: The Tools not the Toools" data-via="mubix" data-hashtags="Hacking"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" data-hashtag="Hacking"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" data-title="DEFCON 16: The Tools not the Toools"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" data-title="DEFCON 16: The Tools not the Toools"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" data-title="DEFCON 16: The Tools not the Toools"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2008/2008824defcon-16-the-tools-not-the-toools-html/" data-title="DEFCON 16: The Tools not the Toools"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/hacking/">Hacking</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2008/200886defcon-presents-come-early-html/" class="prev" rel="prev" title="Defcon presents come early!"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Defcon presents come early!</a>
+            <a href="/posts/2008/2008827multi-boot-security-livecd-dvd-html/" class="next" rel="next" title="Multi-Boot Security LiveCD DVD">Multi-Boot Security LiveCD DVD<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Buying Internal Domain Access - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Buying Internal Domain Access" />
+<meta property="og:description" content="NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH
+For anyone who knows me, they know that I&rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&rsquo;t quite explain. It all started with the following hypothesis:
+Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2016/buying-internal-domain-access/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-12-29T07:35:28-05:00" />
+<meta property="article:modified_time" content="2016-12-29T07:35:28-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Buying Internal Domain Access"/>
+<meta name="twitter:description" content="NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH
+For anyone who knows me, they know that I&rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&rsquo;t quite explain. It all started with the following hypothesis:
+Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2016/buying-internal-domain-access/" /><link rel="prev" href="https://malicious.link/posts/2016/passwordreq-no-a-hacker-prospective/" /><link rel="next" href="https://malicious.link/posts/2017/2017-shmoocon-hiring-list/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Buying Internal Domain Access",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2016\/buying-internal-domain-access\/"
+        },"genre": "posts","keywords": "dns","wordcount":  1052 ,
+        "url": "https:\/\/malicious.link\/posts\/2016\/buying-internal-domain-access\/","datePublished": "2016-12-29T07:35:28-05:00","dateModified": "2016-12-29T07:35:28-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Buying Internal Domain Access</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2016-12-29">2016-12-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1052 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#microsoft">Microsoft</a></li>
+      </ul>
+    </li>
+    <li><a href="#analysis">Analysis</a></li>
+    <li><a href="#one-more-thing">One More Thing&hellip;</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><strong>NOTE: I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH</strong></p>
+<p>For anyone who knows me, they know that I&rsquo;ve been obsessed with DNS for a long time. However, in this post I will show results of something I can&rsquo;t quite explain. It all started with the following hypothesis:</p>
+<p>Windows systems make DNS/NetBIOS/LLMNR requests to find the domain controllers they logged into even when they are no longer attached to the domain.</p>
+<p>This has already been proven with attacks like <a href="https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack" target="_blank" rel="noopener noreffer ">MS15-011</a> and other attacks that aim to <a href="https://blog.ahmednabeel.com/abusing-kerberos-to-ntlm-fallback-to-defeat-windows-authentication/" target="_blank" rel="noopener noreffer ">bypass BitLocker Full-Disk Encryption</a>. So I added a twist, I thought that maybe, just maybe, that Windows will automatically add a <code>.com</code> on to the end of these requests when attempting to find them. If I buy these domains then there is a chance I can gain <strong>code execution</strong> using Group Policy or supplying logon scripts (BAT files).</p>
+<p>Why do I think this? Because of past Def Con talks like:</p>
+<ul>
+<li>DEFCON 19: Bit-squatting: DNS Hijacking Without Exploitation
+<ul>
+<li><a href="https://www.youtube.com/watch?v=aT7mnSstKGs" target="_blank" rel="noopener noreffer ">https://www.youtube.com/watch?v=aT7mnSstKGs</a></li>
+</ul>
+</li>
+<li>DEFCON 21 - DNS May Be Hazardous to Your Health - Robert Stucke
+<ul>
+<li><a href="https://www.youtube.com/watch?v=ZPbyDSvGasw" target="_blank" rel="noopener noreffer ">https://www.youtube.com/watch?v=ZPbyDSvGasw</a></li>
+</ul>
+</li>
+</ul>
+<p>But&hellip; how on earth would you ever know what a internal domain controller is called? I started by searching for pastebin posts with <code>%LOGONSERVER%</code>. This netted a few results, but when I searched for the same thing on gist.github.com I found something pretty surprising:</p>
+<h3 id="microsoft">Microsoft</h3>
+<p>Yes, I found a gist by what seems to be a Microsoft employee:</p>
+<ul>
+<li>Source:
+<ul>
+<li><a href="https://gist.github.com/AArnott/8b39bd70630302f5c630" target="_blank" rel="noopener noreffer ">https://gist.github.com/AArnott/8b39bd70630302f5c630</a></li>
+<li>has been deleted  - w00tw00t!!</li>
+</ul>
+</li>
+</ul>
+<p><em>(To Microsoft, I&rsquo;m fully willing to transfer the domain or null route it until it expires, whichever you prefer)</em></p>
+<p><strong>WE INTERRUPT THIS BLOG POST TO TALK ABOUT THE SERIOUS OSINT TREASURE THESE TYPES FILES AND ENVIRONMENTAL VARIABLES ARE</strong></p>
+<p>We will break down a few of the pieces that provide OSINT value:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">COMPUTERNAME</span> <span class="o">=</span> ANDARNO-X1
+</span></span><span class="line"><span class="cl"><span class="nv">USERDNSDOMAIN</span> <span class="o">=</span> REDMOND.CORP.MICROSOFT.COM
+</span></span><span class="line"><span class="cl"><span class="nv">USERDOMAIN</span> <span class="o">=</span> REDMOND
+</span></span><span class="line"><span class="cl"><span class="nv">USERDOMAIN_ROAMINGPROFILE</span> <span class="o">=</span> REDMOND
+</span></span><span class="line"><span class="cl"><span class="nv">USERNAME</span> <span class="o">=</span> andarno
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Full domain name, user and computer name help to identify what the naming schemes are internally.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">ChocolateyInstall</span> <span class="o">=</span> C:<span class="se">\P</span>rogramData<span class="se">\c</span>hocolatey
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><a href="https://chocolatey.org/" target="_blank" rel="noopener noreffer ">Chocolatey</a> is in use and possible allowed in the domain. This tool has a few persistence options, and local privilege escalation paths.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">SSH_AGENT_PID</span> <span class="o">=</span> <span class="m">9316</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SSH_AUTH_SOCK</span> <span class="o">=</span> /tmp/ssh-rbPyaDrkXVLz/agent.10020
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Honestly I&rsquo;ve never seen these options on a Windows box so I&rsquo;m going to assume they are the result of <a href="https://www.cygwin.com/" target="_blank" rel="noopener noreffer ">Cygwin</a> being installed and running with valid keys being in use. Again, another tool that provides possibilities for persistence <a href="http://www.hexacorn.com/blog/category/autostart-persistence/" target="_blank" rel="noopener noreffer ">beyond the standard Run keys</a>.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">Path</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\g</span>it<span class="se">\V</span>SIXSuppression<span class="se">\p</span>ackages<span class="se">\N</span>erdbank.GitVersioning.1.1.2-rc<span class="se">\b</span>uild<span class="se">\N</span>ativeBinaries/amd64
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft Visual Studio 14.0<span class="se">\C</span>ommon7<span class="se">\I</span>DE<span class="se">\C</span>ommonExtensions<span class="se">\M</span>icrosoft<span class="se">\T</span>estWindow
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft SDKs<span class="se">\T</span>ypeScript<span class="se">\1</span>.5
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>SBuild<span class="se">\1</span>4.0<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft Visual Studio 14.0<span class="se">\C</span>ommon7<span class="se">\I</span>DE<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft Visual Studio 14.0<span class="se">\V</span>C<span class="se">\B</span>IN
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft Visual Studio 14.0<span class="se">\C</span>ommon7<span class="se">\T</span>ools<span class="p">;</span>C:<span class="se">\W</span>INDOWS<span class="se">\M</span>icrosoft.NET<span class="se">\F</span>ramework<span class="se">\v</span>4.0.30319
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft Visual Studio 14.0<span class="se">\V</span>C<span class="se">\V</span>CPackages
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\H</span>TML Help Workshop
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft Visual Studio 14.0<span class="se">\T</span>eam Tools<span class="se">\P</span>erformance Tools
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\W</span>indows Kits<span class="se">\1</span>0<span class="se">\b</span>in<span class="se">\x</span><span class="m">86</span>
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\M</span>icrosoft SDKs<span class="se">\W</span>indows<span class="se">\v</span>10.0A<span class="se">\b</span>in<span class="se">\N</span>ETFX 4.6 Tools<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\t</span>ools<span class="se">\C</span>onEmuPack
+</span></span><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\t</span>ools<span class="se">\C</span>onEmuPack<span class="se">\C</span>onEmu
+</span></span><span class="line"><span class="cl">C:<span class="se">\W</span>INDOWS<span class="se">\s</span>ystem32
+</span></span><span class="line"><span class="cl">C:<span class="se">\W</span>INDOWS
+</span></span><span class="line"><span class="cl">C:<span class="se">\W</span>INDOWS<span class="se">\S</span>ystem32<span class="se">\W</span>bem
+</span></span><span class="line"><span class="cl">C:<span class="se">\W</span>INDOWS<span class="se">\S</span>ystem32<span class="se">\W</span>indowsPowerShell<span class="se">\v</span>1.0<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\G</span>it<span class="se">\c</span>md
+</span></span><span class="line"><span class="cl">C:<span class="se">\W</span>INDOWS<span class="se">\s</span>ystem32<span class="se">\c</span>onfig<span class="se">\s</span>ystemprofile<span class="se">\.</span>dnx<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogram Files<span class="se">\M</span>icrosoft DNX<span class="se">\D</span>nvm<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\P</span>rogram Files<span class="se">\M</span>icrosoft SQL Server<span class="se">\1</span>20<span class="se">\T</span>ools<span class="se">\B</span>inn<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\W</span>indows Kits<span class="se">\1</span>0<span class="se">\W</span>indows Performance Toolkit<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\P</span>rogram Files <span class="o">(</span>x86<span class="o">)</span><span class="se">\n</span>odejs<span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\.</span>dnx<span class="se">\r</span>untimes<span class="se">\d</span>nx-clr-win-x86.1.0.0-beta7-12328<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\.</span>dnx<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">c:<span class="se">\u</span>sers<span class="se">\a</span>ndarno<span class="se">\t</span>ools
+</span></span><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\A</span>ppData<span class="se">\L</span>ocal<span class="se">\C</span>ode<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">C:<span class="se">\P</span>rogramData<span class="se">\c</span>hocolatey<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\a</span>ndarno<span class="se">\A</span>ppData<span class="se">\R</span>oaming<span class="se">\n</span>pm
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Anyone who has ever done <a href="https://sensepost.com/blog/2016/rattleridentifying-and-exploiting-dll-preloading-vulnerabilities/" target="_blank" rel="noopener noreffer ">DLL hijacking / preloading</a> will see a lot of opportunities in a PATH variable this gigantic.</p>
+<p>There is a lot more fun to be had in similar output pasted across the Internet but lets get back to our regularly scheduled blog post. Here is the juice:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">LOGONSERVER = \\CO1-RED-DC-11
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This probably means that 01, 02, and so on exist as well, but I decided just to go with a simple PoC and use the DC that I knew existed. After registering <code>c01-red-dc-11.com</code>, almost immediately I started to get DNS requests:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ns1.co1-red-dc-11.com
+</span></span><span class="line"><span class="cl">wap.co1-red-dc-11.com
+</span></span><span class="line"><span class="cl">www.co1-red-dc-11.com
+</span></span><span class="line"><span class="cl">mail.co1-red-dc-11.com
+</span></span><span class="line"><span class="cl">m.co1-red-dc-11.com
+</span></span><span class="line"><span class="cl">co1-red-dc-11.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The <code>ns1</code> and <code>www</code> were mostly just Internet scanners, but I did see a bunch of interesting requests</p>
+<h4 id="mailco1-red-dc-11com">mail.co1-red-dc-11.com</h4>
+<ul>
+<li>101 total queries in the first 24 hours</li>
+<li>27 unique servers querying</li>
+<li>Query types: A/AAAA/ANY/CNAME/MX/NS/SOA/TXT</li>
+</ul>
+<h4 id="mco1-red-dc-11com">m.co1-red-dc-11.com</h4>
+<ul>
+<li>1 total query in the first 24 hours</li>
+<li>1 unique servers querying</li>
+<li>Query types: A</li>
+</ul>
+<h4 id="co1-red-dc-11com">co1-red-dc-11.com</h4>
+<ul>
+<li>1841 total queries in the first 24 hours</li>
+<li>777 unique servers querying</li>
+<li>Query types: A/A6/AAAA/ANY/CNAME/DNSKEY/HINFO/MX/NAPTR/NS/PTR/SOA/SPF/SRV/TXT</li>
+</ul>
+<p>I have no idea if any of these DNS requests were by real Microsoft domain joined systems but looking at the contents of the requests I assume that a few were.</p>
+<h2 id="analysis">Analysis</h2>
+<p>I did this with a few other <code>%LOGONSERVER%</code>s and had similar DNS requests. I didn&rsquo;t see many packets coming in over SMB/445 because most places where a user would be away from their domain block 445 outbound. I tested out obtaining code execution in my LAB domain <code>SITTINGDUCK.INFO</code> and actually had to set up a VPN to a VPS just so that my lab victim could make 445 requests to the Internet.</p>
+<p>In my lab I was able to get authentication requests and code execution by using Impacket&rsquo;s <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/karmaSMB.py" target="_blank" rel="noopener noreffer ">karmaSMB.py</a> to send my victim a false <code>Logon.bat</code> very similar to the setup for <a href="https://www.coresecurity.com/blog/ms15-011-microsoft-windows-group-policy-real-exploitation-via-a-smb-mitm-attack" target="_blank" rel="noopener noreffer ">MS15-011</a>. Let me reiterate something:</p>
+<p><strong>I DID NOT ATTEMPT ANYTHING MORE THAN LOGGING AGAINST ANY OF THE DOMAINS I REGISTERED FOR THIS RESEARCH</strong></p>
+<p><strong>Is this conclusive proof?</strong> Certainly not, but it&rsquo;s a start and I&rsquo;m interested in what ya&rsquo;ll find.</p>
+<p><strong>Why might this work more than it has in the past?</strong> Because the only scenario where this is effective is when a Windows domain-joined machine has logged in to their real domain, and without logging out or shutting down (hibernate, or sleep are fine), is then connected to a network that allows 445 outbound. This is definitely becoming more commonplace as Windows becomes more friendly to actually successfully coming back from sleeping or hibernating (yes I&rsquo;m bitter ;), it was actually my primary reason for buying a Mac).</p>
+<p><strong>How can you find the LOGONSERVER of your client?</strong> Well, it&rsquo;s pretty easy to call someone up, pretend to be IT, and simply ask them what Domain Controller they are connected to ;-). Or.. if you are lucky you can find it pasted somewhere online.</p>
+<h2 id="one-more-thing">One More Thing&hellip;</h2>
+<p>I also tried to think in generalities, and yes, I am the proud owner of <code>DC01.com</code> which gets about 20 requests per second&hellip;</p>
+<p><strong>::evil laugh::</strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2016-12-29</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/" data-title="Buying Internal Domain Access" data-via="mubix" data-hashtags="dns"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/" data-hashtag="dns"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/" data-title="Buying Internal Domain Access"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/" data-title="Buying Internal Domain Access"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/" data-title="Buying Internal Domain Access"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2016/buying-internal-domain-access/" data-title="Buying Internal Domain Access"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/dns/">dns</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2016/passwordreq-no-a-hacker-prospective/" class="prev" rel="prev" title="Passwordreq No - A hacker prospective"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Passwordreq No - A hacker prospective</a>
+            <a href="/posts/2017/2017-shmoocon-hiring-list/" class="next" rel="next" title="2017 Shmoocon Hiring List">2017 Shmoocon Hiring List<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

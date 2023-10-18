@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Using Domain Controller Account Passwords To HashDump Domains - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Using Domain Controller Account Passwords To HashDump Domains" />
+<meta property="og:description" content="Since I follow both Carlos Perez and Benjamin Delpy on Twitter, something caught my eye on August 2nd, soon after Benjamin Delpy drops DCSync:
+@Carlos_Perez haha, if yes, it will be a 0d ;)
+No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
+&mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) August 2, 2015 And then later on August 28th, again about the DC$ account (Domain Controller computer account):" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2015-09-15T07:35:28-05:00" />
+<meta property="article:modified_time" content="2015-09-15T07:35:28-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Using Domain Controller Account Passwords To HashDump Domains"/>
+<meta name="twitter:description" content="Since I follow both Carlos Perez and Benjamin Delpy on Twitter, something caught my eye on August 2nd, soon after Benjamin Delpy drops DCSync:
+@Carlos_Perez haha, if yes, it will be a 0d ;)
+No, like always it needs some rights ;) DA is cool, maybe DC$ is enough
+&mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) August 2, 2015 And then later on August 28th, again about the DC$ account (Domain Controller computer account):"/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" /><link rel="prev" href="https://malicious.link/posts/2015/2015-derbycon-hiring-list/" /><link rel="next" href="https://malicious.link/posts/2015/get-passwordlastset-time-for-domain-controller-accounts/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Using Domain Controller Account Passwords To HashDump Domains",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2015\/using-domain-controller-account-passwords-to-hashdump-domains\/"
+        },"genre": "posts","keywords": "domain controllers, dcsync, hashdump, passwords, mimikatz","wordcount":  371 ,
+        "url": "https:\/\/malicious.link\/posts\/2015\/using-domain-controller-account-passwords-to-hashdump-domains\/","datePublished": "2015-09-15T07:35:28-05:00","dateModified": "2015-09-15T07:35:28-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Using Domain Controller Account Passwords To HashDump Domains</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2015-09-15">2015-09-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;371 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>Since I follow both <a href="https://twitter.com/carlos_perez" target="_blank" rel="noopener noreffer ">Carlos Perez</a> and <a href="https://twitter.com/gentilkiwi" target="_blank" rel="noopener noreffer ">Benjamin Delpy</a> on Twitter, something caught my eye on August 2nd, soon after <a href="https://twitter.com/gentilkiwi" target="_blank" rel="noopener noreffer ">Benjamin Delpy</a> drops <a href="https://twitter.com/gentilkiwi/status/627977943923490816" target="_blank" rel="noopener noreffer ">DCSync</a>:</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/Carlos_Perez?ref_src=twsrc%5Etfw">@Carlos_Perez</a> haha, if yes, it will be a 0d ;)<br>No, like always it needs some rights ;) DA is cool, maybe DC$ is enough</p>&mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) <a href="https://twitter.com/gentilkiwi/status/627980725074153473?ref_src=twsrc%5Etfw">August 2, 2015</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>And then later on August 28th, again about the DC$ account (Domain Controller computer account):</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/mimikatz?src=hash&amp;ref_src=twsrc%5Etfw">#mimikatz</a> DCSync make logs with &#39;Directory Service Access&#39; DS-Replication-Get-Changes*<br>Except if you use a DC account <a href="http://t.co/QAChOGU3z7">pic.twitter.com/QAChOGU3z7</a></p>&mdash; 🥝🏳️‍🌈 Benjamin Delpy (@gentilkiwi) <a href="https://twitter.com/gentilkiwi/status/637402457740562432?ref_src=twsrc%5Etfw">August 28, 2015</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>Because DCSync is calling on &ldquo;sync&rdquo; based APIs of Active Directory, that are, by default, used only by Domain Controllers, all Domain Controller computer accounts would have the ability to do this as well as the Domain/Enterprise Admins.</p>
+<p>Anyone who&rsquo;s ever administered an Active Directory, knows that computer accounts change their passwords automatically. How often do they change them?</p>
+<p><a href="https://support.microsoft.com/en-us/kb/154501" target="_blank" rel="noopener noreffer ">https://support.microsoft.com/en-us/kb/154501</a>:</p>
+<blockquote>
+<p>&ldquo;Machine account passwords are regularly changed for security purposes. By default, on Windows NT-based computers, the machine account password automatically changes every <strong>seven days</strong>. Starting with Windows 2000-based computers, the machine account password automatically changes every <strong>30 days</strong>.&rdquo;</p>
+</blockquote>
+<p>PSSSST!! That article is about how to <strong>DISABLE</strong> automatic password changing</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2015/activedirectory_muhaha.jpg"
+        data-srcset="/images/2015/activedirectory_muhaha.jpg, /images/2015/activedirectory_muhaha.jpg 1.5x, /images/2015/activedirectory_muhaha.jpg 2x"
+        data-sizes="auto"
+        alt="/images/2015/activedirectory_muhaha.jpg"
+        title="/images/2015/activedirectory_muhaha.jpg" /></p>
+<p>Alright. So, I&rsquo;m not going to go into &ldquo;how&rdquo; to get the hashes for a computer account, but if you&rsquo;ve ever dumped passwords before, the computer accounts are the ones with the &ldquo;$&rdquo; on the end. Find the ones that are domain controllers, match up the hashes, and use <a href="https://github.com/CoreSecurity/impacket/blob/master/examples/secretsdump.py" target="_blank" rel="noopener noreffer ">Impacket&rsquo;s secretsdump.py</a> to your heart&rsquo;s content. (Or until the password changes for that DC, then you use another one to dump it again, oh, did I not mention that computers don&rsquo;t change their passwords all at the same time in that 30 day window?)</p>
+<p>Remember, Domain Controller&rsquo;s don&rsquo;t have a lot of other permissions, so you need to use the &ldquo;<code>-just-dc</code>&rdquo; option in SecretsDump in order for it to just do the domain dump:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python secretsdump.py -hashes aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 -just-dc LAB/DC2k8_1\$@172.16.102.15
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Impacket v0.9.14-dev - Copyright 2002-2015 Core Security Technologies
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
+</span></span><span class="line"><span class="cl">[*] Using the DRSUAPI method to get NTDS.DIT secrets
+</span></span><span class="line"><span class="cl">Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span class="line"><span class="cl">Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span><span class="line"><span class="cl">krbtgt:502:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Happy #HackersDay</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2015-09-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" data-title="Using Domain Controller Account Passwords To HashDump Domains" data-via="mubix" data-hashtags="domain controllers,dcsync,hashdump,passwords,mimikatz"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" data-hashtag="domain controllers"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" data-title="Using Domain Controller Account Passwords To HashDump Domains"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" data-title="Using Domain Controller Account Passwords To HashDump Domains"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" data-title="Using Domain Controller Account Passwords To HashDump Domains"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2015/using-domain-controller-account-passwords-to-hashdump-domains/" data-title="Using Domain Controller Account Passwords To HashDump Domains"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/domain-controllers/">domain controllers</a>,&nbsp;<a href="/tags/dcsync/">dcsync</a>,&nbsp;<a href="/tags/hashdump/">hashdump</a>,&nbsp;<a href="/tags/passwords/">passwords</a>,&nbsp;<a href="/tags/mimikatz/">mimikatz</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2015/2015-derbycon-hiring-list/" class="prev" rel="prev" title="2015 DerbyCon Hiring List"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>2015 DerbyCon Hiring List</a>
+            <a href="/posts/2015/get-passwordlastset-time-for-domain-controller-accounts/" class="next" rel="next" title="Get PasswordLastSet Time For Domain Controller Accounts">Get PasswordLastSet Time For Domain Controller Accounts<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

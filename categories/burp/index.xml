@@ -1,111 +1,49 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>burp on malicious.link</title>
-    <link>https://malicious.link/categories/burp/</link>
-    <description>Recent content in burp on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sat, 30 Jan 2010 17:00:13 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/burp/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>@RSnake ’s RFI List in Burp Suite</title>
-      <link>https://malicious.link/post/2010/2010-01-30-rsnake-s-rfi-list-in-burp-suite/</link>
-      <pubDate>Sat, 30 Jan 2010 17:00:13 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-01-30-rsnake-s-rfi-list-in-burp-suite/</guid>
-      <description>&lt;p&gt;First of all, get Robert @RSnake Hansen&amp;rsquo;s RFI list here:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/&#34;&gt;http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;it&amp;rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cat rfi-locations.dat | grep -v &amp;#34;^#&amp;#34; | awk -F &amp;#39;?&amp;#39; &amp;#39;{print $1}&amp;#39; | sort -u &amp;gt; rsnake_list.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder. If it pops any of them, not only have you better identified what is running on the site, but you might have just found RFI.&lt;/p&gt;
-&lt;p&gt;But I wanted to take this a step further:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201001_rsnake_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;The OSVDB archive allows you to download their entire database of vulnerabilities (after signing up for an account). I downloaded the CSV version so that I could parse it similar to how I did RSnakes. However, it definitely wasn&amp;rsquo;t that easy.&lt;/p&gt;
-&lt;p&gt;I downloaded osvd-csv.latest.tar.gz, extracted it and ran the following:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;cat * | grep -i &amp;#34;remote file inclusion&amp;#34; | grep -v &amp;#34;,0$&amp;#34; | awk -F &amp;#34;,&amp;#34; &amp;#39;{print $13}&amp;#39; | sed &amp;#39;s/^&amp;#34;//&amp;#39; | set &amp;#39;s/&amp;#34;$//&amp;#39; | sort -u &amp;gt; osvdb_rfi.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Which got me close. About 3 hours of manual editing after that and I had another list of ~1750 possible remote file inclusions. Is this a full proof way of getting every possibility from the database? Definitely not, but it&amp;rsquo;s close, and I&amp;rsquo;d love to see some one modify and tweak my bash line to get it even closer. (Or find a completely different way)&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Update&lt;/strong&gt; on 2010-02-01 14:17 by Rob Fuller&lt;/p&gt;
-&lt;p&gt;RSnake has updated his list, same link, same file name with about 2300 RFIs now.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Brute-Forcing Compatibility</title>
-      <link>https://malicious.link/post/2009/2009-11-19-brute-forcing-compatibility/</link>
-      <pubDate>Thu, 19 Nov 2009 20:20:00 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-11-19-brute-forcing-compatibility/</guid>
-      <description>&lt;p&gt;Idea came thanks to cktricky from: &lt;a href=&#34;http://cktricky.blogspot.com/&#34;&gt;http://cktricky.blogspot.com/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&amp;rsquo;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &amp;ldquo;Google Bot gets to see everything&amp;rdquo; feature. Well, I had an idea to take Burp&amp;rsquo;s Intruder and &amp;ldquo;Brute Force&amp;rdquo; any compatibility coding that a site may have. Especially if there is a restricted section of the page that you know is there, but don&amp;rsquo;t have access to.&lt;/p&gt;
-&lt;p&gt;To start off you need a list of user agents. I pulled mine from the User-Agent Switcher lists I found on the web since they are in easily parsed XML.&lt;/p&gt;
-&lt;p&gt;From: &lt;a href=&#34;http://www1.qainsight.net:8080/2007/05/18/Four+Links+To+UserAgent+List+And+An+Update+To+The+Useragent+Import.aspx&#34;&gt;Qainsight&amp;rsquo;s UA Lists&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;I downloaded: &lt;a href=&#34;http://qainsight.net/content/binary/AgentStrings20070517.xml&#34;&gt;http://qainsight.net/content/binary/AgentStrings20070517.xml&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;There are plenty of ways to parse XML in your scripting language of choice but here is some dirty bash script that worked for me:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cat AgentStrings20070517.xml | grep &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;useragent=&amp;#34;&lt;/span&gt; | grep -v &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*&amp;#34;&lt;/span&gt; | awk -F &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;{print $4}&amp;#39;&lt;/span&gt; &amp;gt; useragents.txt
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next, we set up our Intruder instance:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200911_useragent_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;And import useragents.txt into Intruder and kick it off.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/200911_useragent_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;If any of the &amp;lsquo;payloads&amp;rsquo; come back with anything different, it&amp;rsquo;s definitely something to look into.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Burp Tip of the Day - Nikto db import</title>
-      <link>https://malicious.link/post/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</link>
-      <pubDate>Sat, 10 Oct 2009 12:31:10 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</guid>
-      <description>&lt;p&gt;CKTricky over at &lt;a href=&#34;http://cktricky.blogspot.com&#34;&gt;http://cktricky.blogspot.com&lt;/a&gt; has been running an awesome Burp Tip of the Day series on his blog. After seeing him use &lt;a href=&#34;http://cktricky.blogspot.com/2009/09/btod-nikto-thru-burp-masking-nikto.html&#34;&gt;Nikto through Burp&lt;/a&gt;. I decided to see if I could just export the list of checks to a text file so that I could use them over and over in Intruder. After a bit of awk and sed hell I figured it out, and submited it to him for acceptance to his BTotD series. Yesterday it was posted ;-)&lt;/p&gt;
-&lt;p&gt;Here: &lt;a href=&#34;http://cktricky.blogspot.com/2009/10/btod-importing-nikto-db-to-intruder.html&#34;&gt;http://cktricky.blogspot.com/2009/10/btod-importing-nikto-db-to-intruder.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Here is the ugly command I came up with:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat /pentest/web/nikto/plugins/db_tests | awk -F &amp;quot;,&amp;quot; &#39;{print $4}&#39; | sed &#39;s/^&amp;quot;*//;s/&amp;quot;$//&#39; | sed &#39;s/^@CGIDIRS//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN//&#39; | sed &#39;s/^///&#39; &amp;gt; ~/nikto_burp.txt1&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;What you are sacrificing here are the checks for the CGIDIRS, ADMIN, NUKE, POSTNUKE, and PHPMYADMIN interfaces. Personally, I&amp;rsquo;ve modified this script a bit, but you can modify it how best fits your tests:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;cat /pentest/web/nikto/plugins/db_tests | awk -F &amp;quot;,&amp;quot; &#39;{print $4}&#39; | sed &#39;s/^&amp;quot;*//;s/&amp;quot;$//&#39; | sed &#39;s/^@CGIDIRS/cgi-bin//;s/@ADMIN//;s/^@NUKE//;s/^@POSTNUKE//;s/^@PHPMYADMIN/phpMyAdmin//&#39; | sed &#39;s/^///&#39; &amp;gt; ~/nikto_burp.txt&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;So that I could cover at least the most common cgi and phpmyadmin directories&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Burp Suite v1.2 Released</title>
-      <link>https://malicious.link/post/2008/2008-12-15-burp-suite-v12-released/</link>
-      <pubDate>Mon, 15 Dec 2008 04:39:09 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2008/2008-12-15-burp-suite-v12-released/</guid>
-      <description>&lt;p&gt; It’s official Burp Suite 1.2 is officially released to the masses. It includes a whole host of new features. Mainly (the ones spoke of in the &lt;a href=&#34;http://blog.portswigger.net/2008/12/burp-suite-v12-released.html&#34;&gt;blog post about the release&lt;/a&gt;):&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Site map showing information accumulated about target applications in tree and table form&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Suite-level target scope configuration, driving numerous individual tool actions&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Display filters on site map and Proxy request history&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Suite-wide search function&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Support for invisible proxying&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Fully fledged web vulerability scanning (&lt;a href=&#34;http://www.portswigger.net/suite/download.html&#34;&gt;pro version only&lt;/a&gt;)&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Ability to save and restore state (&lt;a href=&#34;http://www.portswigger.net/suite/download.html&#34;&gt;pro version only&lt;/a&gt;)&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;You can download the new version at &lt;a href=&#34;http://www.portswigger.net/suite/download.html&#34;&gt;http://www.portswigger.net/suite/download.html&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>burp - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/burp/</link>
+        <description>burp - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Sat, 30 Jan 2010 17:00:13 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/burp/" rel="self" type="application/rss+xml" /><item>
+    <title>@RSnake ’s RFI List in Burp Suite</title>
+    <link>https://malicious.link/posts/2010/2010-01-30-rsnake-s-rfi-list-in-burp-suite/</link>
+    <pubDate>Sat, 30 Jan 2010 17:00:13 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2010/2010-01-30-rsnake-s-rfi-list-in-burp-suite/</guid>
+    <description><![CDATA[First of all, get Robert @RSnake Hansen&rsquo;s RFI list here:
+http://ha.ckers.org/blog/20100129/large-list-of-rfis-1000/
+it&rsquo;s a great list, but as soon as I saw it, I was like.. hmm.. how can I use that? Well, being that I am a Burp fan, I parsed the .dat with the following line:
+1 cat rfi-locations.dat | grep -v &#34;^#&#34; | awk -F &#39;?&#39; &#39;{print $1}&#39; | sort -u &gt; rsnake_list.txt This pulls his list down to 906 entries which you can load in to Burp and hammer away with Intruder.]]></description>
+</item>
+<item>
+    <title>Brute-Forcing Compatibility</title>
+    <link>https://malicious.link/posts/2009/2009-11-19-brute-forcing-compatibility/</link>
+    <pubDate>Thu, 19 Nov 2009 20:20:00 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-11-19-brute-forcing-compatibility/</guid>
+    <description><![CDATA[Idea came thanks to cktricky from: http://cktricky.blogspot.com/
+A bunch of sites on the web give you different pages depending on the browser you use to view it. I know when I was a web developer compatibility was the bane of my existence, as I&rsquo;m sure it still is for all the web devs out there. Well, sometimes this leads to bad coding practices, or even the old &ldquo;Google Bot gets to see everything&rdquo; feature.]]></description>
+</item>
+<item>
+    <title>Burp Tip of the Day - Nikto db import</title>
+    <link>https://malicious.link/posts/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</link>
+    <pubDate>Sat, 10 Oct 2009 12:31:10 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2009/2009-10-10-burp-tip-of-the-day-nikto-db-import/</guid>
+    <description><![CDATA[CKTricky over at http://cktricky.blogspot.com has been running an awesome Burp Tip of the Day series on his blog. After seeing him use Nikto through Burp. I decided to see if I could just export the list of checks to a text file so that I could use them over and over in Intruder. After a bit of awk and sed hell I figured it out, and submited it to him for acceptance to his BTotD series.]]></description>
+</item>
+<item>
+    <title>Burp Suite v1.2 Released</title>
+    <link>https://malicious.link/posts/2008/2008-12-15-burp-suite-v12-released/</link>
+    <pubDate>Mon, 15 Dec 2008 04:39:09 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2008/2008-12-15-burp-suite-v12-released/</guid>
+    <description><![CDATA[It’s official Burp Suite 1.2 is officially released to the masses. It includes a whole host of new features. Mainly (the ones spoke of in the blog post about the release):
+Site map showing information accumulated about target applications in tree and table form
+Suite-level target scope configuration, driving numerous individual tool actions
+Display filters on site map and Proxy request history
+Suite-wide search function
+Support for invisible proxying]]></description>
+</item>
+</channel>
 </rss>

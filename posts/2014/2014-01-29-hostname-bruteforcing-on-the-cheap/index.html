@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Hostname bruteforcing on the cheap - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="Hostname bruteforcing on the cheap" />
+<meta property="og:description" content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&rsquo;t support the 0 you can simply use the same number parallel uses ala:
+cat subdomains.txt | xargs -P 122 -I subdomain dig &#43;noall subdomain." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2014-01-29T18:07:08-05:00" />
+<meta property="article:modified_time" content="2014-01-29T18:07:08-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Hostname bruteforcing on the cheap"/>
+<meta name="twitter:description" content="Quick update: As @MikeDamm points out, xargs has a -P option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use -P 0 to do the same thing as -j0 with parallel, but if your version doesn&rsquo;t support the 0 you can simply use the same number parallel uses ala:
+cat subdomains.txt | xargs -P 122 -I subdomain dig &#43;noall subdomain."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" /><link rel="prev" href="https://malicious.link/posts/2014/2014-01-18-attacker-ghost-stories-shmoocon-2014/" /><link rel="next" href="https://malicious.link/posts/2014/2014-02-19-iterative-dns-brute-forcing/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Hostname bruteforcing on the cheap",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2014\/2014-01-29-hostname-bruteforcing-on-the-cheap\/"
+        },"genre": "posts","wordcount":  1209 ,
+        "url": "https:\/\/malicious.link\/posts\/2014\/2014-01-29-hostname-bruteforcing-on-the-cheap\/","datePublished": "2014-01-29T18:07:08-05:00","dateModified": "2014-01-29T18:07:08-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Hostname bruteforcing on the cheap</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span>&nbsp;<span class="post-category">included in <a href="/categories/cli/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>cli</a>&nbsp;<a href="/categories/dig/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>dig</a>&nbsp;<a href="/categories/dns/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>dns</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2014-01-29">2014-01-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1209 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><hr>
+<p><strong>Quick update</strong>: As <a href="http://twitter.com/mikedamm" target="_blank" rel="noopener noreffer ">@MikeDamm</a> <a href="http://twitter.com/mikedamm/status/428725199068864512" target="_blank" rel="noopener noreffer ">points out</a>, xargs has a <code>-P</code> option that can do the same thing I&rsquo;m using parallel for. If you have a supported version of xargs you can use <code>-P 0</code> to do the same thing as <code>-j0</code> with parallel, but if your version doesn&rsquo;t support the <code>0</code> you can simply use the same number parallel uses ala:</p>
+<ul>
+<li><code>cat subdomains.txt | xargs -P 122 -I subdomain dig +noall subdomain.microsoft.com +answer</code></li>
+</ul>
+<p>This results in roughly the same completion time as it&rsquo;s parallel counterpart. Thanks @MikeDamm!</p>
+<hr>
+<p>There are some great discussions on the NoVA Hackers mailing list. One such discussion was about what the best way to do dns hostname brute forcing was and which tool is better than another. For me, I just use the command line and then parse the results (or just ask the deepmagic.com database ;-)</p>
+<p>Here is what I do:</p>
+<p>First, you need a good list of DNS sub domains / hostnames. Personally I use the list provided over at <a href="http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/" target="_blank" rel="noopener noreffer ">http://www.ethicalhack3r.co.uk/zone-transfers-on-the-alexa-top-1-million/</a> (with a few minor tweaks). If you haven&rsquo;t read that post and follow-on posts you really should. But take the list and save it locally. Then just run the following command:</p>
+<ul>
+<li><code>cat subdomains.txt | xargs -t -I subdomain dig +noall subdomain.microsoft.com +answer</code></li>
+</ul>
+<p>Now, xargs is great but does one thing at a time and can be quite slow if your subdomains list is large. With the use of the amazing tool GNU parallel you can get done in a matter of seconds, well, that or knock over your home router.</p>
+<ul>
+<li><code>cat subdomains.txt | parallel -k -j0 dig +noall {}.microsoft.com +answer</code></li>
+</ul>
+<p>Warning: the -j0 option maxes out the possible file handles and jobs that your CPU/kernel can handle, which usually destroys VMs. Just a smaller job count like 100 or 50 if you want the speed without the crash ;-)</p>
+<p>with an output something list this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">parallel: Warning: Only enough file handles to run 122 jobs in parallel.
+</span></span><span class="line"><span class="cl">Raising ulimit -n or /etc/security/limits.conf may help.
+</span></span><span class="line"><span class="cl">parallel: Warning: No more file handles. Raising ulimit -n or /etc/security/limits.conf may help.
+</span></span><span class="line"><span class="cl">mail.microsoft.com.	2369	IN	A	131.107.125.5
+</span></span><span class="line"><span class="cl">www.microsoft.com.	0	IN	CNAME	toggle.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">toggle.www.ms.akadns.net. 0	IN	CNAME	g.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">g.www.ms.akadns.net.	0	IN	CNAME	lb1.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">lb1.www.ms.akadns.net.	263	IN	A	64.4.11.42
+</span></span><span class="line"><span class="cl">m.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
+</span></span><span class="line"><span class="cl">origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
+</span></span><span class="line"><span class="cl">ftp.microsoft.com.	0	IN	CNAME	ftp.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">ftp.microsoft.akadns.net. 259	IN	A	64.4.17.176
+</span></span><span class="line"><span class="cl">mobile.microsoft.com.	0	IN	CNAME	origin.mobile.ms.akadns.net.
+</span></span><span class="line"><span class="cl">origin.mobile.ms.akadns.net. 300 IN	A	65.55.186.235
+</span></span><span class="line"><span class="cl">smtp.microsoft.com.	3600	IN	A	131.107.115.215
+</span></span><span class="line"><span class="cl">smtp.microsoft.com.	3600	IN	A	131.107.115.214
+</span></span><span class="line"><span class="cl">smtp.microsoft.com.	3600	IN	A	205.248.106.64
+</span></span><span class="line"><span class="cl">smtp.microsoft.com.	3600	IN	A	205.248.106.30
+</span></span><span class="line"><span class="cl">smtp.microsoft.com.	3600	IN	A	205.248.106.32
+</span></span><span class="line"><span class="cl">smtp.microsoft.com.	3600	IN	A	131.107.115.212
+</span></span><span class="line"><span class="cl">search.microsoft.com.	0	IN	CNAME	search.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">search.microsoft.akadns.net. 0	IN	CNAME	search.msn.com.edgesuite.net.
+</span></span><span class="line"><span class="cl">search.msn.com.edgesuite.net. 0	IN	CNAME	a134.g.akamai.net.
+</span></span><span class="line"><span class="cl">a134.g.akamai.net.	19	IN	A	209.107.220.27
+</span></span><span class="line"><span class="cl">a134.g.akamai.net.	19	IN	A	209.107.220.35
+</span></span><span class="line"><span class="cl">dev.microsoft.com.	0	IN	CNAME	msdn.microsoft.com.
+</span></span><span class="line"><span class="cl">msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
+</span></span><span class="line"><span class="cl">img.microsoft.com.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
+</span></span><span class="line"><span class="cl">i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
+</span></span><span class="line"><span class="cl">a1475.g.akamai.net.	20	IN	A	165.254.158.48
+</span></span><span class="line"><span class="cl">a1475.g.akamai.net.	20	IN	A	165.254.158.9
+</span></span><span class="line"><span class="cl">news.microsoft.com.	0	IN	CNAME	msnews.microsoft.com.
+</span></span><span class="line"><span class="cl">msnews.microsoft.com.	3600	IN	A	207.46.248.16
+</span></span><span class="line"><span class="cl">mail2.microsoft.com.	3600	IN	A	131.107.115.215
+</span></span><span class="line"><span class="cl">beta.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">connect.microsoft.akadns.net. 300 IN	A	65.52.103.84
+</span></span><span class="line"><span class="cl">support.microsoft.com.	0	IN	CNAME	mso-geo.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">mso-geo.microsoft.akadns.net. 0	IN	CNAME	support.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">support.microsoft.akadns.net. 175 IN	A	157.56.56.139
+</span></span><span class="line"><span class="cl">my.microsoft.com.	3600	IN	A	134.170.255.29
+</span></span><span class="line"><span class="cl">help.microsoft.com.	0	IN	CNAME	help.msn.com.
+</span></span><span class="line"><span class="cl">mail3.microsoft.com.	3600	IN	A	131.107.115.214
+</span></span><span class="line"><span class="cl">download.microsoft.com.	0	IN	CNAME	download.microsoft.com.nsatc.net.
+</span></span><span class="line"><span class="cl">download.microsoft.com.nsatc.net. 0 IN	CNAME	main.dl.ms.akadns.net.
+</span></span><span class="line"><span class="cl">main.dl.ms.akadns.net.	0	IN	CNAME	download.microsoft.com.edgesuite.net.
+</span></span><span class="line"><span class="cl">download.microsoft.com.edgesuite.net. 0	IN CNAME a954.dscms.akamai.net.
+</span></span><span class="line"><span class="cl">a954.dscms.akamai.net.	0	IN	CNAME	a954.dscms.akamai.net.0.1.cn.akamaitech.net.
+</span></span><span class="line"><span class="cl">a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.184
+</span></span><span class="line"><span class="cl">a954.dscms.akamai.net.0.1.cn.akamaitech.net. 1 IN A 69.31.75.168
+</span></span><span class="line"><span class="cl">shop.microsoft.com.	3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">shop.microsoft.com.	3600	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">games.microsoft.com.	3600	IN	A	207.46.166.10
+</span></span><span class="line"><span class="cl">business.microsoft.com.	3600	IN	A	65.55.57.98
+</span></span><span class="line"><span class="cl">ws.microsoft.com.	0	IN	CNAME	ws.microsoft.com.nsatc.net.
+</span></span><span class="line"><span class="cl">gateway.microsoft.com.	3600	IN	A	131.107.16.142
+</span></span><span class="line"><span class="cl">gateway.microsoft.com.	3600	IN	A	131.107.16.143
+</span></span><span class="line"><span class="cl">members.microsoft.com.	0	IN	CNAME	members.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">members.microsoft.akadns.net. 219 IN	A	65.55.57.28
+</span></span><span class="line"><span class="cl">c.microsoft.com.	0	IN	CNAME	c.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">c.microsoft.akadns.net.	215	IN	A	65.55.58.199
+</span></span><span class="line"><span class="cl">g.microsoft.com.	0	IN	CNAME	g.msn.com.
+</span></span><span class="line"><span class="cl">g.msn.com.		0	IN	CNAME	g.msn.com.nsatc.net.
+</span></span><span class="line"><span class="cl">g.msn.com.nsatc.net.	142	IN	A	131.253.34.154
+</span></span><span class="line"><span class="cl">mail4.microsoft.com.	3600	IN	A	205.248.106.64
+</span></span><span class="line"><span class="cl">mail1.microsoft.com.	3600	IN	A	131.107.115.212
+</span></span><span class="line"><span class="cl">apps.microsoft.com.	0	IN	CNAME	apps.windows.akadns.net.
+</span></span><span class="line"><span class="cl">apps.windows.akadns.net. 0	IN	CNAME	services.windows.akadns.net.
+</span></span><span class="line"><span class="cl">services.windows.akadns.net. 0	IN	CNAME	services-perf.windows.akadns.net.
+</span></span><span class="line"><span class="cl">services-perf.windows.akadns.net. 46 IN	A	134.170.30.204
+</span></span><span class="line"><span class="cl">email.microsoft.com.	1989	IN	A	157.55.150.73
+</span></span><span class="line"><span class="cl">i.microsoft.com.	0	IN	CNAME	i.toggle.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">i.toggle.www.ms.akadns.net. 0	IN	CNAME	i.g.www.ms.akadns.net.
+</span></span><span class="line"><span class="cl">i.g.www.ms.akadns.net.	0	IN	CNAME	i.microsoft.com.edgesuite.net.
+</span></span><span class="line"><span class="cl">i.microsoft.com.edgesuite.net. 0 IN	CNAME	a1475.g.akamai.net.
+</span></span><span class="line"><span class="cl">a1475.g.akamai.net.	8	IN	A	23.62.111.114
+</span></span><span class="line"><span class="cl">a1475.g.akamai.net.	8	IN	A	23.62.111.104
+</span></span><span class="line"><span class="cl">s.microsoft.com.	0	IN	CNAME	reroute.microsoft.com.
+</span></span><span class="line"><span class="cl">reroute.microsoft.com.	3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">reroute.microsoft.com.	3600	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">community.microsoft.com. 0	IN	CNAME	communities.microsoft.com.
+</span></span><span class="line"><span class="cl">communities.microsoft.com. 3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">communities.microsoft.com. 3600	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">connect.microsoft.com.	0	IN	CNAME	connect.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">connect.microsoft.akadns.net. 152 IN	A	65.52.103.84
+</span></span><span class="line"><span class="cl">rss.microsoft.com.	796	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">rss.microsoft.com.	796	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">home.microsoft.com.	0	IN	CNAME	redir.blu.cb3.glbdns.microsoft.com.
+</span></span><span class="line"><span class="cl">redir.blu.cb3.glbdns.microsoft.com. 116	IN A	65.55.206.229
+</span></span><span class="line"><span class="cl">jp.microsoft.com.	3600	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">jp.microsoft.com.	3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">labs.microsoft.com.	3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">labs.microsoft.com.	3600	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">exchange.microsoft.com.	2120	IN	A	65.55.31.35
+</span></span><span class="line"><span class="cl">marketing.microsoft.com. 3600	IN	A	207.46.242.110
+</span></span><span class="line"><span class="cl">mac.microsoft.com.	3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">mac.microsoft.com.	3600	IN	A	65.55.58.201
+</span></span><span class="line"><span class="cl">feeds.microsoft.com.	3600	IN	A	65.55.57.98
+</span></span><span class="line"><span class="cl">partners.microsoft.com.	0	IN	CNAME	pmc.partners.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">pmc.partners.microsoft.akadns.net. 300 IN A	131.107.119.14
+</span></span><span class="line"><span class="cl">feed.microsoft.com.	0	IN	CNAME	feed.trafficmanager.net.
+</span></span><span class="line"><span class="cl">feed.trafficmanager.net. 0	IN	CNAME	feedna.cloudapp.net.
+</span></span><span class="line"><span class="cl">feedna.cloudapp.net.	10	IN	A	65.52.9.172
+</span></span><span class="line"><span class="cl">partner.microsoft.com.	0	IN	CNAME	portal.partners.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">portal.partners.microsoft.akadns.net. 300 IN A	131.107.119.163
+</span></span><span class="line"><span class="cl">cs.microsoft.com.	0	IN	CNAME	wedcs.trafficmanager.net.
+</span></span><span class="line"><span class="cl">wedcs.trafficmanager.net. 0	IN	CNAME	wedcseus.cloudapp.net.
+</span></span><span class="line"><span class="cl">wedcseus.cloudapp.net.	10	IN	A	137.116.48.250
+</span></span><span class="line"><span class="cl">forums.microsoft.com.	0	IN	CNAME	forums.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">forums.microsoft.akadns.net. 600 IN	A	65.52.103.99
+</span></span><span class="line"><span class="cl">meet.microsoft.com.	3600	IN	A	131.107.1.71
+</span></span><span class="line"><span class="cl">e.microsoft.com.	3600	IN	A	191.234.1.50
+</span></span><span class="line"><span class="cl">autodiscover.microsoft.com. 2358 IN	A	131.107.125.5
+</span></span><span class="line"><span class="cl">im.microsoft.com.	3600	IN	A	131.107.1.75
+</span></span><span class="line"><span class="cl">sip.microsoft.com.	2228	IN	A	65.55.30.130
+</span></span><span class="line"><span class="cl">me.microsoft.com.	0	IN	CNAME	edm.cloudapp.net.
+</span></span><span class="line"><span class="cl">dig: &#39;m..microsoft.com&#39; is not a legal name (empty label)
+</span></span><span class="line"><span class="cl">billing.microsoft.com.	0	IN	CNAME	paymenthubprod.trafficmanager.net.
+</span></span><span class="line"><span class="cl">paymenthubprod.trafficmanager.net. 0 IN	CNAME	paymenthubuxprod1.cloudapp.net.
+</span></span><span class="line"><span class="cl">paymenthubuxprod1.cloudapp.net.	10 IN	A	168.62.198.20
+</span></span><span class="line"><span class="cl">profile.microsoft.com.	0	IN	CNAME	profile.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">profile.microsoft.akadns.net. 335 IN	A	64.4.11.47
+</span></span><span class="line"><span class="cl">research.microsoft.com.	806	IN	A	131.107.65.14
+</span></span><span class="line"><span class="cl">sharepoint.microsoft.com. 3463	IN	A	64.4.6.100
+</span></span><span class="line"><span class="cl">sharepoint.microsoft.com. 3463	IN	A	65.55.39.10
+</span></span><span class="line"><span class="cl">appdev.microsoft.com.	0	IN	CNAME	appdev.windows.akadns.net.
+</span></span><span class="line"><span class="cl">appdev.windows.akadns.net. 131	IN	A	134.170.30.200
+</span></span><span class="line"><span class="cl">newsletters.microsoft.com. 3150	IN	A	207.46.248.35
+</span></span><span class="line"><span class="cl">advertising.microsoft.com. 0	IN	CNAME	advertising.microsoft.com.nsatc.net.
+</span></span><span class="line"><span class="cl">advertising.microsoft.com.nsatc.net. 245 IN A	65.52.100.46
+</span></span><span class="line"><span class="cl">catalog.microsoft.com.	0	IN	CNAME	genuine.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">genuine.microsoft.akadns.net. 300 IN	A	65.55.58.177
+</span></span><span class="line"><span class="cl">social.microsoft.com.	0	IN	CNAME	lb.social.ms.akadns.net.
+</span></span><span class="line"><span class="cl">lb.social.ms.akadns.net. 54	IN	A	65.52.103.78
+</span></span><span class="line"><span class="cl">events.microsoft.com.	1776	IN	A	64.4.11.31
+</span></span><span class="line"><span class="cl">events.microsoft.com.	1776	IN	A	65.55.58.192
+</span></span><span class="line"><span class="cl">ajax.microsoft.com.	0	IN	CNAME	mscomajax.vo.msecnd.net.
+</span></span><span class="line"><span class="cl">mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.164
+</span></span><span class="line"><span class="cl">mscomajax.vo.msecnd.net. 208	IN	A	65.54.81.12
+</span></span><span class="line"><span class="cl">developer.microsoft.com. 0	IN	CNAME	msdn.microsoft.com.
+</span></span><span class="line"><span class="cl">msdn.microsoft.com.	0	IN	CNAME	msdn.microsoft.akadns.net.
+</span></span><span class="line"><span class="cl">msdn.microsoft.akadns.net. 600	IN	A	157.56.148.19
+</span></span><span class="line"><span class="cl">bbs.microsoft.com.	0	IN	CNAME	transfer.microsoft.com.
+</span></span><span class="line"><span class="cl">transfer.microsoft.com.	3600	IN	A	64.4.10.152
+</span></span><span class="line"><span class="cl">backoffice.microsoft.com. 3600	IN	A	64.4.11.37
+</span></span><span class="line"><span class="cl">backoffice.microsoft.com. 3600	IN	A	65.55.58.201
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2014-01-29</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" data-title="Hostname bruteforcing on the cheap" data-via="mubix"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" data-title="Hostname bruteforcing on the cheap"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" data-title="Hostname bruteforcing on the cheap"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" data-title="Hostname bruteforcing on the cheap"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2014/2014-01-29-hostname-bruteforcing-on-the-cheap/" data-title="Hostname bruteforcing on the cheap"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2014/2014-01-18-attacker-ghost-stories-shmoocon-2014/" class="prev" rel="prev" title="Attacker Ghost Stories - ShmooCon 2014"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Attacker Ghost Stories - ShmooCon 2014</a>
+            <a href="/posts/2014/2014-02-19-iterative-dns-brute-forcing/" class="next" rel="next" title="Iterative DNS Brute Forcing">Iterative DNS Brute Forcing<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

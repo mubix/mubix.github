@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>LDAPSearch Reference - Malicious Link - Blog by mubix - Rob Fuller</title><meta name="Description" content="This is a cool blog"><meta property="og:title" content="LDAPSearch Reference" />
+<meta property="og:description" content="ldapsearch is a extremely powerful tool, especially for Windows Active Directory enumeration. It&rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&rsquo;s easy to forget that Active Directory isn&rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://malicious.link/posts/2022/ldapsearch-reference/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-14T11:00:00-05:00" />
+<meta property="article:modified_time" content="2022-05-14T11:00:00-05:00" /><meta property="og:site_name" content="My cool site" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="LDAPSearch Reference"/>
+<meta name="twitter:description" content="ldapsearch is a extremely powerful tool, especially for Windows Active Directory enumeration. It&rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&rsquo;s easy to forget that Active Directory isn&rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy."/>
+<meta name="application-name" content="malicious.link">
+<meta name="apple-mobile-web-app-title" content="malicious.link"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://malicious.link/posts/2022/ldapsearch-reference/" /><link rel="prev" href="https://malicious.link/posts/2022/beautiful-basics-lesson-02/" /><link rel="next" href="https://malicious.link/posts/2022/blocking-iso-mounting/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "LDAPSearch Reference",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/malicious.link\/posts\/2022\/ldapsearch-reference\/"
+        },"genre": "posts","keywords": "ldap, ldapsearch, notes","wordcount":  2799 ,
+        "url": "https:\/\/malicious.link\/posts\/2022\/ldapsearch-reference\/","datePublished": "2022-05-14T11:00:00-05:00","dateModified": "2022-05-14T11:00:00-05:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Rob Fuller"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/about"> About </a><a class="menu-item" href="/brandon"> Brandon </a><a class="menu-item" href="/categories"> Categories </a><a class="menu-item" href="/posts"> Posts </a><a class="menu-item" href="/start"> Start </a><a class="menu-item" href="/tags"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Malicious Link - Blog by mubix - Rob Fuller"># malicious.link</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/about" title="">About</a><a class="menu-item" href="/brandon" title="">Brandon</a><a class="menu-item" href="/categories" title="">Categories</a><a class="menu-item" href="/posts" title="">Posts</a><a class="menu-item" href="/start" title="">Start</a><a class="menu-item" href="/tags" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">LDAPSearch Reference</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://twitter.com/mubix" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Rob Fuller</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-05-14">2022-05-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2799 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;14 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#basic-usage">Basic Usage</a></li>
+        <li><a href="#ldap-search-filters">LDAP Search Filters</a></li>
+        <li><a href="#interesting-attributes">Interesting Attributes</a></li>
+        <li><a href="#null-session-starting">Null Session Starting</a></li>
+      </ul>
+    </li>
+    <li><a href="#interesting-searches">Interesting Searches</a>
+      <ul>
+        <li><a href="#laps-passwords">LAPs Passwords</a></li>
+        <li><a href="#bitlocker-recovery-passwords">BitLocker Recovery Passwords</a></li>
+        <li><a href="#gmsa-nt-hash">GMSA NT Hash</a></li>
+        <li><a href="#certificate-authorities-and-templates">Certificate Authorities and Templates</a></li>
+        <li><a href="#nested-group-membership">Nested Group Membership</a></li>
+        <li><a href="#find-exchange-servers">Find Exchange Servers</a></li>
+        <li><a href="#deleted--tombstoned-objects">Deleted / Tombstoned objects</a></li>
+        <li><a href="#replication-metadata">Replication Metadata</a></li>
+        <li><a href="#ntsecuritydescriptor">NTSecurityDescriptor</a></li>
+        <li><a href="#ad-password-dumping-via-ldap">AD Password Dumping via LDAP</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a>
+      <ul>
+        <li><a href="#ropnops-talk-at-troopers-2019">Ropnop&rsquo;s Talk at Troopers 2019</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p><code>ldapsearch</code> is a extremely powerful tool, especially for Windows Active Directory enumeration. It&rsquo;s one of my primary tools when performing pentesting or red teaming against an environment with Active Directory, but also comes in quiet handy to know as many times it can come default installed or part of a base image, so its a bit Living-Off-The-Land-esq. Another point towards ldapsearch is that it&rsquo;s easy to forget that Active Directory isn&rsquo;t the only LDAP server in most environments and the ability to utilize a tool like this can come in extremely handy.</p>
+<p>If you want to find Active Directory LDAP servers, use the following command:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ dig -t SRV _ldap._tcp.dc._msdcs.sittingduck.info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="basic-usage">Basic Usage</h3>
+<ul>
+<li><code>-x</code> Basic Authentication, you usually use this if you are going to include a username and password (instead of something like a kerberos ticket)</li>
+<li><code>-h</code> IP address or hostname</li>
+<li><code>-H</code> URL to force protocol and/or add port number <code>-H ldaps://dc1.b.com</code> or <code>-H ldaps://dc1.b.com:6636</code> (636 is the default port for LDAPS, but can be connected to on 389 and is sometimes found with an additional 6 in the front as shown). <code>3269</code> is the Global Catalog port and can also accept LDAPS queries sometimes (you may have to ignore cert errors for this to work, depending on your setup).</li>
+<li><code>-b</code> Base, generally this is Distinguished Name format for example <code>dc=google,dc=com</code></li>
+<li><code>-D</code> Username and Domain (not FQDN) <code>&quot;sittingduck\uberuser&quot;</code>. For maximum Kerberos based authentication you can also specify your user in <code>uberuser@SITTINGDUCK.INFO</code> form, but ldapsearch will auto user the current user in Kerberos tickets available, so this can be omitted</li>
+<li><code>-LLL</code> This removes all of the extra log output of the search</li>
+<li><code>-Y GSSAPI</code> Used for Kerberos based authentication, however this is on by default and not needed (if installed), but you can specify it just to test to see if SASL is installed. <code>apt install libsasl2-modules-gssapi-mit</code> if it isn&rsquo;t. Once installed, you do not need to keep this on the command line.</li>
+<li><code>-E</code> is for <a href="https://ldapwiki.com/wiki/LDAPControlsList" target="_blank" rel="noopener noreffer ">extended controls</a> which are generally OIDs, but can also be:</li>
+<li><code>-E pr=1000/noprompt</code> By default <code>ldapsearch</code> will pull 1000 records maximum. Adding this it will pull 1000 records at a time until it has printed all results to the screen.</li>
+<li><code>-O minssf=0,maxssf=0</code> This option will fix some errors during SASL (Kerberos) authentication. Technically this shouldn&rsquo;t do anything based on the RFC, but it&rsquo;s essentially telling the LDAP protocol that there isn&rsquo;t a min or a max size for the authentication packets.</li>
+<li><code>-o ldif-wrap=no</code> This options makes the output non-wrapped, which is the best format to pull out things like certificates and other very long strings.</li>
+<li><code>-W</code> and <code>-w</code> - <code>-W</code> will prompt for the password, with <code>-w</code> you can specify the password on the command line. If you do not specify one of these <code>ldapsearch</code> will assume no password for the account. You can lock accounts out this way.</li>
+<li><code>LDAPTLS_REQCERT=never ldapsearch {arguments}</code> This is used when you are connecting to a self signed, or SSL enabled LDAP that your system cannot verify the certificate for.</li>
+<li><code>-N</code> Do not try to have the host name of your target DC attempted to perform a reverse DNS on the IP to match them. This is needed when the Domain Controller doesn&rsquo;t have a valid reverse DNS record from your standpoint on the network and you are using Kerberos.</li>
+</ul>
+<h3 id="ldap-search-filters">LDAP Search Filters</h3>
+<p>After the arguments comes the filter, then the attributes. Filters are like search terms. For example <code>&quot;(ms-Mcs-AdmPwdExpirationTtime=*)&quot;</code> is a search that says if the LDAP object has the <code>ms-Mcs-AdmPwdExpirationTtime</code> attribute and it&rsquo;s not empty. LDAP filters are a bit odd, as they need to be within parentheses completely. In order to do a search for <code>x</code> AND <code>y</code> you have to do something like this <code>(&amp;(x=*)(y=*))</code>. This search says only return results that have <code>x</code> and <code>y</code> and both are not empty. Here is a real world example:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&#34;(&amp;(&amp;(servicePrincipalName=*)(UserAccountControl:1.2.840.113556.1.4.803:=512))(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))&#34;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This says all objects that have <code>servicesPrincipalName</code> attributes, it is a normal account (512) <a href="https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/useraccountcontrol-manipulate-account-properties" target="_blank" rel="noopener noreffer ">see more here</a> AND is NOT <code>!</code>  disabled (2).</p>
+<p>Note: <code>1.2.840.113556.1.4.803</code> is an LDAP feature that says <code>LDAP_MATCHING_RULE_BIT_AND</code> which is basically a bitwise <code>AND</code>. For example, a standard user account is <code>512</code> but would be <code>514</code> if disabled, but a computer account is <code>4096</code> and <code>4098</code> if disabled. Used the bitwise function you can account for both scenarios since it&rsquo;s looking in the <code>2</code> binary location.</p>
+<p>Everything after the filter is selection of attributes. (also known as &ldquo;parameters&rdquo; if you are used to Powershell and AD Objects)</p>
+<h3 id="interesting-attributes">Interesting Attributes</h3>
+<ul>
+<li><code>msDS-Approx-Immed-Subordinates</code> - Gives you a count of objects directly below the specified &ldquo;Base&rdquo; <code>-b</code></li>
+<li><code>NTSecurityDescriptor</code> - This is the SDSF in binary and base64 format, and will only be displayed if you request it specifically for the object.</li>
+<li><code>msDS-ManagedPassword</code> - This is a at-runtime built attribute that is the current NT hash of the Group Managed Service Account GMSA. <strong>!WARNING!</strong> See below before querying.</li>
+<li><code>msFVE-RecoveryPassword</code> - This is also an at-runtine built attribute that is the current BitLocker secret key for the computer account you query. <strong>!WARNING!</strong> See below before querying.</li>
+</ul>
+<h3 id="null-session-starting">Null Session Starting</h3>
+<p>This can be done without any authentication and will give you a ton of information about the LDAP server in question (usually Active Directory):</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -h 192.168.80.100 -x -b <span class="s2">&#34;&#34;</span> -s base <span class="se">\*</span> +
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="example-output">Example Output</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># extended LDIF</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># LDAPv3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># base &lt;&gt; with scope baseObject</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># filter: (objectclass=*)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># requesting: * + </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">dn:
+</span></span><span class="line"><span class="cl">currentTime: 20220513212748.0Z
+</span></span><span class="line"><span class="cl">subschemaSubentry: <span class="nv">CN</span><span class="o">=</span>Aggregate,CN<span class="o">=</span>Schema,CN<span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>i
+</span></span><span class="line"><span class="cl"> nfo
+</span></span><span class="line"><span class="cl">dsServiceName: <span class="nv">CN</span><span class="o">=</span>NTDS Settings,CN<span class="o">=</span>DC2,CN<span class="o">=</span>Servers,CN<span class="o">=</span>Default-First-Site-Name,C
+</span></span><span class="line"><span class="cl"> <span class="nv">N</span><span class="o">=</span>Sites,CN<span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">namingContexts: <span class="nv">DC</span><span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">namingContexts: <span class="nv">CN</span><span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">namingContexts: <span class="nv">CN</span><span class="o">=</span>Schema,CN<span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">namingContexts: <span class="nv">DC</span><span class="o">=</span>DomainDnsZones,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">namingContexts: <span class="nv">DC</span><span class="o">=</span>ForestDnsZones,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">defaultNamingContext: <span class="nv">DC</span><span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">schemaNamingContext: <span class="nv">CN</span><span class="o">=</span>Schema,CN<span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">configurationNamingContext: <span class="nv">CN</span><span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">rootDomainNamingContext: <span class="nv">DC</span><span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.319
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.801
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.473
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.528
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.417
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.619
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.841
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.529
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.805
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.521
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.970
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1338
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.474
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1339
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1340
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1413
+</span></span><span class="line"><span class="cl">supportedControl: 2.16.840.1.113730.3.4.9
+</span></span><span class="line"><span class="cl">supportedControl: 2.16.840.1.113730.3.4.10
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1504
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1852
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.802
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1907
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1948
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1974
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.1341
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2026
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2064
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2065
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2066
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2090
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2205
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2204
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2206
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2211
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2239
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2255
+</span></span><span class="line"><span class="cl">supportedControl: 1.2.840.113556.1.4.2256
+</span></span><span class="line"><span class="cl">supportedLDAPVersion: <span class="m">3</span>
+</span></span><span class="line"><span class="cl">supportedLDAPVersion: <span class="m">2</span>
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxPoolThreads
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxPercentDirSyncRequests
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxDatagramRecv
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxReceiveBuffer
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: InitRecvTimeout
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxConnections
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxConnIdleTime
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxPageSize
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxBatchReturnMessages
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxQueryDuration
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxTempTableSize
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxResultSetSize
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MinResultSets
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxResultSetsPerConn
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxNotificationPerConn
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxValRange
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: MaxValRangeTransitive
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: ThreadMemoryLimit
+</span></span><span class="line"><span class="cl">supportedLDAPPolicies: SystemMemoryLimitPercent
+</span></span><span class="line"><span class="cl">highestCommittedUSN: <span class="m">2830648</span>
+</span></span><span class="line"><span class="cl">supportedSASLMechanisms: GSSAPI
+</span></span><span class="line"><span class="cl">supportedSASLMechanisms: GSS-SPNEGO
+</span></span><span class="line"><span class="cl">supportedSASLMechanisms: EXTERNAL
+</span></span><span class="line"><span class="cl">supportedSASLMechanisms: DIGEST-MD5
+</span></span><span class="line"><span class="cl">dnsHostName: dc2.sittingduck.info
+</span></span><span class="line"><span class="cl">ldapServiceName: sittingduck.info:dc2<span class="nv">$@</span>SITTINGDUCK.INFO
+</span></span><span class="line"><span class="cl">serverName: <span class="nv">CN</span><span class="o">=</span>DC2,CN<span class="o">=</span>Servers,CN<span class="o">=</span>Default-First-Site-Name,CN<span class="o">=</span>Sites,CN<span class="o">=</span>Configura
+</span></span><span class="line"><span class="cl"> tion,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">supportedCapabilities: 1.2.840.113556.1.4.800
+</span></span><span class="line"><span class="cl">supportedCapabilities: 1.2.840.113556.1.4.1670
+</span></span><span class="line"><span class="cl">supportedCapabilities: 1.2.840.113556.1.4.1791
+</span></span><span class="line"><span class="cl">supportedCapabilities: 1.2.840.113556.1.4.1935
+</span></span><span class="line"><span class="cl">supportedCapabilities: 1.2.840.113556.1.4.2080
+</span></span><span class="line"><span class="cl">supportedCapabilities: 1.2.840.113556.1.4.2237
+</span></span><span class="line"><span class="cl">isSynchronized: TRUE
+</span></span><span class="line"><span class="cl">isGlobalCatalogReady: TRUE
+</span></span><span class="line"><span class="cl">domainFunctionality: <span class="m">3</span>
+</span></span><span class="line"><span class="cl">forestFunctionality: <span class="m">3</span>
+</span></span><span class="line"><span class="cl">domainControllerFunctionality: <span class="m">6</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># search result</span>
+</span></span><span class="line"><span class="cl">search: <span class="m">2</span>
+</span></span><span class="line"><span class="cl">result: <span class="m">0</span> Success
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># numResponses: 2</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># numEntries: 1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>You can learn the <code>dnsHostName</code> of the LDAP server you pinged, the <code>dn</code> which is useful for picking your base search if you don&rsquo;t know it, the <code>domainFunctionality</code> level (aka the <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6dd88965-8feb-4369-ae7e-075985da8071" target="_blank" rel="noopener noreffer ">Domain Functional Level</a>) will give you a sense of what capabilities and GPOs can be set. The <code>supportedControl</code> and <code>supportedCapabilities</code> are more advanced topics, but these basically say what you can and can&rsquo;t do on the server.</p>
+<h2 id="interesting-searches">Interesting Searches</h2>
+<p>The following are searches that I&rsquo;ve found interesting or impactful in my experience.</p>
+<h3 id="laps-passwords">LAPs Passwords</h3>
+<p>This search will only show computers with LAPs enabled, and if you can read any passwords, what the password currently is.</p>
+<p>Notice that this user can read every password except <code>SDLEGACY2K3</code> and <code>SDEXCHANGE</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -LLL -h 192.168.80.10 -b <span class="s2">&#34;dc=sittingduck,dc=info&#34;</span> -x -D <span class="s2">&#34;sittingduck\uberuser&#34;</span> -w <span class="s2">&#34;ASDqwe123&#34;</span> <span class="s1">&#39;(ms-Mcs-AdmPwdExpirationtime=*)&#39;</span> ms-Mcs-AdmPwd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>DC1,OU<span class="o">=</span>Domain Controllers,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: f/0HG3<span class="o">)</span>7d5P+e<span class="p">;</span>/IE5wW8I/o//5<span class="o">)}</span>W
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>SDCLIENT_DAWIN7,OU<span class="o">=</span>LabComputers,OU<span class="o">=</span>Lab,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: /B+%R26cVSA1c0zOi<span class="o">[</span>-Z/#n1Q2sA,,
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>SDLEGACY2K3,OU<span class="o">=</span>LabComputers,OU<span class="o">=</span>Lab,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>SD_WSUS_2012,OU<span class="o">=</span>LabComputers,OU<span class="o">=</span>Lab,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: <span class="o">}</span>b+BC@p,7<span class="o">))</span>6pqxj3y<span class="o">]</span>MxBm9@h9Hy-
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>SDEXCHANGE,OU<span class="o">=</span>LabComputers,OU<span class="o">=</span>Lab,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>WIN-PM0ID6F0AHN,OU<span class="o">=</span>LabComputers,OU<span class="o">=</span>Lab,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: <span class="o">]]</span>3-%AN574#<span class="o">{</span>/%t55!S+0!/10OJC<span class="p">;</span>V
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>DC2,OU<span class="o">=</span>Domain Controllers,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">ms-Mcs-AdmPwd: kMo,85<span class="o">{</span>N<span class="o">(</span>uhUmWj183,3#T<span class="p">&amp;</span>d<span class="o">[</span>Aeddv
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="bitlocker-recovery-passwords">BitLocker Recovery Passwords</h3>
+<ul>
+<li>src: <a href="https://stackoverflow.com/a/50833203" target="_blank" rel="noopener noreffer ">https://stackoverflow.com/a/50833203</a></li>
+</ul>
+<p>The key on this one is narrowing down the search base to a small list or a single computer. The reason this is important is that the Domain Controller you are asking the password from has to do a bunch of decryption to calculate this attribute on the fly, if you ask for too many (like every machine in the Domain) the connection will be closed out due to timeout.  Don&rsquo;t be greedy, just get the one you need.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -h dc1.sittingduck.info -b <span class="s2">&#34;CN=WIN10COMP1,OU=Workstations,DC=sittingduck,DC=info&#34;</span> msfve-recoverypassword
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="gmsa-nt-hash">GMSA NT Hash</h3>
+<ul>
+<li>src: <a href="https://stealthbits.com/blog/securing-gmsa-passwords/" target="_blank" rel="noopener noreffer ">https://stealthbits.com/blog/securing-gmsa-passwords/</a></li>
+<li>src: <a href="https://github.com/SecureAuthCorp/impacket/pull/770" target="_blank" rel="noopener noreffer ">https://github.com/SecureAuthCorp/impacket/pull/770</a></li>
+</ul>
+<p>Group Managed Service Accounts (GMSA) have randomly generated passwords that are default/generally pretty long. The <code>msDS-ManagedPassword</code> in an at-runtime decrypted value that the Domain Controller has to construct in order to return, much like the BitLocker keys. However, unlike with BitLocker, generally there aren&rsquo;t very many GMSAs so it&rsquo;s less of a chance to knock over the DC if you get greedy and query them all.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ <span class="nv">LDAPTLS_REQCERT</span><span class="o">=</span>never ldapsearch -LLL -H ldaps://192.168.80.10 -x -D uberuser -w ASDqwe123 -o ldif-wrap<span class="o">=</span>no -b <span class="s1">&#39;dc=sittingduck,dc=info&#39;</span> <span class="s1">&#39;(&amp;(ObjectClass=msDS-GroupManagedServiceAccount))&#39;</span> msDS-ManagedPassword
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>TestGMSA,CN<span class="o">=</span>Managed Service Accounts,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msDS-ManagedPassword:: AQAAACQCAAAQABIBFAIcAq/tlcA3PziSdtjxwKwcpM9VAteZa9No6et8yDWzgEYj5yFDhzT0OMFtTA4qAI4M+sWjiUVqYhDwFItW+5FlhaJp8tm/fcAfIDc5MAsYOXgq3AIc6ofCpeJga6Jw4SX/EKmnQdsS7lGmXd/yh27qJGj6SS0vwk//D8cr1+6s43YB0TxUxyLrruupZmd4Ndx2PZ4L4zkWa/vlRlDzadyeGwji70q9sfjH5x7+l7V+w5JK7/hKfG48swD8koEK/bHyLxZa8eDMEoscAmnuC/CA/pTvdF6jfIYmAYMGZujOVkbXJjaCEPGA1+nBDqkOQ1NlLZu4Y6Es1bB3YVIv6agDICYAAJ3USvAd5t267x9PfdetWSfLGRt4qxMCmOwXO0nVWMJTSYfjC+Phc0QX/rrTimPptYvx2NnuAclbgj0Fvg0iZfOvHW0SwdKTyKCvGeL+UPz4Jwr2VAd+PX43GoUPD8uBhDrtzVSwUhtScDIvzGJYgvHrREnTUqaf9pENqkVpbdXHtpE/buIphVrPEg84e9fgNB2a/r6sZaPX+1C8e/5pbNO7qoQ4fqXSDPM3qh6ymlh2ouNRoP0kN4sLVUvW+cNX+YQk7UJDSnG3fANPtgquhi6B4OVqU2fpypUbFtd91Ju/9xZeuod508FqYHPT1aX86tBdLj4yq2/65ROupERLVhAAADPE7gxzEgAAM2YeWnISAAA<span class="o">=</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Once you have this blob of text, you need to convert it into the NT hash using this tool:</p>
+<p>(this is a slightly modified version of the script that <a href="https://twitter.com/agsolino" target="_blank" rel="noopener noreffer ">agsolino</a> posted)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">impacket.structure</span> <span class="kn">import</span> <span class="n">hexdump</span><span class="p">,</span> <span class="n">Structure</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">getopt</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Source from: https://github.com/SecureAuthCorp/impacket/pull/770#issuecomment-589243865</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">MSDS_MANAGEDPASSWORD_BLOB</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">structure</span> <span class="o">=</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;Version&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;Reserved&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;L&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;CurrentPasswordOffset&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;PreviousPasswordOffset&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;QueryPasswordIntervalOffset&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;UnchangedPasswordIntervalOffset&#39;</span><span class="p">,</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;CurrentPassword&#39;</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;PreviousPassword&#39;</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">#(&#39;AlignmentPadding&#39;,&#39;:&#39;),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;QueryPasswordInterval&#39;</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="s1">&#39;UnchangedPasswordInterval&#39;</span><span class="p">,</span><span class="s1">&#39;:&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Structure</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Structure</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;PreviousPasswordOffset&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">endData</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;QueryPasswordIntervalOffset&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">endData</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;PreviousPasswordOffset&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;CurrentPassword&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rawData</span><span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;CurrentPasswordOffset&#39;</span><span class="p">]:][:</span><span class="n">endData</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;CurrentPasswordOffset&#39;</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;PreviousPasswordOffset&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;PreviousPassword&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rawData</span><span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;PreviousPasswordOffset&#39;</span><span class="p">]:][:</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;QueryPasswordIntervalOffset&#39;</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;PreviousPasswordOffset&#39;</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;QueryPasswordInterval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rawData</span><span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;QueryPasswordIntervalOffset&#39;</span><span class="p">]:][:</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;UnchangedPasswordIntervalOffset&#39;</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;QueryPasswordIntervalOffset&#39;</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;UnchangedPasswordInterval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rawData</span><span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="s1">&#39;UnchangedPasswordIntervalOffset&#39;</span><span class="p">]:]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b64</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">opts</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">getopt</span><span class="o">.</span><span class="n">getopt</span><span class="p">(</span><span class="n">argv</span><span class="p">,</span><span class="s2">&#34;hvb:&#34;</span><span class="p">,[</span><span class="s2">&#34;base64=&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="n">getopt</span><span class="o">.</span><span class="n">GetoptError</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;gmsa.py -b &lt;msDS-ManagedPassword base64&gt; -v (optional verbose)&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">opt</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">opt</span> <span class="o">==</span> <span class="s1">&#39;-h&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;gmsa.py -b &lt;msDS-ManagedPassword base64&gt; -v (optional verbose)&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">opt</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&#34;-v&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">opt</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&#34;-b&#34;</span><span class="p">,</span> <span class="s2">&#34;--base64&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="n">b64</span> <span class="o">=</span> <span class="n">arg</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">b64</span> <span class="o">==</span> <span class="s2">&#34;&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;gmsa.py -b &lt;msDS-ManagedPassword base64&gt; -v (optional verbose)&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">test</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">blob</span> <span class="o">=</span> <span class="n">MSDS_MANAGEDPASSWORD_BLOB</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">blob</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">blob</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Cleartext Password&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">hexdump</span><span class="p">(</span><span class="n">blob</span><span class="p">[</span><span class="s1">&#39;CurrentPassword&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="kn">from</span> <span class="nn">Cryptodome.Hash</span> <span class="kn">import</span> <span class="n">MD4</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">hash</span> <span class="o">=</span> <span class="n">MD4</span><span class="o">.</span><span class="n">new</span> <span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">hash</span><span class="o">.</span><span class="n">update</span> <span class="p">(</span><span class="n">blob</span><span class="p">[</span><span class="s1">&#39;CurrentPassword&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;NTHash: </span><span class="si">{}</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">hash</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()))</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">   <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ python3 ./gmsa.py -b AQAAACQCAAAQABIBFAIcAq/tlcA3PziSdtjxwKwcpM9VAteZa9No6et8yDWzgEYj5yFDhzT0OMFtTA4qAI4M+sWjiUVqYhDwFItW+5FlhaJp8tm/fcAfIDc5MAsYOXgq3AIc6ofCpeJga6Jw4SX/EKmnQdsS7lGmXd/yh27qJGj6SS0vwk//D8cr1+6s43YB0TxUxyLrruupZmd4Ndx2PZ4L4zkWa/vlRlDzadyeGwji70q9sfjH5x7+l7V+w5JK7/hKfG48swD8koEK/bHyLxZa8eDMEoscAmnuC/CA/pTvdF6jfIYmAYMGZujOVkbXJjaCEPGA1+nBDqkOQ1NlLZu4Y6Es1bB3YVIv6agDICYAAJ3USvAd5t267x9PfdetWSfLGRt4qxMCmOwXO0nVWMJTSYfjC+Phc0QX/rrTimPptYvx2NnuAclbgj0Fvg0iZfOvHW0SwdKTyKCvGeL+UPz4Jwr2VAd+PX43GoUPD8uBhDrtzVSwUhtScDIvzGJYgvHrREnTUqaf9pENqkVpbdXHtpE/buIphVrPEg84e9fgNB2a/r6sZaPX+1C8e/5pbNO7qoQ4fqXSDPM3qh6ymlh2ouNRoP0kN4sLVUvW+cNX+YQk7UJDSnG3fANPtgquhi6B4OVqU2fpypUbFtd91Ju/9xZeuod508FqYHPT1aX86tBdLj4yq2/65ROupERLVhAAADPE7gxzEgAAM2YeWnISAAA<span class="o">=</span>
+</span></span><span class="line"><span class="cl"><span class="o">================================================================================</span>
+</span></span><span class="line"><span class="cl">NTHash: <span class="nv">78450c9611e6c9515e2a489f9b31cc3e</span>
+</span></span><span class="line"><span class="cl"><span class="o">================================================================================</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>If you want to learn more about GMSAs and a newer attack called the &ldquo;Golden GMSA&rdquo; check out the Sempris blog here: <a href="https://www.semperis.com/blog/golden-gmsa-attack/" target="_blank" rel="noopener noreffer ">https://www.semperis.com/blog/golden-gmsa-attack/</a></p>
+<h3 id="certificate-authorities-and-templates">Certificate Authorities and Templates</h3>
+<p>This is a list of certificate templates that are enabled on each certificate authority in the domain.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -LLL -b <span class="s2">&#34;CN=Enrollment Services,CN=Public Key Services,CN=Services,CN=Configuration,DC=sittingduck,DC=info&#34;</span> -h 192.168.80.10 -w <span class="s2">&#34;ASDqwe123&#34;</span> -D <span class="s2">&#34;uberuser&#34;</span>  certificateTemplates
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>Enrollment Services,CN<span class="o">=</span>Public Key Services,CN<span class="o">=</span>Services,CN<span class="o">=</span>Configuration
+</span></span><span class="line"><span class="cl"> ,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>sittingduck-W2KCA-CA,CN<span class="o">=</span>Enrollment Services,CN<span class="o">=</span>Public Key Services,CN<span class="o">=</span>S
+</span></span><span class="line"><span class="cl"> ervices,CN<span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">certificateTemplates: ExchangeUser
+</span></span><span class="line"><span class="cl">certificateTemplates: ExchangeUserSignature
+</span></span><span class="line"><span class="cl">certificateTemplates: EnrollmentAgentOffline
+</span></span><span class="line"><span class="cl">certificateTemplates: MachineEnrollmentAgent
+</span></span><span class="line"><span class="cl">certificateTemplates: EnrollmentAgent
+</span></span><span class="line"><span class="cl">certificateTemplates: CrossCA
+</span></span><span class="line"><span class="cl">certificateTemplates: CodeSigning
+</span></span><span class="line"><span class="cl">certificateTemplates: CEPEncryption
+</span></span><span class="line"><span class="cl">certificateTemplates: CAExchange
+</span></span><span class="line"><span class="cl">certificateTemplates: ClientAuth
+</span></span><span class="line"><span class="cl">certificateTemplates: Workstation
+</span></span><span class="line"><span class="cl">certificateTemplates: UserSignature
+</span></span><span class="line"><span class="cl">certificateTemplates: CTLSigning
+</span></span><span class="line"><span class="cl">certificateTemplates: SmartcardUser
+</span></span><span class="line"><span class="cl">certificateTemplates: SmartcardLogon
+</span></span><span class="line"><span class="cl">certificateTemplates: OfflineRouter
+</span></span><span class="line"><span class="cl">certificateTemplates: RASAndIASServer
+</span></span><span class="line"><span class="cl">certificateTemplates: OCSPResponseSigning
+</span></span><span class="line"><span class="cl">certificateTemplates: KeyRecoveryAgent
+</span></span><span class="line"><span class="cl">certificateTemplates: IPSECIntermediateOffline
+</span></span><span class="line"><span class="cl">certificateTemplates: IPSECIntermediateOnline
+</span></span><span class="line"><span class="cl">certificateTemplates: DirectoryEmailReplication
+</span></span><span class="line"><span class="cl">certificateTemplates: DomainControllerAuthentication
+</span></span><span class="line"><span class="cl">certificateTemplates: KerberosAuthentication
+</span></span><span class="line"><span class="cl">certificateTemplates: EFSRecovery
+</span></span><span class="line"><span class="cl">certificateTemplates: EFS
+</span></span><span class="line"><span class="cl">certificateTemplates: DomainController
+</span></span><span class="line"><span class="cl">certificateTemplates: WebServer
+</span></span><span class="line"><span class="cl">certificateTemplates: Machine
+</span></span><span class="line"><span class="cl">certificateTemplates: User
+</span></span><span class="line"><span class="cl">certificateTemplates: SubCA
+</span></span><span class="line"><span class="cl">certificateTemplates: Administrator
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="nested-group-membership">Nested Group Membership</h3>
+<p>A query like this:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -x -LLL -h dc1.sittingduck.info -w ASDqwe123 -D uberuser -b <span class="s2">&#34;dc=sittingduck,dc=info&#34;</span> <span class="s1">&#39;(memberOf=cn=Domain Admins,cn=Users,dc=SittingDuck,dc=info)&#39;</span> cn
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>will result in all of the accounts that have a <code>memberOf</code> attribute of Domain Admins. This will show you the first level of membership, but LDAP/AD actually has a way to identify nested membership using the <a href="https://ldapwiki.com/wiki/1.2.840.113556.1.4.1941" target="_blank" rel="noopener noreffer ">1.2.840.113556.1.4.1941</a> <a href="https://ldapwiki.com/wiki/OID" target="_blank" rel="noopener noreffer ">OID</a>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -x -LLL -h dc1.sittingduck.info -w ASDqwe123 -D uberuser -b <span class="s2">&#34;dc=sittingduck,dc=info&#34;</span> <span class="s1">&#39;(memberOf:1.2.840.113556.1.4.1941:=cn=Domain Admins,cn=Users,dc=sittingduck,dc=info)&#39;</span> cn
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>This will show you all Domain Admins even if they are in a group in a group in a group in a group.</p>
+<h3 id="find-exchange-servers">Find Exchange Servers</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -LLL -h 192.168.80.10 -o ldif-wrap<span class="o">=</span>no -x -D uberuser -w ASDqwe123 -b <span class="s2">&#34;cn=Configuration,dc=sittingduck,dc=info&#34;</span> <span class="s2">&#34;(objectCategory=msExchExchangeServer)&#34;</span> dn
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>SDEXCHANGE,CN<span class="o">=</span>Servers,CN<span class="o">=</span>Exchange Administrative Group <span class="o">(</span>FYDIBOHF23SPDLT<span class="o">)</span>,CN<span class="o">=</span>Administrative Groups,CN<span class="o">=</span>First Organization,CN<span class="o">=</span>Microsoft Exchange,CN<span class="o">=</span>Services,CN<span class="o">=</span>Configuration,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="deleted--tombstoned-objects">Deleted / Tombstoned objects</h3>
+<p>Looking at deleted and tombstoned objects won&rsquo;t always get you much information you can directly use, but sometimes there are passwords or other sensitive data stored in objects. (I don&rsquo;t believe deleting objects changes their permissions but I could be wrong here)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -h 192.168.80.10 -x -w ASDqwe123 -D uberuser -b <span class="s2">&#34;CN=Deleted Objects,DC=sittingduck,DC=info&#34;</span> -E <span class="s1">&#39;!1.2.840.113556.1.4.417&#39;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>For example here is a Computer account that was deleted:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># blah1</span>
+</span></span><span class="line"><span class="cl">DEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef, Deleted Objects, sittingduck.
+</span></span><span class="line"><span class="cl"> info
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>blah1<span class="se">\0</span>ADEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef,CN<span class="o">=</span>Deleted Objects,DC<span class="o">=</span>
+</span></span><span class="line"><span class="cl"> sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">objectClass: top
+</span></span><span class="line"><span class="cl">objectClass: person
+</span></span><span class="line"><span class="cl">objectClass: organizationalPerson
+</span></span><span class="line"><span class="cl">objectClass: user
+</span></span><span class="line"><span class="cl">objectClass: computer
+</span></span><span class="line"><span class="cl">cn:: <span class="nv">YmxhaDEKREVMOjJmN2IxOWIxLTlkZWUtNGE0OC04YmIwLWFkNjJlNmEyODdlZg</span><span class="o">==</span>
+</span></span><span class="line"><span class="cl">distinguishedName: <span class="nv">CN</span><span class="o">=</span>blah1<span class="se">\0</span>ADEL:2f7b19b1-9dee-4a48-8bb0-ad62e6a287ef,CN<span class="o">=</span>Dele
+</span></span><span class="line"><span class="cl"> ted Objects,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">instanceType: <span class="m">4</span>
+</span></span><span class="line"><span class="cl">whenCreated: 20220512041425.0Z
+</span></span><span class="line"><span class="cl">whenChanged: 20220512045921.0Z
+</span></span><span class="line"><span class="cl">uSNCreated: <span class="m">2663983</span>
+</span></span><span class="line"><span class="cl">isDeleted: TRUE
+</span></span><span class="line"><span class="cl">uSNChanged: <span class="m">2664044</span>
+</span></span><span class="line"><span class="cl">name:: <span class="nv">YmxhaDEKREVMOjJmN2IxOWIxLTlkZWUtNGE0OC04YmIwLWFkNjJlNmEyODdlZg</span><span class="o">==</span>
+</span></span><span class="line"><span class="cl">objectGUID:: sRl7L+6dSEqLsK1i5qKH7w<span class="o">==</span>
+</span></span><span class="line"><span class="cl">userAccountControl: <span class="m">4128</span>
+</span></span><span class="line"><span class="cl">objectSid:: <span class="nv">AQUAAAAAAAUVAAAAfS9vpuKLWG5ZpW7N9RUAAA</span><span class="o">==</span>
+</span></span><span class="line"><span class="cl">sAMAccountName: BLAH1$
+</span></span><span class="line"><span class="cl">lastKnownParent: <span class="nv">CN</span><span class="o">=</span>Computers,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">isRecycled: TRUE
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="replication-metadata">Replication Metadata</h3>
+<ul>
+<li>src: <a href="https://posts.specterops.io/hunting-with-active-directory-replication-metadata-1dab2f681b19" target="_blank" rel="noopener noreffer ">https://posts.specterops.io/hunting-with-active-directory-replication-metadata-1dab2f681b19</a></li>
+<li>src: <a href="https://stackoverflow.com/a/38710484" target="_blank" rel="noopener noreffer ">https://stackoverflow.com/a/38710484</a></li>
+</ul>
+<p>This is one place where ldapsearch isn&rsquo;t quite as cool as other tools, all of the base64 output. I did <a href="https://stackoverflow.com/a/38710484" target="_blank" rel="noopener noreffer ">find a great way to decode most of it</a> on StackOverflow:</p>
+<ul>
+<li><code>| perl -MMIME::Base64 -n -00 -e 's/\n +//g;s/(?&lt;=:: )(\S+)/decode_base64($1)/eg;print'</code></li>
+</ul>
+<p>Basically you are pipeing the output of <code>ldapsearch</code> into a bit of perl that Base64 decodes anything that looks like Base64.</p>
+<p>Back on track, there is a ton of great info in Replication metadata but the blog post from SpecterOps above.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -h 192.168.80.10 -o ldif-wrap<span class="o">=</span>no -x -w ASDqwe123 -D sittingduck<span class="se">\\</span>uberuser -b <span class="s2">&#34;CN=Administrator,CN=Users,DC=sittingduck,DC=info&#34;</span> msDS-ReplAttributeMetaData                       <span class="c1"># extended LDIF</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># LDAPv3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># base &lt;CN=Administrator,CN=Users,DC=sittingduck,DC=info&gt; with scope subtree</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># filter: (objectclass=*)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># requesting: msDS-ReplAttributeMetaData</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Administrator, Users, sittingduck.info</span>
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>Administrator,CN<span class="o">=</span>Users,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">msDS-ReplAttributeMetaData:: PERTX1JFUExfQVRUUl9NRVRBX0RBVEE+Cgk8cHN6QXR0cmlidXRlTmFtZT5tc0RTLVN1cHBvcnRlZEVuY3J5cHRpb25UeXBlczwvcHN6QXR0cmlidXRlTmFtZT4KCTxkd1ZlcnNpb24+MTwvZHdWZXJzaW9uPgoJPGZ0aW1lTGFzdE9y
+</span></span><span class="line"><span class="cl">aWdpbmF0aW5nQ2hhbmdlPjIwMTUtMTAtMTRUMDM6Mjg6MTRaPC9mdGltZUxhc3RPcmlnaW5hdGluZ0NoYW5nZT4KCTx1dWlkTGFzdE9yaWdpbmF0aW5nRHNhSW52b2NhdGlvbklEPjhkMmExZjVjLTU4ZDQtNGVmYS1iY2QyLWY3ZDg1ZWY1MzAxMzwvdXVpZExhc3RPcmlna
+</span></span><span class="line"><span class="cl">W5hdGluZ0RzYUludm9jYXRpb25JRD4KCTx1c25PcmlnaW5hdGluZ0NoYW5nZT4xMjc3NjwvdXNuT3JpZ2luYXRpbmdDaGFuZ2U+Cgk8dXNuTG9jYWxDaGFuZ2U+MTI3NzY8L3VzbkxvY2FsQ2hhbmdlPgoJPHBzekxhc3RPcmlnaW5hdGluZ0RzYUROPjwvcHN6TGFzdE9yaW
+</span></span><span class="line"><span class="cl">dpbmF0aW5nRHNhRE4+CjwvRFNfUkVQTF9BVFRSX01FVEFfREFUQT4KAA<span class="o">==</span>
+</span></span><span class="line"><span class="cl">msDS-ReplAttributeMetaData:: PERTX1JFUExfQVRUUl9NRVRBX0RBVEE+Cgk8cHN6QXR0cmlidXRlTmFtZT5sYXN0TG9nb25UaW1lc3RhbXA8L3BzekF0dHJpYnV0ZU5hbWU+Cgk8ZHdWZXJzaW9uPjI8L2R3VmVyc2lvbj4KCTxmdGltZUxhc3RPcmlnaW5hdGluZ0No
+</span></span><span class="line"><span class="cl">YW5nZT4yMDE3LTA2LTIwVDAwOjE3OjIyWjwvZnRpbWVMYXN0T3JpZ2luYXRpbmdDaGFuZ2U+Cgk8dXVpZExhc3RPcmlnaW5hdGluZ0RzYUludm9jYXRpb25JRD4yOWJkZWQ4MS0xMGRmLTQ0YTMtOGVkNi0xOWY1ODJjYjhiNGU8L3V1aWRMYXN0T3JpZ2luYXRpbmdEc2FJb
+</span></span><span class="line"><span class="cl">nZvY2F0aW9uSUQ+Cgk8dXNuT3JpZ2luYXRpbmdDaGFuZ2U+MzQzOTQ2PC91c25PcmlnaW5hdGluZ0NoYW5nZT4KCTx1c25Mb2NhbENoYW5nZT4zNDM5NDY8L3VzbkxvY2FsQ2hhbmdlPgoJPHBzekxhc3RPcmlnaW5hdGluZ0RzYUROPjwvcHN6TGFzdE9yaWdpbmF0aW5nRH
+</span></span><span class="line"><span class="cl">NhRE4+CjwvRFNfUkVQTF9BVFRSX01FVEFfREFUQT4KAA<span class="o">==</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>With the Perl trick:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ ldapsearch -h 192.168.80.10 -o ldif-wrap<span class="o">=</span>no -x -w ASDqwe123 -D sittingduck<span class="se">\\</span>uberuser -b <span class="s2">&#34;CN=Administrator,CN=Users,DC=sittingduck,DC=info&#34;</span> msDS-ReplAttributeMetaData <span class="p">|</span> perl -MMIME::Base64
+</span></span><span class="line"><span class="cl">-n -00 -e <span class="s1">&#39;s/\n +//g;s/(?&lt;=:: )(\S+)/decode_base64($1)/eg;print&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># extended LDIF</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># LDAPv3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># base &lt;CN=Administrator,CN=Users,DC=sittingduck,DC=info&gt; with scope subtree</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># filter: (objectclass=*)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># requesting: msDS-ReplAttributeMetaData</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Administrator, Users, sittingduck.info</span>
+</span></span><span class="line"><span class="cl">dn: <span class="nv">CN</span><span class="o">=</span>Administrator,CN<span class="o">=</span>Users,DC<span class="o">=</span>sittingduck,DC<span class="o">=</span>info
+</span></span><span class="line"><span class="cl">msDS-ReplAttributeMetaData:: &lt;DS_REPL_ATTR_META_DATA&gt;
+</span></span><span class="line"><span class="cl">        &lt;pszAttributeName&gt;msDS-SupportedEncryptionTypes&lt;/pszAttributeName&gt;
+</span></span><span class="line"><span class="cl">        &lt;dwVersion&gt;1&lt;/dwVersion&gt;
+</span></span><span class="line"><span class="cl">        &lt;ftimeLastOriginatingChange&gt;2015-10-14T03:28:14Z&lt;/ftimeLastOriginatingChange&gt;
+</span></span><span class="line"><span class="cl">        &lt;uuidLastOriginatingDsaInvocationID&gt;8d2a1f5c-58d4-4efa-bcd2-f7d85ef53013&lt;/uuidLastOriginatingDsaInvocationID&gt;
+</span></span><span class="line"><span class="cl">        &lt;usnOriginatingChange&gt;12776&lt;/usnOriginatingChange&gt;
+</span></span><span class="line"><span class="cl">        &lt;usnLocalChange&gt;12776&lt;/usnLocalChange&gt;
+</span></span><span class="line"><span class="cl">        &lt;pszLastOriginatingDsaDN&gt;&lt;/pszLastOriginatingDsaDN&gt;
+</span></span><span class="line"><span class="cl">&lt;/DS_REPL_ATTR_META_DATA&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">msDS-ReplAttributeMetaData:: &lt;DS_REPL_ATTR_META_DATA&gt;
+</span></span><span class="line"><span class="cl">        &lt;pszAttributeName&gt;lastLogonTimestamp&lt;/pszAttributeName&gt;
+</span></span><span class="line"><span class="cl">        &lt;dwVersion&gt;2&lt;/dwVersion&gt;
+</span></span><span class="line"><span class="cl">        &lt;ftimeLastOriginatingChange&gt;2017-06-20T00:17:22Z&lt;/ftimeLastOriginatingChange&gt;
+</span></span><span class="line"><span class="cl">        &lt;uuidLastOriginatingDsaInvocationID&gt;29bded81-10df-44a3-8ed6-19f582cb8b4e&lt;/uuidLastOriginatingDsaInvocationID&gt;
+</span></span><span class="line"><span class="cl">        &lt;usnOriginatingChange&gt;343946&lt;/usnOriginatingChange&gt;
+</span></span><span class="line"><span class="cl">        &lt;usnLocalChange&gt;343946&lt;/usnLocalChange&gt;
+</span></span><span class="line"><span class="cl">        &lt;pszLastOriginatingDsaDN&gt;&lt;/pszLastOriginatingDsaDN&gt;
+</span></span><span class="line"><span class="cl">&lt;/DS_REPL_ATTR_META_DATA&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="ntsecuritydescriptor">NTSecurityDescriptor</h3>
+<p>While I personally don&rsquo;t recall ever running into an instance where I wasn&rsquo;t able to read the security descriptor via ldapsearch, it&rsquo;s just because I&rsquo;ve only went after very specific objects and not that it never happens. Lee Christensen (<a href="https://twitter.com/tifkin_" target="_blank" rel="noopener noreffer ">@tifkin_</a>) figured out a way to read security descriptors as low privileged users. Honestly I don&rsquo;t know how it works, but here it is:</p>
+<p><a href="https://twitter.com/tifkin_/status/1372628611677753344" target="_blank" rel="noopener noreffer ">https://twitter.com/tifkin_/status/1372628611677753344</a></p>
+<blockquote>
+<p>Ever want to dump AD security descriptors from an OS X or Linux machine using ldapsearch as a low priv&rsquo;ed user? Add the following argument:</p>
+</blockquote>
+<p><code>-E '!1.2.840.113556.1.4.801=::MAMCAQc='</code></p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Ever want to dump AD security descriptors from an OS X or Linux machine using ldapsearch as a low priv&#39;ed user? Add the following argument: <br><br>-E &#39;!1.2.840.113556.1.4.801=::MAMCAQc=&#39; <a href="https://t.co/vMi7RPsYPB">pic.twitter.com/vMi7RPsYPB</a></p>&mdash; Lee Christensen (@tifkin_) <a href="https://twitter.com/tifkin_/status/1372628611677753344?ref_src=twsrc%5Etfw">March 18, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h3 id="ad-password-dumping-via-ldap">AD Password Dumping via LDAP</h3>
+<ul>
+<li>src: <a href="https://stackoverflow.com/questions/59406408/is-there-any-way-to-retrieve-password-hashes-from-an-active-directory-via-ldap" target="_blank" rel="noopener noreffer ">https://stackoverflow.com/questions/59406408/is-there-any-way-to-retrieve-password-hashes-from-an-active-directory-via-ldap</a></li>
+<li>src: <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2" target="_blank" rel="noopener noreffer ">https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/6e803168-f140-4d23-b2d3-c3a8ab5917d2</a></li>
+</ul>
+<p>Every so often I forget it&rsquo;s <strong>not possible</strong> to sync passwords from the <code>unicodePwd</code> attribute. I&rsquo;m saving this here mostly so I don&rsquo;t waste my time trying again.</p>
+<p>From MSDN:</p>
+<blockquote>
+<p>The unicodePwd attribute is never returned by an LDAP search.</p>
+</blockquote>
+<h2 id="references">References</h2>
+<p>For futher info, the <a href="https://ldapwiki.com/wiki/" target="_blank" rel="noopener noreffer ">LDAP Wiki</a> is an amazing resource.</p>
+<h3 id="ropnops-talk-at-troopers-2019">Ropnop&rsquo;s Talk at Troopers 2019</h3>
+<p>You should absolutely check out <a href="https://twitter.com/ropnop" target="_blank" rel="noopener noreffer ">Ropnop</a> (and follow him on Twitter) if you want to learn more.</p>
+<script async class="speakerdeck-embed" data-id="af116568615748f79ab794a862d2ef1d" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-05-14</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://malicious.link/posts/2022/ldapsearch-reference/" data-title="LDAPSearch Reference" data-via="mubix" data-hashtags="ldap,ldapsearch,notes"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://malicious.link/posts/2022/ldapsearch-reference/" data-hashtag="ldap"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://malicious.link/posts/2022/ldapsearch-reference/"><i class="fab fa-linkedin fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://malicious.link/posts/2022/ldapsearch-reference/" data-title="LDAPSearch Reference"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://malicious.link/posts/2022/ldapsearch-reference/"><i class="fab fa-reddit fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://malicious.link/posts/2022/ldapsearch-reference/" data-title="LDAPSearch Reference"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://malicious.link/posts/2022/ldapsearch-reference/" data-title="LDAPSearch Reference"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Evernote" data-sharer="evernote" data-url="https://malicious.link/posts/2022/ldapsearch-reference/" data-title="LDAPSearch Reference"><i class="fab fa-evernote fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/ldap/">ldap</a>,&nbsp;<a href="/tags/ldapsearch/">ldapsearch</a>,&nbsp;<a href="/tags/notes/">notes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2022/beautiful-basics-lesson-02/" class="prev" rel="prev" title="Beautiful Basics: Lesson 2"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Beautiful Basics: Lesson 2</a>
+            <a href="/posts/2022/blocking-iso-mounting/" class="next" rel="next" title="Blocking ISO mounting">Blocking ISO mounting<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2005 - 2023</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://twitter.com/mubix" target="_blank">Rob Fuller</a></span>&nbsp;|&nbsp;<span class="license">All Rights Reserved</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":100},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

